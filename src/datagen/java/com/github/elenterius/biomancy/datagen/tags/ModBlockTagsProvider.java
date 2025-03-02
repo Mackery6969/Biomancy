@@ -180,14 +180,14 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 	}
 
 	private void addMineableWithToolTags() {
-		tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.ACID_CAULDRON.get());
+		tag(BlockTags.MINEABLE_WITH_PICKAXE).add(ModBlocks.ACID_CAULDRON.get(), ModBlocks.PRIMAL_BONE.get());
 		tag(BlockTags.MINEABLE_WITH_SHOVEL).add(ModBlocks.WATER_GEL_BLOCK.get());
 
 		IntrinsicTagAppender<Block> hoeTag = tag(BlockTags.MINEABLE_WITH_HOE);
 
 		Set<Block> notMineableWithHoe = Set.of(
 				ModBlocks.ACID_CAULDRON.get(), ModBlocks.ACID_FLUID_BLOCK.get(), ModBlocks.ACID_SPLATTER.get(),
-				ModBlocks.WATER_GEL_BLOCK.get()
+				ModBlocks.WATER_GEL_BLOCK.get(), ModBlocks.PRIMAL_BONE.get()
 		);
 
 		ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get)
