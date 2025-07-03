@@ -4,9 +4,10 @@
 name: Build Production Release
 
 on:
-  push:
-    branches:
-      - '**/prod'
+  workflow_dispatch:
+#  push:
+#    branches:
+#      - '**/prod'
 
 jobs:
   build_test:
@@ -56,7 +57,7 @@ jobs:
 
       - name: Generate Conventional Changelog #this also determines the release version
         id: changelog
-        uses: TriPSs/conventional-changelog-action@v3
+        uses: TriPSs/conventional-changelog-action@v6.0.0
         with:
           preset: 'conventionalcommits'
           github-token: ${{ secrets.GITHUB_TOKEN }}
