@@ -1,0 +1,43 @@
+name: Bug Report
+description: Use this form to file a bug report for Biomancy.
+labels: [ "bug", "triage" ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before posting please check if the bug has already been reported.
+  - type: markdown
+    attributes:
+      value: |
+        Please complete the following information:
+  - type: input
+    id: mod-version
+    attributes:
+      label: Biomancy version
+    validations:
+      required: true
+  - type: input
+    id: forge-version
+    attributes:
+      label: MinecraftForge Version
+    validations:
+      required: true
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: What happened?
+      description: A clear and concise description of the bug.
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: What should have happened instead?
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional context
+      placeholder: Add any other context about the problem here.
