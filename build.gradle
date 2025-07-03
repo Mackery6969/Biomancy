@@ -20,7 +20,8 @@ jarJar.enable()
  */
 private String getModVersion() {
 	def parsedVersion = new JsonSlurper().parseText(file('mod_version.json').text)
-	return parsedVersion.major + "." + parsedVersion.semantic
+	def snapshotSHA = System.getenv("SNAPSHOT_SHA")
+	return parsedVersion.major + "." + parsedVersion.semantic + (snapshotSHA ? "-snapshot+" + snapshotSHA : "")
 }
 
 def mod_version = getModVersion()
