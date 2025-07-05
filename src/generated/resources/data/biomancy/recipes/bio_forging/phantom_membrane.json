@@ -6,7 +6,7 @@
       "type": "biomancy:essence",
       "item": {
         "id": "biomancy:essence",
-        "tag": "{colors:[I;4411786,8978176],essence_data:{entity_type:\"minecraft:phantom\",name:\"entity.minecraft.phantom\"},essence_tier:1}"
+        "tag": "{colors:[I;4411786,8978176],essence_data:{entity_type:\"minecraft:phantom\",name:\"entity.minecraft.phantom\"}}"
       },
       "predicate_tag": "{essence_data:{entity_type:\"minecraft:phantom\"}}"
     },

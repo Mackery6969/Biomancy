@@ -9,7 +9,7 @@
       "type": "biomancy:essence",
       "item": {
         "id": "biomancy:essence",
-        "tag": "{colors:[I;10051392,16380836],essence_data:{entity_type:\"minecraft:piglin\",name:\"entity.minecraft.piglin\"},essence_tier:1}"
+        "tag": "{colors:[I;10051392,16380836],essence_data:{entity_type:\"minecraft:piglin\",name:\"entity.minecraft.piglin\"}}"
       },
       "predicate_tag": "{essence_data:{entity_type:\"minecraft:piglin\"}}"
     },

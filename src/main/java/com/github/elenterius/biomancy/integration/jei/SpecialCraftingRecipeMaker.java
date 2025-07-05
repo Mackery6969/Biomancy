@@ -137,7 +137,7 @@ public final class SpecialCraftingRecipeMaker {
 	}
 
 	private static CraftingRecipe[] createRecipePair(EntityType<?> entityType, boolean isInverted, @Nullable UUID entityUUID) {
-		int tier = entityUUID != null ? 3 : 1;
+		int tier = entityUUID != null ? 3 : 0;
 		Ingredient ingredient = Ingredient.of(EssenceItem.fromEntityType(entityType, tier));
 		return createRecipePair(entityType, isInverted, entityUUID, tier, ingredient);
 	}

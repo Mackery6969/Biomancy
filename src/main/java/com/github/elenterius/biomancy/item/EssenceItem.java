@@ -67,7 +67,7 @@ public class EssenceItem extends Item implements ItemTooltipStyleProvider {
 	}
 
 	public static ItemStack fromEntityType(EntityType<?> entityType, int essenceTier) {
-		return fromEntityType(entityType, null, Mth.clamp(essenceTier, 1, 3));
+		return fromEntityType(entityType, null, Mth.clamp(essenceTier, 0, 3));
 	}
 
 	private static ItemStack fromEntityType(EntityType<?> entityType, @Nullable UUID entityUUID, int essenceTier) {
@@ -152,7 +152,7 @@ public class EssenceItem extends Item implements ItemTooltipStyleProvider {
 		CompoundTag tag = stack.getOrCreateTag();
 		tag.put(ESSENCE_DATA_KEY, essenceTag);
 		tag.putIntArray(COLORS_KEY, colors);
-		tag.putInt(ESSENCE_TIER_KEY, tier);
+		if (tier > 0) tag.putInt(ESSENCE_TIER_KEY, tier);
 
 		if (mobSounds != null) {
 			tag.put(SOUNDS_KEY, mobSounds);
@@ -206,14 +206,14 @@ public class EssenceItem extends Item implements ItemTooltipStyleProvider {
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
 		tooltip.addAll(ClientTextUtil.getItemInfoTooltip(stack));
 
-		tooltip.add(ComponentUtil.emptyLine());
-
 		CompoundTag compoundTag = stack.getOrCreateTag();
 
 		if (compoundTag.contains(ESSENCE_DATA_KEY)) {
 			CompoundTag tag = compoundTag.getCompound(ESSENCE_DATA_KEY);
 
 			if (tag.hasUUID(ENTITY_UUID_KEY)) {
+				tooltip.add(ComponentUtil.emptyLine());
+
 				UUID entityUUID = tag.getUUID(ENTITY_UUID_KEY);
 
 				if (tag.getString(ENTITY_NAME_KEY).equals(EntityType.PLAYER.getDescriptionId()) && compoundTag.contains(PLAYER_NAME_KEY)) {
@@ -223,13 +223,14 @@ public class EssenceItem extends Item implements ItemTooltipStyleProvider {
 				else {
 					tooltip.add(ComponentUtil.literal("UUID: " + entityUUID).withStyle(ChatFormatting.GRAY));
 				}
-
-				tooltip.add(ComponentUtil.emptyLine());
 			}
 		}
 
 		int tier = compoundTag.getInt(ESSENCE_TIER_KEY);
-		tooltip.add(ComponentUtil.literal("Tier: " + tier));
+		if (tier > 0) {
+			tooltip.add(ComponentUtil.emptyLine());
+			tooltip.add(ComponentUtil.literal("Tier: " + tier));
+		}
 	}
 
 	@Override

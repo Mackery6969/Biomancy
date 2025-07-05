@@ -9,7 +9,7 @@
       "type": "biomancy:essence",
       "item": {
         "id": "biomancy:essence",
-        "tag": "{colors:[I;44975,4602533],essence_data:{entity_type:\"minecraft:player\",name:\"entity.minecraft.player\"},essence_tier:1}"
+        "tag": "{colors:[I;44975,4602533],essence_data:{entity_type:\"minecraft:player\",name:\"entity.minecraft.player\"}}"
       },
       "predicate_tag": "{essence_data:{entity_type:\"minecraft:player\"}}"
     },

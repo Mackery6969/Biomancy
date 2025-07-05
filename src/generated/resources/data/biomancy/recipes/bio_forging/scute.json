@@ -6,7 +6,7 @@
       "type": "biomancy:essence",
       "item": {
         "id": "biomancy:essence",
-        "tag": "{colors:[I;15198183,44975],essence_data:{entity_type:\"minecraft:turtle\",name:\"entity.minecraft.turtle\"},essence_tier:1}"
+        "tag": "{colors:[I;15198183,44975],essence_data:{entity_type:\"minecraft:turtle\",name:\"entity.minecraft.turtle\"}}"
       },
       "predicate_tag": "{essence_data:{entity_type:\"minecraft:turtle\"}}"
     },
