@@ -19,9 +19,15 @@ jarJar.enable()
  * @return Hybrid Semantic Version
  */
 private String getModVersion() {
-	def parsedVersion = new JsonSlurper().parseText(file('mod_version.json').text)
-	def snapshotSHA = System.getenv("SNAPSHOT_SHA")
-	return parsedVersion.major + "." + parsedVersion.semantic + (snapshotSHA ? "-snapshot+" + snapshotSHA : "")
+	def snapshotVersion = System.getenv("SNAPSHOT_VERSION")
+
+	if (snapshotVersion != null) {
+		def parsedVersion = new JsonSlurper().parseText(file('mod_version.json').text)
+		return parsedVersion.major + "." + snapshotVersion
+	} else {
+		def parsedVersion = new JsonSlurper().parseText(file('mod_version.json').text)
+		return parsedVersion.major + "." + parsedVersion.semantic
+	}
 }
 
 def mod_version = getModVersion()
