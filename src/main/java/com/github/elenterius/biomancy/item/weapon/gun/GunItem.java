@@ -299,8 +299,9 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 		tooltip.add(TextComponentUtil.getTooltipText("fire_rate").append(String.format(": %s RPS ", df.format(fireRate))).append(formatBonusValue(df, bonusFireRate)).withStyle(ChatFormatting.GRAY));
 
 		float inaccuracy = modifyProjectileInaccuracy(configuredProjectile.inaccuracy(), stack);
+		float accuracy = -MAX_INACCURACY * inaccuracy + MAX_INACCURACY;
 		float bonusAccuracy = -1f * (inaccuracy - configuredProjectile.inaccuracy());
-		tooltip.add(TextComponentUtil.getTooltipText("accuracy").append(String.format(": %s ", df.format(inaccuracy))).append(formatBonusValue(df, bonusAccuracy, true)).withStyle(ChatFormatting.GRAY));
+		tooltip.add(TextComponentUtil.getTooltipText("accuracy").append(String.format(": %s ", df.format(accuracy))).append(formatBonusValue(df, bonusAccuracy)).withStyle(ChatFormatting.GRAY));
 
 		tooltip.add(TextComponentUtil.getTooltipText("ammo").append(String.format(": %d/%d ", getAmmo(stack), getMaxAmmo(stack))).withStyle(ChatFormatting.GRAY));
 
