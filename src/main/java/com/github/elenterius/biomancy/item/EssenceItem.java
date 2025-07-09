@@ -2,6 +2,7 @@ package com.github.elenterius.biomancy.item;
 
 import com.github.elenterius.biomancy.block.property.MobSoundType;
 import com.github.elenterius.biomancy.client.util.ClientTextUtil;
+import com.github.elenterius.biomancy.init.ModEnchantments;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.github.elenterius.biomancy.util.MobSoundUtil;
@@ -45,15 +46,16 @@ public class EssenceItem extends Item implements ItemTooltipStyleProvider {
 
 	public static ItemStack fromEntity(LivingEntity livingEntity, int surgicalPrecisionLevel, int lootingLevel) {
 		int count = 1 + livingEntity.getRandom().nextInt(0, 1 + lootingLevel);
-		int essenceTier = 1 + livingEntity.getRandom().nextInt(0, 1 + surgicalPrecisionLevel);
+
+		float precisionFactor = (float) surgicalPrecisionLevel / ModEnchantments.SURGICAL_PRECISION.get().getMaxLevel();
+		int bonus = livingEntity.getRandom().nextFloat() < Mth.lerp(precisionFactor, 0.5f, 0.125f) ? 1 : 0;
+		int tier = Mth.clamp(surgicalPrecisionLevel + bonus, 1, 3);
 
 		EssenceItem essenceItem = ModItems.ESSENCE.get();
 		ItemStack stack = new ItemStack(essenceItem, count);
 
-		essenceTier = Mth.clamp(essenceTier, 1, 3);
-
-		if (essenceItem.setEssenceData(stack, essenceTier, livingEntity)) {
-			if (essenceTier >= 3 && livingEntity instanceof Player player) {
+		if (essenceItem.setEssenceData(stack, tier, livingEntity)) {
+			if (tier >= 3 && livingEntity instanceof Player player) {
 				stack.getOrCreateTag().putString(PLAYER_NAME_KEY, player.getGameProfile().getName());
 			}
 			return stack;
