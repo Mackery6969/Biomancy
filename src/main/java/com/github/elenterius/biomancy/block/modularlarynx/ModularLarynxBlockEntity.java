@@ -1,11 +1,9 @@
 package com.github.elenterius.biomancy.block.modularlarynx;
 
-import com.github.elenterius.biomancy.block.property.MobSoundType;
 import com.github.elenterius.biomancy.init.ModBlockEntities;
 import com.github.elenterius.biomancy.init.ModCapabilities;
 import com.github.elenterius.biomancy.inventory.SingleItemStackHandler;
 import com.github.elenterius.biomancy.item.EssenceItem;
-import com.github.elenterius.biomancy.util.MobSoundUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -62,7 +60,7 @@ public class ModularLarynxBlockEntity extends BlockEntity {
 		};
 		optionalItemHandler = LazyOptional.of(() -> inventory);
 
-		soundEvent = MobSoundUtil.getSoundFallbackFor(ModularLarynxBlock.getMobSoundType(state));
+		soundEvent = ModularLarynxBlock.getMobSoundType(state).getSoundFallback();
 	}
 
 	public boolean isInventoryEmpty() {
@@ -80,10 +78,10 @@ public class ModularLarynxBlockEntity extends BlockEntity {
 		if (stack.getItem() instanceof EssenceItem essenceItem) {
 			soundEvent = essenceItem
 					.getMobSound(stack, mobSoundType)
-					.orElse(MobSoundUtil.getSoundFallbackFor(mobSoundType));
+					.orElse(mobSoundType.getSoundFallback());
 		}
 		else {
-			soundEvent = MobSoundUtil.getSoundFallbackFor(mobSoundType);
+			soundEvent = mobSoundType.getSoundFallback();
 		}
 	}
 
@@ -110,7 +108,7 @@ public class ModularLarynxBlockEntity extends BlockEntity {
 	public void load(CompoundTag tag) {
 		super.load(tag);
 		inventory.deserializeNBT(tag.getCompound(INVENTORY_TAG));
-		soundEvent = deserializeSoundEvent(tag.getString(SOUND_EVENT_TAG)).orElseGet(() -> MobSoundUtil.getSoundFallbackFor(ModularLarynxBlock.getMobSoundType(getBlockState())));
+		soundEvent = deserializeSoundEvent(tag.getString(SOUND_EVENT_TAG)).orElseGet(() -> ModularLarynxBlock.getMobSoundType(getBlockState()).getSoundFallback());
 	}
 
 	public Optional<SoundEvent> deserializeSoundEvent(String stringKey) {

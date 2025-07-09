@@ -12,7 +12,7 @@ import com.github.elenterius.biomancy.item.armor.AcolyteArmorItem;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.util.CombatUtil;
 import com.github.elenterius.biomancy.util.ComponentUtil;
-import com.github.elenterius.biomancy.util.SoundUtil;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -122,7 +122,7 @@ public class ExtractorItem extends Item implements KeyPressListener, ItemTooltip
 	public InteractionResultHolder<Byte> onClientKeyPress(ItemStack stack, Level level, Player player, EquipmentSlot slot, byte flags) {
 		//TODO: add cooldown?
 		if (!interactWithPlayerSelf(stack, player)) {
-			SoundUtil.clientPlayItemSound(level, player, ModSoundEvents.INJECTOR_FAIL.get());
+			SoundUtil.Client.playItemSound(level, player, ModSoundEvents.INJECTOR_FAIL.get());
 			return InteractionResultHolder.fail(flags); //don't send button press to server
 		}
 		return InteractionResultHolder.success(flags);
@@ -131,14 +131,14 @@ public class ExtractorItem extends Item implements KeyPressListener, ItemTooltip
 	@Override
 	public void onServerReceiveKeyPress(ItemStack stack, ServerLevel level, Player player, byte flags) {
 		boolean hasInteracted = interactWithPlayerSelf(stack, player);
-		SoundUtil.broadcastItemSound(level, player, hasInteracted ? ModSoundEvents.INJECTOR_INJECT.get() : ModSoundEvents.INJECTOR_FAIL.get());
+		SoundUtil.Server.playItemSound(level, player, hasInteracted ? ModSoundEvents.INJECTOR_INJECT.get() : ModSoundEvents.INJECTOR_FAIL.get());
 	}
 
 	@Override
 	public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget, InteractionHand usedHand) {
 		//the device is empty
 		if (interactionTarget.level() instanceof ServerLevel serverLevel && extractEssence(stack, player, interactionTarget)) {
-			SoundUtil.broadcastItemSound(serverLevel, player, ModSoundEvents.INJECTOR_INJECT.get());
+			SoundUtil.Server.playItemSound(serverLevel, player, ModSoundEvents.INJECTOR_INJECT.get());
 
 			//fix for creative mode (normally the stack is not modified in creative)
 			if (player.isCreative()) player.setItemInHand(usedHand, stack);

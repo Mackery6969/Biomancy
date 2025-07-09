@@ -1,6 +1,6 @@
 package com.github.elenterius.biomancy.block.neural;
 
-import com.github.elenterius.biomancy.util.SoundUtil;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import com.github.elenterius.biomancy.world.MobSpawnFilterShape;
 import com.github.elenterius.biomancy.world.spatial.SpatialShapeManager;
 import com.github.elenterius.biomancy.world.spatial.geometry.SphereShape;
@@ -85,7 +85,7 @@ public class NeuralInterceptorBlock extends HorizontalDirectionalBlock {
 			}
 
 			if (random.nextInt(3) == 0) {
-				SoundUtil.clientPlayBlockSound(level, pos, SoundEvents.VILLAGER_AMBIENT, 0.6f, 0.6f);
+				SoundUtil.Client.playBlockSound(level, pos, SoundEvents.VILLAGER_AMBIENT, 0.6f, 0.6f);
 			}
 		}
 	}

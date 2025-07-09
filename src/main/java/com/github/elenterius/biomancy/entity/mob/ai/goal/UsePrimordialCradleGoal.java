@@ -6,7 +6,7 @@ import com.github.elenterius.biomancy.entity.mob.PrimordialCradleUser;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.util.LevelUtil;
-import com.github.elenterius.biomancy.util.SoundUtil;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -106,7 +106,7 @@ public class UsePrimordialCradleGoal<T extends PathfinderMob & PrimordialCradleU
 	private boolean sacrificeItem(Level level, BlockPos pos, PrimordialCradleBlockEntity cradle, ItemStack stack) {
 		if (!cradle.isFull() && cradle.insertItem(stack)) {
 			SoundEvent soundEvent = cradle.isFull() ? ModSoundEvents.CRADLE_BECAME_FULL.get() : ModSoundEvents.CRADLE_EAT.get();
-			SoundUtil.broadcastBlockSound((ServerLevel) level, pos, soundEvent);
+			SoundUtil.Server.playBlockSound((ServerLevel) level, pos, soundEvent);
 			return true;
 		}
 		return false;

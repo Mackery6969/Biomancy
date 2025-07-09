@@ -7,8 +7,8 @@ import com.github.elenterius.biomancy.init.ModBlockEntities;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
-import com.github.elenterius.biomancy.util.SoundUtil;
 import com.github.elenterius.biomancy.util.VoxelShapeUtil;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -81,7 +81,7 @@ public class BioLabBlock extends HorizontalFacingMachineBlock {
 		if (level.getBlockEntity(pos) instanceof BioLabBlockEntity bioLab && bioLab.canPlayerInteract(player)) {
 			if (!level.isClientSide) {
 				NetworkHooks.openScreen((ServerPlayer) player, bioLab, buffer -> buffer.writeBlockPos(pos));
-				SoundUtil.broadcastBlockSound((ServerLevel) level, pos, ModSoundEvents.UI_BIO_LAB_OPEN);
+				SoundUtil.Server.playBlockSound((ServerLevel) level, pos, ModSoundEvents.UI_BIO_LAB_OPEN);
 			}
 			return InteractionResult.SUCCESS;
 		}
@@ -117,7 +117,7 @@ public class BioLabBlock extends HorizontalFacingMachineBlock {
 				level.addParticle(ParticleTypes.ENTITY_EFFECT, pos.getX() + 0.5d + ((random.nextFloat() - random.nextFloat()) * 0.25F), pos.getY() + 0.65d, pos.getZ() + 0.5d + ((random.nextFloat() - random.nextFloat()) * 0.25F), r, g, b);
 			}
 			if (random.nextInt(3) == 0) {
-				SoundUtil.clientPlayBlockSound(level, pos, ModSoundEvents.BIO_LAB_CRAFTING_RANDOM, 0.65f);
+				SoundUtil.Client.playBlockSound(level, pos, ModSoundEvents.BIO_LAB_CRAFTING_RANDOM, 0.65f);
 			}
 		}
 	}

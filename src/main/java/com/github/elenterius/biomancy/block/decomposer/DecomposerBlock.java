@@ -7,7 +7,7 @@ import com.github.elenterius.biomancy.init.ModBlockEntities;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
-import com.github.elenterius.biomancy.util.SoundUtil;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -67,7 +67,7 @@ public class DecomposerBlock extends HorizontalFacingMachineBlock {
 		if (level.getBlockEntity(pos) instanceof DecomposerBlockEntity decomposer && decomposer.canPlayerInteract(player)) {
 			if (!level.isClientSide) {
 				NetworkHooks.openScreen((ServerPlayer) player, decomposer, buffer -> buffer.writeBlockPos(pos));
-				SoundUtil.broadcastBlockSound((ServerLevel) level, pos, ModSoundEvents.UI_DECOMPOSER_OPEN);
+				SoundUtil.Server.playBlockSound((ServerLevel) level, pos, ModSoundEvents.UI_DECOMPOSER_OPEN);
 			}
 			return InteractionResult.SUCCESS;
 		}
@@ -98,7 +98,7 @@ public class DecomposerBlock extends HorizontalFacingMachineBlock {
 			}
 
 			if (random.nextInt(3) == 0) {
-				SoundUtil.clientPlayBlockSound(level, pos, ModSoundEvents.DECOMPOSER_CRAFTING_RANDOM, 0.65f);
+				SoundUtil.Client.playBlockSound(level, pos, ModSoundEvents.DECOMPOSER_CRAFTING_RANDOM, 0.65f);
 			}
 		}
 	}

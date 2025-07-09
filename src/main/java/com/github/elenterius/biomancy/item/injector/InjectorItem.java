@@ -17,7 +17,7 @@ import com.github.elenterius.biomancy.item.armor.AcolyteArmorItem;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.util.CombatUtil;
 import com.github.elenterius.biomancy.util.ComponentUtil;
-import com.github.elenterius.biomancy.util.SoundUtil;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -224,7 +224,7 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 
 		if (!player.isShiftKeyDown()) return InteractionResultHolder.pass(stack);
 		if (player.getCooldowns().isOnCooldown(this) || !canInteractWithPlayerSelf(stack, player)) {
-			SoundUtil.playItemSoundEffect(level, player, ModSoundEvents.INJECTOR_FAIL);
+			SoundUtil.playItemSound(level, player, ModSoundEvents.INJECTOR_FAIL);
 			return InteractionResultHolder.fail(stack);
 		}
 
@@ -242,7 +242,7 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 
 		if (!canInteractWithLivingTarget(copyOfStack, player, target)) {
 			if (level.isClientSide) {
-				SoundUtil.clientPlayItemSound(level, player, ModSoundEvents.INJECTOR_FAIL.get());
+				SoundUtil.Client.playItemSound(level, player, ModSoundEvents.INJECTOR_FAIL.get());
 			}
 			return InteractionResult.FAIL;
 		}

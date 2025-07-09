@@ -10,8 +10,8 @@ import com.github.elenterius.biomancy.entity.mob.fleshblob.FleshBlob;
 import com.github.elenterius.biomancy.init.*;
 import com.github.elenterius.biomancy.item.armor.AcolyteArmorItem;
 import com.github.elenterius.biomancy.util.SaturatedMath;
-import com.github.elenterius.biomancy.util.SoundUtil;
 import com.github.elenterius.biomancy.util.animation.TriggerableAnimation;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import com.github.elenterius.biomancy.world.PrimordialEcosystem;
 import com.github.elenterius.biomancy.world.mound.MoundGenerator;
 import com.github.elenterius.biomancy.world.mound.MoundShape;
@@ -257,7 +257,7 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 			if (level.random.nextFloat() < sacrificeHandler.getAnomalyChance()) {
 				spawnPrimordialFleshBlob(level, pos, sacrificeHandler);
 				addPrimalEnergy(Math.round(4096 * energyMultiplier));
-				SoundUtil.broadcastBlockSound(level, pos, ModSoundEvents.CRADLE_SPAWN_PRIMORDIAL_MOB);
+				SoundUtil.Server.playBlockSound(level, pos, ModSoundEvents.CRADLE_SPAWN_PRIMORDIAL_MOB);
 			}
 			else {
 				if (sacrificeHandler.getHostileChance() < -4.2f) {
@@ -268,7 +268,7 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 				}
 
 				addPrimalEnergy(Math.round(2048 * energyMultiplier));
-				SoundUtil.broadcastBlockSound(level, pos, ModSoundEvents.CRADLE_SPAWN_MOB);
+				SoundUtil.Server.playBlockSound(level, pos, ModSoundEvents.CRADLE_SPAWN_MOB);
 			}
 
 			PrimordialEcosystem.tryToReplaceBlock(level, pos.below(), ModBlocks.PRIMAL_FLESH.get().defaultBlockState());
@@ -285,11 +285,11 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 			if (sacrificeHandler.getAnomalyChance() > 0.8f) {
 				PrimordialEcosystem.tryToReplaceBlock(level, pos.below(), ModBlocks.MALIGNANT_FLESH.get().defaultBlockState());
 				PrimordialEcosystem.spreadMalignantVeinsFromSource(level, pos, PrimordialEcosystem.MAX_CHARGE_SUPPLIER);
-				SoundUtil.broadcastBlockSound(level, pos, ModSoundEvents.CRADLE_SPAWN_PRIMORDIAL_MOB);
+				SoundUtil.Server.playBlockSound(level, pos, ModSoundEvents.CRADLE_SPAWN_PRIMORDIAL_MOB);
 			}
 			else {
 				PrimordialEcosystem.tryToReplaceBlock(level, pos.below(), ModBlocks.POROUS_PRIMAL_FLESH.get().defaultBlockState());
-				SoundUtil.broadcastBlockSound(level, pos, ModSoundEvents.CRADLE_SPAWN_MOB);
+				SoundUtil.Server.playBlockSound(level, pos, ModSoundEvents.CRADLE_SPAWN_MOB);
 			}
 		}
 		else {
@@ -301,7 +301,7 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 			PrimordialEcosystem.spreadMalignantVeinsFromSource(level, pos, PrimordialEcosystem.MAX_CHARGE_SUPPLIER);
 
 			addPrimalEnergy(Math.round(3072 * energyMultiplier));
-			SoundUtil.broadcastBlockSound(level, pos, ModSoundEvents.FLESH_BLOCK_STEP.get(), 1f, 0.15f + level.random.nextFloat() * 0.5f);
+			SoundUtil.Server.playBlockSound(level, pos, ModSoundEvents.FLESH_BLOCK_STEP.get(), 1f, 0.15f + level.random.nextFloat() * 0.5f);
 		}
 
 		resetState();
@@ -401,7 +401,7 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 
 	protected void attackAOE(ServerLevel level, BlockPos pos) {
 		broadcastAnimation(Animations.SPIKE_ATTACK);
-		SoundUtil.broadcastBlockSound(level, pos, ModSoundEvents.CRADLE_SPIKE_ATTACK);
+		SoundUtil.Server.playBlockSound(level, pos, ModSoundEvents.CRADLE_SPIKE_ATTACK);
 
 		float maxAttackDistance = 1.5f;
 		float maxAttackDistanceSqr = maxAttackDistance * maxAttackDistance;

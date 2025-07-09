@@ -4,6 +4,7 @@ import com.github.elenterius.biomancy.entity.projectile.*;
 import com.github.elenterius.biomancy.item.weapon.gun.Gun;
 import com.github.elenterius.biomancy.util.function.FloatOperator;
 import com.github.elenterius.biomancy.util.function.IntOperator;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;

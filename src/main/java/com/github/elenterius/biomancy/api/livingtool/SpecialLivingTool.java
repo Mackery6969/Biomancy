@@ -3,7 +3,7 @@ package com.github.elenterius.biomancy.api.livingtool;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
-import com.github.elenterius.biomancy.util.SoundUtil;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -30,11 +30,11 @@ public interface SpecialLivingTool extends LivingTool {
 
 		if (state == LivingToolState.DORMANT) {
 			setLivingToolState(livingTool, hasNutrients ? LivingToolState.AWAKENED : LivingToolState.BROKEN);
-			SoundUtil.broadcastItemSound(level, player, ModSoundEvents.FLESH_BLOCK_PLACE.get());
+			SoundUtil.Server.playItemSound(level, player, ModSoundEvents.FLESH_BLOCK_PLACE.get());
 		}
 		else if (state == LivingToolState.AWAKENED) {
 			setLivingToolState(livingTool, hasNutrients ? LivingToolState.DORMANT : LivingToolState.BROKEN);
-			SoundUtil.broadcastItemSound(level, player, ModSoundEvents.FLESH_BLOCK_HIT.get());
+			SoundUtil.Server.playItemSound(level, player, ModSoundEvents.FLESH_BLOCK_HIT.get());
 		}
 	}
 

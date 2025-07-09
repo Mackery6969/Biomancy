@@ -1,11 +1,10 @@
 package com.github.elenterius.biomancy.item;
 
-import com.github.elenterius.biomancy.block.property.MobSoundType;
+import com.github.elenterius.biomancy.block.modularlarynx.MobSoundType;
 import com.github.elenterius.biomancy.client.util.ClientTextUtil;
 import com.github.elenterius.biomancy.init.ModEnchantments;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.util.ComponentUtil;
-import com.github.elenterius.biomancy.util.MobSoundUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -133,7 +132,7 @@ public class EssenceItem extends Item implements ItemTooltipStyleProvider {
 		UUID entityUUID = tier >= 3 ? livingEntity.getUUID() : null;
 		int[] colors = getEssenceColors(livingEntity, tier);
 
-		CompoundTag mobSounds = MobSoundUtil.saveSounds(livingEntity);
+		CompoundTag mobSounds = MobSoundType.saveSounds(livingEntity);
 
 		return setEssenceData(stack, tier, livingEntity.getType(), entityUUID, colors, mobSounds);
 	}
@@ -183,7 +182,7 @@ public class EssenceItem extends Item implements ItemTooltipStyleProvider {
 
 	public Optional<SoundEvent> getMobSound(ItemStack stack, MobSoundType soundType) {
 		CompoundTag tag = stack.getOrCreateTag().getCompound(SOUNDS_KEY);
-		return Optional.ofNullable(MobSoundUtil.getSound(tag, soundType));
+		return Optional.ofNullable(soundType.getSound(tag));
 	}
 
 	public int getColor(ItemStack stack, int tintIndex) {

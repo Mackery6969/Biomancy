@@ -4,7 +4,6 @@ import com.github.elenterius.biomancy.api.nutrients.FuelHandler;
 import com.github.elenterius.biomancy.api.nutrients.FuelHandlerImpl;
 import com.github.elenterius.biomancy.block.base.MachineBlock;
 import com.github.elenterius.biomancy.block.base.MachineBlockEntity;
-import com.github.elenterius.biomancy.client.util.ClientLoopingSoundHelper;
 import com.github.elenterius.biomancy.crafting.recipe.DigestingRecipe;
 import com.github.elenterius.biomancy.crafting.recipe.SimpleRecipeType;
 import com.github.elenterius.biomancy.init.ModBlockEntities;
@@ -16,8 +15,8 @@ import com.github.elenterius.biomancy.inventory.InventoryHandlers;
 import com.github.elenterius.biomancy.inventory.ItemHandlerUtil;
 import com.github.elenterius.biomancy.menu.DigesterMenu;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
-import com.github.elenterius.biomancy.util.ILoopingSoundHelper;
-import com.github.elenterius.biomancy.util.SoundUtil;
+import com.github.elenterius.biomancy.util.sounds.LoopingSoundHelper;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -69,7 +68,7 @@ public class DigesterBlockEntity extends MachineBlockEntity<DigestingRecipe, Dig
 	private final InventoryHandler<?> outputInventory;
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
-	private ILoopingSoundHelper loopingSoundHelper = ILoopingSoundHelper.NULL;
+	private LoopingSoundHelper loopingSoundHelper = LoopingSoundHelper.NULL;
 
 	private LazyOptional<IFluidHandler> optionalFluidConsumer;
 
@@ -89,7 +88,7 @@ public class DigesterBlockEntity extends MachineBlockEntity<DigestingRecipe, Dig
 	@Override
 	public void onLoad() {
 		if (level != null && level.isClientSide) {
-			loopingSoundHelper = new ClientLoopingSoundHelper();
+			loopingSoundHelper = SoundUtil.Client.createLoopingSoundHandler();
 		}
 	}
 
@@ -171,7 +170,7 @@ public class DigesterBlockEntity extends MachineBlockEntity<DigestingRecipe, Dig
 				ItemHandlerUtil.insertItem(outputInventory.getRaw(), craftingRemainder);
 			}
 
-			SoundUtil.broadcastBlockSound((ServerLevel) level, getBlockPos(), ModSoundEvents.DIGESTER_CRAFTING_COMPLETED);
+			SoundUtil.Server.playBlockSound((ServerLevel) level, getBlockPos(), ModSoundEvents.DIGESTER_CRAFTING_COMPLETED);
 
 			setChanged();
 			return true;

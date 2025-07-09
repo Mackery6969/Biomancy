@@ -1,7 +1,6 @@
 package com.github.elenterius.biomancy.block.modularlarynx;
 
 import com.github.elenterius.biomancy.block.property.BlockPropertyUtil;
-import com.github.elenterius.biomancy.block.property.MobSoundType;
 import com.github.elenterius.biomancy.init.ModBlockEntities;
 import com.github.elenterius.biomancy.init.ModBlockProperties;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;

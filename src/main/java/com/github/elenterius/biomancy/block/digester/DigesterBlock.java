@@ -7,7 +7,7 @@ import com.github.elenterius.biomancy.init.ModBlockEntities;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
-import com.github.elenterius.biomancy.util.SoundUtil;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -75,7 +75,7 @@ public class DigesterBlock extends HorizontalFacingMachineBlock {
 		if (level.getBlockEntity(pos) instanceof DigesterBlockEntity digester && digester.canPlayerInteract(player)) {
 			if (!level.isClientSide) {
 				NetworkHooks.openScreen((ServerPlayer) player, digester, buffer -> buffer.writeBlockPos(pos));
-				SoundUtil.broadcastBlockSound((ServerLevel) level, pos, ModSoundEvents.UI_DIGESTER_OPEN);
+				SoundUtil.Server.playBlockSound((ServerLevel) level, pos, ModSoundEvents.UI_DIGESTER_OPEN);
 			}
 			return InteractionResult.SUCCESS;
 		}
@@ -120,7 +120,7 @@ public class DigesterBlock extends HorizontalFacingMachineBlock {
 		if (random.nextInt(3) != 0) return;
 
 		if (!playFoodEatingSound(level, pos, random)) {
-			SoundUtil.clientPlayBlockSound(level, pos, ModSoundEvents.DIGESTER_CRAFTING_RANDOM, 0.65f);
+			SoundUtil.Client.playBlockSound(level, pos, ModSoundEvents.DIGESTER_CRAFTING_RANDOM, 0.65f);
 		}
 	}
 
@@ -134,10 +134,10 @@ public class DigesterBlock extends HorizontalFacingMachineBlock {
 			if (stack.isEmpty()) return false;
 
 			if (stack.getUseAnimation() == UseAnim.DRINK) {
-				SoundUtil.clientPlayBlockSound(level, pos, stack.getDrinkingSound(), 0.5F, random.nextFloat() * 0.1F + 0.9F);
+				SoundUtil.Client.playBlockSound(level, pos, stack.getDrinkingSound(), 0.5F, random.nextFloat() * 0.1F + 0.9F);
 			}
 			else if (stack.getUseAnimation() == UseAnim.EAT) {
-				SoundUtil.clientPlayBlockSound(level, pos, stack.getEatingSound(), 0.5f + 0.5f * random.nextInt(2), (random.nextFloat() - random.nextFloat()) * 0.2f + 1f);
+				SoundUtil.Client.playBlockSound(level, pos, stack.getEatingSound(), 0.5f + 0.5f * random.nextInt(2), (random.nextFloat() - random.nextFloat()) * 0.2f + 1f);
 			}
 
 			return true;

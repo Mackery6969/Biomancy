@@ -13,7 +13,7 @@ import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.CombatUtil;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.github.elenterius.biomancy.util.MobUtil;
-import com.github.elenterius.biomancy.util.SoundUtil;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
@@ -171,7 +171,7 @@ public class RavenousClawsItem extends LivingClawsItem implements GeoItem, ItemC
 		if (!hasNutrients) {
 			if (state != LivingToolState.BROKEN) {
 				setLivingToolState(livingTool, LivingToolState.BROKEN);
-				SoundUtil.broadcastItemSound(level, player, ModSoundEvents.FLESHKIN_BREAK.get());
+				SoundUtil.Server.playItemSound(level, player, ModSoundEvents.FLESHKIN_BREAK.get());
 			}
 			return;
 		}
@@ -179,12 +179,12 @@ public class RavenousClawsItem extends LivingClawsItem implements GeoItem, ItemC
 		switch (state) {
 			case BROKEN, AWAKENED -> {
 				setLivingToolState(livingTool, LivingToolState.DORMANT);
-				SoundUtil.broadcastItemSound(level, player, ModSoundEvents.FLESHKIN_BECOME_DORMANT.get());
+				SoundUtil.Server.playItemSound(level, player, ModSoundEvents.FLESHKIN_BECOME_DORMANT.get());
 			}
 			case DORMANT -> {
 				if (hasCharge(livingTool)) {
 					setLivingToolState(livingTool, LivingToolState.AWAKENED);
-					SoundUtil.broadcastItemSound(level, player, ModSoundEvents.FLESHKIN_BECOME_AWAKENED.get());
+					SoundUtil.Server.playItemSound(level, player, ModSoundEvents.FLESHKIN_BECOME_AWAKENED.get());
 				}
 			}
 		}

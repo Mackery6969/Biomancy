@@ -6,7 +6,7 @@ import com.github.elenterius.biomancy.init.tags.ModItemTags;
 import com.github.elenterius.biomancy.integration.ModsCompatHandler;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
-import com.github.elenterius.biomancy.util.SoundUtil;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import com.github.elenterius.biomancy.world.mound.MoundShape;
 import com.github.elenterius.biomancy.world.spatial.SpatialShapeManager;
 import net.minecraft.core.BlockPos;
@@ -164,7 +164,7 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 			return InteractionResult.SUCCESS;
 		}
 		if (!level.isClientSide) {
-			SoundUtil.broadcastBlockSound((ServerLevel) level, pos, ModSoundEvents.CRADLE_NO);
+			SoundUtil.Server.playBlockSound((ServerLevel) level, pos, ModSoundEvents.CRADLE_NO);
 		}
 
 		return InteractionResult.CONSUME;
@@ -202,7 +202,7 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 				ModTriggers.SACRIFICED_ITEM_TRIGGER.trigger(serverPlayer, copyOfStack);
 			}
 			SoundEvent soundEvent = cradle.isFull() ? ModSoundEvents.CRADLE_BECAME_FULL.get() : ModSoundEvents.CRADLE_EAT.get();
-			SoundUtil.broadcastBlockSound((ServerLevel) level, pos, soundEvent);
+			SoundUtil.Server.playBlockSound((ServerLevel) level, pos, soundEvent);
 			return true;
 		}
 
@@ -231,7 +231,7 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 				level.addParticle(ParticleTypes.ENTITY_EFFECT, pos.getX() + ((random.nextFloat() * 0.60625) + 0.13125f), pos.getY() + 0.5f, pos.getZ() + ((random.nextFloat() * 0.60625) + 0.13125f), r, g, b);
 			}
 			if (random.nextInt(3) == 0) {
-				SoundUtil.clientPlayBlockSound(level, pos, ModSoundEvents.CRADLE_CRAFTING_RANDOM, 0.85f);
+				SoundUtil.Client.playBlockSound(level, pos, ModSoundEvents.CRADLE_CRAFTING_RANDOM, 0.85f);
 			}
 		}
 	}

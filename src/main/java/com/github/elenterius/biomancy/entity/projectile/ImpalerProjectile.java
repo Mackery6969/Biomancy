@@ -2,13 +2,16 @@ package com.github.elenterius.biomancy.entity.projectile;
 
 import com.github.elenterius.biomancy.init.ModDamageSources;
 import com.github.elenterius.biomancy.init.ModEntityTypes;
+import com.github.elenterius.biomancy.init.ModProjectiles;
 import com.github.elenterius.biomancy.util.MobUtil;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -18,6 +21,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -25,6 +29,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ToolActions;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -145,7 +150,12 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 
 	@Override
 	public float getGravity() {
-		return 0.01f;
+		return 0.02f;
+	}
+
+	@Override
+	public float getDamage() {
+		return Mth.clamp(super.getDamage() * (float) (getDeltaMovement().length() / ModProjectiles.IMPALER_PROJECTILE.velocity()), 0f, Integer.MAX_VALUE);
 	}
 
 	@Override
@@ -202,7 +212,12 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 
 		if (!tryToDestroyBlock(blockState, blockPos)) {
 			blockState.onProjectileHit(level(), blockState, result, this);
-			playSound(blockState.getSoundType().getHitSound(), 2f, 1.2f / (random.nextFloat() * 0.2f + 0.9f));
+
+			//			playSound(blockState.getSoundType().getHitSound(), 2f, 1.2f / (random.nextFloat() * 0.2f + 0.9f));
+			playSound(SoundEvents.GENERIC_EXPLODE, 3f, 1.2f / (random.nextFloat() * 0.2f + 0.9f));
+			Vec3 vec = result.getLocation();
+			BlockPos pos = result.getBlockPos();
+			level().addParticle(ParticleTypes.EXPLOSION, pos.getX() + vec.x, pos.getY() + vec.y, pos.getZ() + vec.z, 1d, 0d, 0d);
 
 			ejectPassengers();
 			discard();
@@ -246,7 +261,8 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 		//			addConcussionEffect(livingTarget);
 		//		}
 		//		else {
-		hurtSuccess = livingTarget.hurt(ModDamageSources.toothProjectile(level(), this, getOwner()), getDamage());
+		float damage = getDamage();
+		hurtSuccess = livingTarget.hurt(ModDamageSources.toothProjectile(level(), this, getOwner()), damage);
 		livingTarget.startRiding(this, true);
 		//		}
 
@@ -255,8 +271,12 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 				doEnchantDamageEffects(livingEntity, victim); //thorn & arthropod damage
 			}
 
+			if (damage >= 2f && victim instanceof LivingEntity livingEntity) {
+				disableShield(livingEntity, 15 * 20);
+			}
+
 			if (!isSilent() && victim != shooter && victim instanceof Player && shooter instanceof ServerPlayer serverPlayer) {
-				serverPlayer.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0f));
+				SoundUtil.Server.sendSoundToClient(serverPlayer, SoundEvents.ARROW_HIT_PLAYER, SoundSource.PLAYERS, 0.18F, 0.45F);
 			}
 		}
 
@@ -273,6 +293,16 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 		}
 
 		playSound(SoundEvents.ARROW_HIT, 1f, 1.2f / (random.nextFloat() * 0.2f + 0.9f));
+	}
+
+	protected void disableShield(LivingEntity victim, int cooldownTicks) {
+		ItemStack itemStackInUse = victim.getUseItem();
+
+		if (!itemStackInUse.isEmpty() && victim.isUsingItem() && itemStackInUse.getItem().canPerformAction(itemStackInUse, ToolActions.SHIELD_BLOCK)) {
+			if (victim instanceof Player player) player.getCooldowns().addCooldown(itemStackInUse.getItem(), cooldownTicks);
+			victim.stopUsingItem();
+			victim.playSound(SoundEvents.SHIELD_BREAK, 0.8f, 0.8f + level().random.nextFloat() * 0.4f);
+		}
 	}
 
 	@Override

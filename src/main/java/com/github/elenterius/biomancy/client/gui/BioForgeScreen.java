@@ -4,7 +4,6 @@ import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.client.gui.component.CustomEditBox;
 import com.github.elenterius.biomancy.client.gui.tooltip.ScreenNutrientFuelConsumer;
 import com.github.elenterius.biomancy.client.gui.tooltip.ScreenTooltipStyleProvider;
-import com.github.elenterius.biomancy.client.util.ClientSoundUtil;
 import com.github.elenterius.biomancy.client.util.GuiRenderUtil;
 import com.github.elenterius.biomancy.client.util.GuiUtil;
 import com.github.elenterius.biomancy.crafting.IngredientStack;
@@ -13,6 +12,7 @@ import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.menu.BioForgeMenu;
 import com.github.elenterius.biomancy.styles.ColorStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
@@ -95,7 +95,7 @@ public class BioForgeScreen extends AbstractContainerScreen<BioForgeMenu> implem
 				int pX = leftPos + 13 + (20 + 5 - 2) * (i % BioForgeScreenController.COLS);
 				int pY = topPos + 37 + (20 + 5 - 2) * (i / BioForgeScreenController.COLS);
 				if (GuiUtil.isInRect(pX, pY, 24, 24, mouseX, mouseY)) {
-					ClientSoundUtil.playUISound(ModSoundEvents.UI_BIO_FORGE_SELECT_RECIPE);
+					SoundUtil.Client.playUISound(ModSoundEvents.UI_BIO_FORGE_SELECT_RECIPE);
 					recipeBook.setSelectedRecipe(i);
 					return true;
 				}
@@ -105,12 +105,12 @@ public class BioForgeScreen extends AbstractContainerScreen<BioForgeMenu> implem
 				int x = leftPos + 60 + 1;
 				int y = topPos + 211 - font.lineHeight * 2 - 2;
 				if (recipeBook.hasPrevPage() && GuiUtil.isInRect(x - 22 - 8 - 1, y, 8, 13, mouseX, mouseY)) {
-					ClientSoundUtil.playUISound(ModSoundEvents.UI_BUTTON_CLICK);
+					SoundUtil.Client.playUISound(ModSoundEvents.UI_BUTTON_CLICK);
 					recipeBook.goToPrevPage();
 					return true;
 				}
 				if (recipeBook.hasNextPage() && GuiUtil.isInRect(x + 22, y, 8, 13, mouseX, mouseY)) {
-					ClientSoundUtil.playUISound(ModSoundEvents.UI_BUTTON_CLICK);
+					SoundUtil.Client.playUISound(ModSoundEvents.UI_BUTTON_CLICK);
 					recipeBook.goToNextPage();
 					return true;
 				}
@@ -398,7 +398,7 @@ public class BioForgeScreen extends AbstractContainerScreen<BioForgeMenu> implem
 				int pX = leftPos - WIDTH;
 				int pY = topPos + Y_OFFSET + HEIGHT * i;
 				if (!recipeBook.isActiveTab(i) && GuiUtil.isInRect(pX, pY + 3, WIDTH, HEIGHT - 3, mouseX, mouseY)) {
-					ClientSoundUtil.playUISound(ModSoundEvents.UI_BUTTON_CLICK);
+					SoundUtil.Client.playUISound(ModSoundEvents.UI_BUTTON_CLICK);
 					recipeBook.setActiveTab(i);
 					return true;
 				}

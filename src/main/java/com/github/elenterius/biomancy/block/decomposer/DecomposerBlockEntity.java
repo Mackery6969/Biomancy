@@ -4,7 +4,6 @@ import com.github.elenterius.biomancy.api.nutrients.FuelHandler;
 import com.github.elenterius.biomancy.api.nutrients.FuelHandlerImpl;
 import com.github.elenterius.biomancy.block.base.MachineBlock;
 import com.github.elenterius.biomancy.block.base.MachineBlockEntity;
-import com.github.elenterius.biomancy.client.util.ClientLoopingSoundHelper;
 import com.github.elenterius.biomancy.crafting.VariableOutput;
 import com.github.elenterius.biomancy.crafting.recipe.DecomposingRecipe;
 import com.github.elenterius.biomancy.crafting.recipe.SimpleRecipeType;
@@ -17,8 +16,8 @@ import com.github.elenterius.biomancy.inventory.InventoryHandlers;
 import com.github.elenterius.biomancy.inventory.ItemHandlerUtil;
 import com.github.elenterius.biomancy.menu.DecomposerMenu;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
-import com.github.elenterius.biomancy.util.ILoopingSoundHelper;
-import com.github.elenterius.biomancy.util.SoundUtil;
+import com.github.elenterius.biomancy.util.sounds.LoopingSoundHelper;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -75,7 +74,7 @@ public class DecomposerBlockEntity extends MachineBlockEntity<DecomposingRecipe,
 	private final InventoryHandler<?> outputInventory;
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
-	private ILoopingSoundHelper loopingSoundHelper = ILoopingSoundHelper.NULL;
+	private LoopingSoundHelper loopingSoundHelper = LoopingSoundHelper.NULL;
 
 	private @Nullable DecomposerRecipeResult computedRecipeResult;
 	private LazyOptional<IFluidHandler> optionalFluidConsumer;
@@ -96,7 +95,7 @@ public class DecomposerBlockEntity extends MachineBlockEntity<DecomposingRecipe,
 	@Override
 	public void onLoad() {
 		if (level != null && level.isClientSide) {
-			loopingSoundHelper = new ClientLoopingSoundHelper();
+			loopingSoundHelper = SoundUtil.Client.createLoopingSoundHandler();
 		}
 	}
 
@@ -253,7 +252,7 @@ public class DecomposerBlockEntity extends MachineBlockEntity<DecomposingRecipe,
 			ItemHandlerUtil.insertItem(outputInventory.getRaw(), stack);
 		}
 
-		SoundUtil.broadcastBlockSound((ServerLevel) level, getBlockPos(), ModSoundEvents.DECOMPOSER_CRAFTING_COMPLETED);
+		SoundUtil.Server.playBlockSound((ServerLevel) level, getBlockPos(), ModSoundEvents.DECOMPOSER_CRAFTING_COMPLETED);
 
 		setChanged();
 		return true;
@@ -261,7 +260,7 @@ public class DecomposerBlockEntity extends MachineBlockEntity<DecomposingRecipe,
 
 	private <T extends DecomposerBlockEntity> void onSoundKeyframe(final SoundKeyframeEvent<T> event) {
 		if (event.getKeyframeData().getSound().equals("eat") && level != null && !isRemoved()) {
-			SoundUtil.clientPlayBlockSound(level, getBlockPos(), ModSoundEvents.DECOMPOSER_EAT);
+			SoundUtil.Client.playBlockSound(level, getBlockPos(), ModSoundEvents.DECOMPOSER_EAT);
 		}
 	}
 

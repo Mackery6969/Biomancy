@@ -1,11 +1,11 @@
-package com.github.elenterius.biomancy.util;
+package com.github.elenterius.biomancy.util.sounds;
 
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public interface ILoopingSoundHelper {
+public interface LoopingSoundHelper {
 
-	ILoopingSoundHelper NULL = new ILoopingSoundHelper() {};
+	LoopingSoundHelper NULL = new LoopingSoundHelper() {};
 
 	default void stopLoop() {}
 

@@ -9,7 +9,7 @@ import com.github.elenterius.biomancy.crafting.recipe.BioForgingRecipe;
 import com.github.elenterius.biomancy.init.ModMenuTypes;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.util.ItemStackCounter;
-import com.github.elenterius.biomancy.util.SoundUtil;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -313,7 +313,7 @@ public class BioForgeMenu extends PlayerContainerMenu {
 			if (bioforge != null && bioforge.getLevel() instanceof ServerLevel serverLevel) {
 				long time = serverLevel.getGameTime();
 				if (prevSoundTime != time) {
-					SoundUtil.broadcastBlockSound(serverLevel, bioforge.getBlockPos(), ModSoundEvents.UI_BIO_FORGE_TAKE_RESULT);
+					SoundUtil.Server.playBlockSound(serverLevel, bioforge.getBlockPos(), ModSoundEvents.UI_BIO_FORGE_TAKE_RESULT);
 					prevSoundTime = time;
 				}
 			}

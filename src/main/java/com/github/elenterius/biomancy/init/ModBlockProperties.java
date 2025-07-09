@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.init;
 
+import com.github.elenterius.biomancy.block.modularlarynx.MobSoundType;
 import com.github.elenterius.biomancy.block.property.*;
 import com.github.elenterius.biomancy.util.EnhancedIntegerProperty;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;

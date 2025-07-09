@@ -1,13 +1,12 @@
-package com.github.elenterius.biomancy.client.util;
+package com.github.elenterius.biomancy.util.sounds;
 
-import com.github.elenterius.biomancy.util.ILoopingSoundHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
-public class ClientLoopingSoundHelper implements ILoopingSoundHelper {
+final class ClientLoopingSoundHelper implements LoopingSoundHelper {
 
 	@Nullable
 	private SimpleSoundInstance soundInstance = null;
@@ -30,12 +29,12 @@ public class ClientLoopingSoundHelper implements ILoopingSoundHelper {
 		if (blockEntity.isRemoved()) return;
 
 		if (soundInstance == null) {
-			soundInstance = ClientSoundUtil.createLoopingSoundInstance(soundEvent, volume, blockEntity.getBlockPos());
+			soundInstance = SoundUtil.Client.createLoopingSoundInstance(soundEvent, volume, blockEntity.getBlockPos());
 			Minecraft.getInstance().getSoundManager().play(soundInstance);
 		}
 		else if (!soundInstance.getLocation().equals(soundEvent.getLocation())) {
 			Minecraft.getInstance().getSoundManager().stop(soundInstance);
-			soundInstance = ClientSoundUtil.createLoopingSoundInstance(soundEvent, volume, blockEntity.getBlockPos());
+			soundInstance = SoundUtil.Client.createLoopingSoundInstance(soundEvent, volume, blockEntity.getBlockPos());
 			Minecraft.getInstance().getSoundManager().play(soundInstance);
 		}
 	}
