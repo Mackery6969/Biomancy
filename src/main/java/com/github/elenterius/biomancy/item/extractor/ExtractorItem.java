@@ -20,6 +20,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -100,7 +101,13 @@ public class ExtractorItem extends Item implements KeyPressListener, ItemTooltip
 						}
 					}
 
-					targetEntity.addEffect(new MobEffectInstance(ModMobEffects.ESSENCE_ANEMIA.get(), 2400 * (lootingLevel + 1)));
+					int baseDuration = 2400; // 120 seconds
+					int durationPenalty = lootingLevel + 1;
+					float durationReduction = Mth.lerp((float) surgicalPrecisionLevel / ModEnchantments.SURGICAL_PRECISION.get().getMaxLevel(), 1f, 0.5f);
+					int duration = Math.round(baseDuration * durationPenalty * durationReduction);
+
+					targetEntity.addEffect(new MobEffectInstance(ModMobEffects.ESSENCE_ANEMIA.get(), duration));
+
 					return true;
 				}
 			}
