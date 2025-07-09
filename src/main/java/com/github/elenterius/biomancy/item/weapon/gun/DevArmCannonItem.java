@@ -163,7 +163,7 @@ public class DevArmCannonItem extends Item implements GeoItem, IArmPoseProvider,
 
 		tooltip.add(ComponentUtil.emptyLine());
 
-		tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getTooltipText("action_open_inventory")).withStyle(TextStyles.PRIMORDIAL_RUNES_GRAY));
+		tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getActionText("open_inventory")).withStyle(TextStyles.PRIMORDIAL_RUNES_GRAY));
 		// /tellraw @a {"text":"The quick brown fox jumps over the lazy dog. 1234567890!?","color":"#9e1316","font":"biomancy:caro_invitica"}
 	}
 

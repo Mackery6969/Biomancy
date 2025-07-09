@@ -58,4 +58,8 @@ public final class TextComponentUtil {
 		return ComponentUtil.translatable(getTranslationKey("ability", key));
 	}
 
+	public static MutableComponent getActionText(String key) {
+		return ComponentUtil.translatable(getTranslationKey("tooltip", "action." + key));
+	}
+
 }

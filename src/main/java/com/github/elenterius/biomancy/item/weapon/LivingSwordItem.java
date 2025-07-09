@@ -169,7 +169,7 @@ public class LivingSwordItem extends SwordItem implements ItemTooltipStyleProvid
 		appendLivingToolTooltip(stack, tooltip);
 
 		tooltip.add(ComponentUtil.emptyLine());
-		tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getTooltipText("action_cycle")));
+		tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getActionText("cycle")));
 
 		if (stack.isEnchanted()) {
 			tooltip.add(ComponentUtil.emptyLine());

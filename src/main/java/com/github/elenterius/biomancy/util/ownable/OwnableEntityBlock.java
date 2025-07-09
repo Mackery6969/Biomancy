@@ -87,7 +87,7 @@ public interface OwnableEntityBlock extends EntityBlock {
 			}
 			int remainder = nbtList.size() - limit;
 			if (remainder > 0) {
-				tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getCtrlKey(), "show " + remainder + " more users..."));
+				tooltip.add(ClientTextUtil.holdButtonTo(ClientTextUtil.getCtrlKey(), "show " + remainder + " more users..."));
 			}
 		}
 	}

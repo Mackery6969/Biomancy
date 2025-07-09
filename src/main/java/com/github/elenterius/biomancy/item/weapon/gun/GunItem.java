@@ -288,7 +288,7 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
 		appendGunStats(stack, tooltip);
 		tooltip.add(ComponentUtil.emptyLine());
-		tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getTranslationText("tooltip", "action_reload")).withStyle(TextStyles.DARK_GRAY));
+		tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getActionText("reload")).withStyle(TextStyles.DARK_GRAY));
 	}
 
 	public void appendGunStats(ItemStack stack, List<Component> tooltip) {

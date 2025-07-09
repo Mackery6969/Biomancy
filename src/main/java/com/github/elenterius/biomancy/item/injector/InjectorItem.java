@@ -459,8 +459,8 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 			}
 		}
 
-		tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getTooltipText("action.open_inventory")).withStyle(ChatFormatting.DARK_GRAY));
-		tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getShiftKey().append(" + ").append(ClientTextUtil.getRightMouseKey()), TextComponentUtil.getTooltipText("action.self_inject")).withStyle(ChatFormatting.DARK_GRAY));
+		tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getActionText("open_inventory")).withStyle(ChatFormatting.DARK_GRAY));
+		tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getShiftKey().append(" + ").append(ClientTextUtil.getRightMouseKey()), TextComponentUtil.getActionText("self_inject")).withStyle(ChatFormatting.DARK_GRAY));
 	}
 
 	@Override

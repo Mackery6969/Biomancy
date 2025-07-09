@@ -332,12 +332,12 @@ public class RavenousClawsItem extends LivingClawsItem implements GeoItem, ItemC
 			case DORMANT -> {
 				tooltip.add(ComponentUtil.emptyLine());
 				tooltip.add(livingToolState.getTooltip().withStyle(TextStyles.ITALIC_GRAY));
-				tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getTooltipText("action.enable_awakened_mode")));
+				tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getActionText("enable_awakened_mode")));
 			}
 			case AWAKENED -> {
 				tooltip.add(ComponentUtil.emptyLine());
 				tooltip.add(livingToolState.getTooltip().withStyle(TextStyles.ITALIC_GRAY));
-				tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getTooltipText("action.disable_awakened_mode")));
+				tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getActionText("disable_awakened_mode")));
 			}
 		}
 	}

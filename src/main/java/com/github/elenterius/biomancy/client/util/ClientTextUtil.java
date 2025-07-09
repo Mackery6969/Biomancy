@@ -51,13 +51,17 @@ public final class ClientTextUtil {
 			return splitLinesByNewLine(getItemTooltip(stack).withStyle(TextStyles.LORE));
 		}
 
-		return List.of(pressButtonTo(CTRL_KEY_TEXT.plainCopy(), SHOW_INFO).withStyle(TextStyles.LORE));
+		return List.of(holdButtonTo(CTRL_KEY_TEXT.plainCopy(), SHOW_INFO).withStyle(TextStyles.LORE));
 	}
 
 	public static boolean showExtraInfo(List<Component> tooltip) {
 		boolean flag = Screen.hasAltDown();
-		if (!flag) tooltip.add(pressButtonTo(ALT_KEY_TEXT.plainCopy(), SHOW_INFO).withStyle(TextStyles.LORE));
+		if (!flag) tooltip.add(holdButtonTo(ALT_KEY_TEXT.plainCopy(), SHOW_INFO).withStyle(TextStyles.LORE));
 		return flag;
+	}
+
+	public static MutableComponent holdButtonTo(MutableComponent key, Object action) {
+		return ComponentUtil.translatable(TextComponentUtil.getTranslationKey("tooltip", "hold_button_to"), key.withStyle(TextStyles.KEYBOARD_INPUT), action);
 	}
 
 	public static MutableComponent pressButtonTo(MutableComponent key, Object action) {

@@ -172,7 +172,7 @@ public class LivingClawsItem extends SimpleClawsItem implements SpecialLivingToo
 		appendLivingToolTooltip(stack, tooltip);
 
 		tooltip.add(ComponentUtil.emptyLine());
-		tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getTooltipText("action.switch_mode")));
+		tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getActionText("switch_mode")));
 
 		if (stack.isEnchanted()) {
 			tooltip.add(ComponentUtil.emptyLine());

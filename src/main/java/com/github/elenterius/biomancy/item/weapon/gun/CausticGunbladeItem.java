@@ -324,7 +324,7 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 		appendLivingToolTooltip(stack, tooltip);
 
 		tooltip.add(ComponentUtil.emptyLine());
-		tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getTooltipText("action.switch_mode")).withStyle(TextStyles.DARK_GRAY));
+		tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getActionText("switch_mode")).withStyle(TextStyles.DARK_GRAY));
 
 		if (stack.isEnchanted()) {
 			tooltip.add(ComponentUtil.emptyLine());
