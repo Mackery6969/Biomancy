@@ -4,6 +4,8 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -14,6 +16,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.network.NetworkHooks;
 
 public abstract class BaseProjectile extends Projectile implements IEntityAdditionalSpawnData {
 
@@ -22,10 +25,6 @@ public abstract class BaseProjectile extends Projectile implements IEntityAdditi
 
 	private float damage = 2f;
 	private byte knockback = 0;
-
-	//	private double accelerationX = 0;
-	//	private double accelerationY = 0;
-	//	private double accelerationZ = 0;
 
 	protected BaseProjectile(EntityType<? extends BaseProjectile> entityType, Level level) {
 		super(entityType, level);
@@ -39,27 +38,21 @@ public abstract class BaseProjectile extends Projectile implements IEntityAdditi
 	@Override
 	protected void defineSynchedData() {}
 
-	//	@Override
-	//	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-	//		return NetworkHooks.getEntitySpawningPacket(this);
-	//	}
+	@Override
+	public Packet<ClientGamePacketListener> getAddEntityPacket() {
+		return NetworkHooks.getEntitySpawningPacket(this);
+	}
 
 	@Override
 	public void writeSpawnData(FriendlyByteBuf buffer) {
 		Entity shooter = getOwner();
 		buffer.writeVarInt(shooter == null ? 0 : shooter.getId());
-		//		buffer.writeDouble(accelerationX);
-		//		buffer.writeDouble(accelerationY);
-		//		buffer.writeDouble(accelerationZ);
 	}
 
 	@Override
 	public void readSpawnData(FriendlyByteBuf buffer) {
 		Entity shooter = level().getEntity(buffer.readVarInt());
 		setOwner(shooter);
-		//		accelerationX = buffer.readDouble();
-		//		accelerationY = buffer.readDouble();
-		//		accelerationZ = buffer.readDouble();
 	}
 
 	@Override
@@ -79,12 +72,6 @@ public abstract class BaseProjectile extends Projectile implements IEntityAdditi
 	@Override
 	public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
 		super.shoot(x, y, z, velocity, inaccuracy);
-		//		double magnitude = getMotion().length();
-		//		if (magnitude != 0.0D) {
-		//			accelerationX = getMotion().x / magnitude * 0.1d;
-		//			accelerationY = getMotion().y / magnitude * 0.1d;
-		//			accelerationZ = getMotion().z / magnitude * 0.1d;
-		//		}
 	}
 
 	public float getDamage() {
