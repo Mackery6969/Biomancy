@@ -14,7 +14,9 @@ import com.mojang.math.Axis;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -25,6 +27,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoItem;
@@ -55,8 +58,6 @@ public class ImpalerItem extends GunItem implements ItemTooltipStyleProvider, Ge
 				GunProperties.builder()
 						.shootBehavior(GunProperties.ShootBehavior.ON_FULL_CHARGE)
 						.timeBetweenShots(2 * 20)
-						//						.accuracy(0.5f)
-						//						.damageModifier(15f)
 						.maxAmmo(1).reloadDuration(10 * 20).autoReload()
 						.build(),
 				ModProjectiles.IMPALER_PROJECTILE);
@@ -117,7 +118,23 @@ public class ImpalerItem extends GunItem implements ItemTooltipStyleProvider, Ge
 	@Override
 	public void shoot(ServerLevel level, LivingEntity shooter, InteractionHand usedHand, ItemStack projectileWeapon) {
 		broadcastAnimation(level, shooter, projectileWeapon, Animations.SHOOT);
+
 		super.shoot(level, shooter, usedHand, projectileWeapon);
+
+		boolean isAnchored = shooter.onGround() && shooter.isCrouching();
+		double reduction = isAnchored ? 0.25d : 0.5d;
+
+		Vec3 recoil = shooter.getLookAngle().normalize().scale(-1d).scale(configuredProjectile.velocity() * reduction);
+		shooter.push(recoil.x, recoil.y, recoil.z); //sets hasImpulse to true
+		shooter.fallDistance = 0f;
+
+		if (shooter instanceof ServerPlayer serverPlayer) {
+			// Important:
+			// hasImpulse only broadcasts entity motion to OTHER players that track the entity
+			// instead of using hurtMarked we send the motion packet to the client of the shooter ourselves
+			serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(serverPlayer));
+			//level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundSetEntityMotionPacket(serverPlayer)); // not necessary because hasImpulse already broadcasts
+		}
 	}
 
 	@Override
@@ -125,6 +142,21 @@ public class ImpalerItem extends GunItem implements ItemTooltipStyleProvider, Ge
 		super.initializeClient(consumer);
 		consumer.accept(new IClientItemExtensions() {
 			private ImpalerRenderer renderer = null;
+
+			/// workaround for forge not providing the interaction hand to the method
+			private static boolean isHandPartOfArm(LocalPlayer player, HumanoidArm arm, InteractionHand hand) {
+				InteractionHand handOfCurrentArm = arm == player.getMainArm() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+				return hand == handOfCurrentArm;
+			}
+
+			private static void applyArmTransform(PoseStack poseStack, HumanoidArm arm, float progress, float ticks) {
+				float direction = arm == HumanoidArm.RIGHT ? 1f : -1f;
+				float invProgress = 1f - progress;
+				//				float yOffset = 0.1f * -0.6f;
+				poseStack.mulPose(Axis.YP.rotationDegrees(10f * invProgress + direction * Mth.cos(ticks * 0.09f) * 1f));
+				poseStack.mulPose(Axis.XP.rotationDegrees(-15f * invProgress + direction * Mth.sin(ticks * 0.067f) * 1f));
+				poseStack.translate(0.56f * direction, -0.52f, -0.72f); //align item to "item holding position of hand" on screen
+			}
 
 			@Override
 			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
@@ -160,21 +192,6 @@ public class ImpalerItem extends GunItem implements ItemTooltipStyleProvider, Ge
 
 				return false;
 			}
-
-			/// workaround for forge not providing the interaction hand to the method
-			private static boolean isHandPartOfArm(LocalPlayer player, HumanoidArm arm, InteractionHand hand) {
-				InteractionHand handOfCurrentArm = arm == player.getMainArm() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-				return hand == handOfCurrentArm;
-			}
-
-			private static void applyArmTransform(PoseStack poseStack, HumanoidArm arm, float progress, float ticks) {
-				float direction = arm == HumanoidArm.RIGHT ? 1f : -1f;
-				float invProgress = 1f - progress;
-				//				float yOffset = 0.1f * -0.6f;
-				poseStack.mulPose(Axis.YP.rotationDegrees(10f * invProgress + direction * Mth.cos(ticks * 0.09f) * 1f));
-				poseStack.mulPose(Axis.XP.rotationDegrees(-15f * invProgress + direction * Mth.sin(ticks * 0.067f) * 1f));
-				poseStack.translate(0.56f * direction, -0.52f, -0.72f); //align item to "item holding position of hand" on screen
-			}
 		});
 	}
 
@@ -196,6 +213,7 @@ public class ImpalerItem extends GunItem implements ItemTooltipStyleProvider, Ge
 		static final String MAIN_CONTROLLER = "main";
 
 		private static final List<TriggerableAnimation> TRIGGERABLE_ANIMATIONS = new ArrayList<>();
+
 		static final TriggerableAnimation SHOOT = register(MAIN_CONTROLLER, "shoot", RawAnimation.begin().thenPlay("barrel_recoil"));
 		static final RawAnimation CHARGE_UP_SHOT = RawAnimation.begin().thenPlay("charging_shot");
 		static final RawAnimation NO_PROJECTILE = RawAnimation.begin().thenPlay("no_projectile");
