@@ -71,6 +71,7 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 				baseInaccuracy -> modifyProjectileInaccuracy(baseInaccuracy, projectileWeapon));
 
 		if (success) {
+			configuredProjectile.playShootSound(level, shooter);
 			projectileWeapon.hurtAndBreak(1, shooter, entity -> entity.broadcastBreakEvent(usedHand));
 			consumeAmmo(shooter, projectileWeapon, 1);
 		}
@@ -84,7 +85,7 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 			return InteractionResultHolder.fail(flags); //don't send button press to server
 		}
 
-		if (state == GunState.SHOOTING) {
+		if (state == GunState.SHOOTING_OR_CHARGING) {
 			return InteractionResultHolder.fail(flags); //don't send button press to server
 		}
 
@@ -129,7 +130,7 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 			if (state == GunState.RELOADING && level instanceof ServerLevel serverLevel) {
 				cancelReload(stack, serverLevel, player);
 			}
-			setGunState(stack, GunState.SHOOTING);
+			setGunState(stack, GunState.SHOOTING_OR_CHARGING);
 			player.startUsingItem(usedHand);
 			return InteractionResultHolder.consume(stack);
 		}
@@ -141,7 +142,7 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 	@Override
 	public void onUseTick(Level level, LivingEntity shooter, ItemStack stack, int remainingUseDuration) {
 		if (!level.isClientSide && level instanceof ServerLevel serverLevel) {
-			if (getGunState(stack) != GunState.SHOOTING) return;
+			if (getGunState(stack) != GunState.SHOOTING_OR_CHARGING) return;
 
 			if (!hasAmmo(stack)) {
 				if (shooter instanceof Player player) {
@@ -292,26 +293,26 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 	}
 
 	public void appendGunStats(ItemStack stack, List<Component> tooltip) {
-		DecimalFormat df = ClientTextUtil.getDecimalFormatter("#.###");
+		DecimalFormat df = ClientTextUtil.getDoubleFormatter();
 
-		float fireRate = getFireRate(stack);
-		float bonusFireRate = fireRate - (ONE_SECOND_IN_TICKS / (float) gunProperties.delayBetweenShots());
-		tooltip.add(TextComponentUtil.getTooltipText("fire_rate").append(String.format(": %s RPS ", df.format(fireRate))).append(formatBonusValue(df, bonusFireRate)).withStyle(ChatFormatting.GRAY));
+		float damage = modifyProjectileDamage(configuredProjectile.damage(), stack);
+		float bonusDamage = damage - configuredProjectile.damage();
+		tooltip.add(TextComponentUtil.getTooltipText("projectile_damage").append(String.format(": %s ", df.format(damage))).append(formatBonusValue(df, bonusDamage)).withStyle(ChatFormatting.GRAY));
 
 		float inaccuracy = modifyProjectileInaccuracy(configuredProjectile.inaccuracy(), stack);
 		float accuracy = -MAX_INACCURACY * inaccuracy + MAX_INACCURACY;
 		float bonusAccuracy = -1f * (inaccuracy - configuredProjectile.inaccuracy());
 		tooltip.add(TextComponentUtil.getTooltipText("accuracy").append(String.format(": %s ", df.format(accuracy))).append(formatBonusValue(df, bonusAccuracy)).withStyle(ChatFormatting.GRAY));
 
-		tooltip.add(TextComponentUtil.getTooltipText("ammo").append(String.format(": %d/%d ", getAmmo(stack), getMaxAmmo(stack))).withStyle(ChatFormatting.GRAY));
+		float fireRate = getFireRate(stack);
+		float bonusFireRate = fireRate - (ONE_SECOND_IN_TICKS / (float) gunProperties.delayBetweenShots());
+		tooltip.add(TextComponentUtil.getTooltipText("fire_rate").append(String.format(": %s RPS ", df.format(fireRate))).append(formatBonusValue(df, bonusFireRate)).withStyle(ChatFormatting.GRAY));
 
 		float reloadDurationSeconds = getReloadDurationTicks(stack) / (float) ONE_SECOND_IN_TICKS;
 		float bonusReloadReduction = -1f * (reloadDurationSeconds - (gunProperties.reloadDurationTicks() / (float) ONE_SECOND_IN_TICKS));
 		tooltip.add(TextComponentUtil.getTooltipText("reload_time").append(String.format(": %ss ", df.format(reloadDurationSeconds))).append(formatBonusValue(df, bonusReloadReduction, true)).withStyle(ChatFormatting.GRAY));
 
-		float damage = modifyProjectileDamage(configuredProjectile.damage(), stack);
-		float bonusDamage = damage - configuredProjectile.damage();
-		tooltip.add(TextComponentUtil.getTooltipText("projectile_damage").append(String.format(": %s ", df.format(damage))).append(formatBonusValue(df, bonusDamage)).withStyle(ChatFormatting.GRAY));
+		tooltip.add(TextComponentUtil.getTooltipText("ammo").append(String.format(": %d/%d ", getAmmo(stack), getMaxAmmo(stack))).withStyle(ChatFormatting.GRAY));
 
 		int knockBack = modifyProjectileKnockBack(configuredProjectile.knockback(), stack);
 		if (knockBack != 0) {

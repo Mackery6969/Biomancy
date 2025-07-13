@@ -30,8 +30,8 @@ public final class ClientTextUtil {
 	private static final MutableComponent RIGHT_MOUSE_KEY_TEXT = ComponentUtil.translatable("keyboard." + BiomancyMod.MOD_ID + ".right_mouse");
 	private static final MutableComponent SHOW_INFO = ComponentUtil.translatable("tooltip." + BiomancyMod.MOD_ID + ".action.show_info");
 
-	private static DecimalFormat decimalFormat = null;
-	private static String prevPattern = "";
+	private static DecimalFormat INTEGER_FORMATTER = null;
+	private static DecimalFormat DOUBLE_FORMATTER = null;
 	private static Locale prevLocale = null;
 
 	private ClientTextUtil() {}
@@ -126,22 +126,33 @@ public final class ClientTextUtil {
 		return String.format(Minecraft.getInstance().getLocale(), format, objects);
 	}
 
-	private static void setDFPattern(String pattern) {
+	private static void updateDecimalFormat() {
 		Locale locale = Minecraft.getInstance().getLocale();
-		if (decimalFormat == null || !pattern.equals(prevPattern) || !locale.equals(prevLocale)) {
-			decimalFormat = new DecimalFormat(pattern, DecimalFormatSymbols.getInstance(locale));
-			prevPattern = pattern;
-			prevLocale = locale;
-		}
+		if (locale.equals(prevLocale)) return;
+
+		INTEGER_FORMATTER = new DecimalFormat("#,###,###", DecimalFormatSymbols.getInstance(locale));
+		DOUBLE_FORMATTER = new DecimalFormat("#.###", DecimalFormatSymbols.getInstance(locale));
+		prevLocale = locale;
 	}
 
-	public static String formatNumber(String pattern, double value) {
-		setDFPattern(pattern);
-		return decimalFormat.format(value);
+	public static String formatInteger(double value) {
+		updateDecimalFormat();
+		return INTEGER_FORMATTER.format(value);
 	}
 
-	public static DecimalFormat getDecimalFormatter(String pattern) {
-		setDFPattern(pattern);
-		return decimalFormat;
+	public static DecimalFormat getIntegerFormatter() {
+		updateDecimalFormat();
+		return INTEGER_FORMATTER;
 	}
+
+	public static String formatDouble(double value) {
+		updateDecimalFormat();
+		return DOUBLE_FORMATTER.format(value);
+	}
+
+	public static DecimalFormat getDoubleFormatter() {
+		updateDecimalFormat();
+		return DOUBLE_FORMATTER;
+	}
+
 }

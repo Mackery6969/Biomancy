@@ -40,7 +40,7 @@ public interface LivingTool extends NutrientsContainerItem {
 	int getLivingToolActionCost(ItemStack livingTool, ToolAction toolAction);
 
 	default void appendLivingToolTooltip(ItemStack stack, List<Component> tooltip) {
-		DecimalFormat df = ClientTextUtil.getDecimalFormatter("#,###,###");
+		DecimalFormat df = ClientTextUtil.getIntegerFormatter();
 		tooltip.add(TextComponentUtil.getTooltipText("nutrients_fuel").withStyle(TextStyles.GRAY));
 		tooltip.add(ComponentUtil.literal(" %s/%s".formatted(df.format(getNutrients(stack)), df.format(getMaxNutrients(stack)))).withStyle(TextStyles.NUTRIENTS));
 	}

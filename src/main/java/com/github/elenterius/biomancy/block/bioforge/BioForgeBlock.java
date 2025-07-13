@@ -141,7 +141,7 @@ public class BioForgeBlock extends BaseEntityBlock {
 		int fuelAmount = getFuelAmount(stack);
 		if (fuelAmount > 0) {
 			tooltip.add(ComponentUtil.emptyLine());
-			DecimalFormat df = ClientTextUtil.getDecimalFormatter("#,###,###");
+			DecimalFormat df = ClientTextUtil.getIntegerFormatter();
 			tooltip.add(ComponentUtil.translatable("tooltip.biomancy.nutrients_fuel").withStyle(ChatFormatting.GRAY));
 			tooltip.add(ComponentUtil.literal("%s/%s u".formatted(df.format(fuelAmount), df.format(BioForgeBlockEntity.MAX_FUEL))).withStyle(TextStyles.NUTRIENTS));
 		}

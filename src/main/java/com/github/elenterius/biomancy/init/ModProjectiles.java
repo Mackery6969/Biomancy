@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,7 @@ public final class ModProjectiles {
 		return configuredProjectile;
 	}
 
-	public static <T extends BaseProjectile> boolean shootProjectile(Level level, LivingEntity shooter, float velocity, float damage, int knockback, float inaccuracy, SoundEvent shootSound, ProjectileFactory<T> factory) {
+	public static <T extends BaseProjectile> boolean shootProjectile(Level level, LivingEntity shooter, float velocity, float damage, int knockback, float inaccuracy, ProjectileFactory<T> factory) {
 		BaseProjectile projectile = factory.create(level, shooter.getX(), shooter.getEyeY() - 0.1f, shooter.getZ());
 		projectile.setOwner(shooter);
 
@@ -55,16 +56,12 @@ public final class ModProjectiles {
 		Vec3 direction = shooter.getLookAngle();
 		projectile.shoot(direction.x(), direction.y(), direction.z(), velocity, inaccuracy);
 
-		if (level.addFreshEntity(projectile)) {
-			level.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), shootSound, SoundSource.PLAYERS, 0.8f, 0.4f);
-			return true;
-		}
-
-		return false;
+		return level.addFreshEntity(projectile);
 	}
 
-	public static <T extends BaseProjectile> boolean shootProjectile(Level level, Vec3 origin, Vec3 target, float velocity, float damage, int knockback, float inaccuracy, SoundEvent shootSound, ProjectileFactory<T> factory) {
+	public static <T extends BaseProjectile> boolean shootProjectile(Level level, @Nullable LivingEntity shooter, Vec3 origin, Vec3 target, float velocity, float damage, int knockback, float inaccuracy, ProjectileFactory<T> factory) {
 		BaseProjectile projectile = factory.create(level, origin.x, origin.y, origin.z);
+		projectile.setOwner(shooter);
 
 		projectile.setDamage(damage);
 		if (knockback > 0) {
@@ -74,12 +71,7 @@ public final class ModProjectiles {
 		Vec3 direction = target.subtract(origin).normalize();
 		projectile.shoot(direction.x(), direction.y(), direction.z(), velocity, inaccuracy);
 
-		if (level.addFreshEntity(projectile)) {
-			level.playSound(null, origin.x, origin.y, origin.z, shootSound, SoundSource.PLAYERS, 0.8f, 0.4f);
-			return true;
-		}
-
-		return false;
+		return level.addFreshEntity(projectile);
 	}
 
 	public interface ProjectileFactory<T extends BaseProjectile> {
@@ -89,19 +81,43 @@ public final class ModProjectiles {
 	public record ConfiguredProjectile<T extends BaseProjectile>(String name, float velocity, float damage, int knockback, float inaccuracy, SoundEvent shootSound, ProjectileFactory<T> factory) {
 
 		public boolean shoot(Level level, Vec3 origin, Vec3 target) {
-			return shootProjectile(level, origin, target, velocity, damage, knockback, inaccuracy, shootSound, factory);
+			return shootProjectile(level, null, origin, target, velocity, damage, knockback, inaccuracy, factory);
 		}
 
 		public boolean shoot(Level level, Vec3 origin, Vec3 target, FloatOperator velocityModifier, FloatOperator damageModifier, IntOperator knockbackModifier, FloatOperator inaccuracyModifier) {
-			return shootProjectile(level, origin, target, velocityModifier.apply(velocity), damageModifier.apply(damage), knockbackModifier.apply(knockback), inaccuracyModifier.apply(inaccuracy), shootSound, factory);
+			return shootProjectile(level, null, origin, target, velocityModifier.apply(velocity), damageModifier.apply(damage), knockbackModifier.apply(knockback), inaccuracyModifier.apply(inaccuracy), factory);
+		}
+
+		public boolean shoot(Level level, LivingEntity shooter, Vec3 origin, Vec3 target) {
+			return shootProjectile(level, shooter, origin, target, velocity, damage, knockback, inaccuracy, factory);
 		}
 
 		public boolean shoot(Level level, LivingEntity shooter) {
-			return shootProjectile(level, shooter, velocity, damage, knockback, inaccuracy, shootSound, factory);
+			return shootProjectile(level, shooter, velocity, damage, knockback, inaccuracy, factory);
 		}
 
 		public boolean shoot(Level level, LivingEntity shooter, FloatOperator velocityModifier, FloatOperator damageModifier, IntOperator knockbackModifier, FloatOperator inaccuracyModifier) {
-			return shootProjectile(level, shooter, velocityModifier.apply(velocity), damageModifier.apply(damage), knockbackModifier.apply(knockback), inaccuracyModifier.apply(inaccuracy), shootSound, factory);
+			return shootProjectile(level, shooter, velocityModifier.apply(velocity), damageModifier.apply(damage), knockbackModifier.apply(knockback), inaccuracyModifier.apply(inaccuracy), factory);
+		}
+
+		public void playShootSound(Level level, Vec3 origin, SoundSource soundSource) {
+			playShootSound(level, origin, soundSource, 0.8f, 0.4f);
+		}
+
+		public void playShootSound(Level level, Vec3 origin, SoundSource soundSource, float volume, float pitch) {
+			level.playSound(null, origin.x, origin.y, origin.z, shootSound, soundSource, volume, pitch);
+		}
+
+		public void playShootSound(Level level, LivingEntity shooter) {
+			playShootSound(level, shooter, 0.8f, 0.4f);
+		}
+
+		public void playShootSound(Level level, LivingEntity shooter, float volume, float pitch) {
+			playShootSound(level, shooter, SoundUtil.soundSourceFor(shooter), volume, pitch);
+		}
+
+		public void playShootSound(Level level, LivingEntity shooter, SoundSource soundSource, float volume, float pitch) {
+			level.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), shootSound, soundSource, volume, pitch);
 		}
 
 		public float accuracy() {

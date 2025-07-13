@@ -318,7 +318,7 @@ public class RavenousClawsItem extends LivingClawsItem implements GeoItem, ItemC
 			}
 		}
 
-		DecimalFormat df = ClientTextUtil.getDecimalFormatter("#,###,###");
+		DecimalFormat df = ClientTextUtil.getIntegerFormatter();
 		tooltip.add(TextComponentUtil.getTooltipText("nutrients_fuel").withStyle(ChatFormatting.GRAY));
 		tooltip.add(ComponentUtil.literal(" %s/%s".formatted(df.format(getNutrients(stack)), df.format(getMaxNutrients(stack)))).withStyle(TextStyles.NUTRIENTS));
 		tooltip.add(TextComponentUtil.getTooltipText("blood_charge").withStyle(ChatFormatting.GRAY));

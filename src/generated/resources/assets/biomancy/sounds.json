@@ -607,6 +607,24 @@
     ],
     "subtitle": "sounds.biomancy.item.bone_marrow.drink"
   },
+  "item.impaler.charge": {
+    "sounds": [
+      "biomancy:item.impaler.charge"
+    ],
+    "subtitle": "sounds.biomancy.item.impaler.charge"
+  },
+  "item.impaler.hit": {
+    "sounds": [
+      "biomancy:item.impaler.hit"
+    ],
+    "subtitle": "sounds.biomancy.item.impaler.hit"
+  },
+  "item.impaler.impact": {
+    "sounds": [
+      "biomancy:item.impaler.impact"
+    ],
+    "subtitle": "sounds.biomancy.item.impaler.impact"
+  },
   "item.impaler.shoot": {
     "sounds": [
       "biomancy:item.impaler.shoot"

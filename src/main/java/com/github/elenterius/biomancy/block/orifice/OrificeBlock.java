@@ -69,7 +69,12 @@ public class OrificeBlock extends Block implements BucketPickup {
 						level.setBlock(pos, AGE.setValue(state, AGE.getMin()), Block.UPDATE_CLIENTS);
 						float x = random.nextIntBetweenInclusive(-6, 6) / 16f;
 						float z = random.nextIntBetweenInclusive(-6, 6) / 16f;
-						ModProjectiles.FALLING_ACID_BLOB.shoot(level, Vec3.atBottomCenterOf(pos).add(x, 0, z), Vec3.atBottomCenterOf(posBelow).add(x, 0, z));
+
+						Vec3 origin = Vec3.atBottomCenterOf(pos).add(x, 0, z);
+						Vec3 target = Vec3.atBottomCenterOf(posBelow).add(x, 0, z);
+						if (ModProjectiles.FALLING_ACID_BLOB.shoot(level, origin, target)) {
+							ModProjectiles.FALLING_ACID_BLOB.playShootSound(level, origin, SoundSource.BLOCKS);
+						}
 					}
 				}
 			}

@@ -83,7 +83,7 @@ public abstract class GunbladeItem extends GunItem implements Vanishable {
 	public void onUseTick(Level level, LivingEntity shooter, ItemStack stack, int remainingUseDuration) {
 		if (level.isClientSide) return;
 		if (!(level instanceof ServerLevel serverLevel)) return;
-		if (getGunState(stack) != GunState.SHOOTING) return;
+		if (getGunState(stack) != GunState.SHOOTING_OR_CHARGING) return;
 
 		if (GunbladeMode.from(stack) != GunbladeMode.RANGED) {
 			shooter.releaseUsingItem();

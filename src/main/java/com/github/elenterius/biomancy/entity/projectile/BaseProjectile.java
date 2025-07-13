@@ -13,13 +13,13 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.network.NetworkHooks;
 
 public abstract class BaseProjectile extends Projectile implements IEntityAdditionalSpawnData {
 
+	public static final float DEFAULT_GRAVITY = 0.02f; // ForgeMod.ENTITY_GRAVITY.get().getDefaultValue() / 4d
 	public static final float DEFAULT_DRAG = 0.99f;
 	public static final float DEFAULT_WATER_DRAG = 0.8f;
 
@@ -99,7 +99,7 @@ public abstract class BaseProjectile extends Projectile implements IEntityAdditi
 	}
 
 	public float getGravity() {
-		return (float) (ForgeMod.ENTITY_GRAVITY.get().getDefaultValue() / 4d);
+		return DEFAULT_GRAVITY;
 	}
 
 	@Override

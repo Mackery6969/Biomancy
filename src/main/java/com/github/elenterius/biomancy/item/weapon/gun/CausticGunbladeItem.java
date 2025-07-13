@@ -135,11 +135,15 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 	public void shoot(ServerLevel level, LivingEntity shooter, InteractionHand usedHand, ItemStack projectileWeapon) {
 		broadcastAnimation(level, shooter, projectileWeapon, Animations.SHOOT);
 
-		configuredProjectile.shoot(level, shooter,
+		boolean success = configuredProjectile.shoot(level, shooter,
 				FloatOperator.IDENTITY,
 				baseDamage -> modifyProjectileDamage(baseDamage, projectileWeapon),
 				baseKnockBack -> modifyProjectileKnockBack(baseKnockBack, projectileWeapon),
 				baseInaccuracy -> modifyProjectileInaccuracy(baseInaccuracy, projectileWeapon));
+
+		if (success) {
+			configuredProjectile.playShootSound(level, shooter);
+		}
 
 		consumeAmmo(shooter, projectileWeapon, 1);
 		consumeNutrients(projectileWeapon, 1);
@@ -166,7 +170,7 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 	public void onUseTick(Level level, LivingEntity shooter, ItemStack stack, int remainingUseDuration) {
 		if (level.isClientSide) return;
 		if (!(level instanceof ServerLevel serverLevel)) return;
-		if (getGunState(stack) != GunState.SHOOTING) return;
+		if (getGunState(stack) != GunState.SHOOTING_OR_CHARGING) return;
 
 		if (!hasNutrients(stack)) {
 			shooter.releaseUsingItem();

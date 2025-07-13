@@ -7,6 +7,7 @@ import com.github.elenterius.biomancy.util.animation.MobAnimations;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -68,7 +69,11 @@ public class FleshChicken extends Chicken implements RangedAttackMob, GeoEntity 
 		double y = getEyeY() + 0.25d;
 		double z = getZ() + getBbWidth() * Mth.cos(yBodyRot * Mth.DEG_TO_RAD);
 
-		ModProjectiles.GASTRIC_SPIT.shoot(level(), new Vec3(x, y, z), target.getEyePosition());
+		Vec3 origin = new Vec3(x, y, z);
+		if (ModProjectiles.GASTRIC_SPIT.shoot(level(), origin, target.getEyePosition())) {
+			ModProjectiles.GASTRIC_SPIT.playShootSound(level(), origin, SoundSource.NEUTRAL);
+		}
+
 		hasAttacked = true;
 	}
 

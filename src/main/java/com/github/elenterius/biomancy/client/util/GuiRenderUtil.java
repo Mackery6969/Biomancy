@@ -24,7 +24,7 @@ public final class GuiRenderUtil {
 
 	public static void drawFuelTooltip(Font font, GuiGraphics guiGraphics, int mouseX, int mouseY, int maxFuel, int fuelAmount, int totalFuelCost) {
 		List<Component> hoveringText = new ArrayList<>();
-		DecimalFormat df = ClientTextUtil.getDecimalFormatter("#,###,###");
+		DecimalFormat df = ClientTextUtil.getIntegerFormatter();
 
 		hoveringText.add(ComponentUtil.translatable("tooltip.biomancy.nutrients_fuel").withStyle(TextStyles.NUTRIENTS));
 		hoveringText.add(ComponentUtil.literal("%s/%s u".formatted(df.format(fuelAmount), df.format(maxFuel))));

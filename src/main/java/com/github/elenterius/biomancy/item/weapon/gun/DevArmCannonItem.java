@@ -3,6 +3,7 @@ package com.github.elenterius.biomancy.item.weapon.gun;
 import com.github.elenterius.biomancy.client.gui.DevCannonScreen;
 import com.github.elenterius.biomancy.client.render.item.dev.DevArmCannonRenderer;
 import com.github.elenterius.biomancy.client.util.ClientTextUtil;
+import com.github.elenterius.biomancy.entity.projectile.BaseProjectile;
 import com.github.elenterius.biomancy.init.ModProjectiles;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.item.IArmPoseProvider;
@@ -111,8 +112,19 @@ public class DevArmCannonItem extends Item implements GeoItem, IArmPoseProvider,
 				index = 0;
 				stack.getOrCreateTag().putByte("ProjectileIndex", (byte) 0);
 			}
-			ModProjectiles.PRECONFIGURED_PROJECTILES.get(index).shoot(level, player, FloatOperator.IDENTITY, d -> d + getBonusDamage(stack), k -> k + getBonusKnockBack(stack), FloatOperator.IDENTITY);
+
+			ModProjectiles.ConfiguredProjectile<? extends BaseProjectile> configuredProjectile = ModProjectiles.PRECONFIGURED_PROJECTILES.get(index);
+			boolean success = configuredProjectile.shoot(level, player,
+					FloatOperator.IDENTITY,
+					d -> d + getBonusDamage(stack),
+					k -> k + getBonusKnockBack(stack),
+					FloatOperator.IDENTITY);
+
+			if (success) {
+				configuredProjectile.playShootSound(level, player);
+			}
 		}
+
 		return InteractionResultHolder.consume(player.getItemInHand(usedHand));
 	}
 

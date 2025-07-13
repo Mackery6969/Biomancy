@@ -130,7 +130,10 @@ public class BloomBlock extends WaterloggedFacingBlock implements IPlantable {
 			int offsetZ = plane.getZ() * random.nextIntBetweenInclusive(-range, range);
 			BlockPos target = pos.relative(direction, AIM_DISTANCE).offset(offsetX, offsetY, offsetZ);
 
-			ModProjectiles.BLOOMBERRY.shoot(level, Vec3.atCenterOf(pos), Vec3.atCenterOf(target));
+			Vec3 origin = Vec3.atCenterOf(pos);
+			if (ModProjectiles.BLOOMBERRY.shoot(level, origin, Vec3.atCenterOf(target))) {
+				ModProjectiles.BLOOMBERRY.playShootSound(level, origin, SoundSource.BLOCKS);
+			}
 		}
 	}
 

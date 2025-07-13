@@ -241,7 +241,7 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 		CompoundTag tag = BlockItem.getBlockEntityData(stack);
 		if (tag == null) return;
 
-		DecimalFormat df = ClientTextUtil.getDecimalFormatter("#,###,###");
+		DecimalFormat df = ClientTextUtil.getIntegerFormatter();
 
 		int primalEnergy = getPrimalEnergy(tag);
 		boolean hasPrimalEnergy = primalEnergy > 0;
