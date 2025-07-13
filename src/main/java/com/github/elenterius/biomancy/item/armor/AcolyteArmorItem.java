@@ -54,7 +54,7 @@ public final class AcolyteArmorItem extends LivingArmorGeoItem implements ShowKn
 
 	@Override
 	public boolean canShowKnowledgeOverlay(ItemStack stack, Player player) {
-		return ArmorUpgrades.hasUpgrade(stack, ArmorUpgrades.PRIMORDIAL_SIGHT) && hasNutrients(stack);
+		return AcolyteArmorUpgrades.hasUpgrade(stack, AcolyteArmorUpgrades.PRIMORDIAL_SIGHT) && hasNutrients(stack);
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public final class AcolyteArmorItem extends LivingArmorGeoItem implements ShowKn
 
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
-		ArmorUpgrades.appendHoverText(stack, tooltip);
+		AcolyteArmorUpgrades.appendHoverText(stack, tooltip);
 
 		tooltip.add(ComponentUtil.emptyLine());
 		tooltip.add(TextComponentUtil.getAbilityText("fleshkin_affinity").withStyle(ChatFormatting.GRAY));

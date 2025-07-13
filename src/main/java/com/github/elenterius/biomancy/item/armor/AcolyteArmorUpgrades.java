@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ApiStatus.Experimental
-public final class ArmorUpgrades {
+public final class AcolyteArmorUpgrades {
 
 	private static final List<Upgrade> UPGRADES = new ArrayList<>();
 
 	public static final Upgrade PRIMORDIAL_SIGHT = register("primordial_sight");
 
-	private ArmorUpgrades() {}
+	private AcolyteArmorUpgrades() {}
 
 	public static Upgrade register(ResourceLocation name) {
 		Upgrade upgrade = new Upgrade(name);
