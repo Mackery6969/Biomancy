@@ -7,6 +7,8 @@ import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.init.client.ModArmPoses;
 import com.github.elenterius.biomancy.item.ItemTooltipStyleProvider;
 import com.github.elenterius.biomancy.util.animation.TriggerableAnimation;
+import com.github.elenterius.biomancy.util.function.FloatOperator;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -19,6 +21,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
@@ -27,6 +30,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
@@ -116,19 +120,50 @@ public class ImpalerItem extends GunItem implements ItemTooltipStyleProvider, Ge
 	}
 
 	@Override
-	public void shoot(ServerLevel level, LivingEntity shooter, InteractionHand usedHand, ItemStack projectileWeapon) {
-		broadcastAnimation(level, shooter, projectileWeapon, Animations.SHOOT);
+	public void onUseTick(Level level, LivingEntity shooter, ItemStack stack, int remainingUseDuration) {
+		super.onUseTick(level, shooter, stack, remainingUseDuration);
 
-		super.shoot(level, shooter, usedHand, projectileWeapon);
+		if (!level.isClientSide && level instanceof ServerLevel serverLevel) {
+			if (getGunState(stack) != GunState.SHOOTING_OR_CHARGING) return;
+
+			int elapsedTime = getUseDuration(stack) - remainingUseDuration;
+			int delayBetweenShots = getDelayBetweenShots(stack);
+
+			if (elapsedTime % delayBetweenShots == 0) {
+				level.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), ModSoundEvents.IMPALER_CHARGE.get(), SoundUtil.soundSourceFor(shooter), 1f, 0.8f + shooter.getRandom().nextFloat() * 0.3f);
+			}
+		}
+	}
+
+	@Override
+	public void shoot(ServerLevel level, LivingEntity shooter, InteractionHand usedHand, ItemStack projectileWeapon) {
+		boolean success = configuredProjectile.shoot(level, shooter,
+				FloatOperator.IDENTITY,
+				baseDamage -> modifyProjectileDamage(baseDamage, projectileWeapon),
+				baseKnockBack -> modifyProjectileKnockBack(baseKnockBack, projectileWeapon),
+				baseInaccuracy -> modifyProjectileInaccuracy(baseInaccuracy, projectileWeapon));
+
+		if (!success) return;
+
+		broadcastAnimation(level, shooter, projectileWeapon, Animations.SHOOT);
+		configuredProjectile.playShootSound(level, shooter, 1.5f, 0.8f + shooter.getRandom().nextFloat() * 0.3f);
+
+		projectileWeapon.hurtAndBreak(1, shooter, entity -> entity.broadcastBreakEvent(usedHand));
+		consumeAmmo(shooter, projectileWeapon, 1);
 
 		boolean isAnchored = shooter.onGround() && shooter.isCrouching();
 		double reduction = isAnchored ? 0.25d : 0.5d;
 
-		Vec3 recoil = shooter.getLookAngle().normalize().scale(-1d).scale(configuredProjectile.velocity() * reduction);
+		float velocity = configuredProjectile.velocity(); //TODO: get final velocity e.g. velocity * chargePercentage
+
+		Vec3 recoil = shooter.getLookAngle().normalize().scale(-1d).scale(velocity * reduction);
 		shooter.push(recoil.x, recoil.y, recoil.z); //sets hasImpulse to true
 		shooter.fallDistance = 0f;
 
-		if (shooter instanceof ServerPlayer serverPlayer) {
+		DamageSource damageSource = level.damageSources().explosion(shooter, shooter);
+		shooter.hurt(damageSource, velocity * 0.5f);
+
+		if (!shooter.hurtMarked && shooter instanceof ServerPlayer serverPlayer) {
 			// Important:
 			// hasImpulse only broadcasts entity motion to OTHER players that track the entity
 			// instead of using hurtMarked we send the motion packet to the client of the shooter ourselves
@@ -230,7 +265,7 @@ public class ImpalerItem extends GunItem implements ItemTooltipStyleProvider, Ge
 				ImpalerItem impalerItem = state.getAnimatable();
 				ItemStack stack = state.getData(DataTickets.ITEMSTACK);
 
-				if (impalerItem.getGunState(stack) == GunState.SHOOTING) {
+				if (impalerItem.getGunState(stack) == GunState.SHOOTING_OR_CHARGING) {
 					return state.setAndContinue(CHARGE_UP_SHOT);
 				}
 

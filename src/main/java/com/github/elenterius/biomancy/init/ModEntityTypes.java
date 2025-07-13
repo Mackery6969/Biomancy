@@ -68,7 +68,7 @@ public final class ModEntityTypes {
 	}
 
 	private static <T extends BaseProjectile> RegistryObject<EntityType<T>> registerFastProjectile(String name, EntityType.EntityFactory<T> factory, UnaryOperator<EntityType.Builder<T>> builder) {
-		return ENTITIES.register(name, () -> builder.apply(EntityType.Builder.of(factory, MobCategory.MISC)).setShouldReceiveVelocityUpdates(true).updateInterval(5).build(BiomancyMod.MOD_ID + ":" + name));
+		return ENTITIES.register(name, () -> builder.apply(EntityType.Builder.of(factory, MobCategory.MISC)).setShouldReceiveVelocityUpdates(true).updateInterval(1).build(BiomancyMod.MOD_ID + ":" + name));
 	}
 
 	private static <T extends ThrowableProjectile> RegistryObject<EntityType<T>> registerGrenade(String name, EntityType.EntityFactory<T> factory, UnaryOperator<EntityType.Builder<T>> builder) {

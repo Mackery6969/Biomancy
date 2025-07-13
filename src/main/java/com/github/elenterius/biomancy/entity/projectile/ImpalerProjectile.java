@@ -3,6 +3,7 @@ package com.github.elenterius.biomancy.entity.projectile;
 import com.github.elenterius.biomancy.init.ModDamageSources;
 import com.github.elenterius.biomancy.init.ModEntityTypes;
 import com.github.elenterius.biomancy.init.ModProjectiles;
+import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.util.MobUtil;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import net.minecraft.core.BlockPos;
@@ -37,10 +38,10 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 
-	private static final double IMPALE_FORCE_THRESHOLD = 3.0D;
-	private static final double ARMOR_THRESHOLD = 12.0D;
+	private static final double IMPALE_FORCE_THRESHOLD = 3d;
+	private static final double ARMOR_THRESHOLD = 12d;
 	private static final int MAX_IMPALED_MOBS = 3;
-	private static final float IMPACT_DAMAGE = 8.0F;
+	private static final float IMPACT_DAMAGE = 8f;
 	private static final int CONCUSSION_DURATION = 100; // 5 seconds at 20 ticks/second
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
@@ -149,7 +150,12 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 
 	@Override
 	public float getGravity() {
-		return 0.02f;
+		return Math.max(getDeltaMovement().length() <= 0.25d ? 0.05f : 0.001f, getPassengers().size() * 0.02f);
+	}
+
+	@Override
+	public float getDrag() {
+		return 0.999f;
 	}
 
 	@Override
@@ -213,7 +219,7 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 			blockState.onProjectileHit(level(), blockState, result, this);
 
 			//			playSound(blockState.getSoundType().getHitSound(), 2f, 1.2f / (random.nextFloat() * 0.2f + 0.9f));
-			playSound(SoundEvents.GENERIC_EXPLODE, 3f, 1.2f / (random.nextFloat() * 0.2f + 0.9f));
+			playSound(ModSoundEvents.IMPALER_IMPACT.get(), 1f, 0.8f + random.nextFloat() * 0.3f);
 			Vec3 vec = result.getLocation();
 			BlockPos pos = result.getBlockPos();
 			level().addParticle(ParticleTypes.EXPLOSION, pos.getX() + vec.x, pos.getY() + vec.y, pos.getZ() + vec.z, 1d, 0d, 0d);
@@ -291,7 +297,7 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 			);
 		}
 
-		playSound(SoundEvents.ARROW_HIT, 1f, 1.2f / (random.nextFloat() * 0.2f + 0.9f));
+		playSound(ModSoundEvents.IMPALER_HIT.get(), 2f, 0.8f + random.nextFloat() * 0.3f);
 	}
 
 	protected void disableShield(LivingEntity victim, int cooldownTicks) {

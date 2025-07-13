@@ -291,6 +291,9 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addSound(ModSoundEvents.INJECTOR_FAIL, "Injection Failed");
 		addSound(ModSoundEvents.MARROW_DRINK, "Slurping Bone Marrow");
 		addSound(ModSoundEvents.IMPALER_SHOOT, "Shooting Impaler");
+		addSound(ModSoundEvents.IMPALER_HIT, "Impaler Hit");
+		addSound(ModSoundEvents.IMPALER_IMPACT, "Impaler Impact");
+		addSound(ModSoundEvents.IMPALER_CHARGE, "Impaler Charging");
 
 		addSound(ModSoundEvents.FLESH_BLOCK_HIT, "Hit Fleshy Block");
 		addSound(ModSoundEvents.FLESH_BLOCK_PLACE, "Place Fleshy Block");

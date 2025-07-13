@@ -30,6 +30,9 @@ public class ModSoundProvider extends SoundDefinitionsProvider {
 		addSimpleRedirect(ModSoundEvents.MARROW_DRINK, SoundEvents.HONEY_DRINK, 0.9f, 1.25f);
 		addSimpleRedirect(ModSoundEvents.GRENADE_THROW, SoundEvents.SNOWBALL_THROW, 1f, 0.5f);
 		addSimpleSound(ModSoundEvents.IMPALER_SHOOT);
+		addSimpleSound(ModSoundEvents.IMPALER_HIT);
+		addSimpleSound(ModSoundEvents.IMPALER_IMPACT);
+		addSimpleSound(ModSoundEvents.IMPALER_CHARGE);
 
 		addSimpleSounds(ModSoundEvents.FLESH_BLOCK_HIT, 4);
 		addSimpleSounds(ModSoundEvents.FLESH_BLOCK_PLACE, 2);

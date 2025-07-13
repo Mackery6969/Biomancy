@@ -8,3 +8,14 @@ which is dual licensed and available under the MPL 2.0
 (Mozilla Public License) or under the EPL 1.0 (Eclipse Public License).
 An original copy of the license agreement can be found at:
 https://h2database.com/html/license.html
+
+# 3rd Party Sounds
+- Sounds from Freesound.org
+
+## Sounds from Freesound.org
+- Seismic Slam by magnuswaker -- https://freesound.org/s/531862/ -- License: Creative Commons 0
+- Gore Rend by magnuswaker -- https://freesound.org/s/563491/ -- License: Creative Commons 0
+- Burst Flesh by magnuswaker -- https://freesound.org/s/581092/ -- License: Creative Commons 0
+- GROSS IMPACT by magnuswaker -- https://freesound.org/s/641040/ -- License: Creative Commons 0
+- stomach rumble_1 by DieUntergang -- https://freesound.org/s/811612/ -- License: Creative Commons 0
+- Gulp - Hard Swallow by magnuswaker -- https://freesound.org/s/531755/ -- License: Creative Commons 0

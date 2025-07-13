@@ -1,3 +1,17 @@
+# Credits
+
+## Sounds
+
+The mod contains sounds from Freesound.org, please check 3RD_PARTY_LICENSE.txt for their respective License:
+
+- `item.impaler.shoot.ogg`: Seismic Slam by magnuswaker
+- `item.impaler.shoot.ogg`: Burst Flesh by magnuswaker
+- `item.impaler.impact.ogg`: GROSS IMPACT by magnuswaker
+- `item.impaler.charge.ogg` made by combining:
+	- Gore Rend by magnuswaker
+	- stomach rumble_1 by DieUntergang
+	- Gulp - Hard Swallow by magnuswaker
+
 # Contributors
 
 ## RhinoW
