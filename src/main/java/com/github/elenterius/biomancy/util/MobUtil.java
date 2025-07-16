@@ -80,7 +80,11 @@ public final class MobUtil {
 	 * @return gravity, positive is downwards force and negative is upwards force
 	 */
 	public static double getGravity(Entity entity) {
-		return entity instanceof LivingEntity livingEntity ? livingEntity.getAttributeValue(ForgeMod.ENTITY_GRAVITY.get()) : 0.08d;
+		return entity instanceof LivingEntity livingEntity ? livingEntity.getAttributeValue(ForgeMod.ENTITY_GRAVITY.get()) : ForgeMod.ENTITY_GRAVITY.get().getDefaultValue();
+	}
+
+	public static double getGravity(Entity entity, double fallback) {
+		return entity instanceof LivingEntity livingEntity ? livingEntity.getAttributeValue(ForgeMod.ENTITY_GRAVITY.get()) : fallback;
 	}
 
 	//	public static double getGravitationalAcceleration(Entity entity) {
