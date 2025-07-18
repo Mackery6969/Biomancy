@@ -1,6 +1,7 @@
 package com.github.elenterius.biomancy.event;
 
 import com.github.elenterius.biomancy.BiomancyMod;
+import com.github.elenterius.biomancy.block.JumpPadBlock;
 import com.github.elenterius.biomancy.block.WaterGelBlock;
 import com.github.elenterius.biomancy.entity.misc.LivingEntityData;
 import com.github.elenterius.biomancy.init.AcidInteractions;
@@ -21,6 +22,7 @@ import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingBreatheEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -75,6 +77,19 @@ public final class LivingEventHandler {
 		if (livingEntity.level() instanceof ServerLevel serverLevel && livingEntity.hasEffect(ModMobEffects.PRIMORDIAL_INFESTATION.get())) {
 			if (livingEntity.isFreezing() || livingEntity.isOnFire()) return;
 			PrimordialEcosystem.placeMalignantBlocksOnLivingDeath(serverLevel, livingEntity);
+		}
+	}
+
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public static void onLivingFall(final LivingFallEvent event) {
+		LivingEntity livingEntity = event.getEntity();
+		if (livingEntity.mainSupportingBlockPos.isPresent()) {
+			Block blockAbove = livingEntity.level().getBlockState(livingEntity.mainSupportingBlockPos.get().above()).getBlock();
+			if (blockAbove instanceof JumpPadBlock) {
+				event.setDistance(0f);
+				event.setDamageMultiplier(0f);
+				event.setCanceled(true);
+			}
 		}
 	}
 

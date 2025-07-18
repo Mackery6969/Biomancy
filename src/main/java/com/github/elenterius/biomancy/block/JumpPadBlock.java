@@ -2,7 +2,6 @@ package com.github.elenterius.biomancy.block;
 
 import com.github.elenterius.biomancy.entity.misc.LivingEntityData;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
-import com.github.elenterius.biomancy.util.MobUtil;
 import com.github.elenterius.biomancy.util.VoxelShapeUtil;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.Util;
@@ -19,14 +18,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.MultifaceBlock;
 import net.minecraft.world.level.block.MultifaceSpreader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.joml.Vector3d;
@@ -226,29 +223,6 @@ public class JumpPadBlock extends MultifaceBlock {
 		NEXT_TICK,
 		TUNNELS_NEXT_TICK,
 		NONE
-	}
-
-	// fall damage workaround /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	protected static final VoxelShape BOTTOM_COLLISION_AABB = Block.box(0, 0, 0, 16, 8, 16);
-
-	@Override
-	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-		if (hasFace(state, Direction.DOWN) && context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof LivingEntity) {
-			Vec3i normal = Direction.DOWN.getOpposite().getNormal();
-			Vec3 velocity = entityContext.getEntity().getDeltaMovement();
-			double directionSimilarity = new Vec3(normal.getX(), normal.getY(), normal.getZ()).dot(velocity.normalize());
-			if (directionSimilarity <= -0.5d && velocity.length() > MobUtil.getGravity(entityContext.getEntity())) {
-				return BOTTOM_COLLISION_AABB;
-			}
-		}
-
-		return super.getCollisionShape(state, level, pos, context);
-	}
-
-	@Override
-	public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float fallDistance) {
-		entity.causeFallDamage(fallDistance, 0f, entity.damageSources().fall());
 	}
 
 }
