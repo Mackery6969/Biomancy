@@ -5,23 +5,14 @@
     "B": {
       "tag": "forge:bones"
     },
-    "C": {
-      "tag": "c:claws"
-    },
-    "F": {
-      "tag": "c:fangs"
-    },
     "M": {
       "tag": "biomancy:raw_meats"
-    },
-    "P": {
-      "item": "biomancy:primordial_core"
     }
   },
   "pattern": [
-    "CB ",
-    " FM",
-    "MP "
+    "BBM",
+    " MB",
+    " BM"
   ],
   "result": {
     "item": "biomancy:despoil_sickle"
