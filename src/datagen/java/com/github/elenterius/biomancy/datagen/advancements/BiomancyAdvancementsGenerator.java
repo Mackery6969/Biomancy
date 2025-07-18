@@ -87,13 +87,11 @@ public class BiomancyAdvancementsGenerator implements ForgeAdvancementProvider.A
 				.addHasCriterion(ModItems.PRIMORDIAL_CORE.get())
 				.save(consumer, fileHelper);
 
-		Advancement greedyButcher = createAdvancement("greedy_butcher").parent(primalCore).icon(ModItems.MOB_SINEW.get())
-				//				.title("Greedy Butcher")
-				//				.description("You've acquired a taste for organic trinkets. Rip them fresh from your victims death.")
-				.title("PLACEHOLDER")
-				.description("PLACEHOLDER")
+		Advancement greedyButcher = createAdvancement("greedy_butcher").parent(primalCore).icon(ModItems.DESPOIL_SICKLE.get())
+				.title("Greedy Butcher")
+				.description("You've acquired a taste for organic trinkets. Craft the plundering Sickle to get them fresh from your victims death.")
 				.showToast()
-				.addHasCriterion(ModItems.MOB_SINEW.get())
+				.addHasCriterion(ModItems.DESPOIL_SICKLE.get())
 				.save(consumer, fileHelper);
 
 		createAdvancement("organ_trader").parent(greedyButcher).icon(ModItems.VOLATILE_GLAND.get())

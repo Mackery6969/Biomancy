@@ -1,12 +1,12 @@
 {
   "parent": "biomancy:biomancy/primal_vision",
   "criteria": {
-    "has_mob_sinew": {
+    "has_despoil_sickle": {
       "conditions": {
         "items": [
           {
             "items": [
-              "biomancy:mob_sinew"
+              "biomancy:despoil_sickle"
             ]
           }
         ]
@@ -22,7 +22,8 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "biomancy:mob_sinew"
+      "item": "biomancy:despoil_sickle",
+      "nbt": "{Damage:0}"
     },
     "show_toast": true,
     "title": {
@@ -31,7 +32,7 @@
   },
   "requirements": [
     [
-      "has_mob_sinew"
+      "has_despoil_sickle"
     ]
   ],
   "sends_telemetry_event": true

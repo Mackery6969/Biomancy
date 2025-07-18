@@ -111,7 +111,10 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 				.add(ModItems.RAVENOUS_CLAWS.get());
 
 		TagKey<Item> swordsTag = forgeTag("tools/swords");
-		createTag(swordsTag);
+		createTag(swordsTag)
+				.add(ModItems.DESPOIL_SICKLE.get());
+		createTag(ItemTags.SWORDS)
+				.add(ModItems.DESPOIL_SICKLE.get());
 
 		createTag(Tags.Items.TOOLS_SHIELDS)
 				.add(ModItems.THORN_SHIELD.get());

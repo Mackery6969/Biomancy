@@ -9,7 +9,7 @@ import com.github.elenterius.biomancy.init.client.ClientSetupHandler;
 import com.github.elenterius.biomancy.item.ItemTooltipStyleProvider;
 import com.github.elenterius.biomancy.item.MaykerBannerPatternItem;
 import com.github.elenterius.biomancy.item.SerumItem;
-import com.github.elenterius.biomancy.item.armor.ArmorUpgrades;
+import com.github.elenterius.biomancy.item.armor.AcolyteArmorUpgrades;
 import com.github.elenterius.biomancy.menu.BioForgeTab;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import net.minecraft.data.CachedOutput;
@@ -234,8 +234,8 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addAbility("fleshkin_affinity.desc", "+25% Acid Resistance");
 		addAbility("bio_alchemical_epidermis", "Bio-Alchemical Epidermis");
 		addAbility("bio_alchemical_epidermis.desc", "+15% Resistance to harmful Status-Effects\n +25% Injection Success\n -25% Injection Damage");
-		addAbility(ArmorUpgrades.PRIMORDIAL_SIGHT.getId().getPath(), "Primordial Sight");
-		addAbility(ArmorUpgrades.PRIMORDIAL_SIGHT.getId().getPath() + ".desc", "Peer inside the Cradle");
+		addAbility(AcolyteArmorUpgrades.PRIMORDIAL_SIGHT.getId().getPath(), "Primordial Sight");
+		addAbility(AcolyteArmorUpgrades.PRIMORDIAL_SIGHT.getId().getPath() + ".desc", "Peer inside the Cradle");
 
 		addTooltip("fire_rate", "Fire Rate");
 		addTooltip("accuracy", "Accuracy");
@@ -490,6 +490,7 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addItem(ModItems.VOLATILE_FLUID, "Volatile Fluid", "A very combustible extract, however it needs further processing to be truly dangerous.");
 		addItem(ModItems.BILE, "Bile", "Organic base material which is often used in bio-alchemy.");
 
+		addItem(ModItems.DESPOIL_SICKLE, "Flesh Plunderer", "A very brittle yet highly specialized tool for pillaging special loot from dying mobs.\n\nWhen held in either hand, the tool guarantees Despoil loot drops. When doing so, it receives extra durability damage.");
 		addItem(ModItems.VIAL, "Organic Vial", "A small organic container with very high alchemical resistance, perfect for holding reactive substances.\nThe vial dissolves on use.");
 		addItem(ModItems.LIVING_FLESH, "Living Flesh", "It's alive!\nUnfortunately, it looks too dumb to be the brain of a mob. You should turn it into a construct instead.");
 		addItem(ModItems.PRIMORDIAL_CORE, "Primordial Core", "A ominous artifact made of flesh. Looking at it makes you feel uneasy...");
