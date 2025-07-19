@@ -35,6 +35,8 @@ import java.util.Map;
 
 public class JumpPadBlock extends MultifaceBlock {
 
+	public static final double EPSILON = 1.0e-7d;
+
 	protected static final Map<Direction, VoxelShape> SHAPE_BY_FACE = Util.make(new EnumMap<>(Direction.class), map -> {
 		map.put(Direction.UP, createFaceShape(Direction.UP));
 		map.put(Direction.DOWN, createFaceShape(Direction.DOWN));
@@ -69,6 +71,10 @@ public class JumpPadBlock extends MultifaceBlock {
 		}
 
 		return voxelshape.isEmpty() ? Shapes.block() : voxelshape;
+	}
+
+	public static boolean checkIfAABBIntersects(BlockPos pos, BlockState blockState, Direction face, AABB aabb) {
+		return hasFace(blockState, face) && SHAPE_BY_FACE.get(face).bounds().move(pos).inflate(EPSILON).intersects(aabb);
 	}
 
 	@Override
@@ -160,10 +166,9 @@ public class JumpPadBlock extends MultifaceBlock {
 		//		Vec3 nextPos = currentPos.add(entity.getDeltaMovement()).add(0d, -gravity, 0d); //predicted position
 		Vec3 nextPos = currentPos.add(entity.getDeltaMovement()); //predicted position
 
-		double epsilon = 1.0e-7d;
-		double halfX = entityAABB.getXsize() / 2d + epsilon;
-		double halfY = entityAABB.getYsize() / 2d + epsilon;
-		double halfZ = entityAABB.getZsize() / 2d + epsilon;
+		double halfX = entityAABB.getXsize() / 2d + EPSILON;
+		double halfY = entityAABB.getYsize() / 2d + EPSILON;
+		double halfZ = entityAABB.getZsize() / 2d + EPSILON;
 
 		for (AABB collisionAABB : collisionAABBs) {
 			AABB inflatedAABB = collisionAABB.inflate(halfX, halfY, halfZ); // minkowski sum
