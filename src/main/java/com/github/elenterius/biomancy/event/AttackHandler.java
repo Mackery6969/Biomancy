@@ -47,7 +47,7 @@ public final class AttackHandler {
 			}
 		}
 
-		if (resistProbability > 0 && event.getEntity().getRandom().nextInt(100) >= resistProbability) {
+		if (resistProbability > 0 && event.getEntity().getRandom().nextInt(100) <= resistProbability) {
 			event.setAmount(event.getAmount() * (1f - resistProbability / 100f));
 		}
 	}
