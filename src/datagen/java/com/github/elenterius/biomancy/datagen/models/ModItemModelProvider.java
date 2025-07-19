@@ -99,6 +99,10 @@ public class ModItemModelProvider extends ItemModelProvider {
 		armorItem(ModItems.ACOLYTE_ARMOR_CHESTPLATE);
 		armorItem(ModItems.ACOLYTE_ARMOR_LEGGINGS);
 		armorItem(ModItems.ACOLYTE_ARMOR_BOOTS);
+		armorItem(ModItems.WARRIOR_ARMOR_HELMET);
+		armorItem(ModItems.WARRIOR_ARMOR_CHESTPLATE);
+		armorItem(ModItems.WARRIOR_ARMOR_LEGGINGS);
+		armorItem(ModItems.WARRIOR_ARMOR_BOOTS);
 
 		basicItem(ModItems.FLESH_DOOR);
 		basicItem(ModItems.FULL_FLESH_DOOR);

@@ -3,9 +3,11 @@ package com.github.elenterius.biomancy.crafting.recipe;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.ModRecipes;
 import com.github.elenterius.biomancy.item.armor.AcolyteArmorUpgrades;
+import com.github.elenterius.biomancy.item.armor.LivingArmorItem;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -30,7 +32,7 @@ public class AcolyteHelmetUpgradeRecipe extends CustomRecipe {
 			if (stack.isEmpty()) continue;
 			Item item = stack.getItem();
 
-			if (item == ModItems.ACOLYTE_ARMOR_HELMET.get()) {
+			if (item instanceof LivingArmorItem armor && armor.getType() == ArmorItem.Type.HELMET) {
 				if (hasHelmet) return false;
 				if (AcolyteArmorUpgrades.hasUpgrade(stack, AcolyteArmorUpgrades.PRIMORDIAL_SIGHT)) return false;
 				hasHelmet = true;
@@ -56,7 +58,7 @@ public class AcolyteHelmetUpgradeRecipe extends CustomRecipe {
 			if (stack.isEmpty()) continue;
 			Item item = stack.getItem();
 
-			if (item == ModItems.ACOLYTE_ARMOR_HELMET.get()) {
+			if (item instanceof LivingArmorItem armor && armor.getType() == ArmorItem.Type.HELMET) {
 				if (!helmet.isEmpty()) return ItemStack.EMPTY;
 				if (AcolyteArmorUpgrades.hasUpgrade(stack, AcolyteArmorUpgrades.PRIMORDIAL_SIGHT)) return ItemStack.EMPTY;
 				helmet = stack;

@@ -1,7 +1,6 @@
 package com.github.elenterius.biomancy.item.armor;
 
 import com.github.elenterius.biomancy.BiomancyMod;
-import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
@@ -36,18 +35,13 @@ public final class AcolyteArmorUpgrades {
 	}
 
 	public static ItemStack addUpgrade(ItemStack stack, Upgrade upgrade) {
-		if (stack.is(ModItems.ACOLYTE_ARMOR_HELMET.get())) {
-			stack.getOrCreateTag().putBoolean(upgrade.id.toString(), true);
-		}
+		stack.getOrCreateTag().putBoolean(upgrade.id.toString(), true);
 		return stack;
 	}
 
 	public static boolean hasUpgrade(ItemStack stack, Upgrade upgrade) {
-		if (stack.is(ModItems.ACOLYTE_ARMOR_HELMET.get())) {
-			CompoundTag tag = stack.getTag();
-			return tag != null && tag.contains(upgrade.id.toString());
-		}
-		return false;
+		CompoundTag tag = stack.getTag();
+		return tag != null && tag.contains(upgrade.id.toString());
 	}
 
 	public static void appendHoverText(ItemStack stack, List<Component> tooltip) {

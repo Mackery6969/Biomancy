@@ -4,7 +4,7 @@ import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.init.ModCapabilities;
 import com.github.elenterius.biomancy.init.tags.ModDamageTypeTags;
 import com.github.elenterius.biomancy.item.CriticalHitListener;
-import com.github.elenterius.biomancy.item.armor.AcolyteArmorItem;
+import com.github.elenterius.biomancy.item.armor.LivingArmorItem;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -41,7 +41,7 @@ public final class AttackHandler {
 
 		int resistProbability = 0;
 		for (ItemStack itemStack : event.getEntity().getArmorSlots()) {
-			if (itemStack.getItem() instanceof AcolyteArmorItem armor && armor.hasNutrients(itemStack)) {
+			if (itemStack.getItem() instanceof LivingArmorItem armor && armor.hasNutrients(itemStack)) {
 				resistProbability += 25;
 				armor.decreaseNutrients(itemStack, 1);
 			}

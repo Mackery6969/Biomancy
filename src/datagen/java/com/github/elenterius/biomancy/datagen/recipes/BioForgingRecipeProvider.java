@@ -210,6 +210,46 @@ public class BioForgingRecipeProvider extends RecipeProvider {
 				.setCategory(ModBioForgeTabs.TOOLS)
 				.unlockedBy(ModItems.LIVING_FLESH.get()).save(consumer);
 
+		BioForgingRecipeBuilder.create(withMaxNutrients(ModItems.WARRIOR_ARMOR_HELMET.get()))
+				.addIngredient(ModItems.LIVING_FLESH.get())
+				.addIngredient(ModItems.FLESH_BITS.get(), 8)
+				.addIngredient(ModItems.TOUGH_FIBERS.get(), 30)
+				.addIngredient(ModItems.MINERAL_FRAGMENT.get(), 32)
+				.addIngredient(ModItems.BONE_FRAGMENTS.get(), 26)
+				.setCraftingCost(250)
+				.setCategory(ModBioForgeTabs.TOOLS)
+				.unlockedBy(ModItems.LIVING_FLESH.get()).save(consumer);
+
+		BioForgingRecipeBuilder.create(withMaxNutrients(ModItems.WARRIOR_ARMOR_CHESTPLATE.get()))
+				.addIngredient(ModItems.LIVING_FLESH.get())
+				.addIngredient(ModItems.FLESH_BITS.get(), 10)
+				.addIngredient(ModItems.TOUGH_FIBERS.get(), 32)
+				.addIngredient(ModItems.MINERAL_FRAGMENT.get(), 34)
+				.addIngredient(ModItems.BONE_FRAGMENTS.get(), 28)
+				.setCraftingCost(250)
+				.setCategory(ModBioForgeTabs.TOOLS)
+				.unlockedBy(ModItems.LIVING_FLESH.get()).save(consumer);
+
+		BioForgingRecipeBuilder.create(withMaxNutrients(ModItems.WARRIOR_ARMOR_LEGGINGS.get()))
+				.addIngredient(ModItems.LIVING_FLESH.get())
+				.addIngredient(ModItems.FLESH_BITS.get(), 10)
+				.addIngredient(ModItems.TOUGH_FIBERS.get(), 32)
+				.addIngredient(ModItems.MINERAL_FRAGMENT.get(), 34)
+				.addIngredient(ModItems.BONE_FRAGMENTS.get(), 28)
+				.setCraftingCost(250)
+				.setCategory(ModBioForgeTabs.TOOLS)
+				.unlockedBy(ModItems.LIVING_FLESH.get()).save(consumer);
+
+		BioForgingRecipeBuilder.create(withMaxNutrients(ModItems.WARRIOR_ARMOR_BOOTS.get()))
+				.addIngredient(ModItems.LIVING_FLESH.get())
+				.addIngredient(ModItems.FLESH_BITS.get(), 5)
+				.addIngredient(ModItems.TOUGH_FIBERS.get(), 16)
+				.addIngredient(ModItems.MINERAL_FRAGMENT.get(), 22)
+				.addIngredient(ModItems.BONE_FRAGMENTS.get(), 24)
+				.setCraftingCost(250)
+				.setCategory(ModBioForgeTabs.TOOLS)
+				.unlockedBy(ModItems.LIVING_FLESH.get()).save(consumer);
+
 		BioForgingRecipeBuilder.create(withMaxNutrients(ModItems.CAUSTIC_GUNBLADE.get()))
 				.addIngredient(ModItems.LIVING_FLESH.get())
 				.addIngredient(ModItems.FLESH_BITS.get(), 16)

@@ -2,9 +2,9 @@ package com.github.elenterius.biomancy.mixin;
 
 import com.github.elenterius.biomancy.entity.projectile.ImpalerProjectile;
 import com.github.elenterius.biomancy.init.ModDamageTypes;
-import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.item.ItemAttackDamageSourceProvider;
 import com.github.elenterius.biomancy.item.SweepAttackListener;
+import com.github.elenterius.biomancy.item.armor.LivingArmorItem;
 import com.github.elenterius.biomancy.item.shield.LivingShieldItem;
 import com.llamalad7.mixinextras.injector.ModifyReceiver;
 import com.llamalad7.mixinextras.sugar.Share;
@@ -16,6 +16,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
@@ -106,13 +107,13 @@ public abstract class PlayerMixin extends LivingEntity {
 		//don't render outer skin overlay when wearing the acolyte armor to prevent z-fighting, etc.
 		switch (part) {
 			case HAT -> {
-				if (getItemBySlot(EquipmentSlot.HEAD).is(ModItems.ACOLYTE_ARMOR_HELMET.get())) cir.setReturnValue(false);
+				if (getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof LivingArmorItem armor && armor.getType() == ArmorItem.Type.HELMET) cir.setReturnValue(false);
 			}
 			case JACKET, LEFT_SLEEVE, RIGHT_SLEEVE -> {
-				if (getItemBySlot(EquipmentSlot.CHEST).is(ModItems.ACOLYTE_ARMOR_CHESTPLATE.get())) cir.setReturnValue(false);
+				if (getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof LivingArmorItem armor && armor.getType() == ArmorItem.Type.CHESTPLATE) cir.setReturnValue(false);
 			}
 			case LEFT_PANTS_LEG, RIGHT_PANTS_LEG -> {
-				if (getItemBySlot(EquipmentSlot.LEGS).is(ModItems.ACOLYTE_ARMOR_LEGGINGS.get())) cir.setReturnValue(false);
+				if (getItemBySlot(EquipmentSlot.LEGS).getItem() instanceof LivingArmorItem armor && armor.getType() == ArmorItem.Type.LEGGINGS) cir.setReturnValue(false);
 			}
 			case CAPE -> {}
 		}

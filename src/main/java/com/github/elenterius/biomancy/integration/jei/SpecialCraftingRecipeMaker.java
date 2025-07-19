@@ -7,6 +7,7 @@ import com.github.elenterius.biomancy.init.ModBlockEntities;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.item.EssenceItem;
 import com.github.elenterius.biomancy.item.armor.AcolyteArmorUpgrades;
+import com.github.elenterius.biomancy.item.armor.LivingArmorItem;
 import com.github.elenterius.biomancy.world.mound.MoundShape;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.NonNullList;
@@ -14,14 +15,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PlayerHeadItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -56,16 +55,14 @@ public final class SpecialCraftingRecipeMaker {
 		);
 	}
 
-	public static List<CraftingRecipe> createAcolyteHelmetUpgradeRecipes() {
-		NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY,
-				Ingredient.of(ModItems.PRIMORDIAL_CORE.get()),
-				Ingredient.of(ModItems.ACOLYTE_ARMOR_HELMET.get())
-		);
-		ItemStack result = AcolyteArmorUpgrades.addUpgrade(ModItems.ACOLYTE_ARMOR_HELMET.get().getDefaultInstance(), AcolyteArmorUpgrades.PRIMORDIAL_SIGHT);
+	public static List<CraftingRecipe> createHelmetUpgradeRecipes() {
+		return ModItems.findEntries(LivingArmorItem.class).map(SpecialCraftingRecipeMaker::createHelmetUpgradeRecipe).toList();
+	}
 
-		return List.of(
-				new ShapelessRecipe(BiomancyMod.createRL("special_crafting/acolyte_helmet_upgrade"), "", CraftingBookCategory.MISC, result, inputs)
-		);
+	private static <A extends ArmorItem> CraftingRecipe createHelmetUpgradeRecipe(RegistryObject<A> armorItem) {
+		NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY, Ingredient.of(ModItems.PRIMORDIAL_CORE.get()), Ingredient.of(armorItem.get()));
+		ItemStack result = AcolyteArmorUpgrades.addUpgrade(armorItem.get().getDefaultInstance(), AcolyteArmorUpgrades.PRIMORDIAL_SIGHT);
+		return new ShapelessRecipe(BiomancyMod.createRL("special_crafting/" + armorItem.getId().getPath() + "_upgrade"), "", CraftingBookCategory.MISC, result, inputs);
 	}
 
 	public static List<CraftingRecipe> createPlayerHeadRecipes() {

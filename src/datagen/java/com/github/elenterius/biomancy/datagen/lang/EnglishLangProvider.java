@@ -234,6 +234,8 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addAbility("fleshkin_affinity.desc", "+25% Acid Resistance");
 		addAbility("bio_alchemical_epidermis", "Bio-Alchemical Epidermis");
 		addAbility("bio_alchemical_epidermis.desc", "+15% Resistance to harmful Status-Effects\n +25% Injection Success\n -25% Injection Damage");
+		addAbility("imposing_aura", "Imposing Aura");
+		addAbility("imposing_aura.desc", "All nearby beings receive Weakness I");
 		addAbility(AcolyteArmorUpgrades.PRIMORDIAL_SIGHT.getId().getPath(), "Primordial Sight");
 		addAbility(AcolyteArmorUpgrades.PRIMORDIAL_SIGHT.getId().getPath() + ".desc", "Peer inside the Cradle");
 
@@ -528,13 +530,17 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addItem(ModItems.CAUSTIC_GUNBLADE, "Caustic Gunblade", """
 				A caustic gunblade that can alternate between melee and ranged mode and utilizes acidic ammo to damage its targets.
 				The acidic ammunition regenerates by itself after 5s of no usage.""");
-		addItem(ModItems.IMPALER, "Impaler", "Railgun made of flesh...");
+		addItem(ModItems.IMPALER, "[WIP] Impaler", "Railgun made of flesh...");
 		addItem(ModItems.DEV_ARM_CANNON, "[Dev Tool] Arm Cannon", "Creative/Developer Tool for testing projectiles.");
 
 		addItem(ModItems.ACOLYTE_ARMOR_HELMET, "Bio-Alchemist Helmet");
 		addItem(ModItems.ACOLYTE_ARMOR_CHESTPLATE, "Bio-Alchemist Chestplate");
 		addItem(ModItems.ACOLYTE_ARMOR_LEGGINGS, "Bio-Alchemist Leggings");
 		addItem(ModItems.ACOLYTE_ARMOR_BOOTS, "Bio-Alchemist Boots");
+		addItem(ModItems.WARRIOR_ARMOR_HELMET, "[WIP] Warrior Helmet");
+		addItem(ModItems.WARRIOR_ARMOR_CHESTPLATE, "[WIP] Warrior Chestplate");
+		addItem(ModItems.WARRIOR_ARMOR_LEGGINGS, "[WIP] Warrior Leggings");
+		addItem(ModItems.WARRIOR_ARMOR_BOOTS, "[WIP] Warrior Boots");
 
 		addItem(ModItems.THORN_SHIELD, "The Thorn", "Cute but prickly shield.");
 

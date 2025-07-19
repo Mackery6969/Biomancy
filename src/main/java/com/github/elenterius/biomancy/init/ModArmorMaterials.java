@@ -20,10 +20,10 @@ public enum ModArmorMaterials implements ArmorMaterial {
 			() -> Ingredient.EMPTY,
 			() -> SoundEvents.ARMOR_EQUIP_TURTLE
 	),
-	OVERSEER(BiomancyMod.createRLString("overseer"),
+	WARRIOR(BiomancyMod.createRLString("warrior"),
 			1,
-			new int[]{2, 6, 5, 2},
-			0.25f,
+			new int[]{3, 8, 6, 3},
+			0.5f,
 			0,
 			0,
 			() -> Ingredient.EMPTY,
