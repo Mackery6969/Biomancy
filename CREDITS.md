@@ -12,15 +12,23 @@ The mod contains sounds from Freesound.org, please check 3RD_PARTY_LICENSE.txt f
 	- stomach rumble_1 by DieUntergang
 	- Gulp - Hard Swallow by magnuswaker
 
-# Contributors
+## Translations
 
-## RhinoW
+- Spanish (es_es) by Jasdan
+- Chinese (zh_cn) by SlimeSB
+- Chinese (zh_tw) by vomiter-scp-zh
+- Russian (ru_ru) by Quarkrus
+- Korean (ko_kr) by Mexwell12
+
+## Contributors
+
+### RhinoW
 
 Artwork and Game Design help
 
 - most textures and models
 
-## The Shroome
+### The Shroome
 
 Models and Textures
 
@@ -28,13 +36,13 @@ Models and Textures
 - Primal Bloom Block
 - Flesh Pig (v2)
 
-## Shorepion
+### Shorepion
 
 Sound Design and Music
 
 - most sound effects
 
-## Kitteh6660
+### Kitteh6660
 
 Programming & Models
 
@@ -42,14 +50,14 @@ Programming & Models
 - Wide Flesh Door
 - Bio-Bed
 
-## ZeoMaddox
+### ZeoMaddox
 
 Models and Textures
 
 - Original Design of the Bio Lantern Block
 - Original Design of the Tendon Chain Block
 
-## ItsLumine
+### ItsLumine
 
 Models, Animations and Textures
 
@@ -58,19 +66,19 @@ Models, Animations and Textures
 - Guide Book
 - Primordial Vent
 
-## RuskieThe3rd
+### RuskieThe3rd
 
 Textures & Animations
 
 - animated textures
 - Primordial Vent
 
-## M4rc3ll0
+### M4rc3ll0
 
 Models & Designs
 
 - Original Design of the Flesh Pillar Block
 
-## Tyfin
+### Tyfin
 
 - Caro Invitica Font
