@@ -2,11 +2,11 @@ package com.github.elenterius.biomancy.block.decomposer;
 
 import com.github.elenterius.biomancy.block.base.HorizontalFacingMachineBlock;
 import com.github.elenterius.biomancy.block.base.MachineBlockEntity;
-import com.github.elenterius.biomancy.client.util.ClientTextUtil;
 import com.github.elenterius.biomancy.init.ModBlockEntities;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
+import com.github.elenterius.biomancy.util.FormatUtil;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -108,7 +108,7 @@ public class DecomposerBlock extends HorizontalFacingMachineBlock {
 		int fuelAmount = getFuelAmount(stack);
 		if (fuelAmount > 0) {
 			tooltip.add(ComponentUtil.emptyLine());
-			DecimalFormat df = ClientTextUtil.getIntegerFormatter();
+			DecimalFormat df = FormatUtil.getIntegerFormatter();
 			tooltip.add(ComponentUtil.translatable("tooltip.biomancy.nutrients_fuel").withStyle(ChatFormatting.GRAY));
 			tooltip.add(ComponentUtil.literal("%s/%s u".formatted(df.format(fuelAmount), df.format(DecomposerBlockEntity.MAX_FUEL))).withStyle(TextStyles.NUTRIENTS));
 		}

@@ -1,11 +1,11 @@
 package com.github.elenterius.biomancy.block.cradle;
 
-import com.github.elenterius.biomancy.client.util.ClientTextUtil;
 import com.github.elenterius.biomancy.init.*;
 import com.github.elenterius.biomancy.init.tags.ModItemTags;
 import com.github.elenterius.biomancy.integration.ModsCompatHandler;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
+import com.github.elenterius.biomancy.util.FormatUtil;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import com.github.elenterius.biomancy.world.mound.MoundShape;
 import com.github.elenterius.biomancy.world.spatial.SpatialShapeManager;
@@ -241,7 +241,7 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 		CompoundTag tag = BlockItem.getBlockEntityData(stack);
 		if (tag == null) return;
 
-		DecimalFormat df = ClientTextUtil.getIntegerFormatter();
+		DecimalFormat df = FormatUtil.getIntegerFormatter();
 
 		int primalEnergy = getPrimalEnergy(tag);
 		boolean hasPrimalEnergy = primalEnergy > 0;

@@ -15,8 +15,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -29,10 +27,6 @@ public final class ClientTextUtil {
 	private static final MutableComponent SHIFT_KEY_TEXT = ComponentUtil.translatable("keyboard." + BiomancyMod.MOD_ID + ".shift");
 	private static final MutableComponent RIGHT_MOUSE_KEY_TEXT = ComponentUtil.translatable("keyboard." + BiomancyMod.MOD_ID + ".right_mouse");
 	private static final MutableComponent SHOW_INFO = ComponentUtil.translatable("tooltip." + BiomancyMod.MOD_ID + ".action.show_info");
-
-	private static DecimalFormat INTEGER_FORMATTER = null;
-	private static DecimalFormat DOUBLE_FORMATTER = null;
-	private static Locale prevLocale = null;
 
 	private ClientTextUtil() {}
 
@@ -120,39 +114,6 @@ public final class ClientTextUtil {
 	public static List<Component> splitLines(String text, int maxLength, Style style) {
 		Locale locale = Minecraft.getInstance().getLocale();
 		return ComponentUtil.splitLines(locale, text, maxLength, style);
-	}
-
-	public static String format(String format, Object... objects) {
-		return String.format(Minecraft.getInstance().getLocale(), format, objects);
-	}
-
-	private static void updateDecimalFormat() {
-		Locale locale = Minecraft.getInstance().getLocale();
-		if (locale.equals(prevLocale)) return;
-
-		INTEGER_FORMATTER = new DecimalFormat("#,###,###", DecimalFormatSymbols.getInstance(locale));
-		DOUBLE_FORMATTER = new DecimalFormat("#.###", DecimalFormatSymbols.getInstance(locale));
-		prevLocale = locale;
-	}
-
-	public static String formatInteger(double value) {
-		updateDecimalFormat();
-		return INTEGER_FORMATTER.format(value);
-	}
-
-	public static DecimalFormat getIntegerFormatter() {
-		updateDecimalFormat();
-		return INTEGER_FORMATTER;
-	}
-
-	public static String formatDouble(double value) {
-		updateDecimalFormat();
-		return DOUBLE_FORMATTER.format(value);
-	}
-
-	public static DecimalFormat getDoubleFormatter() {
-		updateDecimalFormat();
-		return DOUBLE_FORMATTER;
 	}
 
 }

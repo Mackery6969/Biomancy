@@ -2,6 +2,7 @@ package com.github.elenterius.biomancy.client.util;
 
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
+import com.github.elenterius.biomancy.util.FormatUtil;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -24,7 +25,7 @@ public final class GuiRenderUtil {
 
 	public static void drawFuelTooltip(Font font, GuiGraphics guiGraphics, int mouseX, int mouseY, int maxFuel, int fuelAmount, int totalFuelCost) {
 		List<Component> hoveringText = new ArrayList<>();
-		DecimalFormat df = ClientTextUtil.getIntegerFormatter();
+		DecimalFormat df = FormatUtil.getIntegerFormatter();
 
 		hoveringText.add(ComponentUtil.translatable("tooltip.biomancy.nutrients_fuel").withStyle(TextStyles.NUTRIENTS));
 		hoveringText.add(ComponentUtil.literal("%s/%s u".formatted(df.format(fuelAmount), df.format(maxFuel))));

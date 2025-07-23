@@ -6,6 +6,7 @@ import com.github.elenterius.biomancy.item.KeyPressListener;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
+import com.github.elenterius.biomancy.util.FormatUtil;
 import com.github.elenterius.biomancy.util.function.FloatOperator;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -293,7 +294,7 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 	}
 
 	public void appendGunStats(ItemStack stack, List<Component> tooltip) {
-		DecimalFormat df = ClientTextUtil.getDoubleFormatter();
+		DecimalFormat df = FormatUtil.getDoubleFormatter();
 
 		float damage = modifyProjectileDamage(configuredProjectile.damage(), stack);
 		float bonusDamage = damage - configuredProjectile.damage();

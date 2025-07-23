@@ -12,6 +12,7 @@ import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.CombatUtil;
 import com.github.elenterius.biomancy.util.ComponentUtil;
+import com.github.elenterius.biomancy.util.FormatUtil;
 import com.github.elenterius.biomancy.util.MobUtil;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import com.google.common.collect.ImmutableMultimap;
@@ -318,7 +319,7 @@ public class RavenousClawsItem extends LivingClawsItem implements GeoItem, ItemC
 			}
 		}
 
-		DecimalFormat df = ClientTextUtil.getIntegerFormatter();
+		DecimalFormat df = FormatUtil.getIntegerFormatter();
 		tooltip.add(TextComponentUtil.getTooltipText("nutrients_fuel").withStyle(ChatFormatting.GRAY));
 		tooltip.add(ComponentUtil.literal(" %s/%s".formatted(df.format(getNutrients(stack)), df.format(getMaxNutrients(stack)))).withStyle(TextStyles.NUTRIENTS));
 		tooltip.add(TextComponentUtil.getTooltipText("blood_charge").withStyle(ChatFormatting.GRAY));
