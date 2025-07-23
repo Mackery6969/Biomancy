@@ -1,6 +1,6 @@
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-package com.github.elenterius.biomancy.world.spatial;
+package com.github.elenterius.spatialdb;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 

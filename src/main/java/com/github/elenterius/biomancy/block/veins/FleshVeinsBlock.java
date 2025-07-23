@@ -15,9 +15,9 @@ import com.github.elenterius.biomancy.world.mound.MoundChamber;
 import com.github.elenterius.biomancy.world.mound.MoundShape;
 import com.github.elenterius.biomancy.world.mound.decorator.ChamberDecorator;
 import com.github.elenterius.biomancy.world.mound.decorator.ChamberSpecialDecorator;
-import com.github.elenterius.biomancy.world.spatial.SpatialShapeManager;
-import com.github.elenterius.biomancy.world.spatial.geometry.HasRadius;
-import com.github.elenterius.biomancy.world.spatial.geometry.Shape;
+import com.github.elenterius.spatialdb.SpatialDBManager;
+import com.github.elenterius.spatialdb.geometry.HasRadius;
+import com.github.elenterius.spatialdb.geometry.Shape;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -521,7 +521,7 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 		MoundShape mound = null;
 		float nearBoundingCenterPct = 0;
 
-		if (SpatialShapeManager.getClosestShape(level, pos, MoundShape.class::isInstance) instanceof MoundShape moundShape) {
+		if (SpatialDBManager.getInstance(level).getClosestShape(level, pos, MoundShape.class::isInstance) instanceof MoundShape moundShape) {
 			mound = moundShape;
 
 			BlockPos origin = mound.getOrigin();

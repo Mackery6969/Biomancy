@@ -1,7 +1,7 @@
-package com.github.elenterius.biomancy.world.spatial.geometry;
+package com.github.elenterius.spatialdb.geometry;
 
 import com.github.elenterius.biomancy.util.serialization.NBTSerializer;
-import com.github.elenterius.biomancy.world.spatial.type.ShapeSerializers;
+import com.github.elenterius.spatialdb.type.ShapeSerializers;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;

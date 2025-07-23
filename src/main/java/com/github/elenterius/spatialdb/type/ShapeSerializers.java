@@ -1,12 +1,12 @@
-package com.github.elenterius.biomancy.world.spatial.type;
+package com.github.elenterius.spatialdb.type;
 
 import com.github.elenterius.biomancy.util.serialization.NBTSerializer;
 import com.github.elenterius.biomancy.world.MobSpawnFilterShape;
 import com.github.elenterius.biomancy.world.mound.MoundShape;
-import com.github.elenterius.biomancy.world.spatial.geometry.CuboidShape;
-import com.github.elenterius.biomancy.world.spatial.geometry.OctantEllipsoidShape;
-import com.github.elenterius.biomancy.world.spatial.geometry.Shape;
-import com.github.elenterius.biomancy.world.spatial.geometry.SphereShape;
+import com.github.elenterius.spatialdb.geometry.CuboidShape;
+import com.github.elenterius.spatialdb.geometry.OctantEllipsoidShape;
+import com.github.elenterius.spatialdb.geometry.Shape;
+import com.github.elenterius.spatialdb.geometry.SphereShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;

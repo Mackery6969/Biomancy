@@ -1,4 +1,4 @@
-package com.github.elenterius.biomancy.world.spatial.geometry;
+package com.github.elenterius.spatialdb.geometry;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;

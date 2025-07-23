@@ -1,7 +1,7 @@
 package com.github.elenterius.biomancy.world.mound;
 
 import com.github.elenterius.biomancy.world.mound.decorator.ChamberDecorator;
-import com.github.elenterius.biomancy.world.spatial.geometry.Shape;
+import com.github.elenterius.spatialdb.geometry.Shape;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 

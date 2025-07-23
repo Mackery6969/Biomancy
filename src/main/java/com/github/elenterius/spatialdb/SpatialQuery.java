@@ -1,4 +1,4 @@
-package com.github.elenterius.biomancy.world.spatial;
+package com.github.elenterius.spatialdb;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;

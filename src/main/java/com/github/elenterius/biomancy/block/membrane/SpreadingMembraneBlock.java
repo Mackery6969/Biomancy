@@ -6,7 +6,7 @@ import com.github.elenterius.biomancy.init.ModBlocks;
 import com.github.elenterius.biomancy.util.VectorUtil;
 import com.github.elenterius.biomancy.world.PrimordialEcosystem;
 import com.github.elenterius.biomancy.world.mound.MoundShape;
-import com.github.elenterius.biomancy.world.spatial.SpatialShapeManager;
+import com.github.elenterius.spatialdb.SpatialDBManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -30,7 +30,7 @@ public class SpreadingMembraneBlock extends MembraneBlock {
 
 		if (!stateAtTargetPos.isAir() && !(stateAtTargetPos.getBlock() instanceof FleshVeinsBlock) && !PrimordialEcosystem.isReplaceable(stateAtTargetPos)) return;
 
-		if (SpatialShapeManager.getClosestShape(level, pos, MoundShape.class::isInstance) instanceof MoundShape mound) {
+		if (SpatialDBManager.getInstance(level).getClosestShape(level, pos, MoundShape.class::isInstance) instanceof MoundShape mound) {
 			BlockEntity blockEntity = level.getExistingBlockEntity(mound.getOrigin());
 			if (blockEntity instanceof PrimalEnergyHandler energyHandler && !mound.hasChamberAt(targetPos)) {
 

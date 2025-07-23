@@ -1,4 +1,4 @@
-package com.github.elenterius.biomancy.world.spatial.geometry;
+package com.github.elenterius.spatialdb.geometry;
 
 import com.github.elenterius.biomancy.util.serialization.NBTSerializable;
 import com.github.elenterius.biomancy.util.serialization.NBTSerializer;

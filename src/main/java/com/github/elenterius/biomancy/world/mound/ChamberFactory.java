@@ -1,8 +1,8 @@
 package com.github.elenterius.biomancy.world.mound;
 
 import com.github.elenterius.biomancy.world.mound.decorator.ChamberDecorators;
-import com.github.elenterius.biomancy.world.spatial.geometry.OctantEllipsoidShape;
-import com.github.elenterius.biomancy.world.spatial.geometry.SphereShape;
+import com.github.elenterius.spatialdb.geometry.OctantEllipsoidShape;
+import com.github.elenterius.spatialdb.geometry.SphereShape;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 

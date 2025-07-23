@@ -2,8 +2,8 @@ package com.github.elenterius.biomancy.block.neural;
 
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import com.github.elenterius.biomancy.world.MobSpawnFilterShape;
-import com.github.elenterius.biomancy.world.spatial.SpatialShapeManager;
-import com.github.elenterius.biomancy.world.spatial.geometry.SphereShape;
+import com.github.elenterius.spatialdb.SpatialDBManager;
+import com.github.elenterius.spatialdb.geometry.SphereShape;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -50,7 +50,7 @@ public class NeuralInterceptorBlock extends HorizontalDirectionalBlock {
 	@Override
 	public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
 		if (level instanceof ServerLevel serverLevel) {
-			SpatialShapeManager.getOrCreateShape(serverLevel, pos, () -> {
+			SpatialDBManager.getInstance(serverLevel).getOrCreateShape(serverLevel, pos, () -> {
 				SphereShape shape = new SphereShape(pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d, 48);
 				return new MobSpawnFilterShape(shape);
 			});
@@ -61,7 +61,7 @@ public class NeuralInterceptorBlock extends HorizontalDirectionalBlock {
 	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (!state.is(newState.getBlock())) {
 			if (level instanceof ServerLevel serverLevel) {
-				SpatialShapeManager.remove(serverLevel, pos);
+				SpatialDBManager.getInstance(serverLevel).removeShape(serverLevel, pos);
 			}
 			super.onRemove(state, level, pos, newState, isMoving);
 		}

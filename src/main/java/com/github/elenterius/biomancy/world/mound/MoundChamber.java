@@ -3,7 +3,7 @@ package com.github.elenterius.biomancy.world.mound;
 import com.github.elenterius.biomancy.util.serialization.NBTSerializer;
 import com.github.elenterius.biomancy.world.mound.decorator.ChamberDecorator;
 import com.github.elenterius.biomancy.world.mound.decorator.ChamberDecorators;
-import com.github.elenterius.biomancy.world.spatial.geometry.Shape;
+import com.github.elenterius.spatialdb.geometry.Shape;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 

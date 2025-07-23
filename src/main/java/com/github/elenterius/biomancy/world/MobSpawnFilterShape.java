@@ -1,8 +1,8 @@
 package com.github.elenterius.biomancy.world;
 
 import com.github.elenterius.biomancy.util.serialization.NBTSerializer;
-import com.github.elenterius.biomancy.world.spatial.geometry.Shape;
-import com.github.elenterius.biomancy.world.spatial.type.ShapeSerializers;
+import com.github.elenterius.spatialdb.geometry.Shape;
+import com.github.elenterius.spatialdb.type.ShapeSerializers;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;

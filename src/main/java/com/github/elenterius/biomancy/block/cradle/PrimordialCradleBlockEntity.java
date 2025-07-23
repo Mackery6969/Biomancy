@@ -15,8 +15,8 @@ import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import com.github.elenterius.biomancy.world.PrimordialEcosystem;
 import com.github.elenterius.biomancy.world.mound.MoundGenerator;
 import com.github.elenterius.biomancy.world.mound.MoundShape;
-import com.github.elenterius.biomancy.world.spatial.SpatialShapeManager;
-import com.github.elenterius.biomancy.world.spatial.geometry.Shape;
+import com.github.elenterius.spatialdb.SpatialDBManager;
+import com.github.elenterius.spatialdb.geometry.Shape;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import net.minecraft.core.BlockPos;
@@ -96,7 +96,7 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 	public void onLoad() {
 		super.onLoad();
 		if (level instanceof ServerLevel serverLevel) {
-			Shape shape = SpatialShapeManager.getOrCreateShape(serverLevel, worldPosition, () -> {
+			Shape shape = SpatialDBManager.getInstance(serverLevel).getOrCreateShape(serverLevel, worldPosition, () -> {
 				if (procGenValues != null) {
 					return MoundGenerator.constructShape(worldPosition, procGenValues);
 				}

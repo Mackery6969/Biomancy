@@ -4,8 +4,9 @@ import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.init.ModEntityTypes;
 import com.github.elenterius.biomancy.init.ModMobEffects;
 import com.github.elenterius.biomancy.world.MobSpawnFilter;
-import com.github.elenterius.biomancy.world.spatial.SpatialShapeManager;
-import com.github.elenterius.biomancy.world.spatial.geometry.Shape;
+import com.github.elenterius.spatialdb.SpatialDBManager;
+import com.github.elenterius.spatialdb.SpatialQueryStrategy;
+import com.github.elenterius.spatialdb.geometry.Shape;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Mob;
@@ -44,7 +45,7 @@ public final class MobSpawnHandler {
 				double z = event.getZ();
 
 				Predicate<Shape> denySpawnPredicate = shape -> shape instanceof MobSpawnFilter filter && !filter.isMobAllowedToSpawn(mob, spawnReason, serverLevel, x, y, z);
-				boolean denySpawn = SpatialShapeManager.getAnyShape(serverLevel, mob, SpatialShapeManager.QueryStrategy.INTERSECTION, denySpawnPredicate) != null;
+				boolean denySpawn = SpatialDBManager.getInstance(serverLevel).getAnyShape(serverLevel, mob, SpatialQueryStrategy.INTERSECTION, denySpawnPredicate) != null;
 
 				if (denySpawn) {
 					//TODO: chamber specific mob spawn filters? --> e.g. chamber only allows creepers spawns

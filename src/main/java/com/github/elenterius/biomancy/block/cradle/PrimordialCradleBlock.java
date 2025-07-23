@@ -8,7 +8,7 @@ import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.github.elenterius.biomancy.util.FormatUtil;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import com.github.elenterius.biomancy.world.mound.MoundShape;
-import com.github.elenterius.biomancy.world.spatial.SpatialShapeManager;
+import com.github.elenterius.spatialdb.SpatialDBManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -129,7 +129,7 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (!state.is(newState.getBlock())) {
 			if (level instanceof ServerLevel serverLevel) {
-				SpatialShapeManager.remove(serverLevel, pos); //removes mound shape from level
+				SpatialDBManager.getInstance(serverLevel).removeShape(serverLevel, pos); //removes mound shape from level
 			}
 			super.onRemove(state, level, pos, newState, isMoving);
 		}

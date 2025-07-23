@@ -1,8 +1,8 @@
 package com.github.elenterius.biomancy.world.mound;
 
 import com.github.elenterius.biomancy.util.ClimateUtil;
-import com.github.elenterius.biomancy.world.spatial.geometry.Shape;
-import com.github.elenterius.biomancy.world.spatial.geometry.SphereShape;
+import com.github.elenterius.spatialdb.geometry.Shape;
+import com.github.elenterius.spatialdb.geometry.SphereShape;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
