@@ -26,6 +26,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
@@ -143,6 +144,14 @@ public class JumpPadBlock extends MultifaceBlock {
 	@Override
 	public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
 		return context.getItemInHand().is(asItem()) && super.canBeReplaced(state, context);
+	}
+
+	@Override
+	public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
+		Level level = context.getLevel();
+		BlockPos pos = context.getClickedPos();
+		BlockState state = level.getBlockState(pos);
+		return getStateForPlacement(state, level, pos, context.getClickedFace().getOpposite());
 	}
 
 	@Override
