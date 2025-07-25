@@ -119,6 +119,16 @@ jobs:
 
       # ---------------------------------------------------------------------
 
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
+          files: build/libs/*.jar
+          prerelease: true
+
       - name: Notify Discord Server
         uses: sarisia/actions-status-discord@v1.15.3
         with:
@@ -127,18 +137,17 @@ jobs:
           color: 0x088c7d
           username: "Maykr Bot"
           content: "<@&1098316788116246550>"
-          title: ":package: New Biomancy Build Available!"
+          title: ":package: New Biomancy Snapshot Available!"
           description: |
-            Snapshot-Version: `${{ steps.changelog.outputs.tag }}`
-            File SHA-256: `${{ steps.artifact-upload.outputs.artifact-digest }}`
+            ### Snapshot-Version: `${{ steps.changelog.outputs.tag }}`
+            ### File SHA-256: `${{ steps.artifact-upload.outputs.artifact-digest }}`
             
-            GitHub users can download the artifact [here](${{ steps.artifact-upload.outputs.artifact-url }}).
-            
-            The changelog and mod jar are attached below.
+            ## [View changelog and download on GitHub](${{ steps.create_release.outputs.url }}).
 
-      - name: Attach Changelog
-        uses: sinshutu/upload-to-discord@v2.0.0
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        with:
-          args: build/libs/*.jar CHANGELOG.md
+
+#      - name: Attach Changelog
+#        uses: sinshutu/upload-to-discord@v2.0.0
+#        env:
+#          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+#        with:
+#          args: build/libs/*.jar CHANGELOG.md
