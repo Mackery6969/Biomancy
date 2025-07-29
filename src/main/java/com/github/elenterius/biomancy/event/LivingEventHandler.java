@@ -7,6 +7,7 @@ import com.github.elenterius.biomancy.entity.misc.LivingEntityData;
 import com.github.elenterius.biomancy.init.AcidInteractions;
 import com.github.elenterius.biomancy.init.ModEnchantments;
 import com.github.elenterius.biomancy.init.ModMobEffects;
+import com.github.elenterius.biomancy.item.armor.WarriorArmorItem;
 import com.github.elenterius.biomancy.serum.FrenzySerum;
 import com.github.elenterius.biomancy.world.PrimordialEcosystem;
 import net.minecraft.core.BlockPos;
@@ -14,9 +15,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectUtil;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,6 +40,14 @@ import net.minecraftforge.fml.common.Mod;
 public final class LivingEventHandler {
 
 	private LivingEventHandler() {}
+
+	@SubscribeEvent
+	public static void onLivingJoinLevel(final EntityJoinLevelEvent event) {
+		if (event.getLevel().isClientSide()) return;
+		if (event.getEntity() instanceof Mob mob && mob.hasEffect(ModMobEffects.FRENZY.get())) {
+			FrenzySerum.injectAIBehavior(mob);
+		}
+	}
 
 	@SubscribeEvent
 	public static void onLivingTick(final LivingEvent.LivingTickEvent event) {
@@ -85,9 +96,17 @@ public final class LivingEventHandler {
 		}
 	}
 
-	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onLivingFall(final LivingFallEvent event) {
 		LivingEntity livingEntity = event.getEntity();
+
+		ItemStack stack = livingEntity.getItemBySlot(EquipmentSlot.FEET);
+		if (stack.getItem() instanceof WarriorArmorItem armor) {
+			armor.onFall(stack, event);
+		}
+
+		if (event.isCanceled() || (event.getDamageMultiplier() <= 0f && event.getDistance() <= 0f)) return;
+
 		Level level = livingEntity.level();
 		AABB aabb = livingEntity.getBoundingBox();
 
@@ -113,6 +132,7 @@ public final class LivingEventHandler {
 		int x2 = Mth.floor(aabb.maxX - deflateX - JumpPadBlock.EPSILON);
 		int z2 = Mth.floor(aabb.maxZ - deflateZ - JumpPadBlock.EPSILON);
 
+		//noinspection deprecation
 		if (level.hasChunksAt(x1, y, z1, x2, y, z2)) {
 			BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
 			for (int x = x1; x <= x2; x++) {
@@ -130,11 +150,12 @@ public final class LivingEventHandler {
 		}
 	}
 
-	@SubscribeEvent
-	public static void onLivingJoinLevel(final EntityJoinLevelEvent event) {
-		if (event.getLevel().isClientSide()) return;
-		if (event.getEntity() instanceof Mob mob && mob.hasEffect(ModMobEffects.FRENZY.get())) {
-			FrenzySerum.injectAIBehavior(mob);
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public static void onLivingJump(final LivingEvent.LivingJumpEvent event) {
+		LivingEntity livingEntity = event.getEntity();
+		ItemStack stack = livingEntity.getItemBySlot(EquipmentSlot.LEGS);
+		if (stack.getItem() instanceof WarriorArmorItem armor) {
+			armor.onJump(stack, livingEntity);
 		}
 	}
 

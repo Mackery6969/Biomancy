@@ -11,6 +11,11 @@ The mod contains sounds from Freesound.org, please check 3RD_PARTY_LICENSE.txt f
 	- Gore Rend by magnuswaker
 	- stomach rumble_1 by DieUntergang
 	- Gulp - Hard Swallow by magnuswaker
+- `item.armor.bullet_jump.ogg` made by combining:
+	- Fabric_Foley_1 by Mediasaur
+	- 71 salto membrana.wav by checholio
+	- Slime Jump 1 by qubodup
+	- Swishes and swooshes by florianreichelt
 
 ## Translations
 

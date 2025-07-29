@@ -1,15 +1,21 @@
 package com.github.elenterius.biomancy.item.armor;
 
 import com.github.elenterius.biomancy.client.render.item.armor.WarriorArmorRenderer;
+import com.github.elenterius.biomancy.entity.misc.LivingEntityData;
+import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.item.ItemTooltipStyleProvider;
 import com.github.elenterius.biomancy.item.ShowKnowledgeOverlay;
 import com.github.elenterius.biomancy.mixin.accessor.ArmorItemAccessor;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.util.ComponentUtil;
+import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -23,9 +29,13 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -38,20 +48,186 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public final class WarriorArmorItem extends LivingArmorGeoItem implements ShowKnowledgeOverlay, ItemTooltipStyleProvider {
+public class WarriorArmorItem extends LivingArmorGeoItem implements ShowKnowledgeOverlay, ItemTooltipStyleProvider {
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
+	protected final ImmutableMultimap<Attribute, AttributeModifier> brokenAttributeModifiers;
 
 	public WarriorArmorItem(ArmorMaterial material, Type type, int maxNutrients, Properties properties) {
 		super(material, type, maxNutrients, properties);
 
-		ArmorItemAccessor baseArmor = (ArmorItemAccessor) (ArmorItem) this;
+		ArmorItemAccessor baseArmor = (ArmorItemAccessor) this;
 		UUID uuid = ArmorItemAccessor.biomancy$ARMOR_MODIFIER_UUID_PER_TYPE().get(type);
 
-		ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-		builder.putAll(baseArmor.biomancy$getDefaultModifiers());
-		builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(uuid, "Armor attack damage", 0.05d, AttributeModifier.Operation.MULTIPLY_BASE));
-		baseArmor.biomancy$setDefaultModifiers(builder.build());
+		ImmutableMultimap.Builder<Attribute, AttributeModifier> defaultBuilder = ImmutableMultimap.builder();
+		defaultBuilder.putAll(baseArmor.biomancy$getDefaultModifiers());
+
+		ImmutableMultimap.Builder<Attribute, AttributeModifier> brokenBuilder = ImmutableMultimap.builder();
+
+		if (type == Type.CHESTPLATE) {
+			defaultBuilder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(uuid, "Armor attack damage bonus", 0.2d, AttributeModifier.Operation.MULTIPLY_BASE));
+			defaultBuilder.put(Attributes.ATTACK_KNOCKBACK, new AttributeModifier(uuid, "Armor attack knockback bonus", 0.5d, AttributeModifier.Operation.ADDITION));
+
+			AttributeModifier attackSpeedPenalty = new AttributeModifier(uuid, "Armor attack speed penalty", -0.2d, AttributeModifier.Operation.MULTIPLY_BASE);
+			defaultBuilder.put(Attributes.ATTACK_SPEED, attackSpeedPenalty);
+			brokenBuilder.put(Attributes.ATTACK_SPEED, attackSpeedPenalty);
+
+			AttributeModifier movementSpeedPenalty = new AttributeModifier(uuid, "Armor movement speed penalty", -0.2d, AttributeModifier.Operation.MULTIPLY_BASE);
+			defaultBuilder.put(Attributes.MOVEMENT_SPEED, movementSpeedPenalty);
+			brokenBuilder.put(Attributes.MOVEMENT_SPEED, movementSpeedPenalty);
+
+			AttributeModifier armorWeight = new AttributeModifier(uuid, "Armor weight penalty", 0.4d, AttributeModifier.Operation.MULTIPLY_BASE);
+			defaultBuilder.put(ForgeMod.ENTITY_GRAVITY.get(), armorWeight);
+			brokenBuilder.put(ForgeMod.ENTITY_GRAVITY.get(), armorWeight);
+		}
+		else if (type == Type.LEGGINGS) {
+			defaultBuilder.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(uuid, "Armor movement speed bonus", 0.2d, AttributeModifier.Operation.MULTIPLY_BASE));
+		}
+
+		baseArmor.biomancy$setDefaultModifiers(defaultBuilder.build());
+
+		brokenAttributeModifiers = brokenBuilder.build();
+	}
+
+	@Override
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+		return getNutrients(stack) > 0 ? super.getAttributeModifiers(slot, stack) : getBrokenAttributeModifiers(slot);
+	}
+
+	protected ImmutableMultimap<Attribute, AttributeModifier> getBrokenAttributeModifiers(EquipmentSlot slot) {
+		return slot == type.getSlot() ? brokenAttributeModifiers : ImmutableMultimap.of();
+	}
+
+	public double getJumpBoostPower(ItemStack stack) {
+		return type == ArmorItem.Type.LEGGINGS && getNutrients(stack) > 0 ? 0.15d : 0d;
+	}
+
+	public float getFallReduction(ItemStack stack) {
+		return type == Type.BOOTS && getNutrients(stack) > 0 ? 0.5f : 0f;
+	}
+
+	public void onJump(ItemStack stack, LivingEntity livingEntity) {
+		if (type != ArmorItem.Type.LEGGINGS) return;
+		//		if (livingEntity.level().isClientSide) return;
+
+		if (livingEntity.isShiftKeyDown()) {
+			if (livingEntity instanceof Player player) {
+				if (getNutrients(stack) >= 10) {
+					if (bulletJump(player)) {
+						consumeNutrients(stack, 10);
+					}
+				}
+				else if (player instanceof ServerPlayer serverPlayer) {
+					player.displayClientMessage(TextComponentUtil.getFailureMsgText("not_enough_nutrients"), true);
+					SoundUtil.Server.sendSoundToClient(serverPlayer, ModSoundEvents.FLESHKIN_NO.get(), player.getSoundSource(), 1f, 1f + player.level().getRandom().nextFloat() * 0.4f);
+				}
+			}
+			return;
+		}
+
+		double jumpBoostPower = getJumpBoostPower(stack);
+		if (jumpBoostPower != 0d) {
+			if (getNutrients(stack) >= 1) {
+				livingEntity.setDeltaMovement(livingEntity.getDeltaMovement().add(0d, jumpBoostPower, 0d));
+				consumeNutrients(stack, 1);
+			}
+			else if (livingEntity instanceof ServerPlayer player) {
+				player.displayClientMessage(TextComponentUtil.getFailureMsgText("not_enough_nutrients"), true);
+				SoundUtil.Server.sendSoundToClient(player, ModSoundEvents.FLESHKIN_NO.get(), player.getSoundSource(), 1f, 1f + player.level().getRandom().nextFloat() * 0.4f);
+			}
+		}
+	}
+
+	public void onFall(ItemStack stack, LivingFallEvent event) {
+		if (type == Type.BOOTS && getNutrients(stack) >= 1) {
+			consumeNutrients(stack, 1);
+			float multiplier = 1f - getFallReduction(stack);
+			event.setDamageMultiplier(event.getDamageMultiplier() * multiplier);
+			event.setDistance(event.getDistance() * multiplier);
+		}
+	}
+
+	protected boolean bulletJump(Player player) {
+		Vec3 lookVec = player.getLookAngle();
+		Vec3 velocity = player.getDeltaMovement();
+
+		Vec3 UP = new Vec3(0, 1, 0);
+		double verticalSimilarity = UP.dot(lookVec); //1 = up, 0 = horizontal, -1 = down
+
+		double maxDistance = 32d;
+		double minDistance = maxDistance * 0.7d;
+		double horizontalSimilarity = 1d - Math.abs(verticalSimilarity);
+		double lookDistance = Mth.lerp(horizontalSimilarity, minDistance, maxDistance);
+
+		Vec3 eyePos = player.getEyePosition();
+		Vec3 lookTarget = eyePos.add(lookVec.scale(lookDistance));
+
+		if (verticalSimilarity < -(22.5d / 90d)) {
+			ClipContext context = new ClipContext(player.position(), lookTarget, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player);
+			if (player.level().clip(context).getType() == HitResult.Type.BLOCK) {
+				if (player instanceof ServerPlayer serverPlayer) {
+					SoundUtil.Server.sendSoundToClient(serverPlayer, ModSoundEvents.FLESHKIN_NO.get(), player.getSoundSource(), 0.5f, 0.5f + player.level().getRandom().nextFloat() * 0.5f);
+				}
+				return false;
+			}
+		}
+
+		Vec3 jumpDirection = lookTarget.subtract(player.position()).normalize();
+
+		if (canElytraFly(player)) {
+			//free boosted elytra takeoff without rockets
+			double maxPower = 0.75d + velocity.y;
+			double power = Mth.lerp(horizontalSimilarity, maxPower * 0.54d, maxPower);
+
+			player.setDeltaMovement(
+					velocity.x + jumpDirection.x * power,
+					jumpDirection.y * power,
+					velocity.z + jumpDirection.z * power
+			);
+
+			player.startFallFlying();
+		}
+		else {
+			double maxPower = 2d + velocity.y;
+			double power = Mth.lerp(horizontalSimilarity, maxPower * 0.7d, maxPower);
+
+			player.setDeltaMovement(
+					velocity.x + jumpDirection.x * power,
+					jumpDirection.y * power,
+					velocity.z + jumpDirection.z * power
+			);
+
+			player.startAutoSpinAttack(20);
+			if (player.onGround()) {
+				//hack to allow consecutive execution of spin attacks when the user holds down shift continuously
+				player.move(MoverType.SELF, new Vec3(0d, 1.1999999f, 0d));
+			}
+		}
+
+		if (player.onGround()) {
+			//Fix warning "player moved wrongly!" caused by sneaking and trying to jump off block ledge (fall off prevention)
+			player.setShiftKeyDown(false);
+
+			//probably not needed
+			if (player instanceof LivingEntityData.TransientDataProvider provider) {
+				provider.biomancy$getData().setDiscardFriction(true);
+			}
+		}
+
+		//player.fallDistance = 0f;
+		player.hasImpulse = true;
+		player.hurtMarked = true;
+		player.playSound(ModSoundEvents.ARMOR_BULLET_JUMP.get(), 1f, 1f);
+
+		return true;
+	}
+
+	protected static boolean canElytraFly(Player player) {
+		if (!player.isFallFlying() && !player.isInWater() && !player.hasEffect(MobEffects.LEVITATION)) {
+			return player.getItemBySlot(EquipmentSlot.CHEST).canElytraFly(player);
+		}
+		return false;
 	}
 
 	@Override
@@ -132,11 +308,30 @@ public final class WarriorArmorItem extends LivingArmorGeoItem implements ShowKn
 
 		tooltip.add(ComponentUtil.emptyLine());
 		tooltip.add(TextComponentUtil.getAbilityText("fleshkin_affinity").withStyle(ChatFormatting.GRAY));
-		tooltip.add(ComponentUtil.literal(" ").append(TextComponentUtil.getAbilityText("fleshkin_affinity.desc")).withStyle(ChatFormatting.DARK_GRAY));
+		tooltip.add(ComponentUtil.space().append(TextComponentUtil.getAbilityText("fleshkin_affinity.desc")).withStyle(ChatFormatting.DARK_GRAY));
 
 		tooltip.add(ComponentUtil.emptyLine());
 		tooltip.add(TextComponentUtil.getAbilityText("imposing_aura").withStyle(ChatFormatting.GRAY));
-		tooltip.add(ComponentUtil.literal(" ").append(TextComponentUtil.getAbilityText("imposing_aura.desc")).withStyle(ChatFormatting.DARK_GRAY));
+		tooltip.add(ComponentUtil.space().append(TextComponentUtil.getAbilityText("imposing_aura.desc")).withStyle(ChatFormatting.DARK_GRAY));
+
+		if (type == Type.LEGGINGS) {
+			tooltip.add(ComponentUtil.emptyLine());
+			tooltip.add(TextComponentUtil.getAbilityText("strong_legs").withStyle(ChatFormatting.GRAY));
+			tooltip.add(ComponentUtil.space().append(TextComponentUtil.getAbilityText("strong_legs.desc")).withStyle(ChatFormatting.DARK_GRAY));
+
+			double jumpBoostPower = getJumpBoostPower(stack);
+			if (jumpBoostPower != 0d) {
+				String prefix = jumpBoostPower > 0d ? "+" : "";
+				tooltip.add(ComponentUtil.space().append(prefix + jumpBoostPower + " Jump Boost Power").withStyle(ChatFormatting.DARK_GRAY));
+			}
+		}
+		else if (type == Type.BOOTS) {
+			tooltip.add(ComponentUtil.emptyLine());
+			tooltip.add(TextComponentUtil.getAbilityText("padded_soles").withStyle(ChatFormatting.GRAY));
+
+			int pct = (int) (getFallReduction(stack) * 100f);
+			tooltip.add(ComponentUtil.space().append(pct + "% Fall Reduction").withStyle(ChatFormatting.DARK_GRAY));
+		}
 
 		tooltip.add(ComponentUtil.emptyLine());
 

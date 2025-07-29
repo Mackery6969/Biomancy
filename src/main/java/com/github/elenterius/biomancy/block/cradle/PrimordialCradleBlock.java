@@ -104,7 +104,7 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 	public static MutableComponent createValueComponent(DecimalFormat df, int value, String name) {
 		return ComponentUtil.literal(df.format(value))
 				.withStyle(TextStyles.PRIMORDIAL_RUNES_LIGHT_GRAY)
-				.append(ComponentUtil.space())
+				.append(ComponentUtil.SPACE)
 				.append(ComponentUtil.literal(name).withStyle(TextStyles.GRAY));
 	}
 

@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
  */
 public class CustomEditBox extends EditBox {
 
-	private Component hint = ComponentUtil.empty();
+	private Component hint = ComponentUtil.EMPTY;
 	private final Font font;
 	private boolean isBackgroundDisabled = false;
 

@@ -162,7 +162,7 @@ public class AdvancementBuilder {
 
 	public Advancement save(Consumer<Advancement> consumer, ExistingFileHelper fileHelper, String category) throws IllegalStateException {
 		if (empty) {
-			internalBuilder.display(icon, ComponentUtil.empty(), ComponentUtil.empty(), background, frameType, showToast, announceToChat, hidden);
+			internalBuilder.display(icon, ComponentUtil.EMPTY, ComponentUtil.EMPTY, background, frameType, showToast, announceToChat, hidden);
 			return internalBuilder.save(consumer, createRL(category + "/" + id), fileHelper);
 		}
 

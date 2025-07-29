@@ -22,8 +22,12 @@ import java.util.Optional;
 
 public final class ComponentUtil {
 
-	private static final Component SPACE = Component.literal(" ");
-	private static final Component TEXT_SEPARATOR = Component.literal(", ");
+	public static final Component SPACE = CommonComponents.SPACE;
+	public static final Component EMPTY = CommonComponents.EMPTY;
+	public static final Component NEW_LINE = CommonComponents.NEW_LINE;
+	public static final Component EMPTY_LINE = TooltipHacks.EMPTY_LINE_COMPONENT;
+	public static final Component ELLIPSIS = CommonComponents.ELLIPSIS;
+	public static final Component TEXT_SEPARATOR = Component.literal(", ");
 
 	private ComponentUtil() {}
 
@@ -47,15 +51,11 @@ public final class ComponentUtil {
 		return Component.empty();
 	}
 
-	public static Component empty() {
-		return CommonComponents.EMPTY;
-	}
-
 	/**
 	 * whitespace
 	 */
-	public static Component space() {
-		return SPACE;
+	public static MutableComponent space() {
+		return Component.literal(" ");
 	}
 
 	/**
@@ -63,18 +63,6 @@ public final class ComponentUtil {
 	 */
 	public static Component emptyLine() {
 		return TooltipHacks.EMPTY_LINE_COMPONENT;
-	}
-
-	public static Component newLine() {
-		return CommonComponents.NEW_LINE;
-	}
-
-	public static Component ellipsis() {
-		return CommonComponents.ELLIPSIS;
-	}
-
-	public static Component textSeparator() {
-		return TEXT_SEPARATOR;
 	}
 
 	/**

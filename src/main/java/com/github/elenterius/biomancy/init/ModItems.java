@@ -115,10 +115,10 @@ public final class ModItems {
 	public static final RegistryObject<AcolyteArmorItem> ACOLYTE_ARMOR_CHESTPLATE = registerLivingArmorChestplate("acolyte_armor", ModArmorMaterials.ACOLYTE, 250, AcolyteArmorItem::new);
 	public static final RegistryObject<AcolyteArmorItem> ACOLYTE_ARMOR_LEGGINGS = registerLivingArmorLeggings("acolyte_armor", ModArmorMaterials.ACOLYTE, 250, AcolyteArmorItem::new);
 	public static final RegistryObject<AcolyteArmorItem> ACOLYTE_ARMOR_BOOTS = registerLivingArmorBoots("acolyte_armor", ModArmorMaterials.ACOLYTE, 200, AcolyteArmorItem::new);
-	public static final RegistryObject<WarriorArmorItem> WARRIOR_ARMOR_HELMET = registerLivingArmorHelmet("warrior_armor", ModArmorMaterials.WARRIOR, 200, WarriorArmorItem::new);
-	public static final RegistryObject<WarriorArmorItem> WARRIOR_ARMOR_CHESTPLATE = registerLivingArmorChestplate("warrior_armor", ModArmorMaterials.WARRIOR, 250, WarriorArmorItem::new);
-	public static final RegistryObject<WarriorArmorItem> WARRIOR_ARMOR_LEGGINGS = registerLivingArmorLeggings("warrior_armor", ModArmorMaterials.WARRIOR, 250, WarriorArmorItem::new);
-	public static final RegistryObject<WarriorArmorItem> WARRIOR_ARMOR_BOOTS = registerLivingArmorBoots("warrior_armor", ModArmorMaterials.WARRIOR, 200, WarriorArmorItem::new);
+	public static final RegistryObject<WarriorArmorItem> WARRIOR_ARMOR_HELMET = registerLivingArmorHelmet("warrior_armor", ModArmorMaterials.WARRIOR, 200 * 2, WarriorArmorItem::new);
+	public static final RegistryObject<WarriorArmorItem> WARRIOR_ARMOR_CHESTPLATE = registerLivingArmorChestplate("warrior_armor", ModArmorMaterials.WARRIOR, 250 * 2, WarriorArmorItem::new);
+	public static final RegistryObject<WarriorArmorItem> WARRIOR_ARMOR_LEGGINGS = registerLivingArmorLeggings("warrior_armor", ModArmorMaterials.WARRIOR, 250 * 2, WarriorArmorItem::new);
+	public static final RegistryObject<WarriorArmorItem> WARRIOR_ARMOR_BOOTS = registerLivingArmorBoots("warrior_armor", ModArmorMaterials.WARRIOR, 200 * 2, WarriorArmorItem::new);
 
 	//# Misc
 	public static final RegistryObject<EffectCureItem> NUTRIENT_PASTE = registerItem("nutrient_paste", props -> new EffectCureItem(props.food(ModFoods.NUTRIENT_PASTE)));

@@ -596,6 +596,12 @@
     ],
     "subtitle": "sounds.biomancy.fleshkin_chest.open"
   },
+  "item.armor.bullet_jump": {
+    "sounds": [
+      "biomancy:item.armor.bullet_jump"
+    ],
+    "subtitle": "sounds.biomancy.item.armor.bullet_jump"
+  },
   "item.bone_marrow.drink": {
     "sounds": [
       {

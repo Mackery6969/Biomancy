@@ -156,13 +156,13 @@ public final class AdaptiveDamageResistanceHandler {
 				);
 
 				if (tag.contains("count")) {
-					tooltip.add(ComponentUtil.mutable().withStyle(TextStyles.GRAY).append(ComponentUtil.space())
+					tooltip.add(ComponentUtil.mutable().withStyle(TextStyles.GRAY).append(ComponentUtil.SPACE)
 							.append(ComponentUtil.literal("Count: " + tag.getInt("count")))
 					);
 				}
 
 				if (tag.contains("resistance")) {
-					tooltip.add(ComponentUtil.mutable().withStyle(TextStyles.GRAY).append(ComponentUtil.space())
+					tooltip.add(ComponentUtil.mutable().withStyle(TextStyles.GRAY).append(ComponentUtil.SPACE)
 							.append(ComponentUtil.literal("Resistance: " + tag.getFloat("resistance")))
 					);
 				}

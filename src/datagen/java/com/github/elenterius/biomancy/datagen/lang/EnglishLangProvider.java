@@ -237,7 +237,12 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addAbility("bio_alchemical_epidermis", "Bio-Alchemical Epidermis");
 		addAbility("bio_alchemical_epidermis.desc", "+15% Resistance to harmful Status-Effects\n +25% Injection Success\n -25% Injection Damage");
 		addAbility("imposing_aura", "Imposing Aura");
-		addAbility("imposing_aura.desc", "All nearby beings receive Weakness I");
+		addAbility("imposing_aura.desc", "When wearing a full set of this armor all nearby beings are afflicted with weakness and feeble mobs start to panic");
+		addAbility("strong_legs", "Copepods' Leap");
+		addAbility("strong_legs.desc", """
+				Consumes nutrients to boost normal jump power. When you jump and hold Shift the ability consumes 10 nutrients to perform a bullet jump.
+				A bullet jump is a spinning movement technique that is similar to a dash. If you wear an elytra the bullet jump transforms into a launch boost.""");
+		addAbility("padded_soles", "Padded Soles");
 		addAbility(AcolyteArmorUpgrades.PRIMORDIAL_SIGHT.getId().getPath(), "Primordial Sight");
 		addAbility(AcolyteArmorUpgrades.PRIMORDIAL_SIGHT.getId().getPath() + ".desc", "Peer inside the Cradle");
 
@@ -298,6 +303,7 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addSound(ModSoundEvents.IMPALER_HIT, "Impaler Hit");
 		addSound(ModSoundEvents.IMPALER_IMPACT, "Impaler Impact");
 		addSound(ModSoundEvents.IMPALER_CHARGE, "Impaler Charging");
+		addSound(ModSoundEvents.ARMOR_BULLET_JUMP, "Bullet Jumping");
 
 		addSound(ModSoundEvents.FLESH_BLOCK_HIT, "Hit Fleshy Block");
 		addSound(ModSoundEvents.FLESH_BLOCK_PLACE, "Place Fleshy Block");

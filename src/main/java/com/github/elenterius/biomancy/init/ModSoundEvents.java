@@ -22,6 +22,7 @@ public final class ModSoundEvents {
 	public static final RegistryObject<SoundEvent> IMPALER_HIT = register("item.impaler.hit");
 	public static final RegistryObject<SoundEvent> IMPALER_IMPACT = register("item.impaler.impact");
 	public static final RegistryObject<SoundEvent> IMPALER_CHARGE = register("item.impaler.charge");
+	public static final RegistryObject<SoundEvent> ARMOR_BULLET_JUMP = register("item.armor.bullet_jump");
 
 	//# Blocks
 	public static final RegistryObject<SoundEvent> FLESH_BLOCK_PLACE = register("flesh_block.place");

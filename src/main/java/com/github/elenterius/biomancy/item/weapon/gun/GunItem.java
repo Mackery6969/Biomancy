@@ -328,7 +328,7 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 
 	private Component formatBonusValue(DecimalFormat df, float value, boolean inverted) {
 		if (value == 0) {
-			return ComponentUtil.empty();
+			return ComponentUtil.EMPTY;
 		}
 
 		boolean isBeneficial = inverted ? value < 0 : value > 0;

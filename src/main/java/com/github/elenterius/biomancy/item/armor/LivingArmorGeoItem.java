@@ -16,7 +16,7 @@ public abstract class LivingArmorGeoItem extends LivingArmorItem implements GeoI
 
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, @Nullable String type) {
-		//		return "minecraft:textures/models/armor/diamond_layer_1.png"; //suppress texture not found error, ideally we shouldn't do this
+		// return "minecraft:textures/models/armor/diamond_layer_1.png"; //suppress texture not found error, ideally we shouldn't do this
 		return MissingTextureAtlasSprite.getLocation().toString();
 	}
 

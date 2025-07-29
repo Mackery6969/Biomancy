@@ -33,6 +33,7 @@ public class ModSoundProvider extends SoundDefinitionsProvider {
 		addSimpleSound(ModSoundEvents.IMPALER_HIT);
 		addSimpleSound(ModSoundEvents.IMPALER_IMPACT);
 		addSimpleSound(ModSoundEvents.IMPALER_CHARGE);
+		addSimpleSound(ModSoundEvents.ARMOR_BULLET_JUMP);
 
 		addSimpleSounds(ModSoundEvents.FLESH_BLOCK_HIT, 4);
 		addSimpleSounds(ModSoundEvents.FLESH_BLOCK_PLACE, 2);

@@ -25,6 +25,6 @@
   "nutrientsCost": 250,
   "result": {
     "item": "biomancy:warrior_armor_chestplate",
-    "nbt": "{\"biomancy:nutrients\":250}"
+    "nbt": "{\"biomancy:nutrients\":500}"
   }
 }
