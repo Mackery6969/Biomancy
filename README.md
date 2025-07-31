@@ -1,5 +1,5 @@
 <p align="center">
-<img src="media/v2/text_logo_big.png" alt="Biomancy" height="150px"/>
+<img src="media/v2/text_logo_big.png" alt="Biomancy" height="200"/>
 <h1 align="center">Biomancy</h1>
 </p>
 
@@ -15,6 +15,9 @@
 
 <a aria-label="Project Tracker" href="https://github.com/orgs/Creative-Chasm/projects/2/">
 <img alt="" src="https://img.shields.io/badge/-Project-black?style=for-the-badge&logo=github"></a>
+
+<a aria-label="Translation Project on Crowdin" href="https://crowdin.com/project/biomancy/">
+<img alt="" src="https://img.shields.io/badge/-crowdin-2E3340?style=for-the-badge&logo=crowdin"></a>
 
 <a aria-label="Downloads on CurseForge" href="https://www.curseforge.com/minecraft/mc-mods/biomancy">
 <img alt="" src="https://cf.way2muchnoise.eu/full_492939_downloads(f16436-f16436-fff-000-fff).svg?badge_style=for_the_badge"></a>
