@@ -461,7 +461,7 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addItem(ModItems.MOB_SINEW, "Sinew", "Tissue made of Elastic Fibers.");
 		addItem(ModItems.MOB_FANG, "Sharp Fang", "Cutting tooth made of tissue rich in minerals.");
 		addItem(ModItems.MOB_CLAW, "Sharp Claw", "Hardened Claw made of tough fibers and rich in minerals.");
-		addItem(ModItems.MOB_MARROW, "Bone Marrow", "Marrow extracted from the bones of your victims. Rich in Hormones and minerals. ");
+		addItem(ModItems.MOB_MARROW, "Bone Marrow", "Marrow extracted from the bones of your victims. Rich in Hormones and minerals.");
 		addItem(ModItems.WITHERED_MOB_MARROW, "Withered Bone Marrow", "Withered Marrow, some dark fluid is oozing out of it.\nIt looks tasty, maybe you should suck it dry...");
 
 		addItem(ModItems.GENERIC_MOB_GLAND, "Bile Gland", "A sac filled to the brim with bile.");
