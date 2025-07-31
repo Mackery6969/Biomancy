@@ -10,8 +10,43 @@ on:
       - '**/dev'
 
 jobs:
+  check_if_should_build:
+    name: Check if a build should be triggered
+    runs-on: ubuntu-latest
+    outputs:
+      skip: ${{ steps.changelog.outputs.skipped }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Get Minecraft Version
+        id: gradle_properties
+        uses: christian-draeger/read-properties@1.1.0
+        with:
+          path: './gradle.properties'
+          properties: 'minecraft_version'
+
+      - name: Generate Conventional Changelog
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v6.0.0
+        with:
+          preset: 'conventionalcommits'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          version-file: './mod_version.json'
+          version-path: 'semantic'
+          tag-prefix: '${{ steps.gradle_properties.outputs.minecraft_version }}-v2.'
+          release-count: 1 # limit changelog to the current snapshot
+          skip-commit: true # do not commit version bump
+          skip-tag: true # do not commit version tag
+          pre-release: true
+          pre-release-identifier: 'snapshot'
+
+
+
   setup_oxipng:
     name: Install Oxipng
+    needs: [ check_if_should_build ]
+    if: needs.check_if_should_build.outputs.skip == 'false'
     runs-on: ubuntu-latest
     steps:
       - name: Cargo Install Oxipng
@@ -23,6 +58,8 @@ jobs:
 
   build_test:
     name: Gradle Build Test
+    needs: [ check_if_should_build ]
+    if: needs.check_if_should_build.outputs.skip == 'false'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.2.2
