@@ -1,0 +1,21 @@
+{
+  "$schema": "https://inlang.com/schema/project-settings",
+  "telemetry": "off",
+  "baseLocale": "en_us",
+  "locales": [
+    "en_us",
+    "es_es",
+    "ko_kr",
+    "ru_ru",
+    "zh_cn",
+    "zh_tw"
+  ],
+  "modules": [
+    "https://cdn.jsdelivr.net/npm/@inlang/plugin-i18next@latest/dist/index.js"
+  ],
+  "plugin.inlang.i18next": {
+    "pathPattern": ".src/main/resources/assets/biomancy/lang/{locale}.json",
+    "sourceLanguageFilePath": "./src/generated/resources/assets/biomancy/lang/en_us.json",
+    "variableReferencePattern": [ "%" ]
+  }
+}
