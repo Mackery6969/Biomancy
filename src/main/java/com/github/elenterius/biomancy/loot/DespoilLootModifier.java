@@ -114,14 +114,16 @@ public class DespoilLootModifier extends LootModifier {
 			LootTable lootTable = getLootTable(context.getLevel(), thisEntity);
 			if (lootTable == LootTable.EMPTY) return generatedLoot;
 
-			boolean usingTool = isUsingTool(context);
 			int despoilLevel = getDespoilLevel(context);
+			if (despoilLevel <= 0) return generatedLoot;
+
+			boolean usingTool = isUsingTool(context);
 			float despoilChance = (usingTool ? 0.32f : 0.16f) + 0.32f * despoilLevel;
 
 			LootParams lootParams = createLootParams(context);
 			Consumer<ItemStack> stackSplitter = LootTable.createStackSplitter(context.getLevel(), generatedLoot::add);
 
-			for (int roll = 0; roll < (generatedLoot.isEmpty() ? 2 : 1) + despoilLevel; roll++) {
+			for (int roll = 0; roll < despoilLevel; roll++) {
 				if (context.getRandom().nextFloat() > despoilChance) continue;
 				getRandomItems(lootTable, lootParams, stackSplitter);
 			}
