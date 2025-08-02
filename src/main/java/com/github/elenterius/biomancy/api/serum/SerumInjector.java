@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.api.serum;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -12,12 +13,16 @@ public interface SerumInjector extends ItemLike {
 
 	Serum getSerum(ItemStack stack);
 
+	CompoundTag getSerumData(ItemStack stack);
+
+	int getSerumColor(ItemStack stack);
+
 	default boolean canInteractWithPlayerSelf(ItemStack stack, Player player) {
-		return getSerum(stack).canAffectPlayerSelf(Serum.getDataTag(stack), player);
+		return getSerum(stack).canAffectPlayerSelf(getSerumData(stack), player);
 	}
 
 	default boolean canInteractWithLivingTarget(ItemStack stack, @Nullable Player player, LivingEntity target) {
-		return getSerum(stack).canAffectEntity(Serum.getDataTag(stack), player, target);
+		return getSerum(stack).canAffectEntity(getSerumData(stack), player, target);
 	}
 
 }

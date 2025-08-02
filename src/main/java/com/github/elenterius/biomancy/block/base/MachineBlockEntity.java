@@ -68,8 +68,7 @@ public abstract class MachineBlockEntity<R extends ProcessingRecipe, S extends R
 
 	protected abstract boolean craftRecipe(R recipeToCraft, Level level);
 
-	@Nullable
-	protected abstract R resolveRecipeFromInput(Level level);
+	protected abstract @Nullable R resolveRecipeFromInput(Level level);
 
 	protected abstract boolean doesRecipeMatchInput(R recipeToTest, Level level);
 

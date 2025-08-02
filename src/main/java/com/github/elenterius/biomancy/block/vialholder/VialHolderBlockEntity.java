@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.block.vialholder;
 
+import com.github.elenterius.biomancy.api.serum.Serum;
 import com.github.elenterius.biomancy.api.serum.SerumContainer;
 import com.github.elenterius.biomancy.block.base.SimpleSyncedBlockEntity;
 import com.github.elenterius.biomancy.init.ModBlockEntities;
@@ -16,6 +17,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class VialHolderBlockEntity extends SimpleSyncedBlockEntity {
+
 	public static final String INVENTORY_TAG = "Inventory";
 	private final ItemStackHandler inventory;
 
@@ -137,11 +139,12 @@ public class VialHolderBlockEntity extends SimpleSyncedBlockEntity {
 	}
 
 	public int getVialColor(int slot) {
-		if (slot < 0 || slot >= inventory.getSlots()) return 0xFFFFFFFF;
-		ItemStack serumStack = inventory.getStackInSlot(slot);
-		if (serumStack.getItem() instanceof SerumContainer container) {
-			return container.getSerum(serumStack).getColor();
+		if (slot < 0 || slot >= inventory.getSlots()) return Serum.EMPTY_COLOR;
+		ItemStack stack = inventory.getStackInSlot(slot);
+		if (stack.getItem() instanceof SerumContainer container) {
+			return container.getSerumColor(stack);
 		}
-		return 0xFFFFFFFF;
+		return Serum.EMPTY_COLOR;
 	}
+
 }

@@ -86,6 +86,7 @@ public final class ModItems {
 	public static final RegistryObject<SerumItem> CLEANSING_SERUM = registerSerumItem(ModSerums.CLEANSING_SERUM);
 	public static final RegistryObject<SerumItem> INSOMNIA_CURE = registerSerumItem(ModSerums.INSOMNIA_CURE);
 	public static final RegistryObject<SerumItem> FRENZY_SERUM = registerSerumItem(ModSerums.FRENZY_SERUM);
+	public static final RegistryObject<PotionSerumItem> POTION_SERUM = registerItem("potion_serum", props -> new PotionSerumItem(props.stacksTo(16).rarity(ModRarities.UNCOMMON)));
 
 	//## Special
 	public static final RegistryObject<SimpleItem> PRIMORDIAL_CORE = registerSimpleItem("primordial_core", ModRarities.VERY_RARE);

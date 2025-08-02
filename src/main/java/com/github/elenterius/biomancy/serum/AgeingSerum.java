@@ -59,7 +59,7 @@ public class AgeingSerum extends BasicSerum {
 	}
 
 	@Override
-	public void affectPlayerSelf(CompoundTag tag, ServerPlayer targetSelf) {
+	public void affectPlayerSelf(ServerLevel level, CompoundTag tag, ServerPlayer targetSelf) {
 		//do nothing
 	}
 

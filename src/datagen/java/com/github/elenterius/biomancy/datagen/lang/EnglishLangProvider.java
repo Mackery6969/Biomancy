@@ -3,12 +3,12 @@ package com.github.elenterius.biomancy.datagen.lang;
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.api.livingtool.LivingToolState;
 import com.github.elenterius.biomancy.api.serum.Serum;
+import com.github.elenterius.biomancy.api.serum.SerumContainer;
 import com.github.elenterius.biomancy.client.util.ClientTextUtil;
 import com.github.elenterius.biomancy.init.*;
 import com.github.elenterius.biomancy.init.client.ClientSetupHandler;
 import com.github.elenterius.biomancy.item.ItemTooltipStyleProvider;
 import com.github.elenterius.biomancy.item.MaykerBannerPatternItem;
-import com.github.elenterius.biomancy.item.SerumItem;
 import com.github.elenterius.biomancy.item.armor.AcolyteArmorUpgrades;
 import com.github.elenterius.biomancy.menu.BioForgeTab;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
@@ -128,14 +128,15 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		itemsToTranslate.remove(item);
 	}
 
-	private <T extends SerumItem> void addSerumItem(Supplier<T> supplier, String serumName, String tooltip) {
-		T item = supplier.get();
+	private <T extends SerumContainer & ItemTooltipStyleProvider> void addSerumItem(Supplier<T> supplier, String serumName, String tooltip) {
+		T container = supplier.get();
+		Item item = container.asItem();
 		ItemStack stack = new ItemStack(item);
 
-		add(item.getSerum(stack), serumName);
+		add(container.getSerum(stack), serumName);
 
 		add(item.getDescriptionId(stack), serumName);
-		add(item.getTooltipKey(stack), tooltip);
+		add(container.getTooltipKey(stack), tooltip);
 		itemsToTranslate.remove(item);
 	}
 
@@ -175,8 +176,9 @@ public class EnglishLangProvider extends AbstractLangProvider {
 
 	@Override
 	protected void addTranslations() {
-		add(BiomancyMod.CREATIVE_TAB.get().getDisplayName(), "Biomancy 2");
-		add(ClientSetupHandler.ITEM_DEFAULT_KEY_BINDING.getCategory(), "Biomancy 2 Mod");
+		add(ModCreativeModeTabs.MAIN.get().getDisplayName(), "Biomancy");
+		add(ModCreativeModeTabs.BIO_ALCHEMY.get().getDisplayName(), "Biomancy: Bio-Alchemy");
+		add(ClientSetupHandler.ITEM_DEFAULT_KEY_BINDING.getCategory(), "Biomancy Mod");
 		add(ClientSetupHandler.ITEM_DEFAULT_KEY_BINDING.getName(), "Default Item Action");
 
 		addItemTranslations();
@@ -560,12 +562,12 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addSerumItem(ModItems.REJUVENATION_SERUM, "Rejuvenation Serum", "Promotes cellular regeneration, reversing the maturation of Mobs and in most cases turning them into children.");
 		addSerumItem(ModItems.ENLARGEMENT_SERUM, "Enlargement Serum", "Induces growth in Slimes, Magma Cubes and Flesh Blobs.\n\n(If Pehkui is installed you can enlarge yourself and all Mobs)");
 		addSerumItem(ModItems.SHRINKING_SERUM, "Shrinking Serum", "Shrinks Slimes, Magma Cubes and Flesh Blobs.\n\n(If Pehkui is installed you can shrink yourself and all Mobs)");
-
 		addSerumItem(ModItems.CLEANSING_SERUM, "Cleansing Serum", "Burns away all foreign substances inside a creature.\nVery effective on sticky status effects that refuse to be healed with milk.");
 		addSerumItem(ModItems.BREEDING_STIMULANT, "Breeding Stimulant", "Potent drug that that temporarily forces animals into a state of hyper-fertility, allowing them to reproduce repeatedly for a short time.\nUse with caution, as this stimulant may lead to undesirable mutations in the offspring.");
 		addSerumItem(ModItems.ABSORPTION_BOOST, "Absorption Stimulant", "Grants stackable absorption health points to Mobs and Players.");
 		addSerumItem(ModItems.INSOMNIA_CURE, "Insomnia Cure", "Resets the last slept time, no need to sleep for quite some time.\nCoffee who?");
 		addSerumItem(ModItems.FRENZY_SERUM, "Frenzy Serum", "Potent stackable drug that greatly boost your attack damage and speed at the cost of withdrawal symptoms. Increases hostility and aggression of affected mobs. Rabbits seems to be affected in an irreversible manner.\nCommon side effects after stoppage of use include weakness, sluggish movement and nausea. Continue the use to alleviate the withdrawal or try your luck with sugary foods.");
+		addSerumItem(ModItems.POTION_SERUM, "Potion Serum", "PLACEHOLDER");
 
 		addBannerPatternItem(ModItems.MASCOT_BANNER_PATTERNS, "Banner Pattern", "Biomancy Mascot");
 

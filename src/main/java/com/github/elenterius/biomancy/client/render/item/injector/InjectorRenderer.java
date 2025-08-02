@@ -29,7 +29,7 @@ public class InjectorRenderer extends GeoItemRenderer<InjectorItem> {
 
 	@Override
 	public void preRender(PoseStack poseStack, InjectorItem item, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		serumColor = item.getSerum(getCurrentItemStack()).getColor();
+		serumColor = item.getSerumColor(getCurrentItemStack());
 		super.preRender(poseStack, item, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 

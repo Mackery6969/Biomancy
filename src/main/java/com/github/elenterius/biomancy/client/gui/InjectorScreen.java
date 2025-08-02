@@ -14,19 +14,20 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.joml.Matrix4f;
@@ -37,12 +38,18 @@ public class InjectorScreen extends Screen {
 
 	public static final int CANCEL_ID = -1;
 	public static final int CLEAR_ID = -2;
+
 	static final float DIAGONAL_OF_ITEM = Mth.SQRT_OF_TWO * 32; // 16 * 2
-	static final int DURATION = 10;
-	private Object2IntMap<ItemStack> cachedStacks;
+	static final int TRANSITION_DURATION_TICKS = 10;
+
 	private int ticks;
+
+	private Object2IntMap<ItemStack> cachedStacks;
 	private int refreshCacheTicks;
+
 	private final InteractionHand itemHoldingHand;
+	private final ItemStack CANCEL_DUMMY_STACK = new ItemStack(Items.BARRIER);
+	private final ItemStack CLEAR_DUMMY_STACK = ItemStack.EMPTY;
 
 	public InjectorScreen(InteractionHand hand) {
 		super(ComponentUtil.translatable("biomancy.injector.wheel_menu"));
@@ -97,7 +104,7 @@ public class InjectorScreen extends Screen {
 		//		}
 		ticks++;
 
-		if (ticks > DURATION) ticks = DURATION;
+		if (ticks > TRANSITION_DURATION_TICKS) ticks = TRANSITION_DURATION_TICKS;
 	}
 
 	@Override
@@ -107,7 +114,7 @@ public class InjectorScreen extends Screen {
 			return false;
 		}
 
-		if (ticks < DURATION - 1) return false;
+		if (ticks < TRANSITION_DURATION_TICKS - 1) return false;
 
 		ObjectSet<Object2IntMap.Entry<ItemStack>> stackEntries = cachedStacks.object2IntEntrySet();
 		int segments = stackEntries.size();
@@ -143,10 +150,10 @@ public class InjectorScreen extends Screen {
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 		if (ticks < 0) return;
 		float time = ticks + partialTick;
-		if (time > DURATION) {
-			time = DURATION;
+		if (time > TRANSITION_DURATION_TICKS) {
+			time = TRANSITION_DURATION_TICKS;
 		}
-		renderWheel(guiGraphics, mouseX, mouseY, time / DURATION);
+		renderWheel(guiGraphics, mouseX, mouseY, time / TRANSITION_DURATION_TICKS);
 	}
 
 	private void renderWheel(GuiGraphics guiGraphics, int mouseX, int mouseY, float pct) {
@@ -188,10 +195,10 @@ public class InjectorScreen extends Screen {
 			float w = y + radius * Mth.sin(currentAngle);
 
 			ItemStack currentStack = entry.getKey();
-			if (currentStack.isEmpty()) {
+			if (currentStack == CLEAR_DUMMY_STACK) {
 				guiGraphics.blit(ICONS, Mth.floor(v - 8), Mth.floor(w - 8), 0, 0, 16, 16, 32, 16);
 			}
-			else if (currentStack.getItem() == Items.BARRIER) {
+			else if (currentStack == CANCEL_DUMMY_STACK) {
 				guiGraphics.blit(ICONS, Mth.floor(v - 8), Mth.floor(w - 8), 16, 0, 16, 16, 32, 16);
 			}
 			else {
@@ -210,14 +217,14 @@ public class InjectorScreen extends Screen {
 
 		//draw text for selected section
 		MutableComponent text;
-		if (stack.isEmpty()) {
+		if (stack == CLEAR_DUMMY_STACK) {
 			text = ComponentUtil.literal("Clear").withStyle(TextStyles.ERROR);
 		}
-		else if (stack.getItem() == Items.BARRIER) {
+		else if (stack == CANCEL_DUMMY_STACK) {
 			text = ComponentUtil.literal("Cancel");
 		}
 		else {
-			text = ComponentUtil.mutable().append(stack.getHoverName());
+			text = ComponentUtil.mutable().append(stack.getHighlightTip(stack.getHoverName()));
 			if (stack.hasCustomHoverName()) text.withStyle(ChatFormatting.ITALIC);
 		}
 
@@ -277,33 +284,40 @@ public class InjectorScreen extends Screen {
 
 	private Object2IntMap<ItemStack> findSerumStacks(LocalPlayer player) {
 		Object2IntMap<ItemStack> foundStacks = new Object2IntArrayMap<>();
-		Object2IntMap<Serum> foundSerums = new Object2IntArrayMap<>();
 
-		foundStacks.put(new ItemStack(Items.BARRIER), CANCEL_ID);
+		ObjectSet<Serum> foundSerums = new ObjectArraySet<>();
+		ObjectSet<CompoundTag> foundDataTags = new ObjectArraySet<>();
+
+		foundStacks.put(CANCEL_DUMMY_STACK, CANCEL_ID);
 
 		Inventory inventory = player.getInventory();
 		int slots = inventory.getContainerSize();
 		for (int idx = 0; idx < slots; idx++) {
 			ItemStack stack = inventory.getItem(idx);
-			Item item = stack.getItem();
-			if (item instanceof SerumContainer vial) {
-				Serum serum = vial.getSerum(stack);
-				if (!serum.isEmpty()) {
-					if (!foundSerums.containsKey(serum)) {
+
+			if (stack.getItem() instanceof SerumContainer container) {
+				Serum serum = container.getSerum(stack);
+				if (serum.isEmpty()) continue;
+
+				CompoundTag serumData = container.getSerumData(stack);
+
+				if (serumData.isEmpty()) {
+					if (!foundSerums.contains(serum)) {
 						foundStacks.put(stack, idx);
+						foundSerums.add(serum);
 					}
-					foundSerums.mergeInt(serum, stack.getCount(), Integer::sum);
+				}
+				else {
+					if (!foundDataTags.contains(serumData)) {
+						foundStacks.put(stack, idx);
+						foundDataTags.add(serumData);
+					}
 				}
 			}
 		}
 
-		//		if (foundStacks.size() > 1) {
-		foundStacks.put(ItemStack.EMPTY, CLEAR_ID);
+		foundStacks.put(CLEAR_DUMMY_STACK, CLEAR_ID);
 		return foundStacks;
-		//		}
-
-		//not items were found
-		//		return Object2IntMaps.emptyMap();
 	}
 
 }

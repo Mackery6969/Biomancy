@@ -25,9 +25,11 @@ import java.util.List;
 
 public class BioBrewingRecipe extends StaticProcessingRecipe {
 
+	public static final short DEFAULT_CRAFTING_TIME_TICKS = 4 * 20;
 	public static final short DEFAULT_CRAFTING_COST_NUTRIENTS = 2;
 	public static final int MAX_INGREDIENTS = 4;
 	public static final int MAX_REACTANT = 1;
+
 	private final List<IngredientStack> ingredients;
 	private final Ingredient recipeReactant;
 	private final ItemStack result;

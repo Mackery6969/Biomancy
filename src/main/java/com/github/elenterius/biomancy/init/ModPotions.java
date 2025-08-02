@@ -10,7 +10,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.Locale;
 import java.util.function.Supplier;
 
-public class ModPotions {
+public final class ModPotions {
 
 	public static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(ForgeRegistries.POTIONS, BiomancyMod.MOD_ID);
 

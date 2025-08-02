@@ -28,6 +28,11 @@ public class SerumItem extends Item implements SerumContainer, ItemTooltipStyleP
 	}
 
 	@Override
+	public int getSerumColor(ItemStack stack) {
+		return serumSupplier.get().getColor(Serum.getDataTag(stack));
+	}
+
+	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
 		tooltip.addAll(ClientTextUtil.getItemInfoTooltip(stack));
 	}

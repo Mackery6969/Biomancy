@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.api.serum;
 
+import com.github.elenterius.biomancy.util.ComponentUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -18,10 +19,14 @@ import java.util.List;
 
 @ApiStatus.Experimental
 public interface Serum {
-	String DATA_TAG_KEY = "serum_data";
+
+	String DATA_TAG_KEY = "biomancy:serum_data";
 	String TRANSLATION_PREFIX = "serum.";
 
+	int EMPTY_COLOR = 0xFF_FFFFFF;
+
 	Serum EMPTY = new Serum() {
+
 		@Override
 		public boolean canAffectEntity(CompoundTag tag, @Nullable LivingEntity source, LivingEntity target) {
 			return false;
@@ -36,10 +41,10 @@ public interface Serum {
 		}
 
 		@Override
-		public void affectPlayerSelf(CompoundTag nbt, ServerPlayer targetSelf) {}
+		public void affectPlayerSelf(ServerLevel level, CompoundTag nbt, ServerPlayer targetSelf) {}
 
 		@Override
-		public void appendTooltip(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {}
+		public void appendTooltip(CompoundTag tag, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {}
 
 		@Override
 		public boolean isEmpty() {
@@ -47,8 +52,8 @@ public interface Serum {
 		}
 
 		@Override
-		public int getColor() {
-			return 0xFF_FFFFFF;
+		public int getColor(CompoundTag tag) {
+			return EMPTY_COLOR;
 		}
 
 		@Override
@@ -59,22 +64,31 @@ public interface Serum {
 	};
 
 	static CompoundTag getDataTag(ItemStack stack) {
-		return stack.getOrCreateTag().getCompound(DATA_TAG_KEY);
+		CompoundTag tag = stack.getTagElement(DATA_TAG_KEY);
+		return tag != null ? tag : new CompoundTag();
 	}
+
+	static CompoundTag getOrCreateDataTag(ItemStack stack) {
+		return stack.getOrCreateTagElement(DATA_TAG_KEY);
+	}
+
+	static void setDataTag(ItemStack stack, CompoundTag tag) {
+		stack.getOrCreateTag().put(DATA_TAG_KEY, tag);
+	}
+
+	static void removeDataTag(ItemStack stack) {
+		stack.removeTagKey(DATA_TAG_KEY);
+	}
+
+	//	static void copyDataTag(CompoundTag fromTag, CompoundTag toTag) {
+	//		if (fromTag.contains(DATA_TAG_KEY)) {
+	//			CompoundTag data = fromTag.getCompound(DATA_TAG_KEY);
+	//			if (!data.isEmpty()) toTag.put(DATA_TAG_KEY, data.copy());
+	//		}
+	//	}
 
 	static String makeTranslationKey(ResourceLocation key) {
 		return TRANSLATION_PREFIX + key.getNamespace() + "." + key.getPath().replace("/", ".");
-	}
-
-	static void removeDataTag(CompoundTag tag) {
-		tag.remove(DATA_TAG_KEY);
-	}
-
-	static void copyDataTag(CompoundTag fromTag, CompoundTag toTag) {
-		if (fromTag.contains(DATA_TAG_KEY)) {
-			CompoundTag data = fromTag.getCompound(DATA_TAG_KEY);
-			if (!data.isEmpty()) toTag.put(DATA_TAG_KEY, data.copy());
-		}
 	}
 
 	boolean canAffectEntity(CompoundTag tag, @Nullable LivingEntity source, LivingEntity target);
@@ -83,7 +97,7 @@ public interface Serum {
 
 	boolean canAffectPlayerSelf(CompoundTag tag, Player targetSelf);
 
-	void affectPlayerSelf(CompoundTag tag, ServerPlayer targetSelf);
+	void affectPlayerSelf(ServerLevel level, CompoundTag tag, ServerPlayer targetSelf);
 
 	default boolean isEmpty() {
 		return false;
@@ -92,9 +106,9 @@ public interface Serum {
 	/**
 	 * @return ARGB32 color for tinting the vial on the injector item model
 	 */
-	int getColor();
+	int getColor(CompoundTag tag);
 
-	void appendTooltip(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag);
+	void appendTooltip(CompoundTag tag, @Nullable Level level, List<Component> tooltip, TooltipFlag flag);
 
 	String getNameTranslationKey();
 
@@ -102,7 +116,8 @@ public interface Serum {
 		return getNameTranslationKey() + ".tooltip";
 	}
 
-	default MutableComponent getDisplayName() {
-		return Component.translatable(getNameTranslationKey());
+	default MutableComponent getDisplayName(CompoundTag tag) {
+		return ComponentUtil.translatable(getNameTranslationKey());
 	}
+
 }

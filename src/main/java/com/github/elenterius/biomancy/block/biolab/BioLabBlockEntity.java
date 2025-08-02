@@ -7,6 +7,7 @@ import com.github.elenterius.biomancy.block.base.MachineBlock;
 import com.github.elenterius.biomancy.block.base.MachineBlockEntity;
 import com.github.elenterius.biomancy.crafting.IngredientStack;
 import com.github.elenterius.biomancy.crafting.recipe.BioBrewingRecipe;
+import com.github.elenterius.biomancy.crafting.recipe.PotionSerumRecipes;
 import com.github.elenterius.biomancy.crafting.recipe.SimpleRecipeType;
 import com.github.elenterius.biomancy.init.ModBlockEntities;
 import com.github.elenterius.biomancy.init.ModCapabilities;
@@ -169,10 +170,11 @@ public class BioLabBlockEntity extends MachineBlockEntity<BioBrewingRecipe, BioL
 		return ItemHandlerUtil.doesItemFit(outputInventory.getRaw(), 0, stackToCraft);
 	}
 
-	@Nullable
 	@Override
-	protected BioBrewingRecipe resolveRecipeFromInput(Level level) {
-		return RECIPE_TYPE.get().getBestRecipeFor(level, inputInventory.getRecipeWrapper()).orElse(null);
+	protected @Nullable BioBrewingRecipe resolveRecipeFromInput(Level level) {
+		return RECIPE_TYPE.get()
+				.getBestRecipeFor(level, inputInventory.getRecipeWrapper())
+				.orElse(PotionSerumRecipes.getRecipeFor(level, inputInventory.getRecipeWrapper()));
 	}
 
 	@Override

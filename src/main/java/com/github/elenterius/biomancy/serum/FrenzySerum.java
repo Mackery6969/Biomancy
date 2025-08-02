@@ -54,7 +54,7 @@ public class FrenzySerum extends BasicSerum {
 	}
 
 	@Override
-	public void affectPlayerSelf(CompoundTag tag, ServerPlayer targetSelf) {
+	public void affectPlayerSelf(ServerLevel level, CompoundTag tag, ServerPlayer targetSelf) {
 		addStatusEffect(targetSelf);
 	}
 
@@ -63,7 +63,7 @@ public class FrenzySerum extends BasicSerum {
 	}
 
 	@Override
-	public void appendTooltip(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flagIn) {
+	public void appendTooltip(CompoundTag tag, @Nullable Level level, List<Component> tooltip, TooltipFlag flagIn) {
 		if (ClientTextUtil.showExtraInfo(tooltip)) {
 			tooltip.add(ComponentUtil.translatable(getDescriptionTranslationKey()).withStyle(TextStyles.LORE));
 		}

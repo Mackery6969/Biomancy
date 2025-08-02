@@ -31,7 +31,7 @@ public class InsomniaCureSerum extends BasicSerum {
 
 	@Override
 	public void affectEntity(ServerLevel level, CompoundTag tag, @Nullable LivingEntity source, LivingEntity target) {
-		if (target instanceof ServerPlayer player) affectPlayerSelf(tag, player);
+		if (target instanceof ServerPlayer player) affectPlayerSelf(level, tag, player);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class InsomniaCureSerum extends BasicSerum {
 	}
 
 	@Override
-	public void affectPlayerSelf(CompoundTag tag, ServerPlayer targetSelf) {
+	public void affectPlayerSelf(ServerLevel level, CompoundTag tag, ServerPlayer targetSelf) {
 		targetSelf.resetStat(Stats.CUSTOM.get(Stats.TIME_SINCE_REST)); //reset insomnia
 		applyDrowsyEffect(targetSelf);
 	}

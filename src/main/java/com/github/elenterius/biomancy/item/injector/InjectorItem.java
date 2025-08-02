@@ -268,15 +268,29 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 
 	@Override
 	public Serum getSerum(ItemStack stack) {
-		ItemStack serumStack = getItemHandler(stack).map(LargeSingleItemStackHandler::getStack).orElse(null);
-		if(serumStack != null && serumStack.getItem() instanceof SerumContainer container)
-		{
-			return container.getSerum(serumStack);
+		ItemStack storedStack = getStoredItemStack(stack);
+		if (storedStack.getItem() instanceof SerumContainer container) {
+			return container.getSerum(storedStack);
 		}
 		return Serum.EMPTY;
 	}
 
-	public ItemStack getSerumItemStack(ItemStack stack) {
+	@Override
+	public CompoundTag getSerumData(ItemStack stack) {
+		ItemStack storedStack = getStoredItemStack(stack);
+		return Serum.getDataTag(storedStack);
+	}
+
+	@Override
+	public int getSerumColor(ItemStack stack) {
+		ItemStack storedStack = getStoredItemStack(stack);
+		if (storedStack.getItem() instanceof SerumContainer container) {
+			return container.getSerumColor(storedStack);
+		}
+		return Serum.EMPTY_COLOR;
+	}
+
+	public ItemStack getStoredItemStack(ItemStack stack) {
 		return getItemHandler(stack).map(LargeSingleItemStackHandler::getStack).orElse(ItemStack.EMPTY);
 	}
 
@@ -306,7 +320,7 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 	public int getEnchantmentValue() {
 		return 15;
 	}
-	
+
 	@Nullable
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
@@ -454,9 +468,10 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 		if (tag.contains(INVENTORY_TAG)) {
 			Serum serum = getSerum(stack);
 			if (!serum.isEmpty()) {
+				CompoundTag serumData = getSerumData(stack);
 				short amount = tag.getCompound(INVENTORY_TAG).getShort(LargeSingleItemStackHandler.ITEM_AMOUNT_TAG);
-				tooltip.add(ComponentUtil.literal(String.format("%dx ", amount)).append(serum.getDisplayName()).withStyle(ChatFormatting.GRAY));
-				serum.appendTooltip(stack, level, tooltip, isAdvanced);
+				tooltip.add(ComponentUtil.literal(String.format("%dx ", amount)).append(serum.getDisplayName(serumData)).withStyle(ChatFormatting.GRAY));
+				serum.appendTooltip(serumData, level, tooltip, isAdvanced);
 				tooltip.add(ComponentUtil.emptyLine());
 			}
 		}
@@ -468,7 +483,7 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 	@Override
 	public Component getHighlightTip(ItemStack stack, Component displayName) {
 		Serum serum = getSerum(stack);
-		return serum.isEmpty() ? displayName : ComponentUtil.mutable().append(displayName).append(" (").append(serum.getDisplayName()).append(")");
+		return serum.isEmpty() ? displayName : ComponentUtil.mutable().append(displayName).append(" (").append(serum.getDisplayName(getSerumData(stack))).append(")");
 	}
 
 	protected static final String NEEDLE_CONTROLLER = "needle";

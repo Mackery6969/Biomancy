@@ -1,13 +1,23 @@
 package com.github.elenterius.biomancy.api.serum;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 
 @ApiStatus.Experimental
-public interface SerumContainer {
+public interface SerumContainer extends ItemLike {
 
-	@NotNull
-	default Serum getSerum(ItemStack stack) {return Serum.EMPTY;}
+	default Serum getSerum(ItemStack stack) {
+		return Serum.EMPTY;
+	}
+
+	default CompoundTag getSerumData(ItemStack stack) {
+		return Serum.getDataTag(stack);
+	}
+
+	default int getSerumColor(ItemStack stack) {
+		return getSerum(stack).getColor(getSerumData(stack));
+	}
 
 }

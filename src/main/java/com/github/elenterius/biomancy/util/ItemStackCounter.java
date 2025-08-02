@@ -106,6 +106,15 @@ public class ItemStackCounter {
 				.toList();
 	}
 
+	public List<ItemStack> getItemsSorted(int limit, boolean ascending) {
+		IntComparator comparator = ascending ? IntComparators.NATURAL_COMPARATOR : IntComparators.OPPOSITE_COMPARATOR;
+		return countedItemStacks.object2IntEntrySet().stream()
+				.sorted((a, b) -> comparator.compare(a.getIntValue(), b.getIntValue()))
+				.limit(limit)
+				.map(entry -> entry.getKey().stack())
+				.toList();
+	}
+
 	public void accountSimpleStack(ItemStack stack) {
 		if (!stack.isDamaged() && !stack.isEnchanted() && !stack.hasCustomHoverName()) accountStack(stack);
 	}
@@ -115,6 +124,12 @@ public class ItemStackCounter {
 	}
 
 	public void accountStacks(NonNullList<ItemStack> stacks) {
+		for (ItemStack stack : stacks) {
+			accountStack(stack);
+		}
+	}
+
+	public void accountStacks(ItemStack... stacks) {
 		for (ItemStack stack : stacks) {
 			accountStack(stack);
 		}

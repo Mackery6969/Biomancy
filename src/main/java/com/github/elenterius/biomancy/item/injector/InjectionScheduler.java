@@ -78,10 +78,10 @@ final class InjectionScheduler {
 			}
 
 			if (host == victim) {
-				serum.affectPlayerSelf(Serum.getDataTag(stack), player);
+				serum.affectPlayerSelf(level, injector.getSerumData(stack), player);
 			}
 			else {
-				serum.affectEntity(level, Serum.getDataTag(stack), player, target);
+				serum.affectEntity(level, injector.getSerumData(stack), player, target);
 			}
 
 			injector.consumeSerum(stack, player);

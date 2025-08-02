@@ -26,6 +26,7 @@ public final class ModSerums {
 	public static final RegistryObject<InsomniaCureSerum> INSOMNIA_CURE = SERUMS.register("insomnia_cure", () -> new InsomniaCureSerum(0x9B70B2));
 	public static final RegistryObject<CleansingSerum> CLEANSING_SERUM = SERUMS.register("cleansing_serum", () -> new CleansingSerum(0x371667));
 	public static final RegistryObject<FrenzySerum> FRENZY_SERUM = SERUMS.register("frenzy_serum", () -> new FrenzySerum(0xD1001C));
+	public static final RegistryObject<PotionSerum> POTION_SERUM = SERUMS.register("potion_serum", PotionSerum::new);
 
 	private ModSerums() {}
 

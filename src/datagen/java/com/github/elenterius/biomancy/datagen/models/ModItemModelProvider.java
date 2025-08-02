@@ -77,6 +77,7 @@ public class ModItemModelProvider extends ItemModelProvider {
 		serumItem(ModItems.CLEANSING_SERUM);
 		serumItem(ModItems.INSOMNIA_CURE);
 		serumItem(ModItems.FRENZY_SERUM);
+		serumOverlayItem(ModItems.POTION_SERUM);
 
 		serumItem(ModItems.ORGANIC_COMPOUND);
 		serumItem(ModItems.UNSTABLE_COMPOUND);
@@ -188,16 +189,12 @@ public class ModItemModelProvider extends ItemModelProvider {
 		return basicItem(registryKey(item), "serum");
 	}
 
-	public <T extends Item> ItemModelBuilder armorItem(RegistryObject<T> registryObject) {
-		return basicItem(registryObject.getId(), "armor");
+	public <T extends Item> ItemModelBuilder serumOverlayItem(RegistryObject<T> registryObject) {
+		return overlayItem(registryObject.getId(), "serum");
 	}
 
-	public ItemModelBuilder genericSerumItem(Item item) {
-		ResourceLocation rl = registryKey(item);
-		return getBuilder(rl.toString())
-				.parent(new ModelFile.UncheckedModelFile("item/generated"))
-				.texture(LAYER_0_TEXTURE, new ResourceLocation(rl.getNamespace(), ITEM_FOLDER + "/serum/generic_serum"))
-				.texture(LAYER_1_TEXTURE, new ResourceLocation(rl.getNamespace(), ITEM_FOLDER + "/serum/generic_serum_overlay"));
+	public <T extends Item> ItemModelBuilder armorItem(RegistryObject<T> registryObject) {
+		return basicItem(registryObject.getId(), "armor");
 	}
 
 	public <T extends Item> ItemModelBuilder weaponItem(RegistryObject<T> registryObject) {
@@ -237,6 +234,11 @@ public class ModItemModelProvider extends ItemModelProvider {
 	public ItemModelBuilder overlayItem(ResourceLocation registryKey) {
 		String texturePath = ITEM_FOLDER + "/" + registryKey.getPath() + "_overlay";
 		return basicItem(registryKey).texture(LAYER_1_TEXTURE, new ResourceLocation(registryKey.getNamespace(), texturePath));
+	}
+
+	public ItemModelBuilder overlayItem(ResourceLocation registryKey, String subfolder) {
+		String texturePath = ITEM_FOLDER + "/" + subfolder + "/" + registryKey.getPath() + "_overlay";
+		return basicItem(registryKey, subfolder).texture(LAYER_1_TEXTURE, new ResourceLocation(registryKey.getNamespace(), texturePath));
 	}
 
 	public ItemModelBuilder handheldItem(Item item) {

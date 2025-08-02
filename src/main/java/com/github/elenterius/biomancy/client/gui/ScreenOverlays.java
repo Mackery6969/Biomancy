@@ -243,10 +243,10 @@ public final class ScreenOverlays {
 				RenderSystem.defaultBlendFunc();
 			}
 
-			ItemStack serumItemStack = injector.getSerumItemStack(stack);
-			if (serumItemStack.getItem() instanceof SerumContainer container && !container.getSerum(serumItemStack).isEmpty()) {
+			ItemStack storedStack = injector.getStoredItemStack(stack);
+			if (storedStack.getItem() instanceof SerumContainer container && !container.getSerum(storedStack).isEmpty()) {
 				short maxAmmo = InjectorItem.MAX_SLOT_SIZE;
-				renderAmmoCount(guiGraphics, font, screenWidth, screenHeight, zDepth, maxAmmo, serumItemStack.getCount(), 0xFFFEFEFE, 0xFF9E9E9E);
+				renderAmmoCount(guiGraphics, font, screenWidth, screenHeight, zDepth, maxAmmo, storedStack.getCount(), 0xFFFEFEFE, 0xFF9E9E9E);
 			}
 		}
 	}

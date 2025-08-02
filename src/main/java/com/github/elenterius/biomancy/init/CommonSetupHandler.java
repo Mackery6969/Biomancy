@@ -49,8 +49,6 @@ public final class CommonSetupHandler {
 			ModRecipes.registerComposterRecipes();
 
 			AcidInteractions.register();
-
-			//dumpBiomeTemperatureAndHumidity();
 		});
 
 		ModFluids.registerInteractions();

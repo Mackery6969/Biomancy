@@ -5,6 +5,7 @@ import com.github.elenterius.biomancy.client.gui.BioForgeScreen;
 import com.github.elenterius.biomancy.client.gui.BioLabScreen;
 import com.github.elenterius.biomancy.client.gui.DecomposerScreen;
 import com.github.elenterius.biomancy.client.gui.DigesterScreen;
+import com.github.elenterius.biomancy.crafting.recipe.PotionSerumRecipes;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.ModMenuTypes;
 import com.github.elenterius.biomancy.init.ModRecipes;
@@ -40,7 +41,7 @@ public class BiomancyJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration registration) {
-//		registration.registerSubtypeInterpreter(ModItems.GENERIC_SERUM.get(), SerumSubtypeInterpreter.INSTANCE);
+		registration.registerSubtypeInterpreter(ModItems.POTION_SERUM.get(), PotionSerumSubtypeInterpreter.INSTANCE);
 	}
 
 	@Override
@@ -58,6 +59,7 @@ public class BiomancyJeiPlugin implements IModPlugin {
 
 		registration.addRecipes(DecomposingCategory.RECIPE_TYPE, recipeManager.getAllRecipesFor(ModRecipes.DECOMPOSING_RECIPE_TYPE.get()));
 		registration.addRecipes(BioBrewingCategory.RECIPE_TYPE, recipeManager.getAllRecipesFor(ModRecipes.BIO_BREWING_RECIPE_TYPE.get()));
+		registration.addRecipes(BioBrewingCategory.RECIPE_TYPE, PotionSerumRecipes.RECIPES);
 
 		registration.addRecipes(DigestingCategory.RECIPE_TYPE, DigestingRecipes.getRecipes(level));
 		registration.addRecipes(BioForgingCategory.RECIPE_TYPE, recipeManager.getAllRecipesFor(ModRecipes.BIO_FORGING_RECIPE_TYPE.get()));

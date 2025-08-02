@@ -164,7 +164,7 @@ public final class BioBrewingRecipeBuilder implements RecipeBuilder<BioBrewingRe
 		validateCriteria();
 
 		if (craftingTimeTicks < 0) {
-			craftingTimeTicks = 4 * 20;
+			craftingTimeTicks = BioBrewingRecipe.DEFAULT_CRAFTING_TIME_TICKS;
 		}
 
 		if (craftingCostNutrients < 0) {
