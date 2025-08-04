@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import java.util.List;
 
 @Mixin(GuiGraphics.class)
-public class GuiGraphicsMixin {
+public abstract class GuiGraphicsMixin {
 
 	@Shadow(remap = false)
 	private ItemStack tooltipStack;

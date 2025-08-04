@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPacketListener.class)
-public class ClientPackListenerMixin {
+public abstract class ClientPackListenerMixin {
 
 	@Shadow
 	@Final

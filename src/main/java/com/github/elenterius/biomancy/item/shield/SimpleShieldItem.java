@@ -38,7 +38,7 @@ public class SimpleShieldItem extends SimpleItem implements Equipable {
 
 	@Override
 	public int getUseDuration(ItemStack stack) {
-		return 72000;
+		return 72000; // 1 HOUR
 	}
 
 	@Override

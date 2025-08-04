@@ -35,14 +35,46 @@ public class LivingShieldItem extends SimpleShieldItem implements SimpleLivingTo
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
-		super.appendHoverText(stack, level, tooltip, isAdvanced);
-		tooltip.add(ComponentUtil.emptyLine());
+	public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
+		return super.canPerformAction(stack, toolAction) && hasNutrients(stack);
+	}
 
-		appendLivingToolTooltip(stack, tooltip);
+	@Override
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
 
-		if (stack.isEnchanted()) {
-			tooltip.add(ComponentUtil.emptyLine());
+		if (player.isUsingItem()) return InteractionResultHolder.fail(stack);
+
+		if (!hasNutrients(stack)) {
+			if (level.isClientSide()) {
+				player.displayClientMessage(TextComponentUtil.getFailureMsgText("not_enough_nutrients"), true);
+				player.playSound(ModSoundEvents.FLESHKIN_NO.get(), 0.8f, 0.8f + player.level().getRandom().nextFloat() * 0.4f);
+			}
+			return InteractionResultHolder.fail(stack);
+		}
+
+		player.startUsingItem(hand);
+		return InteractionResultHolder.consume(stack);
+	}
+
+	@Override
+	public void onUseTick(Level level, LivingEntity livingEntity, ItemStack stack, int remainingUseDuration) {
+		if (level.isClientSide()) return;
+
+		if (!hasNutrients(stack)) {
+			livingEntity.stopUsingItem();
+		}
+	}
+
+	@Override
+	public boolean canContinueUsing(ItemStack oldStack, ItemStack newStack) {
+		return super.canContinueUsing(oldStack, newStack) && hasNutrients(newStack);
+	}
+
+	public void damageCurrentlyUsedLivingShield(ItemStack usedShield, float damageAmount, LivingEntity entity) {
+		if (!MobUtil.isCreativePlayer(entity)) {
+			int amount = 1 + Mth.floor(damageAmount);
+			decreaseNutrients(usedShield, amount);
 		}
 	}
 
@@ -70,38 +102,14 @@ public class LivingShieldItem extends SimpleShieldItem implements SimpleLivingTo
 	}
 
 	@Override
-	public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
-		return super.canPerformAction(stack, toolAction) && hasNutrients(stack);
-	}
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
+		super.appendHoverText(stack, level, tooltip, isAdvanced);
+		tooltip.add(ComponentUtil.emptyLine());
 
-	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-		ItemStack stack = player.getItemInHand(hand);
+		appendLivingToolTooltip(stack, tooltip);
 
-		if (!hasNutrients(stack)) {
-			if (level.isClientSide()) {
-				player.displayClientMessage(TextComponentUtil.getFailureMsgText("not_enough_nutrients"), true);
-				player.playSound(ModSoundEvents.FLESHKIN_NO.get(), 0.8f, 0.8f + player.level().getRandom().nextFloat() * 0.4f);
-			}
-			return InteractionResultHolder.fail(stack);
-		}
-
-		return super.use(level, player, hand);
-	}
-
-	@Override
-	public void onUseTick(Level level, LivingEntity livingEntity, ItemStack stack, int remainingUseDuration) {
-		if (level.isClientSide()) return;
-
-		if (!hasNutrients(stack)) {
-			livingEntity.stopUsingItem();
-		}
-	}
-
-	public void damageCurrentlyUsedLivingShield(ItemStack usedShield, float damageAmount, LivingEntity entity) {
-		if (!MobUtil.isCreativePlayer(entity)) {
-			int amount = 1 + Mth.floor(damageAmount);
-			decreaseNutrients(usedShield, amount);
+		if (stack.isEnchanted()) {
+			tooltip.add(ComponentUtil.emptyLine());
 		}
 	}
 

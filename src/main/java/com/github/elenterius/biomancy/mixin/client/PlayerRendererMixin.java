@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerRenderer.class)
-public class PlayerRendererMixin {
+public abstract class PlayerRendererMixin {
 
 	@Inject(method = "getArmPose", at = @At(value = "HEAD"), cancellable = true)
 	private static void onGetArmPose(AbstractClientPlayer player, InteractionHand usedHand, CallbackInfoReturnable<HumanoidModel.ArmPose> cir) {
