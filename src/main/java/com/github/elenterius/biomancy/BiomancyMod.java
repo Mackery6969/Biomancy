@@ -21,7 +21,7 @@ public final class BiomancyMod {
 	public static final Logger LOGGER = LogManager.getLogger("Biomancy");
 	public static final Random GLOBAL_RANDOM = new Random();
 
-	public static EventCalendar EVENT_CALENDAR = new EventCalendar();
+	public static final EventCalendar EVENT_CALENDAR = new EventCalendar();
 
 	public BiomancyMod() {
 		GeckoLib.initialize();

@@ -10,7 +10,7 @@ import com.github.elenterius.biomancy.client.util.GuiRenderUtil;
 import com.github.elenterius.biomancy.client.util.GuiUtil;
 import com.github.elenterius.biomancy.init.ModMobEffects;
 import com.github.elenterius.biomancy.item.ItemCharge;
-import com.github.elenterius.biomancy.item.ShowKnowledgeOverlay;
+import com.github.elenterius.biomancy.item.KnowledgeReader;
 import com.github.elenterius.biomancy.item.injector.InjectorItem;
 import com.github.elenterius.biomancy.item.weapon.gun.Gun;
 import com.github.elenterius.biomancy.item.weapon.gun.GunProperties;
@@ -159,8 +159,7 @@ public final class ScreenOverlays {
 		BlockHitResult blockHitResult = getBlockHitResult(minecraft);
 		if (blockHitResult == null) return;
 
-		ItemStack itemStack = minecraft.player.getItemBySlot(EquipmentSlot.HEAD);
-		if (itemStack.getItem() instanceof ShowKnowledgeOverlay knowledgeOverlay && knowledgeOverlay.canShowKnowledgeOverlay(itemStack, minecraft.player)) {
+		if (KnowledgeReader.canShowKnowledgeOverlay(minecraft.player, EquipmentSlot.HEAD)) {
 			BlockPos blockPos = blockHitResult.getBlockPos();
 			BlockState blockState = minecraft.level.getBlockState(blockPos);
 			if (blockState.getBlock() instanceof PrimordialCradleBlock && minecraft.level.getExistingBlockEntity(blockPos) instanceof PrimordialCradleBlockEntity cradle) {

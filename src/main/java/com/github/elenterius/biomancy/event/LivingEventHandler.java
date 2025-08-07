@@ -9,6 +9,7 @@ import com.github.elenterius.biomancy.init.ModEnchantments;
 import com.github.elenterius.biomancy.init.ModMobEffects;
 import com.github.elenterius.biomancy.item.armor.WarriorArmorItem;
 import com.github.elenterius.biomancy.serum.FrenzySerum;
+import com.github.elenterius.biomancy.styles.Fonts;
 import com.github.elenterius.biomancy.world.PrimordialEcosystem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -76,6 +77,9 @@ public final class LivingEventHandler {
 	@SubscribeEvent
 	public static void onPlayerTick(final TickEvent.PlayerTickEvent event) {
 		if (event.phase == TickEvent.Phase.START) {
+			if (event.side == LogicalSide.CLIENT && event.player.tickCount % 9 == 0) {
+				Fonts.PrimordialRunes.updateTranslatable(event.player);
+			}
 			return;
 		}
 

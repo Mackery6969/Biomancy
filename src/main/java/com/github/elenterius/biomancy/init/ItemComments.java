@@ -17,10 +17,10 @@ public final class ItemComments {
 	private static final Map<Item, List<Component>> COMMENTS = new IdentityHashMap<>();
 
 	static {
-		createItemComment(ModItems.PRIMORDIAL_CRADLE.get(), "Basically, at the very bottom of life, which seduces us all, there is only absurdity, and more absurdity. And maybe that's what gives us our joy for living, because the only thing that can defeat absurdity is lucidity.\n- Albert Camus");
+		//		createItemComment(ModItems.PRIMORDIAL_CRADLE.get(), "Basically, at the very bottom of life, which seduces us all, there is only absurdity, and more absurdity. And maybe that's what gives us our joy for living, because the only thing that can defeat absurdity is lucidity.\n- Albert Camus");
 		createItemComment(ModItems.PRIMORDIAL_CORE.get(), "I have come for your meat\n- Karth Kalbi");
 		createItemComment(ModItems.DIGESTER.get(), "Digest her? I barely know her...\n- spicynips");
-		createItemComment(ModItems.ORNATE_FLESH_BLOCK.get(), "Birthplace of Crembo and Jarky");
+		createItemComment(ModItems.ORNATE_FLESH_BLOCK.get(), "Birthplace of Crembo and Jarky\n- Jerry");
 		createItemComment(ModItems.ACOLYTE_ARMOR_CHESTPLATE.get(), "If you're hot, take off your skin.\n- Karmatic");
 		createItemComment(ModItems.ACOLYTE_ARMOR_LEGGINGS.get(), "I've been sprinting towards the horizon of insanity since birth.\n- kd8lvt");
 		createItemComment(ModItems.AGEING_SERUM.get(), "We can regard our life as a uselessly disturbing episode in the blissful repose of nothingness.\n- Arthur Schopenhauer");
@@ -35,7 +35,7 @@ public final class ItemComments {
 	}
 
 	private static List<Component> toFleshTongue(String text) {
-		return ComponentUtil.splitLines(Locale.ENGLISH, text, TextStyles.PRIMORDIAL_RUNES_GRAY);
+		return ComponentUtil.splitLines(Locale.ENGLISH, text, TextStyles.PRIMORDIAL_RUNES_LORE);
 	}
 
 	public static @Nullable List<Component> getComment(Item item) {

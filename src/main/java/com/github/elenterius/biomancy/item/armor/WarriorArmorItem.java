@@ -4,7 +4,7 @@ import com.github.elenterius.biomancy.client.render.item.armor.WarriorArmorRende
 import com.github.elenterius.biomancy.entity.misc.LivingEntityData;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.item.ItemTooltipStyleProvider;
-import com.github.elenterius.biomancy.item.ShowKnowledgeOverlay;
+import com.github.elenterius.biomancy.item.KnowledgeReader;
 import com.github.elenterius.biomancy.mixin.accessor.ArmorItemAccessor;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.util.ComponentUtil;
@@ -48,7 +48,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class WarriorArmorItem extends LivingArmorGeoItem implements ShowKnowledgeOverlay, ItemTooltipStyleProvider {
+public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeReader, ItemTooltipStyleProvider {
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -290,6 +290,11 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements ShowKnowledg
 	@Override
 	public boolean canShowKnowledgeOverlay(ItemStack stack, Player player) {
 		return AcolyteArmorUpgrades.hasUpgrade(stack, AcolyteArmorUpgrades.PRIMORDIAL_SIGHT) && hasNutrients(stack);
+	}
+
+	@Override
+	public boolean canTranslatePrimordialRunes(ItemStack stack, Player player) {
+		return false;
 	}
 
 	@Override

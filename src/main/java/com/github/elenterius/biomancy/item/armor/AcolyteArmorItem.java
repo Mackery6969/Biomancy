@@ -2,7 +2,7 @@ package com.github.elenterius.biomancy.item.armor;
 
 import com.github.elenterius.biomancy.client.render.item.armor.AcolyteArmorRenderer;
 import com.github.elenterius.biomancy.item.ItemTooltipStyleProvider;
-import com.github.elenterius.biomancy.item.ShowKnowledgeOverlay;
+import com.github.elenterius.biomancy.item.KnowledgeReader;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import net.minecraft.ChatFormatting;
@@ -26,7 +26,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.List;
 import java.util.function.Consumer;
 
-public final class AcolyteArmorItem extends LivingArmorGeoItem implements ShowKnowledgeOverlay, ItemTooltipStyleProvider {
+public final class AcolyteArmorItem extends LivingArmorGeoItem implements KnowledgeReader, ItemTooltipStyleProvider {
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -55,6 +55,11 @@ public final class AcolyteArmorItem extends LivingArmorGeoItem implements ShowKn
 	@Override
 	public boolean canShowKnowledgeOverlay(ItemStack stack, Player player) {
 		return AcolyteArmorUpgrades.hasUpgrade(stack, AcolyteArmorUpgrades.PRIMORDIAL_SIGHT) && hasNutrients(stack);
+	}
+
+	@Override
+	public boolean canTranslatePrimordialRunes(ItemStack stack, Player player) {
+		return canShowKnowledgeOverlay(stack, player);
 	}
 
 	@Override

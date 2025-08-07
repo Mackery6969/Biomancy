@@ -23,10 +23,10 @@ public abstract class SignBlockEntityMixin {
 	)
 	private Style onSetMessagesModifyStyle(Style originalStyle, Player player, List<FilteredText> filteredText, SignText text) {
 		if (player.hasEffect(ModMobEffects.PRIMORDIAL_INFESTATION.get())) {
-			return originalStyle.withFont(Fonts.CARO_INVITICA);
+			return originalStyle.withFont(Fonts.PrimordialRunes.getId());
 		}
 
-		if (originalStyle.getFont().equals(Fonts.CARO_INVITICA)) {
+		if (originalStyle.getFont().equals(Fonts.PrimordialRunes.getId())) {
 			return originalStyle.withFont(null);
 		}
 

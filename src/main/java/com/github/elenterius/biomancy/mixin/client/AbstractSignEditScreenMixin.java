@@ -52,7 +52,7 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 
 	@Unique
 	private int biomancy$approximateMaxLineWidth() {
-		return Mth.floor((float) sign.getMaxTextLineWidth() / (Fonts.CARO_INVITICA_GLYPH_WIDTH - 1));
+		return Mth.floor((float) sign.getMaxTextLineWidth() / (Fonts.PrimordialRunes.GLYPH_WIDTH - 1));
 	}
 
 }
