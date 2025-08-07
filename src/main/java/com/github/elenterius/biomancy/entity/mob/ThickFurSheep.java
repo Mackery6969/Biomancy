@@ -20,10 +20,13 @@ import org.jetbrains.annotations.Nullable;
 public class ThickFurSheep extends Sheep {
 
 	private static final EntityDataAccessor<Byte> WOOL_SIZE = SynchedEntityData.defineId(ThickFurSheep.class, EntityDataSerializers.BYTE);
+
 	public static final byte MAX_WOOL_SIZE = 10;
+	public static final String WOOL_SIZE_TAG = "wool_size";
 
 	public ThickFurSheep(EntityType<? extends Sheep> entityType, Level level) {
 		super(entityType, level);
+		fixupDimensions();
 	}
 
 	@Override
@@ -35,18 +38,19 @@ public class ThickFurSheep extends Sheep {
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
-		compound.putByte("WoolSize", (byte) getWoolSize());
+		compound.putByte(WOOL_SIZE_TAG, (byte) getWoolSize());
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
-		setWoolSize(compound.getByte("WoolSize"));
+		setWoolSize(compound.getByte(WOOL_SIZE_TAG));
 	}
 
 	@Override
 	public EntityDimensions getDimensions(Pose pose) {
-		return super.getDimensions(pose).scale(1f + ((float) getWoolSize() / MAX_WOOL_SIZE) * 0.5f, 1f);
+		float widthFactor = 1f + ((float) getWoolSize() / MAX_WOOL_SIZE) * 0.5f;
+		return super.getDimensions(pose).scale(widthFactor, 1f);
 	}
 
 	@Nullable
@@ -62,10 +66,11 @@ public class ThickFurSheep extends Sheep {
 	}
 
 	protected void setWoolSize(byte size) {
-		size = (byte) Mth.clamp(size, 0, Byte.MAX_VALUE);
+		size = (byte) Mth.clamp(size, 0, MAX_WOOL_SIZE);
 		entityData.set(WOOL_SIZE, size);
-		reapplyPosition();
+
 		refreshDimensions();
+
 		double pct = (double) size / MAX_WOOL_SIZE;
 		getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.23d - 0.16d * pct);
 		getAttribute(ForgeMod.ENTITY_GRAVITY.get()).setBaseValue(0.08d + 0.16d * pct);
@@ -74,20 +79,11 @@ public class ThickFurSheep extends Sheep {
 	}
 
 	@Override
-	public void refreshDimensions() {
-		double x = getX();
-		double y = getY();
-		double z = getZ();
-		super.refreshDimensions();
-		setPos(x, y, z);
-	}
-
-	@Override
 	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
 		if (WOOL_SIZE.equals(key)) {
 			refreshDimensions();
-			//			yRotO = yHeadRot;
-			//			yBodyRot = yHeadRot;
+			//yRotO = yHeadRot;
+			//yBodyRot = yHeadRot;
 		}
 		super.onSyncedDataUpdated(key);
 	}
