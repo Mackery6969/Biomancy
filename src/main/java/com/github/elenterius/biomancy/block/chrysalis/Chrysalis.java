@@ -1,15 +1,10 @@
 package com.github.elenterius.biomancy.block.chrysalis;
 
-import com.github.elenterius.biomancy.entity.mob.fleshblob.FleshBlob;
 import com.github.elenterius.biomancy.util.MobUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -21,12 +16,7 @@ public interface Chrysalis {
 	String ENTITY_VOLUME_KEY = "volume";
 
 	static boolean isValidEntity(Entity entity) {
-		if (entity instanceof Player) return false;
-		if (!(entity instanceof LivingEntity living)) return false;
-
-		boolean valid = entity.isAlive() && entity.canChangeDimensions() && entity.getType().canSummon() && entity.getType().canSerialize();
-
-		return valid && (living instanceof FleshBlob || living.isBaby());
+		return entity instanceof Mob && entity.isAlive() && entity.canChangeDimensions() && entity.getType().canSummon() && entity.getType().canSerialize();
 	}
 
 	static boolean storeEntity(CompoundTag tag, Entity entity, boolean removeEntity) {

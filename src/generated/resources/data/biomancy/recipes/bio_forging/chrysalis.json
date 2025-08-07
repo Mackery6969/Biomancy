@@ -7,12 +7,16 @@
       "item": "biomancy:tough_fibers"
     },
     {
-      "count": 12,
+      "count": 8,
       "item": "biomancy:elastic_fibers"
     },
     {
-      "count": 4,
-      "item": "minecraft:egg"
+      "count": 16,
+      "item": "biomancy:bile"
+    },
+    {
+      "count": 16,
+      "item": "biomancy:hormone_secretion"
     },
     {
       "item": "biomancy:living_flesh"

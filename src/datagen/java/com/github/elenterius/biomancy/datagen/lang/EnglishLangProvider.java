@@ -602,7 +602,11 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addBlock(ModBlocks.MAW_HOPPER, "Maw Hopper", "A fleshy sister of the hopper. Transfers up to 16 items at a time.");
 
 		addBlock(ModBlocks.STORAGE_SAC, "Storage Sac", "Cheap Shulker-like storage sac that also acts like a bundle.");
-		addBlock(ModBlocks.CHRYSALIS, "Chrysalis", "Stores babies/children, small mobs and flesh blobs");
+		addBlock(ModBlocks.CHRYSALIS, "Chrysalis", """
+				Allows you to capture and indefinitely store any mob. This is achieved by inducing an artificial comma and suspending the mob in a amniotic like fluid that is rich in nutrients and oxygen
+				which keeps them alive.
+				
+				Shift click on the ground to release the preserved mob.""");
 
 		addBlock(ModBlocks.FLESHKIN_CHEST, "Fleshkin Chest", """
 				Crafted from living flesh, the organic composition of the chest grants it remarkable resilience, ensuring the safety of its precious contents even from explosions.

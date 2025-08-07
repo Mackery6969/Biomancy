@@ -489,8 +489,9 @@ public class BioForgingRecipeProvider extends RecipeProvider {
 
 		BioForgingRecipeBuilder.create(ModItems.CHRYSALIS.get())
 				.addIngredient(ModItems.TOUGH_FIBERS.get(), 6)
-				.addIngredient(ModItems.ELASTIC_FIBERS.get(), 12)
-				.addIngredient(Items.EGG, 4)
+				.addIngredient(ModItems.ELASTIC_FIBERS.get(), 8)
+				.addIngredient(ModItems.BILE.get(), 16)
+				.addIngredient(ModItems.HORMONE_SECRETION.get(), 16)
 				.addIngredient(ModItems.LIVING_FLESH.get())
 				.setCategory(ModBioForgeTabs.MISC)
 				.unlockedBy(ModItems.LIVING_FLESH.get()).save(consumer);
