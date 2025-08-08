@@ -3,7 +3,6 @@ package com.github.elenterius.biomancy.init;
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.google.common.base.Suppliers;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -18,7 +17,7 @@ public enum ModArmorMaterials implements ArmorMaterial {
 			0.1f,
 			0,
 			() -> Ingredient.EMPTY,
-			() -> SoundEvents.ARMOR_EQUIP_TURTLE
+			ModSoundEvents.ARMOR_EQUIP_BIO_ALCHEMIST
 	),
 	WARRIOR(BiomancyMod.createRLString("warrior"),
 			1,
@@ -27,7 +26,7 @@ public enum ModArmorMaterials implements ArmorMaterial {
 			0,
 			0,
 			() -> Ingredient.EMPTY,
-			() -> SoundEvents.ARMOR_EQUIP_TURTLE
+			ModSoundEvents.ARMOR_EQUIP_WARRIOR
 	);
 
 	private static final int[] BASE_DURABILITY = new int[]{11, 16, 15, 13};

@@ -2,6 +2,7 @@ package com.github.elenterius.biomancy.item;
 
 import com.github.elenterius.biomancy.block.chrysalis.Chrysalis;
 import com.github.elenterius.biomancy.init.ModBlockEntities;
+import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
@@ -12,7 +13,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -171,11 +171,11 @@ public class ChrysalisBlockItem extends SimpleBlockItem {
 	}
 
 	private void playRemoveSound(Player player) {
-		playSound(player, SoundEvents.FROG_LAY_SPAWN);
+		playSound(player, ModSoundEvents.CHRYSALIS_REMOVE.get());
 	}
 
 	private void playInsertSound(Player player) {
-		playSound(player, SoundEvents.FROG_EAT);
+		playSound(player, ModSoundEvents.CHRYSALIS_INSERT.get());
 	}
 
 	private void playSound(Player player, SoundEvent soundEvent) {

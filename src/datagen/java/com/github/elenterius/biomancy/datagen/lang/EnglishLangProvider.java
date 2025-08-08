@@ -299,11 +299,21 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addSound(ModSoundEvents.INJECTOR_INJECT, "Injecting Serum");
 		addSound(ModSoundEvents.INJECTOR_FAIL, "Injection Failed");
 		addSound(ModSoundEvents.MARROW_DRINK, "Slurping Bone Marrow");
-		addSound(ModSoundEvents.IMPALER_SHOOT, "Shooting Impaler");
-		addSound(ModSoundEvents.IMPALER_HIT, "Impaler Hit");
-		addSound(ModSoundEvents.IMPALER_IMPACT, "Impaler Impact");
-		addSound(ModSoundEvents.IMPALER_CHARGE, "Impaler Charging");
+		addSound(ModSoundEvents.IMPALER_SHOOT, "Impaler shoots");
+		addSound(ModSoundEvents.IMPALER_HIT, "Impaler hits");
+		addSound(ModSoundEvents.IMPALER_IMPACT, "Impaler impacts");
+		addSound(ModSoundEvents.IMPALER_CHARGE, "Impaler charges");
 		addSound(ModSoundEvents.ARMOR_BULLET_JUMP, "Bullet Jumping");
+		addSound(ModSoundEvents.ARMOR_EQUIP_BIO_ALCHEMIST, "Bio-Armor suit rustles");
+		addSound(ModSoundEvents.ARMOR_EQUIP_WARRIOR, "Bio-Armor plate thunks");
+		addSound(ModSoundEvents.CHRYSALIS_INSERT, "Mob packed");
+		addSound(ModSoundEvents.CHRYSALIS_REMOVE, "Mob unpacked");
+
+		addSound(ModSoundEvents.GRENADE_THROW, "Grenade thrown");
+		addSound(ModSoundEvents.ACID_SPIT, "Acid spits");
+		addSound(ModSoundEvents.ACID_BLOB_SHOOT, "Acid Blob launches");
+		addSound(ModSoundEvents.ACID_BLOB_FALL, "Acid Blob falls");
+		addSound(ModSoundEvents.BLOOMBERRY_SHOOT, "Bloomberry launches");
 
 		addSound(ModSoundEvents.FLESH_BLOCK_HIT, "Hit Fleshy Block");
 		addSound(ModSoundEvents.FLESH_BLOCK_PLACE, "Place Fleshy Block");
@@ -379,8 +389,6 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addSound(ModSoundEvents.FLESH_CHICKEN_AMBIENT, "Flesh Chicken clucks");
 		addSound(ModSoundEvents.FLESH_CHICKEN_HURT, "Flesh Chicken hurts");
 		addSound(ModSoundEvents.FLESH_CHICKEN_DEATH, "Flesh Chicken dies");
-
-		addSound(ModSoundEvents.GRENADE_THROW, "Grenade Thrown");
 	}
 
 	private void addDamageTranslations() {

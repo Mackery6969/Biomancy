@@ -251,6 +251,42 @@
     ],
     "subtitle": "sounds.biomancy.cradle.spike_attack"
   },
+  "entity.acid.spit": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "entity.llama.spit"
+      }
+    ],
+    "subtitle": "sounds.biomancy.entity.acid.spit"
+  },
+  "entity.acid_blob.fall": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "entity.slime.squish_small"
+      }
+    ],
+    "subtitle": "sounds.biomancy.entity.acid_blob.fall"
+  },
+  "entity.acid_blob.shoot": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "entity.slime.jump_small"
+      }
+    ],
+    "subtitle": "sounds.biomancy.entity.acid_blob.shoot"
+  },
+  "entity.bloomberry.shoot": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "item.crossbow.shoot"
+      }
+    ],
+    "subtitle": "sounds.biomancy.entity.bloomberry.shoot"
+  },
   "entity.flesh_blob.ambient": {
     "sounds": [
       {
@@ -602,6 +638,24 @@
     ],
     "subtitle": "sounds.biomancy.item.armor.bullet_jump"
   },
+  "item.armor.equip_bio_alchemist": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "item.armor.equip_turtle"
+      }
+    ],
+    "subtitle": "sounds.biomancy.item.armor.equip_bio_alchemist"
+  },
+  "item.armor.equip_warrior": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "item.armor.equip_turtle"
+      }
+    ],
+    "subtitle": "sounds.biomancy.item.armor.equip_warrior"
+  },
   "item.bone_marrow.drink": {
     "sounds": [
       {
@@ -612,6 +666,24 @@
       }
     ],
     "subtitle": "sounds.biomancy.item.bone_marrow.drink"
+  },
+  "item.chrysalis.insert": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "entity.frog.eat"
+      }
+    ],
+    "subtitle": "sounds.biomancy.item.chrysalis.insert"
+  },
+  "item.chrysalis.remove": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "entity.frog.lay_spawn"
+      }
+    ],
+    "subtitle": "sounds.biomancy.item.chrysalis.remove"
   },
   "item.impaler.charge": {
     "sounds": [

@@ -28,12 +28,21 @@ public class ModSoundProvider extends SoundDefinitionsProvider {
 		addSimpleSound(ModSoundEvents.INJECTOR_INJECT);
 		addSimpleRedirect(ModSoundEvents.INJECTOR_FAIL, SoundEvents.DISPENSER_FAIL);
 		addSimpleRedirect(ModSoundEvents.MARROW_DRINK, SoundEvents.HONEY_DRINK, 0.9f, 1.25f);
-		addSimpleRedirect(ModSoundEvents.GRENADE_THROW, SoundEvents.SNOWBALL_THROW, 1f, 0.5f);
 		addSimpleSound(ModSoundEvents.IMPALER_SHOOT);
 		addSimpleSound(ModSoundEvents.IMPALER_HIT);
 		addSimpleSound(ModSoundEvents.IMPALER_IMPACT);
 		addSimpleSound(ModSoundEvents.IMPALER_CHARGE);
 		addSimpleSound(ModSoundEvents.ARMOR_BULLET_JUMP);
+		addSimpleRedirect(ModSoundEvents.ARMOR_EQUIP_BIO_ALCHEMIST, SoundEvents.ARMOR_EQUIP_TURTLE);
+		addSimpleRedirect(ModSoundEvents.ARMOR_EQUIP_WARRIOR, SoundEvents.ARMOR_EQUIP_TURTLE);
+		addSimpleRedirect(ModSoundEvents.CHRYSALIS_INSERT, SoundEvents.FROG_EAT);
+		addSimpleRedirect(ModSoundEvents.CHRYSALIS_REMOVE, SoundEvents.FROG_LAY_SPAWN);
+
+		addSimpleRedirect(ModSoundEvents.GRENADE_THROW, SoundEvents.SNOWBALL_THROW, 1f, 0.5f);
+		addSimpleRedirect(ModSoundEvents.ACID_SPIT, SoundEvents.LLAMA_SPIT);
+		addSimpleRedirect(ModSoundEvents.ACID_BLOB_SHOOT, SoundEvents.SLIME_JUMP_SMALL);
+		addSimpleRedirect(ModSoundEvents.ACID_BLOB_FALL, SoundEvents.SLIME_SQUISH_SMALL);
+		addSimpleRedirect(ModSoundEvents.BLOOMBERRY_SHOOT, SoundEvents.CROSSBOW_SHOOT);
 
 		addSimpleSounds(ModSoundEvents.FLESH_BLOCK_HIT, 4);
 		addSimpleSounds(ModSoundEvents.FLESH_BLOCK_PLACE, 2);

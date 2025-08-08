@@ -23,6 +23,17 @@ public final class ModSoundEvents {
 	public static final RegistryObject<SoundEvent> IMPALER_IMPACT = register("item.impaler.impact");
 	public static final RegistryObject<SoundEvent> IMPALER_CHARGE = register("item.impaler.charge");
 	public static final RegistryObject<SoundEvent> ARMOR_BULLET_JUMP = register("item.armor.bullet_jump");
+	public static final RegistryObject<SoundEvent> ARMOR_EQUIP_BIO_ALCHEMIST = register("item.armor.equip_bio_alchemist");
+	public static final RegistryObject<SoundEvent> ARMOR_EQUIP_WARRIOR = register("item.armor.equip_warrior");
+	public static final RegistryObject<SoundEvent> CHRYSALIS_INSERT = register("item.chrysalis.insert");
+	public static final RegistryObject<SoundEvent> CHRYSALIS_REMOVE = register("item.chrysalis.remove");
+
+	//# Projectiles
+	public static final RegistryObject<SoundEvent> GRENADE_THROW = register("entity.grenade.throw");
+	public static final RegistryObject<SoundEvent> ACID_SPIT = register("entity.acid.spit");
+	public static final RegistryObject<SoundEvent> ACID_BLOB_SHOOT = register("entity.acid_blob.shoot");
+	public static final RegistryObject<SoundEvent> ACID_BLOB_FALL = register("entity.acid_blob.fall");
+	public static final RegistryObject<SoundEvent> BLOOMBERRY_SHOOT = register("entity.bloomberry.shoot");
 
 	//# Blocks
 	public static final RegistryObject<SoundEvent> FLESH_BLOCK_PLACE = register("flesh_block.place");
@@ -103,9 +114,6 @@ public final class ModSoundEvents {
 	public static final RegistryObject<SoundEvent> FLESH_CHICKEN_AMBIENT = register("entity.flesh_chicken.ambient");
 	public static final RegistryObject<SoundEvent> FLESH_CHICKEN_HURT = register("entity.flesh_chicken.hurt");
 	public static final RegistryObject<SoundEvent> FLESH_CHICKEN_DEATH = register("entity.flesh_chicken.death");
-
-	//# Entities
-	public static final RegistryObject<SoundEvent> GRENADE_THROW = register("entity.grenade.throw");
 
 	private ModSoundEvents() {}
 
