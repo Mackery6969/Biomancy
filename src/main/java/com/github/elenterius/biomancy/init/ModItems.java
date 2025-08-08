@@ -44,6 +44,7 @@ public final class ModItems {
 	public static final RegistryObject<SimpleItem> GENERIC_MOB_GLAND = registerItem("mob_gland", props -> new SimpleItem(props.food(ModFoods.POOR_FLESH).rarity(ModRarities.UNCOMMON)));
 	public static final RegistryObject<SimpleItem> TOXIN_GLAND = registerItem("toxin_gland", props -> new SimpleItem(props.food(ModFoods.TOXIN_GLAND).rarity(ModRarities.RARE)));
 	public static final RegistryObject<VolatileGlandItem> VOLATILE_GLAND = registerItem("volatile_gland", props -> new VolatileGlandItem(props.food(ModFoods.VOLATILE_GLAND).rarity(ModRarities.RARE)));
+	public static final RegistryObject<AcidicEggItem> ACIDIC_EGG = registerItem("acidic_egg", AcidicEggItem::new);
 
 	//# Complex Components
 	public static final RegistryObject<SimpleItem> FLESH_BITS = registerSimpleItem("flesh_bits");

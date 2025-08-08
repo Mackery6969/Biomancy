@@ -19,6 +19,8 @@
   "item.biomancy.toxin_gland.tooltip": "An organ full of toxins, maybe you should drink it...",
   "item.biomancy.volatile_gland": "Volatile Gland",
   "item.biomancy.volatile_gland.tooltip": "A gland filled with an extremely reactive fluid.\nDoesn't seem like it's poisonous... Might be worth drinking.",
+  "item.biomancy.acidic_egg": "Acidic Egg",
+  "item.biomancy.acidic_egg.tooltip": "An infertile egg with acidic eggyolk.",
   "item.biomancy.flesh_bits": "Flesh Bits",
   "item.biomancy.flesh_bits.tooltip": "A tiny bit of flesh... Used as a primary crafting ingredient.",
   "item.biomancy.bone_fragments": "Bone Fragments",

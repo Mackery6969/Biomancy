@@ -484,6 +484,8 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addItem(ModItems.TOXIN_GLAND, "Toxin Gland", "An organ full of toxins, maybe you should drink it...");
 		addItem(ModItems.VOLATILE_GLAND, "Volatile Gland", "A gland filled with an extremely reactive fluid.\nDoesn't seem like it's poisonous... Might be worth drinking.");
 
+		addItem(ModItems.ACIDIC_EGG, "Acidic Egg", "An infertile egg with acidic eggyolk.");
+
 		addItem(ModItems.FLESH_BITS, "Flesh Bits", "A tiny bit of flesh... Used as a primary crafting ingredient.");
 		addItem(ModItems.BONE_FRAGMENTS, "Bone Fragments", "A tiny fragment of bone. Provides rigidity and shape to flesh. Useful for assembling mechanical parts.");
 		addItem(ModItems.TOUGH_FIBERS, "Tough Fibers", "Fibrous tissue that is very tough and rigid. Useful for crafting things that need more resilience.");

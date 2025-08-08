@@ -126,6 +126,7 @@ public final class ClientSetupHandler {
 		event.registerEntityRenderer(ModEntityTypes.BLOOMBERRY_PROJECTILE.get(), BloomberryProjectileRenderer::new);
 		event.registerEntityRenderer(ModEntityTypes.ACID_BLOB_PROJECTILE.get(), AcidBlobProjectileRenderer::new);
 		event.registerEntityRenderer(ModEntityTypes.GRENADE_PROJECTILE.get(), ThrownItemRenderer::new);
+		event.registerEntityRenderer(ModEntityTypes.ACIDIC_EGG_PROJECTILE.get(), ThrownItemRenderer::new);
 
 		event.registerEntityRenderer(ModEntityTypes.GAS_CLOUD.get(), NoopRenderer::new);
 	}

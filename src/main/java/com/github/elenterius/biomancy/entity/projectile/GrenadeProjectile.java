@@ -68,7 +68,7 @@ public class GrenadeProjectile extends ThrowableItemProjectile {
 
 	@Override
 	protected void onHitEntity(EntityHitResult hitResult) {
-		hitResult.getEntity().hurt(damageSources().thrown(this, getOwner()), 0F);
+		hitResult.getEntity().hurt(damageSources().thrown(this, getOwner()), 0f);
 	}
 
 	@Override

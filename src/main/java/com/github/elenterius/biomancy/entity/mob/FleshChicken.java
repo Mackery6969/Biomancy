@@ -82,12 +82,12 @@ public class FleshChicken extends Chicken implements RangedAttackMob, GeoEntity 
 	public ItemEntity spawnAtLocation(ItemLike item) {
 		if (item == Items.EGG) {
 			if (level() instanceof ServerLevel serverLevel) {
-				if (random.nextFloat() <= 0.6f) {
+				if (random.nextFloat() <= 0.4f) {
 					ModBlocks.ACID_SPLATTER.get().placeSmallSplatter(serverLevel, blockPosition(), Direction.UP, random);
 					return null;
 				}
 				else {
-					return super.spawnAtLocation(ModItems.ACID_EXTRACT.get());
+					return super.spawnAtLocation(ModItems.ACIDIC_EGG.get());
 				}
 			}
 			return null;

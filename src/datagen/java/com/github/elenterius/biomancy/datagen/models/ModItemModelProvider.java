@@ -47,6 +47,7 @@ public class ModItemModelProvider extends ItemModelProvider {
 		lootItem(ModItems.TOXIN_GLAND);
 		lootItem(ModItems.VOLATILE_GLAND);
 		lootItem(ModItems.LIVING_FLESH);
+		lootItem(ModItems.ACIDIC_EGG);
 
 		componentItem(ModItems.FLESH_BITS);
 		componentItem(ModItems.BONE_FRAGMENTS);
