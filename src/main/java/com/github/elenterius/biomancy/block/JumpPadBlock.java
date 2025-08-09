@@ -1,9 +1,9 @@
 package com.github.elenterius.biomancy.block;
 
+import com.github.elenterius.biomancy.block.base.SimpleMultiFaceBlock;
 import com.github.elenterius.biomancy.entity.misc.LivingEntityData;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.util.VoxelShapeUtil;
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,18 +12,19 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.MultifaceBlock;
-import net.minecraft.world.level.block.MultifaceSpreader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +35,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-public class JumpPadBlock extends MultifaceBlock {
+public class JumpPadBlock extends SimpleMultiFaceBlock {
 
 	public static final double EPSILON = 1.0e-7d;
 
@@ -47,12 +48,8 @@ public class JumpPadBlock extends MultifaceBlock {
 		map.put(Direction.WEST, createFaceShape(Direction.WEST));
 	});
 
-	protected final ImmutableMap<BlockState, VoxelShape> shapesCache;
-	private final MultifaceSpreader spreader = new MultifaceSpreader(this);
-
 	public JumpPadBlock(Properties properties) {
 		super(properties.noCollission().forceSolidOn());
-		shapesCache = getShapeForEachState(JumpPadBlock::calculateMultifaceShape);
 	}
 
 	/**
@@ -62,7 +59,8 @@ public class JumpPadBlock extends MultifaceBlock {
 		return VoxelShapeUtil.createXZRotatedTowards(face, 2, 14, 2, 14, 16, 14);
 	}
 
-	private static VoxelShape calculateMultifaceShape(BlockState state) {
+	@Override
+	protected VoxelShape calculateMultifaceShape(BlockState state) {
 		VoxelShape voxelshape = Shapes.empty();
 
 		for (Direction face : DIRECTIONS) {
@@ -74,7 +72,47 @@ public class JumpPadBlock extends MultifaceBlock {
 		return voxelshape.isEmpty() ? Shapes.block() : voxelshape;
 	}
 
-	public static boolean checkIfAABBIntersects(BlockPos pos, BlockState blockState, Direction face, AABB aabb) {
+	@Override
+	public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
+		return context.getItemInHand().is(asItem()) && super.canBeReplaced(state, context);
+	}
+
+	@Override
+	public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
+		Level level = context.getLevel();
+		BlockPos pos = context.getClickedPos();
+		BlockState state = level.getBlockState(pos);
+		return getStateForPlacement(state, level, pos, context.getClickedFace().getOpposite());
+	}
+
+	@Override
+	public @Nullable PushReaction getPistonPushReaction(BlockState state) {
+		return PushReaction.DESTROY; //pulling the block with a piston causes an item dupe glitch
+	}
+
+	@Override
+	public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+		if (!movedByPiston && oldState.is(newState.getBlock()) && level instanceof ServerLevel serverLevel) {
+			List<Direction> missingFaces = new ArrayList<>();
+			for (Direction face : Direction.values()) {
+				if (hasFace(oldState, face) && !hasFace(newState, face)) {
+					missingFaces.add(face);
+				}
+			}
+
+			if (!missingFaces.isEmpty()) {
+				for (Direction face : missingFaces) {
+					BlockState temp = defaultBlockState().setValue(getFaceProperty(face), Boolean.TRUE);
+					List<ItemStack> drops = getDrops(temp, serverLevel, pos, null);
+					drops.forEach(itemStack -> Block.popResourceFromFace(level, pos, face, itemStack));
+				}
+				SoundType soundType = oldState.getSoundType(level, pos, null);
+				level.playSound(null, pos, soundType.getBreakSound(), SoundSource.BLOCKS, (soundType.getVolume() + 1f) / 2f, soundType.getPitch() * 0.8f);
+			}
+		}
+	}
+
+	public boolean checkIfAABBIntersects(BlockPos pos, BlockState blockState, Direction face, AABB aabb) {
 		return hasFace(blockState, face) && SHAPE_BY_FACE.get(face).bounds().move(pos).inflate(EPSILON).intersects(aabb);
 	}
 
@@ -91,14 +129,14 @@ public class JumpPadBlock extends MultifaceBlock {
 			}
 		}
 
-		CollisionResult collisionResult = sweptAABB(entity, collisionAABBs);
+		CollisionPrediction collisionPrediction = sweptAABB(entity, collisionAABBs);
 
-		boolean skipCollision = switch (collisionResult) {
+		boolean skipCollision = switch (collisionPrediction) {
 			case PREVIOUS_TICK, NEXT_TICK, NONE -> true;
 			case TUNNELED_PREVIOUS_TICK, CURRENT_TICK, TUNNELS_NEXT_TICK -> false;
 		};
 
-		if (collisionResult != CollisionResult.NONE) {
+		if (collisionPrediction != CollisionPrediction.NONE) {
 			entity.fallDistance = 0;
 
 			// to be able to properly launch entities from the ground we need to disable friction
@@ -141,31 +179,7 @@ public class JumpPadBlock extends MultifaceBlock {
 		}
 	}
 
-	@Override
-	public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
-		return context.getItemInHand().is(asItem()) && super.canBeReplaced(state, context);
-	}
-
-	@Override
-	public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
-		Level level = context.getLevel();
-		BlockPos pos = context.getClickedPos();
-		BlockState state = level.getBlockState(pos);
-		return getStateForPlacement(state, level, pos, context.getClickedFace().getOpposite());
-	}
-
-	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-		//noinspection DataFlowIssue
-		return shapesCache.get(state);
-	}
-
-	@Override
-	public MultifaceSpreader getSpreader() {
-		return spreader;
-	}
-
-	private static CollisionResult sweptAABB(Entity entity, List<AABB> collisionAABBs) {
+	protected static CollisionPrediction sweptAABB(Entity entity, List<AABB> collisionAABBs) {
 		AABB entityAABB = entity.getBoundingBox();
 		Vec3 currentPos = entityAABB.getCenter();
 		Vec3 offset = currentPos.subtract(entity.position());
@@ -184,30 +198,30 @@ public class JumpPadBlock extends MultifaceBlock {
 
 			if (inflatedAABB.contains(currentPos)) {
 				//if (inflatedAABB.contains(nextPos)) return CollisionResult.NEXT_TICK;
-				return CollisionResult.CURRENT_TICK;
+				return CollisionPrediction.CURRENT_TICK;
 			}
 
 			if (inflatedAABB.intersects(prevPos, currentPos)) {
-				if (inflatedAABB.contains(prevPos)) return CollisionResult.PREVIOUS_TICK;
-				return CollisionResult.TUNNELED_PREVIOUS_TICK;
+				if (inflatedAABB.contains(prevPos)) return CollisionPrediction.PREVIOUS_TICK;
+				return CollisionPrediction.TUNNELED_PREVIOUS_TICK;
 			}
 
 			if (inflatedAABB.intersects(currentPos, nextPos)) {
-				if (inflatedAABB.contains(nextPos)) return CollisionResult.NEXT_TICK;
+				if (inflatedAABB.contains(nextPos)) return CollisionPrediction.NEXT_TICK;
 
 				inflatedAABB.clip(currentPos, nextPos).ifPresent(clipPos -> {
 					//force entity closer to prevent jumps in the air above the pad
 					entity.setPos(clipPos.x - offset.x, clipPos.y - offset.y, clipPos.z - offset.z);
 				});
 
-				return CollisionResult.TUNNELS_NEXT_TICK;
+				return CollisionPrediction.TUNNELS_NEXT_TICK;
 			}
 		}
 
-		return CollisionResult.NONE;
+		return CollisionPrediction.NONE;
 	}
 
-	private static boolean debounce(Entity entity, BlockPos blockPos) {
+	protected static boolean debounce(Entity entity, BlockPos blockPos) {
 		CompoundTag tag = entity.getPersistentData().getCompound("biomancy:jump_pad");
 		if (entity.tickCount != tag.getInt("tick")) {
 			tag.putInt("tick", entity.tickCount);
@@ -230,7 +244,7 @@ public class JumpPadBlock extends MultifaceBlock {
 		return false;
 	}
 
-	private enum CollisionResult {
+	protected enum CollisionPrediction {
 		PREVIOUS_TICK,
 		TUNNELED_PREVIOUS_TICK,
 		CURRENT_TICK,
