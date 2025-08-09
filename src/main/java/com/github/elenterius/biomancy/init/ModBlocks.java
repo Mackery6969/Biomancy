@@ -2,6 +2,8 @@ package com.github.elenterius.biomancy.init;
 
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.block.*;
+import com.github.elenterius.biomancy.block.base.DirectionalPillarSlabBlock;
+import com.github.elenterius.biomancy.block.base.DirectionalSlabBlock;
 import com.github.elenterius.biomancy.block.bioforge.BioForgeBlock;
 import com.github.elenterius.biomancy.block.biolab.BioLabBlock;
 import com.github.elenterius.biomancy.block.bloom.BloomBlock;

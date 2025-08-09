@@ -1,6 +1,7 @@
 package com.github.elenterius.biomancy.datagen.loot;
 
-import com.github.elenterius.biomancy.block.DirectionalSlabBlock;
+import com.github.elenterius.biomancy.block.base.DirectionalSlabBlock;
+import com.github.elenterius.biomancy.block.base.SimpleMultiFaceBlock;
 import com.github.elenterius.biomancy.block.chrysalis.Chrysalis;
 import com.github.elenterius.biomancy.block.fleshspike.FleshSpikeBlock;
 import com.github.elenterius.biomancy.block.membrane.BiometricMembraneBlockEntity;
@@ -158,13 +159,26 @@ public class ModBlockLoot extends BlockLootSubProvider {
 				.add(applyExplosionDecay(item, LootItem.lootTableItem(item))));
 	}
 
+	protected LootTable.Builder createMultifaceBlockDrops(SimpleMultiFaceBlock block) {
+		return LootTable.lootTable().withPool(LootPool.lootPool()
+				.add(applyExplosionDecay(block, LootItem.lootTableItem(block)
+						.apply(
+								Direction.values(),
+								face -> SetItemCountFunction.setCount(ConstantValue.exactly(1), true)
+										.when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
+												.setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(SimpleMultiFaceBlock.getFaceProperty(face), true)))
+						)
+						.apply(SetItemCountFunction.setCount(ConstantValue.exactly(-1), true)))));
+	}
+
 	protected LootTable.Builder createMultifaceBlockDrops(MultifaceBlock block) {
 		return LootTable.lootTable().withPool(LootPool.lootPool()
 				.add(applyExplosionDecay(block, LootItem.lootTableItem(block)
 						.apply(
 								Direction.values(),
 								face -> SetItemCountFunction.setCount(ConstantValue.exactly(1), true)
-										.when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(MultifaceBlock.getFaceProperty(face), true)))
+										.when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
+												.setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(MultifaceBlock.getFaceProperty(face), true)))
 						)
 						.apply(SetItemCountFunction.setCount(ConstantValue.exactly(-1), true)))));
 	}

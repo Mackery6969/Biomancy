@@ -1,6 +1,6 @@
 package com.github.elenterius.biomancy.block.membrane;
 
-import com.github.elenterius.biomancy.block.PaneBlock;
+import com.github.elenterius.biomancy.block.base.PaneBlock;
 import com.github.elenterius.biomancy.block.property.Orientation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

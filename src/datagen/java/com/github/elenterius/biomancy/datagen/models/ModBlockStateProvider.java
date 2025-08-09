@@ -2,6 +2,10 @@ package com.github.elenterius.biomancy.datagen.models;
 
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.block.*;
+import com.github.elenterius.biomancy.block.base.DirectionalPillarSlabBlock;
+import com.github.elenterius.biomancy.block.base.DirectionalSlabBlock;
+import com.github.elenterius.biomancy.block.base.PaneBlock;
+import com.github.elenterius.biomancy.block.base.SimpleMultiFaceBlock;
 import com.github.elenterius.biomancy.block.bloom.BloomBlock;
 import com.github.elenterius.biomancy.block.fleshspike.FleshSpikeBlock;
 import com.github.elenterius.biomancy.block.membrane.MembraneBlock;
@@ -141,7 +145,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		simpleBlockWithItem(ModBlocks.BLOOMLIGHT);
 		tendonChain(ModBlocks.TENDON_CHAIN);
 		vialHolder(ModBlocks.VIAL_HOLDER);
-		multifaceBlockWithItem(ModBlocks.JUMP_PAD);
+		simpleMultifaceBlockWithItem(ModBlocks.JUMP_PAD);
 
 		geckolibModel(ModBlocks.PRIMORDIAL_CRADLE, PRIMAL_PARTICLE_TEXTURE);
 		geoBlockItem(ModBlocks.PRIMORDIAL_CRADLE, new Vector3f(16, 16, 16));
@@ -744,7 +748,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		multifaceBlockWithItem(block.get());
 	}
 
-	public void multifaceBlockWithItem(MultifaceBlock block) {
+	public <T extends SimpleMultiFaceBlock> void simpleMultifaceBlockWithItem(RegistryObject<T> block) {
+		multifaceBlockWithItem(block.get());
+	}
+
+	public void multifaceBlockWithItem(Block block) {
 		ModelFile model = models().getExistingFile(blockAsset(block));
 		simpleBlockItem(block, model);
 

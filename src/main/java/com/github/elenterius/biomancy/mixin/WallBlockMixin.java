@@ -1,6 +1,6 @@
 package com.github.elenterius.biomancy.mixin;
 
-import com.github.elenterius.biomancy.block.PaneBlock;
+import com.github.elenterius.biomancy.block.base.PaneBlock;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockState;

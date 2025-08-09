@@ -1,4 +1,4 @@
-package com.github.elenterius.biomancy.block;
+package com.github.elenterius.biomancy.block.base;
 
 import com.github.elenterius.biomancy.block.property.DirectionalSlabType;
 import net.minecraft.core.BlockPos;
@@ -17,6 +17,7 @@ import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
 public class DirectionalPillarSlabBlock extends DirectionalSlabBlock {
+
 	public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
 
 	public DirectionalPillarSlabBlock(Properties properties) {

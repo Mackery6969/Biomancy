@@ -117,7 +117,7 @@ public final class LivingEventHandler {
 		if (livingEntity.mainSupportingBlockPos.isPresent()) {
 			BlockPos posAbove = livingEntity.mainSupportingBlockPos.get().above();
 			BlockState blockState = level.getBlockState(posAbove);
-			if (blockState.getBlock() instanceof JumpPadBlock && JumpPadBlock.checkIfAABBIntersects(posAbove, blockState, Direction.DOWN, aabb)) {
+			if (blockState.getBlock() instanceof JumpPadBlock jumpPad && jumpPad.checkIfAABBIntersects(posAbove, blockState, Direction.DOWN, aabb)) {
 				event.setDistance(0f);
 				event.setDamageMultiplier(0f);
 				event.setCanceled(true);
@@ -143,7 +143,7 @@ public final class LivingEventHandler {
 				for (int z = z1; z <= z2; z++) {
 					cursor.setX(x).setZ(z);
 					BlockState blockState = level.getBlockState(cursor);
-					if (blockState.getBlock() instanceof JumpPadBlock && JumpPadBlock.checkIfAABBIntersects(cursor, blockState, Direction.DOWN, aabb)) {
+					if (blockState.getBlock() instanceof JumpPadBlock jumpPad && jumpPad.checkIfAABBIntersects(cursor, blockState, Direction.DOWN, aabb)) {
 						event.setDistance(0f);
 						event.setDamageMultiplier(0f);
 						event.setCanceled(true);
