@@ -84,7 +84,7 @@ public class GrenadeProjectile extends ThrowableItemProjectile {
 			if (item == ModItems.TOXIN_GRENADE.get()) {
 				GasCloud cloud = new GasCloud(serverLevel, getImpactPos(hitResult));
 				cloud.setRadius(3.5f);
-				cloud.setDuration(15 * 20);
+				cloud.setDuration(16 * 20);
 				cloud.addEffect(new MobEffectInstance(ModMobEffects.TOXIN.get(), 8 * 20));
 				serverLevel.addFreshEntity(cloud);
 			}

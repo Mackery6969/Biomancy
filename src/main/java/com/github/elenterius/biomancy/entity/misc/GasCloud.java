@@ -20,6 +20,7 @@ import net.minecraft.commands.arguments.ParticleArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -52,6 +53,7 @@ public class GasCloud extends Entity implements TraceableEntity, HitboxDebugInfo
 	public static final float MIN_RADIUS = 0.5f;
 	public static final float MAX_RADIUS = 8f;
 	public static final int DEFAULT_PROPAGATION_DURATION = 20 * 3;
+	public static final SimpleParticleType DEFAULT_PARTICLE = ParticleTypes.CLOUD;
 
 	protected static final EntityDataAccessor<Float> RADIUS_DATA = SynchedEntityData.defineId(GasCloud.class, EntityDataSerializers.FLOAT);
 	protected static final EntityDataAccessor<Integer> PROPAGATION_DURATION_DATA = SynchedEntityData.defineId(GasCloud.class, EntityDataSerializers.INT);
@@ -114,7 +116,7 @@ public class GasCloud extends Entity implements TraceableEntity, HitboxDebugInfo
 		getEntityData().define(RADIUS_DATA, DEFAULT_RADIUS);
 		getEntityData().define(PROPAGATION_DURATION_DATA, DEFAULT_PROPAGATION_DURATION);
 		getEntityData().define(IS_IDLE_DATA, true);
-		getEntityData().define(PARTICLE_DATA, ParticleTypes.CLOUD);
+		getEntityData().define(PARTICLE_DATA, DEFAULT_PARTICLE);
 	}
 
 	public float getRadius() {
@@ -183,7 +185,7 @@ public class GasCloud extends Entity implements TraceableEntity, HitboxDebugInfo
 
 	@Override
 	public void tick() {
-		boolean firstTick = this.firstTick;
+		final boolean isFirstTick = firstTick; //get firstTick before it gets modified
 
 		super.tick();
 
@@ -194,7 +196,14 @@ public class GasCloud extends Entity implements TraceableEntity, HitboxDebugInfo
 			serverTick();
 		}
 
-		spreadGas(firstTick);
+		if (isRemoved()) return;
+
+		int propagationDuration = getPropagationDuration();
+		int tickInterval = tickCount < propagationDuration ? 5 : 20;
+
+		if (isFirstTick || tickCount % tickInterval == 0) {
+			spreadGas(propagationDuration);
+		}
 	}
 
 	protected void serverTick() {
@@ -205,12 +214,12 @@ public class GasCloud extends Entity implements TraceableEntity, HitboxDebugInfo
 			return;
 		}
 
-		//wait until propagation is complete
-		if (tickCount < propagationDurationTicks) return;
+		//wait a tiny bit before applying effects
+		if (tickCount < Math.min(propagationDurationTicks, 20)) return;
 
 		float radius = getRadius();
 
-		if (radiusModificationPerTick != 0f) {
+		if (tickCount > propagationDurationTicks && radiusModificationPerTick != 0f) {
 			radius += radiusModificationPerTick;
 			if (radius < 0.5f) {
 				discard();
@@ -300,14 +309,7 @@ public class GasCloud extends Entity implements TraceableEntity, HitboxDebugInfo
 		}
 	}
 
-	private void spreadGas(boolean firstTick) {
-		if (isRemoved()) return;
-
-		int propagationDuration = getPropagationDuration();
-		int tickInterval = tickCount < propagationDuration ? 5 : 20;
-
-		if (!firstTick && tickCount % tickInterval != 0) return;
-
+	private void spreadGas(int propagationDuration) {
 		float radius = getRadius();
 		if (radius < MIN_RADIUS) {
 			if (dynamicGasVolume != null) dynamicGasVolume.clear();
