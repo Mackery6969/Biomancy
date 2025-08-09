@@ -2,6 +2,7 @@ package com.github.elenterius.biomancy.entity.misc;
 
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.init.ModEntityTypes;
+import com.github.elenterius.biomancy.init.ModParticleTypes;
 import com.github.elenterius.biomancy.mixin.accessor.EntityAccessor;
 import com.github.elenterius.biomancy.world.DynamicGasVolume;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -19,7 +20,6 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.commands.arguments.ParticleArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -53,7 +53,7 @@ public class GasCloud extends Entity implements TraceableEntity, HitboxDebugInfo
 	public static final float MIN_RADIUS = 0.5f;
 	public static final float MAX_RADIUS = 8f;
 	public static final int DEFAULT_PROPAGATION_DURATION = 20 * 3;
-	public static final SimpleParticleType DEFAULT_PARTICLE = ParticleTypes.CLOUD;
+	public static final SimpleParticleType DEFAULT_PARTICLE = ModParticleTypes.TOXIN_GAS.get();
 
 	protected static final EntityDataAccessor<Float> RADIUS_DATA = SynchedEntityData.defineId(GasCloud.class, EntityDataSerializers.FLOAT);
 	protected static final EntityDataAccessor<Integer> PROPAGATION_DURATION_DATA = SynchedEntityData.defineId(GasCloud.class, EntityDataSerializers.INT);

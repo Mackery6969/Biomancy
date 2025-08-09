@@ -9,6 +9,7 @@ import com.github.elenterius.biomancy.client.gui.tooltip.HrTooltipClientComponen
 import com.github.elenterius.biomancy.client.gui.tooltip.StorageSacTooltipClientComponent;
 import com.github.elenterius.biomancy.client.particle.BloodDripParticle;
 import com.github.elenterius.biomancy.client.particle.CustomGlowParticle;
+import com.github.elenterius.biomancy.client.particle.GasExplosionParticleEmitter;
 import com.github.elenterius.biomancy.client.particle.ParticleProviders;
 import com.github.elenterius.biomancy.client.render.block.bioforge.BioForgeRenderer;
 import com.github.elenterius.biomancy.client.render.block.biolab.BioLabRenderer;
@@ -42,6 +43,8 @@ import com.github.elenterius.biomancy.util.TransliterationUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.particle.AttackSweepParticle;
+import net.minecraft.client.particle.HugeExplosionParticle;
+import net.minecraft.client.particle.PlayerCloudParticle;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.NoopRenderer;
@@ -158,6 +161,9 @@ public final class ClientSetupHandler {
 		event.registerSpriteSet(ModParticleTypes.HOSTILE.get(), CustomGlowParticle.GenericProvider::new);
 		event.registerSpriteSet(ModParticleTypes.BIOHAZARD.get(), sprites -> new CustomGlowParticle.TwoColorProvider(sprites, 0xab274f, 0x7e2a43));
 		event.registerSpriteSet(ModParticleTypes.ACID_BUBBLE.get(), ParticleProviders.AcidBubbleProvider::new);
+		event.registerSpriteSet(ModParticleTypes.TOXIN_GAS.get(), PlayerCloudParticle.Provider::new);
+		event.registerSpriteSet(ModParticleTypes.TOXIN_GAS_EXPLOSION.get(), HugeExplosionParticle.Provider::new);
+		event.registerSpecial(ModParticleTypes.TOXIN_GAS_EXPLOSION_EMITTER.get(), new GasExplosionParticleEmitter.Provider());
 	}
 
 	@SubscribeEvent

@@ -1,10 +1,7 @@
 package com.github.elenterius.biomancy.entity.projectile;
 
 import com.github.elenterius.biomancy.entity.misc.GasCloud;
-import com.github.elenterius.biomancy.init.ModBlocks;
-import com.github.elenterius.biomancy.init.ModEntityTypes;
-import com.github.elenterius.biomancy.init.ModItems;
-import com.github.elenterius.biomancy.init.ModMobEffects;
+import com.github.elenterius.biomancy.init.*;
 import com.github.elenterius.biomancy.util.ExplosionUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -82,6 +79,8 @@ public class GrenadeProjectile extends ThrowableItemProjectile {
 			Item item = getItem().getItem();
 
 			if (item == ModItems.TOXIN_GRENADE.get()) {
+				serverLevel.sendParticles(ModParticleTypes.TOXIN_GAS_EXPLOSION_EMITTER.get(), getX(), getY(), getZ(), 1, 0d, 0d, 0d, 2d);
+
 				GasCloud cloud = new GasCloud(serverLevel, getImpactPos(hitResult));
 				cloud.setRadius(3.5f);
 				cloud.setDuration(16 * 20);
