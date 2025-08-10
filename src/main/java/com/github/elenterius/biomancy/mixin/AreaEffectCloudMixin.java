@@ -14,7 +14,7 @@ public abstract class AreaEffectCloudMixin {
 
 	@WrapWithCondition(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/effect/MobEffect;applyInstantenousEffect(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/entity/LivingEntity;ID)V"))
 	private boolean onlyApplyInstantEffectIfAllowed(MobEffect effect, Entity source, Entity indirectSource, LivingEntity livingEntity, int amplifier, double distanceMultiplier) {
-		return StatusEffectHandler.canApplySplashEffectIfAllowed(effect, livingEntity);
+		return StatusEffectHandler.canApplySplashEffectIfAllowed(effect, livingEntity, StatusEffectHandler.CONSUME_ONE_NUTRIENT_PER_ARMOR_PIECE);
 	}
 
 }

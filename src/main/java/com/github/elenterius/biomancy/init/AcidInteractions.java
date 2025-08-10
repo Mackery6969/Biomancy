@@ -5,7 +5,7 @@ import com.github.elenterius.biomancy.block.digester.DigesterBlockEntity;
 import com.github.elenterius.biomancy.crafting.recipe.DigestingRecipe;
 import com.github.elenterius.biomancy.init.tags.ModBlockTags;
 import com.github.elenterius.biomancy.init.tags.ModItemTags;
-import com.github.elenterius.biomancy.util.CombatUtil;
+import com.github.elenterius.biomancy.statuseffect.StatusEffectHandler;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Direction;
 import net.minecraft.core.cauldron.CauldronInteraction;
@@ -151,7 +151,7 @@ public final class AcidInteractions {
 
 	public static void handleEntityInsideAcid(LivingEntity livingEntity) {
 		if (!livingEntity.level().isClientSide) {
-			CombatUtil.applyAcidEffect(livingEntity, 4);
+			StatusEffectHandler.applyCorrosiveEffect(livingEntity, 4);
 		}
 		else if (livingEntity.tickCount % 10 == 0 && livingEntity.getRandom().nextFloat() < 0.4f) {
 			Level level = livingEntity.level();

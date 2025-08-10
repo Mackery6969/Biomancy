@@ -14,7 +14,7 @@ public abstract class ArrowMixin {
 
 	@WrapWithCondition(method = "doPostHurtEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z"))
 	private boolean onlyApplyEffectIfAllowed(LivingEntity target, MobEffectInstance effectInstance, Entity source) {
-		return StatusEffectHandler.canApplySplashEffectIfAllowed(effectInstance.getEffect(), target);
+		return StatusEffectHandler.canApplySplashEffectIfAllowed(effectInstance.getEffect(), target, StatusEffectHandler.CONSUME_ONE_NUTRIENT_PER_ARMOR_PIECE);
 	}
 
 }

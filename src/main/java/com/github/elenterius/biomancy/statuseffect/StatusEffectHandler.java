@@ -5,6 +5,7 @@ import com.github.elenterius.biomancy.init.ModMobEffects;
 import com.github.elenterius.biomancy.init.tags.ModItemTags;
 import com.github.elenterius.biomancy.init.tags.ModMobEffectTags;
 import com.github.elenterius.biomancy.item.armor.AcolyteArmorItem;
+import com.github.elenterius.biomancy.item.armor.LivingArmorItem;
 import com.github.elenterius.biomancy.serum.FrenzySerum;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -21,6 +22,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 @Mod.EventBusSubscriber(modid = BiomancyMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -99,7 +101,14 @@ public final class StatusEffectHandler {
 		livingEntity.addEffect(newEffectInstance);
 	}
 
-	public static boolean canApplySplashEffectIfAllowed(MobEffect effect, LivingEntity target) {
+	public static final BiConsumer<LivingArmorItem, ItemStack> CONSUME_ONE_NUTRIENT_PER_ARMOR_PIECE = (armor, itemStack) -> armor.decreaseNutrients(itemStack, 1);
+
+	public static boolean canApplySplashEffectIfAllowed(MobEffect effect, LivingEntity target, BiConsumer<LivingArmorItem, ItemStack> nutrientsConsumer) {
+
+		if (ModMobEffectTags.forgeIsAcid(effect)) {
+			return canApplyAcidEffect(target, nutrientsConsumer);
+		}
+
 		MobEffectCategory category = effect.getCategory();
 
 		if (target.isInvertedHealAndHarm()) {
@@ -113,11 +122,12 @@ public final class StatusEffectHandler {
 
 		if (category == MobEffectCategory.HARMFUL) {
 			int resistProbability = 0;
-			int resistance = ModMobEffectTags.forgeIsAcid(effect) ? 25 : 15;
+			int resistance = 15;
 
 			for (ItemStack itemStack : target.getArmorSlots()) {
 				if (itemStack.getItem() instanceof AcolyteArmorItem armor && armor.hasNutrients(itemStack)) {
 					resistProbability += resistance;
+					nutrientsConsumer.accept(armor, itemStack);
 				}
 			}
 
@@ -129,6 +139,18 @@ public final class StatusEffectHandler {
 		return true;
 	}
 
+	public static boolean canApplyAcidEffect(LivingEntity target, BiConsumer<LivingArmorItem, ItemStack> nutrientsConsumer) {
+		int acidResistProbability = 0;
+		for (ItemStack itemStack : target.getArmorSlots()) {
+			if (itemStack.getItem() instanceof LivingArmorItem armor && armor.hasNutrients(itemStack)) {
+				acidResistProbability += 25;
+				nutrientsConsumer.accept(armor, itemStack);
+			}
+		}
+
+		return acidResistProbability <= 0 || target.getRandom().nextInt(100) > acidResistProbability;
+	}
+
 	public static void modifyOnNextWorldTick(LivingEntity livingEntity, Consumer<LivingEntity> modify) {
 		WorldWorkerManager.addWorker(new OneShotTaskWorker() {
 			@Override
@@ -138,6 +160,25 @@ public final class StatusEffectHandler {
 				}
 			}
 		});
+	}
+
+	public static boolean hasAcidEffect(LivingEntity livingEntity) {
+		for (MobEffect effect : livingEntity.getActiveEffectsMap().keySet()) {
+			if (ModMobEffectTags.forgeIsAcid(effect)) return true;
+		}
+		return false;
+	}
+
+	public static void applyCorrosiveEffect(LivingEntity livingEntity, int seconds) {
+		if (livingEntity.hasEffect(ModMobEffects.CORROSIVE.get())) return;
+		if (!canApplyAcidEffect(livingEntity, CONSUME_ONE_NUTRIENT_PER_ARMOR_PIECE)) return;
+
+		MobEffectInstance acidEffect = new MobEffectInstance(ModMobEffects.CORROSIVE.get(), seconds * 20, 0);
+
+		if (!livingEntity.canBeAffected(acidEffect)) return;
+
+		livingEntity.addEffect(acidEffect);
+		livingEntity.addEffect(new MobEffectInstance(ModMobEffects.ARMOR_SHRED.get(), (seconds + 3) * 20, 0));
 	}
 
 	private abstract static class OneShotTaskWorker implements WorldWorkerManager.IWorker {

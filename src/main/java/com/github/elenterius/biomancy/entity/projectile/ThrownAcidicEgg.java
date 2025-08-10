@@ -3,7 +3,7 @@ package com.github.elenterius.biomancy.entity.projectile;
 import com.github.elenterius.biomancy.init.ModBlocks;
 import com.github.elenterius.biomancy.init.ModEntityTypes;
 import com.github.elenterius.biomancy.init.ModItems;
-import com.github.elenterius.biomancy.util.CombatUtil;
+import com.github.elenterius.biomancy.statuseffect.StatusEffectHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -57,7 +57,7 @@ public class ThrownAcidicEgg extends ThrowableItemProjectile {
 		entity.hurt(damageSources().thrown(this, getOwner()), 0f);
 
 		if (!level().isClientSide && entity instanceof LivingEntity livingEntity && random.nextFloat() < 0.4) {
-			CombatUtil.applyAcidEffect(livingEntity, 2);
+			StatusEffectHandler.applyCorrosiveEffect(livingEntity, 2);
 		}
 	}
 

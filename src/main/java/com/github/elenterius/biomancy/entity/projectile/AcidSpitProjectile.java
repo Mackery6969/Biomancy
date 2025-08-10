@@ -2,7 +2,7 @@ package com.github.elenterius.biomancy.entity.projectile;
 
 import com.github.elenterius.biomancy.init.ModDamageSources;
 import com.github.elenterius.biomancy.init.ModEntityTypes;
-import com.github.elenterius.biomancy.util.CombatUtil;
+import com.github.elenterius.biomancy.statuseffect.StatusEffectHandler;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
@@ -73,7 +73,7 @@ public class AcidSpitProjectile extends BaseProjectile {
 			victim.hurt(acidDamageSource, getDamage());
 
 			if (victim instanceof LivingEntity livingVictim && !livingVictim.isInvulnerableTo(acidDamageSource)) {
-				CombatUtil.applyAcidEffect(livingVictim, 4);
+				StatusEffectHandler.applyCorrosiveEffect(livingVictim, 4);
 			}
 
 			if (owner instanceof LivingEntity shooter) {

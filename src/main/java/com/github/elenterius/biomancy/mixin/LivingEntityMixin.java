@@ -110,7 +110,7 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityDa
 	private void onAddEffect(MobEffectInstance effectInstance, @Nullable Entity source, CallbackInfoReturnable<Boolean> cir) {
 		if (source instanceof AreaEffectCloud || source instanceof ThrownPotion || source instanceof Arrow) {
 			// Note: ThrownPotion or AbstractArrow will only be matched if they have no owner (owner == null)
-			if (!StatusEffectHandler.canApplySplashEffectIfAllowed(effectInstance.getEffect(), biomancy$self())) {
+			if (!StatusEffectHandler.canApplySplashEffectIfAllowed(effectInstance.getEffect(), biomancy$self(), StatusEffectHandler.CONSUME_ONE_NUTRIENT_PER_ARMOR_PIECE)) {
 				cir.setReturnValue(false);
 			}
 		}

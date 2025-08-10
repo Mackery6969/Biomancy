@@ -15,12 +15,12 @@ public abstract class ThrownPotionMixin {
 
 	@WrapWithCondition(method = "applySplash", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/effect/MobEffect;applyInstantenousEffect(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/entity/LivingEntity;ID)V"))
 	private boolean onlyApplyInstantEffectIfAllowed(MobEffect effect, Entity source, Entity indirectSource, LivingEntity livingEntity, int amplifier, double distanceMultiplier) {
-		return StatusEffectHandler.canApplySplashEffectIfAllowed(effect, livingEntity);
+		return StatusEffectHandler.canApplySplashEffectIfAllowed(effect, livingEntity, StatusEffectHandler.CONSUME_ONE_NUTRIENT_PER_ARMOR_PIECE);
 	}
 
 	@WrapWithCondition(method = "applySplash", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z"))
 	private boolean onlyApplyEffectIfAllowed(LivingEntity livingEntity, MobEffectInstance effectInstance, Entity source) {
-		return StatusEffectHandler.canApplySplashEffectIfAllowed(effectInstance.getEffect(), livingEntity);
+		return StatusEffectHandler.canApplySplashEffectIfAllowed(effectInstance.getEffect(), livingEntity, StatusEffectHandler.CONSUME_ONE_NUTRIENT_PER_ARMOR_PIECE);
 	}
 
 }

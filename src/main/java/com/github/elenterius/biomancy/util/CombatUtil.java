@@ -45,21 +45,6 @@ public final class CombatUtil {
 		}
 	}
 
-	public static boolean hasAcidEffect(LivingEntity livingEntity) {
-		return livingEntity.hasEffect(ModMobEffects.CORROSIVE.get());
-	}
-
-	public static void applyAcidEffect(LivingEntity livingEntity, int seconds) {
-		if (livingEntity.hasEffect(ModMobEffects.CORROSIVE.get())) return;
-
-		MobEffectInstance acidEffect = new MobEffectInstance(ModMobEffects.CORROSIVE.get(), seconds * 20, 0);
-
-		if (!livingEntity.canBeAffected(acidEffect)) return;
-
-		livingEntity.addEffect(acidEffect);
-		livingEntity.addEffect(new MobEffectInstance(ModMobEffects.ARMOR_SHRED.get(), (seconds + 3) * 20, 0));
-	}
-
 	public static void hurtWithAcid(LivingEntity livingEntity, float damage) {
 		livingEntity.hurt(ModDamageSources.acid(livingEntity.level(), null), damage);
 		livingEntity.invulnerableTime = 0; //leave open for next damage
