@@ -157,10 +157,28 @@ public final class LivingEventHandler {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onLivingJump(final LivingEvent.LivingJumpEvent event) {
 		LivingEntity livingEntity = event.getEntity();
+		if (livingEntity.level().isClientSide) return;
+
 		ItemStack stack = livingEntity.getItemBySlot(EquipmentSlot.LEGS);
 		if (stack.getItem() instanceof WarriorArmorItem armor) {
-			armor.onJump(stack, livingEntity);
+			armor.onJump(stack, livingEntity, livingEntity.isShiftKeyDown());
 		}
+	}
+
+	public static boolean onAutoSpinHorizontalCollision(final LivingEntity livingEntity) {
+		if (livingEntity.level().isClientSide) return false;
+
+		if (livingEntity.onGround() && livingEntity.isShiftKeyDown()) {
+			ItemStack stack = livingEntity.getItemBySlot(EquipmentSlot.LEGS);
+			if (stack.getItem() instanceof WarriorArmorItem armor) {
+				if (armor.onJump(stack, livingEntity, true)) {
+					livingEntity.fallDistance = 0f;
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 }

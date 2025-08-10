@@ -1,11 +1,13 @@
 package com.github.elenterius.biomancy.mixin;
 
 import com.github.elenterius.biomancy.entity.misc.LivingEntityData;
+import com.github.elenterius.biomancy.event.LivingEventHandler;
 import com.github.elenterius.biomancy.init.ModMobEffects;
 import com.github.elenterius.biomancy.init.tags.ModItemTags;
 import com.github.elenterius.biomancy.item.ShieldBlockingListener;
 import com.github.elenterius.biomancy.serum.FrenzySerum;
 import com.github.elenterius.biomancy.statuseffect.StatusEffectHandler;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.world.effect.MobEffect;
@@ -22,6 +24,7 @@ import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,6 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @Mixin(LivingEntity.class)
@@ -65,6 +69,13 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityDa
 	@Override
 	public DataHolder biomancy$getData() {
 		return biomancy$transientData;
+	}
+
+	@Inject(method = "checkAutoSpinAttack", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/List;isEmpty()Z"), cancellable = true)
+	private void onAutoSpinHorizontalCollision(AABB aabbBeforeSpin, AABB aabbAfterSpin, CallbackInfo ci, @Local List<Entity> list) {
+		if (list.isEmpty() && horizontalCollision && LivingEventHandler.onAutoSpinHorizontalCollision(biomancy$self())) {
+			ci.cancel();
+		}
 	}
 
 	@Inject(method = "shouldDiscardFriction", at = @At("HEAD"), cancellable = true)

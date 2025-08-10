@@ -107,36 +107,44 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 		return type == Type.BOOTS && getNutrients(stack) > 0 ? 0.5f : 0f;
 	}
 
-	public void onJump(ItemStack stack, LivingEntity livingEntity) {
-		if (type != ArmorItem.Type.LEGGINGS) return;
-		//		if (livingEntity.level().isClientSide) return;
+	public boolean onJump(ItemStack stack, LivingEntity livingEntity, boolean isBulletJumpKeyDown) {
+		if (livingEntity.level().isClientSide) return false;
 
-		if (livingEntity.isShiftKeyDown()) {
-			if (livingEntity instanceof Player player) {
+		if (type != ArmorItem.Type.LEGGINGS) return false;
+		if (livingEntity.isInWaterOrBubble()) return false;
+
+		if (isBulletJumpKeyDown) {
+			if (livingEntity instanceof ServerPlayer player) {
 				if (getNutrients(stack) >= 10) {
 					if (bulletJump(player)) {
 						consumeNutrients(stack, 10);
+						return true;
 					}
 				}
-				else if (player instanceof ServerPlayer serverPlayer) {
+				else {
 					player.displayClientMessage(TextComponentUtil.getFailureMsgText("not_enough_nutrients"), true);
-					SoundUtil.Server.sendSoundToClient(serverPlayer, ModSoundEvents.FLESHKIN_NO.get(), player.getSoundSource(), 1f, 1f + player.level().getRandom().nextFloat() * 0.4f);
+					SoundUtil.Server.sendSoundToClient(player, ModSoundEvents.FLESHKIN_NO.get(), player.getSoundSource(), 1f, 1f + player.level().getRandom().nextFloat() * 0.4f);
 				}
 			}
-			return;
+			return false;
 		}
 
 		double jumpBoostPower = getJumpBoostPower(stack);
 		if (jumpBoostPower != 0d) {
 			if (getNutrients(stack) >= 1) {
 				livingEntity.setDeltaMovement(livingEntity.getDeltaMovement().add(0d, jumpBoostPower, 0d));
+				livingEntity.hasImpulse = true;
+				livingEntity.hurtMarked = true;
 				consumeNutrients(stack, 1);
+				return true;
 			}
 			else if (livingEntity instanceof ServerPlayer player) {
 				player.displayClientMessage(TextComponentUtil.getFailureMsgText("not_enough_nutrients"), true);
 				SoundUtil.Server.sendSoundToClient(player, ModSoundEvents.FLESHKIN_NO.get(), player.getSoundSource(), 1f, 1f + player.level().getRandom().nextFloat() * 0.4f);
 			}
 		}
+
+		return false;
 	}
 
 	public void onFall(ItemStack stack, LivingFallEvent event) {
@@ -148,7 +156,7 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 		}
 	}
 
-	protected boolean bulletJump(Player player) {
+	protected boolean bulletJump(ServerPlayer player) {
 		Vec3 lookVec = player.getLookAngle();
 		Vec3 velocity = player.getDeltaMovement();
 
@@ -166,9 +174,7 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 		if (verticalSimilarity < -(22.5d / 90d)) {
 			ClipContext context = new ClipContext(player.position(), lookTarget, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player);
 			if (player.level().clip(context).getType() == HitResult.Type.BLOCK) {
-				if (player instanceof ServerPlayer serverPlayer) {
-					SoundUtil.Server.sendSoundToClient(serverPlayer, ModSoundEvents.FLESHKIN_NO.get(), player.getSoundSource(), 0.5f, 0.5f + player.level().getRandom().nextFloat() * 0.5f);
-				}
+				SoundUtil.Server.sendSoundToClient(player, ModSoundEvents.FLESHKIN_NO.get(), player.getSoundSource(), 0.5f, 0.5f + player.level().getRandom().nextFloat() * 0.5f);
 				return false;
 			}
 		}
@@ -215,10 +221,10 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 			}
 		}
 
-		//player.fallDistance = 0f;
 		player.hasImpulse = true;
 		player.hurtMarked = true;
-		player.playSound(ModSoundEvents.ARMOR_BULLET_JUMP.get(), 1f, 1f);
+
+		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), ModSoundEvents.ARMOR_BULLET_JUMP.get(), player.getSoundSource(), 1f, 1f);
 
 		return true;
 	}
