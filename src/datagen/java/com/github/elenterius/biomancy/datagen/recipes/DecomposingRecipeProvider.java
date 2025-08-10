@@ -212,7 +212,7 @@ public class DecomposingRecipeProvider extends RecipeProvider {
 		DecomposingRecipeBuilder.create().setIngredient(ModItems.GENERIC_MOB_GLAND).addOutput(ModItems.BILE.get(), 4, 6).addOutput(ModItems.FLESH_BITS.get(), 2, 3).addOutput(ModItems.ELASTIC_FIBERS.get(), 1, 3).unlockedBy(ModItems.GENERIC_MOB_GLAND).save(consumer);
 		DecomposingRecipeBuilder.create().setIngredient(ModItems.TOXIN_GLAND).addOutput(ModItems.TOXIN_EXTRACT.get(), 2, 5).addOutput(ModItems.FLESH_BITS.get(), 2, 3).addOutput(ModItems.ELASTIC_FIBERS.get(), 1, 3).unlockedBy(ModItems.TOXIN_GLAND).save(consumer);
 		DecomposingRecipeBuilder.create().setIngredient(ModItems.VOLATILE_GLAND).addOutput(ModItems.VOLATILE_FLUID.get(), 2, 5).addOutput(ModItems.FLESH_BITS.get(), 2, 3).addOutput(ModItems.ELASTIC_FIBERS.get(), 1, 3).unlockedBy(ModItems.VOLATILE_GLAND).save(consumer);
-		DecomposingRecipeBuilder.create().setIngredient(ModItems.ACIDIC_EGG).addOutput(ModItems.ACID_EXTRACT.get(), -2, 1).addOutput(ModItems.BILE.get(), 1, 2).unlockedBy(ModItems.ACIDIC_EGG).save(consumer);
+		DecomposingRecipeBuilder.create().setIngredient(ModItems.ACIDIC_EGG).addOutput(ModItems.ACID_EXTRACT.get(), -2, 1).addOutput(ModItems.BILE.get(), 2, 4).unlockedBy(ModItems.ACIDIC_EGG).save(consumer);
 	}
 
 	private void buildTagRecipes(Consumer<FinishedRecipe> consumer) {

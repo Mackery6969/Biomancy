@@ -133,6 +133,7 @@ public class DigestingRecipeProvider extends RecipeProvider {
 
 		int eggNutrition = 1;
 		nutrientPasteRecipe(eggNutrition, Items.EGG).addCraftingTimeModifier(20).save(consumer);
+		nutrientPasteRecipe(eggNutrition, ModItems.ACIDIC_EGG.get()).addCraftingTimeModifier(20).save(consumer);
 		nutrientPasteRecipe(2, Items.TURTLE_EGG).save(consumer);
 		nutrientPasteRecipe(6, Items.SNIFFER_EGG).setCraftingCost(3).save(consumer);
 
