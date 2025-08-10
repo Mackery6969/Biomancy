@@ -6,6 +6,7 @@ import com.github.elenterius.biomancy.block.vialholder.VialHolderBlock;
 import com.github.elenterius.biomancy.item.ChrysalisBlockItem;
 import com.github.elenterius.biomancy.item.extractor.ExtractorItem;
 import com.github.elenterius.biomancy.item.injector.InjectorItem;
+import com.github.elenterius.biomancy.util.MobUtil;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -47,7 +48,7 @@ public final class PlayerInteractHandler {
 	}
 
 	private static void interactWithParent(PlayerInteractEvent.EntityInteract event, ItemStack stack, Item item, PartEntity<?> partEntity) {
-		Entity parent = getParent(partEntity);
+		Entity parent = MobUtil.getParent(partEntity);
 		if (parent instanceof LivingEntity livingEntity) {
 			InteractionResult interactionResult = item.interactLivingEntity(stack, event.getEntity(), livingEntity, event.getHand());
 			event.setCancellationResult(interactionResult);
@@ -59,13 +60,6 @@ public final class PlayerInteractHandler {
 		InteractionResult interactionResult = item.interactLivingEntity(stack, event.getEntity(), livingEntity, event.getHand());
 		event.setCancellationResult(interactionResult);
 		event.setCanceled(true);
-	}
-
-	private static Entity getParent(Entity entity) {
-		if (entity instanceof PartEntity<?> partEntity) {
-			return getParent(partEntity.getParent());
-		}
-		return entity;
 	}
 
 }

@@ -22,6 +22,7 @@ import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.event.ForgeEventFactory;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -275,6 +276,13 @@ public final class MobUtil {
 	public static boolean isEntityIdLoaded(ServerLevel level, UUID uuid) {
 		//noinspection resource
 		return ((ServerLevelAccessor) level).biomancy$entityManager().isLoaded(uuid);
+	}
+
+	public static Entity getParent(Entity entity) {
+		if (entity instanceof PartEntity<?> partEntity) {
+			return getParent(partEntity.getParent());
+		}
+		return entity;
 	}
 
 }
