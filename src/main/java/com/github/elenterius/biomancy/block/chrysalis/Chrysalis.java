@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.block.chrysalis;
 
+import com.github.elenterius.biomancy.init.tags.ModEntityTags;
 import com.github.elenterius.biomancy.util.MobUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -15,8 +16,16 @@ public interface Chrysalis {
 	String ENTITY_DATA_KEY = "data";
 	String ENTITY_VOLUME_KEY = "volume";
 
-	static boolean isValidEntity(Entity entity) {
-		return entity instanceof Mob && entity.isAlive() && entity.canChangeDimensions() && entity.getType().canSummon() && entity.getType().canSerialize();
+	static boolean isCapturingSupported(Entity entity) {
+		if (entity instanceof Mob && entity.isAlive()) {
+			EntityType<?> entityType = entity.getType();
+			return entityType.canSummon() && entityType.canSerialize() && !entityType.is(ModEntityTags.C_CAPTURING_NOT_SUPPORTED);
+		}
+		return false;
+	}
+
+	static boolean isCapturingAllowed(Entity entity) {
+		return !entity.getType().is(ModEntityTags.CAPTURING_BY_CHRYSALIS_NOT_ALLOWED);
 	}
 
 	static boolean storeEntity(CompoundTag tag, Entity entity, boolean removeEntity) {

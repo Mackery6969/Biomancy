@@ -45,7 +45,7 @@ public final class MobUtil {
 	}
 
 	public static boolean isBoss(EntityType<?> entityType) {
-		return entityType.is(ModEntityTags.FORGE_BOSSES);
+		return entityType.is(ModEntityTags.C_BOSSES);
 	}
 
 	public static boolean isSkeleton(LivingEntity entity) {
@@ -276,4 +276,5 @@ public final class MobUtil {
 		//noinspection resource
 		return ((ServerLevelAccessor) level).biomancy$entityManager().isLoaded(uuid);
 	}
+
 }

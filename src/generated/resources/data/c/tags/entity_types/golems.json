@@ -1,5 +1,9 @@
 {
   "values": [
+    {
+      "id": "#forge:golems",
+      "required": false
+    },
     "minecraft:iron_golem",
     "minecraft:snow_golem",
     {

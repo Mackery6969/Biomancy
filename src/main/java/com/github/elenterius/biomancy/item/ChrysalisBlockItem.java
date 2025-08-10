@@ -65,9 +65,9 @@ public class ChrysalisBlockItem extends SimpleBlockItem {
 			return InteractionResult.PASS;
 		}
 
-		boolean isValidTarget = isValidEntity(interactionTarget) && (!MobUtil.isBoss(interactionTarget) || player.isCreative()); // blame creative player if something breaks due to storing boss mobs
-		if (!isValidTarget) {
-			player.displayClientMessage(TextComponentUtil.getFailureMsgText("mob_too_old"), true);
+		boolean isCaptureAllowed = isCapturingSupported(interactionTarget) && (isCapturingAllowed(interactionTarget) || player.isCreative());
+		if (!isCaptureAllowed) {
+			player.displayClientMessage(TextComponentUtil.getFailureMsgText("mob_too_powerful"), true);
 			return InteractionResult.PASS;
 		}
 

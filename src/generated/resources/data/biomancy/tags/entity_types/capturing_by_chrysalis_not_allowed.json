@@ -1,0 +1,27 @@
+{
+  "values": [
+    {
+      "id": "#c:bosses",
+      "required": false
+    },
+    "minecraft:warden",
+    "minecraft:elder_guardian",
+    "minecraft:giant",
+    {
+      "id": "alexscaves:gum_worm",
+      "required": false
+    },
+    {
+      "id": "alexscaves:tremorsaurus",
+      "required": false
+    },
+    {
+      "id": "alexscaves:luxtructosaurus",
+      "required": false
+    },
+    {
+      "id": "alexsmobs:void_worm",
+      "required": false
+    }
+  ]
+}

@@ -264,6 +264,7 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addHudMessage("not_enough_nutrients", "Not enough Nutrients");
 		addHudMessage("not_enough_blood_charge", "Not enough Blood Charge");
 		addHudMessage("mob_too_old", "The Mob is too old");
+		addHudMessage("mob_too_powerful", "The Mob is too powerful");
 		addHudMessage("already_full", "Already Full");
 		addHudMessage("failed_to_store_mob", "Failed to store the mob");
 		addHudMessage("failed_to_spawn_mob", "Failed to spawn the stored mob");
@@ -613,7 +614,7 @@ public class EnglishLangProvider extends AbstractLangProvider {
 
 		addBlock(ModBlocks.STORAGE_SAC, "Storage Sac", "Cheap Shulker-like storage sac that also acts like a bundle.");
 		addBlock(ModBlocks.CHRYSALIS, "Chrysalis", """
-				Allows you to capture and indefinitely store any mob. This is achieved by inducing an artificial comma and suspending the mob in a amniotic like fluid that is rich in nutrients and oxygen
+				Allows you to capture and indefinitely store any mob. This is achieved by inducing an artificial coma and suspending the mob in a amniotic like fluid that is rich in nutrients and oxygen
 				which keeps them alive.
 				
 				Shift click on the ground to release the preserved mob.""");
