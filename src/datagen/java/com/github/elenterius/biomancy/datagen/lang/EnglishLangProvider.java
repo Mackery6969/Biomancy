@@ -669,7 +669,12 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addBlock(ModBlocks.BLOOMLIGHT, "Bloomlight", "A malignant light source. This one is magenta as well!");
 		addBlock(ModBlocks.TENDON_CHAIN, "Tendon Chain", "A chain made of tendons.");
 		addBlock(ModBlocks.VIAL_HOLDER, "Vial Holder", "Display and organize your serums.\nSneak click to bulk insert or extract vials.");
-		addBlock(ModBlocks.JUMP_PAD, "Active Muscle Pad", "A jump pad that will actively launch anything towards the direction its pointing to.\n\nWhile it has no collision it will negate fall damage and friction for any entity.");
+		addBlock(ModBlocks.JUMP_PAD, "Active Muscle Pad", """
+				A jump pad that will launch anything towards the direction its pad is pointing to.
+				While it has no collision it will negate fall damage and friction for any entity.
+				
+				Shift click to disable/enable the block or use redstone signals to toggle it.
+				""");
 
 		addBlock(ModBlocks.IMPERMEABLE_MEMBRANE, "Impermeable Membrane", "Gelatinous-like membrane reinforced with elastic fibers.");
 		addBlock(ModBlocks.IMPERMEABLE_MEMBRANE_PANE, "Impermeable Membrane Pane", "Gelatinous-like membrane reinforced with elastic fibers.");

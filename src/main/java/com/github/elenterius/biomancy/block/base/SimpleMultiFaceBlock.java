@@ -53,9 +53,11 @@ public abstract class SimpleMultiFaceBlock extends Block {
 	protected final boolean canMirrorX;
 	protected final boolean canMirrorZ;
 
-	public SimpleMultiFaceBlock(Properties pProperties) {
-		super(pProperties);
+	public SimpleMultiFaceBlock(Properties properties) {
+		super(properties);
+
 		registerDefaultState(getDefaultMultifaceState(stateDefinition));
+
 		canRotate = Direction.Plane.HORIZONTAL.stream().allMatch(this::isFaceSupported);
 		canMirrorX = Direction.Plane.HORIZONTAL.stream().filter(Direction.Axis.X).filter(this::isFaceSupported).count() % 2L == 0L;
 		canMirrorZ = Direction.Plane.HORIZONTAL.stream().filter(Direction.Axis.Z).filter(this::isFaceSupported).count() % 2L == 0L;

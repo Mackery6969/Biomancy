@@ -2,64 +2,138 @@
   "multipart": [
     {
       "apply": {
-        "model": "biomancy:block/active_muscle",
+        "model": "biomancy:block/active_muscle_enabled",
         "uvlock": true
       },
       "when": {
-        "down": "true"
+        "down": "true",
+        "enabled": "true"
       }
     },
     {
       "apply": {
-        "model": "biomancy:block/active_muscle",
+        "model": "biomancy:block/active_muscle_disabled",
+        "uvlock": true
+      },
+      "when": {
+        "down": "true",
+        "enabled": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "biomancy:block/active_muscle_enabled",
         "uvlock": true,
         "x": 180
       },
       "when": {
+        "enabled": "true",
         "up": "true"
       }
     },
     {
       "apply": {
-        "model": "biomancy:block/active_muscle",
+        "model": "biomancy:block/active_muscle_disabled",
+        "uvlock": true,
+        "x": 180
+      },
+      "when": {
+        "enabled": "false",
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "biomancy:block/active_muscle_enabled",
         "uvlock": true,
         "x": -90
       },
       "when": {
+        "enabled": "true",
         "north": "true"
       }
     },
     {
       "apply": {
-        "model": "biomancy:block/active_muscle",
+        "model": "biomancy:block/active_muscle_disabled",
+        "uvlock": true,
+        "x": -90
+      },
+      "when": {
+        "enabled": "false",
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "biomancy:block/active_muscle_enabled",
         "uvlock": true,
         "x": -90,
         "y": 180
       },
       "when": {
+        "enabled": "true",
         "south": "true"
       }
     },
     {
       "apply": {
-        "model": "biomancy:block/active_muscle",
+        "model": "biomancy:block/active_muscle_disabled",
+        "uvlock": true,
+        "x": -90,
+        "y": 180
+      },
+      "when": {
+        "enabled": "false",
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "biomancy:block/active_muscle_enabled",
         "uvlock": true,
         "x": -90,
         "y": 270
       },
       "when": {
+        "enabled": "true",
         "west": "true"
       }
     },
     {
       "apply": {
-        "model": "biomancy:block/active_muscle",
+        "model": "biomancy:block/active_muscle_disabled",
+        "uvlock": true,
+        "x": -90,
+        "y": 270
+      },
+      "when": {
+        "enabled": "false",
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "biomancy:block/active_muscle_enabled",
         "uvlock": true,
         "x": -90,
         "y": 90
       },
       "when": {
-        "east": "true"
+        "east": "true",
+        "enabled": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "biomancy:block/active_muscle_disabled",
+        "uvlock": true,
+        "x": -90,
+        "y": 90
+      },
+      "when": {
+        "east": "true",
+        "enabled": "false"
       }
     }
   ]

@@ -1,0 +1,7 @@
+{
+  "parent": "biomancy:block/template/jump_pad",
+  "render_type": "minecraft:solid",
+  "textures": {
+    "texture": "biomancy:block/active_muscle_disabled"
+  }
+}

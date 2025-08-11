@@ -14,16 +14,24 @@ import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -39,6 +47,8 @@ public class JumpPadBlock extends SimpleMultiFaceBlock {
 
 	public static final double EPSILON = 1.0e-7d;
 
+	public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
+
 	protected static final Map<Direction, VoxelShape> SHAPE_BY_FACE = Util.make(new EnumMap<>(Direction.class), map -> {
 		map.put(Direction.UP, createFaceShape(Direction.UP));
 		map.put(Direction.DOWN, createFaceShape(Direction.DOWN));
@@ -50,6 +60,13 @@ public class JumpPadBlock extends SimpleMultiFaceBlock {
 
 	public JumpPadBlock(Properties properties) {
 		super(properties.noCollission().forceSolidOn());
+		registerDefaultState(defaultBlockState().setValue(ENABLED, Boolean.TRUE));
+	}
+
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+		super.createBlockStateDefinition(builder);
+		builder.add(ENABLED);
 	}
 
 	/**
@@ -70,6 +87,29 @@ public class JumpPadBlock extends SimpleMultiFaceBlock {
 		}
 
 		return voxelshape.isEmpty() ? Shapes.block() : voxelshape;
+	}
+
+	@Override
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+		if (!player.mayBuild()) return InteractionResult.PASS;
+		if (!player.isSecondaryUseActive()) return InteractionResult.PASS;
+		if (level.isClientSide) return InteractionResult.SUCCESS;
+
+		BlockState newState = state.cycle(ENABLED);
+		level.setBlock(pos, newState, UPDATE_CLIENTS);
+		level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, newState));
+
+		float pitch = newState.getValue(ENABLED) ? 1f : 0.8f;
+		level.playSound(null, pos, ModSoundEvents.FLESH_BLOCK_HIT.get(), SoundSource.BLOCKS, 0.6f, pitch + level.random.nextFloat() * 0.2f);
+
+		return InteractionResult.CONSUME;
+	}
+
+	@Override
+	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
+		if (level.hasNeighborSignal(pos)) {
+			level.setBlock(pos, state.cycle(ENABLED), UPDATE_ALL);
+		}
 	}
 
 	@Override
@@ -149,6 +189,7 @@ public class JumpPadBlock extends SimpleMultiFaceBlock {
 		}
 
 		if (skipCollision) return;
+		if (!state.getValue(ENABLED)) return;
 		if (entity.isSteppingCarefully() || entity.isSuppressingBounce()) return;
 
 		Vector3d mutableImpulse = new Vector3d();
