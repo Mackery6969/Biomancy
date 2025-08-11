@@ -1,5 +1,5 @@
 {
-  "parent": "biomancy:block/template_bio_lantern_hanging",
+  "parent": "biomancy:block/template/bio_lantern_hanging",
   "render_type": "minecraft:cutout",
   "textures": {
     "texture": "biomancy:block/bio_lantern_yellow"

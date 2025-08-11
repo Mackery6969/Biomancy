@@ -1,5 +1,5 @@
 {
-  "parent": "biomancy:block/template_thin_pane_middle",
+  "parent": "biomancy:block/template/thin_pane_middle",
   "textures": {
     "texture": "biomancy:block/flesh_iris_door_closed"
   }

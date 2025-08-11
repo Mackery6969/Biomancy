@@ -5,7 +5,6 @@ import com.github.elenterius.biomancy.block.*;
 import com.github.elenterius.biomancy.block.base.DirectionalPillarSlabBlock;
 import com.github.elenterius.biomancy.block.base.DirectionalSlabBlock;
 import com.github.elenterius.biomancy.block.base.PaneBlock;
-import com.github.elenterius.biomancy.block.base.SimpleMultiFaceBlock;
 import com.github.elenterius.biomancy.block.bloom.BloomBlock;
 import com.github.elenterius.biomancy.block.fleshspike.FleshSpikeBlock;
 import com.github.elenterius.biomancy.block.membrane.MembraneBlock;
@@ -26,7 +25,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.*;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -39,8 +41,8 @@ import java.util.function.Function;
 
 public class ModBlockStateProvider extends BlockStateProvider {
 
-	protected static final ResourceLocation FLESH_PARTICLE_TEXTURE = new ResourceLocation("biomancy:block/packed_flesh");
-	protected static final ResourceLocation PRIMAL_PARTICLE_TEXTURE = new ResourceLocation("biomancy:block/primal_flesh");
+	protected static final ResourceLocation FLESH_PARTICLE_TEXTURE = BiomancyMod.createRL("block/packed_flesh");
+	protected static final ResourceLocation PRIMAL_PARTICLE_TEXTURE = BiomancyMod.createRL("block/primal_flesh");
 
 	public ModBlockStateProvider(PackOutput packOutput, ExistingFileHelper fileHelper) {
 		super(packOutput, BiomancyMod.MOD_ID, fileHelper);
@@ -52,6 +54,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
 	protected String path(Block block) {
 		return registryKey(block).getPath();
+	}
+
+	protected <T extends Block> ResourceLocation blockAsset(RegistryObject<T> registryObject) {
+		//noinspection DataFlowIssue
+		return blockAsset(registryObject.getId());
 	}
 
 	protected ResourceLocation blockAsset(ResourceLocation registryKey) {
@@ -145,7 +152,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		simpleBlockWithItem(ModBlocks.BLOOMLIGHT);
 		tendonChain(ModBlocks.TENDON_CHAIN);
 		vialHolder(ModBlocks.VIAL_HOLDER);
-		simpleMultifaceBlockWithItem(ModBlocks.JUMP_PAD);
+		jumpPad(ModBlocks.JUMP_PAD);
 
 		geckolibModel(ModBlocks.PRIMORDIAL_CRADLE, PRIMAL_PARTICLE_TEXTURE);
 		geoBlockItem(ModBlocks.PRIMORDIAL_CRADLE, new Vector3f(16, 16, 16));
@@ -162,9 +169,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		storageSac(ModBlocks.STORAGE_SAC);
 		directionalBlockWithItem(ModBlocks.CHRYSALIS.get());
 
-		particleOnly(ModBlocks.ACID_FLUID_BLOCK, new ResourceLocation("biomancy:block/acid_flat"));
+		particleOnly(ModBlocks.ACID_FLUID_BLOCK, BiomancyMod.createRL("block/acid_flat"));
 		layeredCauldron(ModBlocks.ACID_CAULDRON);
-		multifaceBlockWithPropertyVariants(ModBlocks.ACID_SPLATTER.get(), AcidSplatterBlock.AGE.get());
+		multifaceBlockWithPropertyVariants(ModBlocks.ACID_SPLATTER.get(), AcidSplatterBlock.AGE.get(), String::valueOf);
 
 		existingBlockWithItem(ModBlocks.WATER_GEL_BLOCK);
 	}
@@ -698,7 +705,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 	public void bioLantern(FleshLanternBlock block) {
 		String path = path(block);
 		ResourceLocation texture = blockAsset(block);
-		ResourceLocation template = BiomancyMod.createRL("block/template_bio_lantern");
+		ResourceLocation template = BiomancyMod.createRL("block/template/bio_lantern");
 
 		ModelFile model = models().singleTexture(path, template, texture).renderType("cutout");
 		ModelFile hangingModel = models().singleTexture(path + "_hanging", extend(template, "_hanging"), texture).renderType("cutout");
@@ -718,44 +725,29 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
 	public void veinsBlock(MultifaceBlock block) {
 		String name = path(block);
-		ResourceLocation parentModel = BiomancyMod.createRL("block/template_veins");
-
-		ModelFile model = models().singleTexture(name, parentModel, blockAsset(block)).renderType("cutout");
-
-		MultiPartBlockStateBuilder builder = getMultipartBuilder(block);
-
-		PipeBlock.PROPERTY_BY_DIRECTION.forEach((direction, property) -> {
-			if (direction.getAxis().isHorizontal()) {
-				int rotY = (((int) direction.toYRot()) + 180) % 360;
-
-				builder.part().modelFile(model)
-						.rotationY(rotY).uvLock(true).addModel()
-						.condition(property, true)
-						.end();
-			}
-			else if (direction.getAxis().isVertical()) {
-				int rotX = direction == Direction.UP ? 270 : 90;
-
-				builder.part().modelFile(model)
-						.rotationX(rotX).uvLock(true).addModel()
-						.condition(property, true)
-						.end();
-			}
-		});
+		ResourceLocation templateModel = BiomancyMod.createRL("block/template/face_plane");
+		ModelFile model = models().singleTexture(name, templateModel, blockAsset(block)).renderType("cutout");
+		multifaceBlock(block, model);
 	}
 
-	public <T extends MultifaceBlock> void multifaceBlockWithItem(RegistryObject<T> block) {
-		multifaceBlockWithItem(block.get());
+	public <T extends JumpPadBlock> void jumpPad(RegistryObject<T> block) {
+		ResourceLocation templateModel = BiomancyMod.createRL("block/template/jump_pad");
+		multifaceBlockWithPropertyVariants(block.get(), JumpPadBlock.ENABLED, bool -> bool == true ? "enabled" : "disabled", templateModel, "solid",
+				(direction, propertyValue, model) -> {
+					if (propertyValue && direction == Direction.DOWN) {
+						simpleBlockItem(block.get(), model);
+					}
+				}
+		);
 	}
 
-	public <T extends SimpleMultiFaceBlock> void simpleMultifaceBlockWithItem(RegistryObject<T> block) {
-		multifaceBlockWithItem(block.get());
-	}
-
-	public void multifaceBlockWithItem(Block block) {
+	public <T extends Block> void existingMultifaceBlockWithItem(RegistryObject<T> block) {
 		ModelFile model = models().getExistingFile(blockAsset(block));
-		simpleBlockItem(block, model);
+		multifaceBlock(block.get(), model);
+		simpleBlockItem(block.get(), model);
+	}
 
+	public void multifaceBlock(Block block, ModelFile model) {
 		MultiPartBlockStateBuilder builder = getMultipartBuilder(block);
 
 		PipeBlock.PROPERTY_BY_DIRECTION.forEach((direction, property) -> {
@@ -779,9 +771,17 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		});
 	}
 
-	public void multifaceBlockWithPropertyVariants(MultifaceBlock block, IntegerProperty integerProperty) {
+	public <T extends Comparable<T>> void multifaceBlockWithPropertyVariants(Block block, Property<T> property, Function<T, String> suffixNameFunc) {
+		ResourceLocation templateModel = BiomancyMod.createRL("block/template/face_plane");
+		multifaceBlockWithPropertyVariants(block, property, suffixNameFunc, templateModel, "cutout", (direction, propertyValue, model) -> {});
+	}
+
+	protected interface TriConsumer<T, O, R> {
+		void accept(T t, O o, R r);
+	}
+
+	public <T extends Comparable<T>> void multifaceBlockWithPropertyVariants(Block block, Property<T> property, Function<T, String> suffixNameFunc, ResourceLocation templateModel, String renderType, TriConsumer<Direction, T, ModelFile> consumer) {
 		String modelName = path(block);
-		ResourceLocation parentModel = BiomancyMod.createRL("block/template_veins");
 
 		MultiPartBlockStateBuilder builder = getMultipartBuilder(block);
 
@@ -789,25 +789,29 @@ public class ModBlockStateProvider extends BlockStateProvider {
 			if (direction.getAxis().isHorizontal()) {
 				int rotY = (((int) direction.toYRot()) + 180) % 360;
 
-				for (Integer value : integerProperty.getPossibleValues()) {
-					String suffix = "_" + value;
-					ModelFile model = models().singleTexture(modelName + suffix, parentModel, blockAsset(block, suffix)).renderType("cutout");
+				for (T value : property.getPossibleValues()) {
+					String suffix = "_" + suffixNameFunc.apply(value);
+					ModelFile model = models().singleTexture(modelName + suffix, templateModel, blockAsset(block, suffix)).renderType(renderType);
+					consumer.accept(direction, value, model);
 					builder.part().modelFile(model)
-							.rotationY(rotY).uvLock(true).addModel()
+							.rotationX(-90).rotationY(rotY)
+							.uvLock(true).addModel()
 							.condition(directionProperty, true)
-							.condition(integerProperty, value)
+							.condition(property, value)
 							.end();
 				}
 			}
 			else if (direction.getAxis().isVertical()) {
-				int rotX = direction == Direction.UP ? 270 : 90;
-				for (Integer value : integerProperty.getPossibleValues()) {
-					String suffix = "_" + value;
-					ModelFile model = models().singleTexture(modelName + suffix, parentModel, blockAsset(block, suffix)).renderType("cutout");
+				int rotX = direction == Direction.UP ? 180 : 0;
+
+				for (T value : property.getPossibleValues()) {
+					String suffix = "_" + suffixNameFunc.apply(value);
+					ModelFile model = models().singleTexture(modelName + suffix, templateModel, blockAsset(block, suffix)).renderType(renderType);
+					consumer.accept(direction, value, model);
 					builder.part().modelFile(model)
 							.rotationX(rotX).uvLock(true).addModel()
 							.condition(directionProperty, true)
-							.condition(integerProperty, value)
+							.condition(property, value)
 							.end();
 				}
 			}
@@ -828,7 +832,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		String s = thick ? "thick" : "thin";
 
 		BlockModelBuilder defaultPaneModel = models()
-				.withExistingParent(name, BiomancyMod.createRL("block/template_%s_pane".formatted(s)))
+				.withExistingParent(name, BiomancyMod.createRL("block/template/%s_pane".formatted(s)))
 				.texture("front", texture)
 				.texture("side", extend(texture, "_side"));
 
@@ -836,7 +840,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 			defaultPaneModel.renderType(renderType);
 		}
 
-		BlockModelBuilder middlePaneModel = models().withExistingParent(name + "_middle", BiomancyMod.createRL("block/template_%s_pane_middle".formatted(s)))
+		BlockModelBuilder middlePaneModel = models().withExistingParent(name + "_middle", BiomancyMod.createRL("block/template/%s_pane_middle".formatted(s)))
 				.texture("front", texture)
 				.texture("side", extend(texture, "_side"));
 
@@ -881,10 +885,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		ResourceLocation texture = blockAsset(block);
 		String name = path(block);
 
-		ModelFile openModel = models().singleTexture(name + "_open", BiomancyMod.createRL("block/template_thin_pane"), extend(texture, "_open"));
-		ModelFile middleOpenModel = models().singleTexture(name + "_middle_open", BiomancyMod.createRL("block/template_thin_pane_middle"), extend(texture, "_open"));
-		ModelFile closedModel = models().singleTexture(name + "_closed", BiomancyMod.createRL("block/template_thin_pane"), extend(texture, "_closed"));
-		ModelFile middleClosedModel = models().singleTexture(name + "_middle_closed", BiomancyMod.createRL("block/template_thin_pane_middle"), extend(texture, "_closed"));
+		ModelFile openModel = models().singleTexture(name + "_open", BiomancyMod.createRL("block/template/thin_pane"), extend(texture, "_open"));
+		ModelFile middleOpenModel = models().singleTexture(name + "_middle_open", BiomancyMod.createRL("block/template/thin_pane_middle"), extend(texture, "_open"));
+		ModelFile closedModel = models().singleTexture(name + "_closed", BiomancyMod.createRL("block/template/thin_pane"), extend(texture, "_closed"));
+		ModelFile middleClosedModel = models().singleTexture(name + "_middle_closed", BiomancyMod.createRL("block/template/thin_pane_middle"), extend(texture, "_closed"));
 
 		irisDoor(block, openModel, closedModel, middleOpenModel, middleClosedModel);
 

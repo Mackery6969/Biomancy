@@ -1,5 +1,5 @@
 {
-  "parent": "biomancy:block/template_primal_orifice",
+  "parent": "biomancy:block/template/primal_orifice",
   "textures": {
     "top": "biomancy:block/primal_flesh",
     "side": "biomancy:block/primal_orifice_leaking",

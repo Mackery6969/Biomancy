@@ -1,5 +1,5 @@
 {
-  "parent": "biomancy:block/template_veins",
+  "parent": "biomancy:block/template/face_plane",
   "render_type": "minecraft:cutout",
   "textures": {
     "texture": "biomancy:block/acid_splatter_1"

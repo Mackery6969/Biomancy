@@ -1,5 +1,5 @@
 {
-  "parent": "biomancy:block/template_thick_pane",
+  "parent": "biomancy:block/template/thick_pane",
   "render_type": "minecraft:translucent",
   "textures": {
     "front": "biomancy:block/impermeable_membrane",
