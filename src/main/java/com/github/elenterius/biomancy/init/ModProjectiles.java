@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public final class ModProjectiles {
 
@@ -44,14 +45,16 @@ public final class ModProjectiles {
 		return configuredProjectile;
 	}
 
-	public static <T extends BaseProjectile> boolean shootProjectile(Level level, LivingEntity shooter, float velocity, float damage, int knockback, float inaccuracy, ProjectileFactory<T> factory) {
-		BaseProjectile projectile = factory.create(level, shooter.getX(), shooter.getEyeY() - 0.1f, shooter.getZ());
+	public static <T extends BaseProjectile> boolean shootProjectile(Level level, LivingEntity shooter, float velocity, float damage, int knockback, float inaccuracy, ProjectileFactory<T> factory, Consumer<T> modify) {
+		T projectile = factory.create(level, shooter.getX(), shooter.getEyeY() - 0.1f, shooter.getZ());
 		projectile.setOwner(shooter);
 
 		projectile.setDamage(damage);
 		if (knockback > 0) {
 			projectile.setKnockback((byte) knockback);
 		}
+
+		modify.accept(projectile);
 
 		Vec3 direction = shooter.getLookAngle();
 		projectile.shoot(direction.x(), direction.y(), direction.z(), velocity, inaccuracy);
@@ -59,14 +62,16 @@ public final class ModProjectiles {
 		return level.addFreshEntity(projectile);
 	}
 
-	public static <T extends BaseProjectile> boolean shootProjectile(Level level, @Nullable LivingEntity shooter, Vec3 origin, Vec3 target, float velocity, float damage, int knockback, float inaccuracy, ProjectileFactory<T> factory) {
-		BaseProjectile projectile = factory.create(level, origin.x, origin.y, origin.z);
+	public static <T extends BaseProjectile> boolean shootProjectile(Level level, @Nullable LivingEntity shooter, Vec3 origin, Vec3 target, float velocity, float damage, int knockback, float inaccuracy, ProjectileFactory<T> factory, Consumer<T> modify) {
+		T projectile = factory.create(level, origin.x, origin.y, origin.z);
 		projectile.setOwner(shooter);
 
 		projectile.setDamage(damage);
 		if (knockback > 0) {
 			projectile.setKnockback((byte) knockback);
 		}
+
+		modify.accept(projectile);
 
 		Vec3 direction = target.subtract(origin).normalize();
 		projectile.shoot(direction.x(), direction.y(), direction.z(), velocity, inaccuracy);
@@ -81,23 +86,27 @@ public final class ModProjectiles {
 	public record ConfiguredProjectile<T extends BaseProjectile>(String name, float velocity, float damage, int knockback, float inaccuracy, SoundEvent shootSound, ProjectileFactory<T> factory) {
 
 		public boolean shoot(Level level, Vec3 origin, Vec3 target) {
-			return shootProjectile(level, null, origin, target, velocity, damage, knockback, inaccuracy, factory);
+			return shootProjectile(level, null, origin, target, velocity, damage, knockback, inaccuracy, factory, projectile -> {});
 		}
 
 		public boolean shoot(Level level, Vec3 origin, Vec3 target, FloatOperator velocityModifier, FloatOperator damageModifier, IntOperator knockbackModifier, FloatOperator inaccuracyModifier) {
-			return shootProjectile(level, null, origin, target, velocityModifier.apply(velocity), damageModifier.apply(damage), knockbackModifier.apply(knockback), inaccuracyModifier.apply(inaccuracy), factory);
+			return shootProjectile(level, null, origin, target, velocityModifier.apply(velocity), damageModifier.apply(damage), knockbackModifier.apply(knockback), inaccuracyModifier.apply(inaccuracy), factory, projectile -> {});
 		}
 
 		public boolean shoot(Level level, LivingEntity shooter, Vec3 origin, Vec3 target) {
-			return shootProjectile(level, shooter, origin, target, velocity, damage, knockback, inaccuracy, factory);
+			return shootProjectile(level, shooter, origin, target, velocity, damage, knockback, inaccuracy, factory, projectile -> {});
 		}
 
 		public boolean shoot(Level level, LivingEntity shooter) {
-			return shootProjectile(level, shooter, velocity, damage, knockback, inaccuracy, factory);
+			return shootProjectile(level, shooter, velocity, damage, knockback, inaccuracy, factory, projectile -> {});
 		}
 
 		public boolean shoot(Level level, LivingEntity shooter, FloatOperator velocityModifier, FloatOperator damageModifier, IntOperator knockbackModifier, FloatOperator inaccuracyModifier) {
-			return shootProjectile(level, shooter, velocityModifier.apply(velocity), damageModifier.apply(damage), knockbackModifier.apply(knockback), inaccuracyModifier.apply(inaccuracy), factory);
+			return shootProjectile(level, shooter, velocityModifier.apply(velocity), damageModifier.apply(damage), knockbackModifier.apply(knockback), inaccuracyModifier.apply(inaccuracy), factory, projectile -> {});
+		}
+
+		public boolean shoot(Level level, LivingEntity shooter, FloatOperator velocityModifier, FloatOperator damageModifier, IntOperator knockbackModifier, FloatOperator inaccuracyModifier, Consumer<T> modify) {
+			return shootProjectile(level, shooter, velocityModifier.apply(velocity), damageModifier.apply(damage), knockbackModifier.apply(knockback), inaccuracyModifier.apply(inaccuracy), factory, modify);
 		}
 
 		public void playShootSound(Level level, Vec3 origin, SoundSource soundSource) {

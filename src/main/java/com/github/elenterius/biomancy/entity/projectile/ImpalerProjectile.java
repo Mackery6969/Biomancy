@@ -9,14 +9,16 @@ import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -38,11 +40,12 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 
-	private static final double IMPALE_FORCE_THRESHOLD = 3d;
-	private static final double ARMOR_THRESHOLD = 12d;
+	//	private static final double IMPALE_FORCE_THRESHOLD = 3d;
+	//	private static final double ARMOR_THRESHOLD = 12d;
 	private static final int MAX_IMPALED_MOBS = 3;
-	private static final float IMPACT_DAMAGE = 8f;
-	private static final int CONCUSSION_DURATION = 100; // 5 seconds at 20 ticks/second
+	//	private static final float IMPACT_DAMAGE = 8f;
+
+	private static final EntityDataAccessor<Byte> PIERCE_LEVEL = SynchedEntityData.defineId(ImpalerProjectile.class, EntityDataSerializers.BYTE);
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -58,15 +61,12 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 		super(ModEntityTypes.IMPALER_PROJECTILE.get(), level, x, y, z);
 	}
 
-	private static void addConcussionEffect(LivingEntity livingTarget) {
-		if (livingTarget.level().isClientSide) return;
-		livingTarget.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, CONCUSSION_DURATION, 2));
-		livingTarget.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, CONCUSSION_DURATION, 1));
-		livingTarget.addEffect(new MobEffectInstance(MobEffects.CONFUSION, CONCUSSION_DURATION, 0));
+	protected void defineSynchedData() {
+		entityData.define(PIERCE_LEVEL, (byte) 0);
 	}
 
 	private boolean canImpaleToBlock(BlockState blockState, BlockPos pos) {
-		// Can't impale to very weak blocks, air, liquid, or replaceable blocks
+		// we can't impale to very weak blocks, air, liquid, or replaceable blocks
 		return !blockState.isAir() && !blockState.liquid() && !blockState.is(BlockTags.REPLACEABLE) && blockState.getDestroySpeed(level(), pos) >= 3f;
 	}
 
@@ -77,16 +77,20 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 
 		setDeltaMovement(Vec3.ZERO);
 		setNoGravity(true);
-		//		setNoPhysics(true);
+		//setNoPhysics(true);
 	}
 
 	private boolean tryToDestroyBlock(BlockState blockState, BlockPos pos) {
 		if (!getPassengers().isEmpty()) return false;
 
-		boolean noResistance = blockState.is(BlockTags.REPLACEABLE) || blockState.is(BlockTags.LEAVES);
-		float destroySpeed = noResistance ? 0f : blockState.getDestroySpeed(level(), pos);
+		boolean hasResistance = !(blockState.is(BlockTags.REPLACEABLE) || blockState.is(BlockTags.LEAVES));
+		float destroySpeed = hasResistance ? blockState.getDestroySpeed(level(), pos) : 0f;
 
 		if (destroySpeed < 0f) return false; // the block is indestructible (bedrock)
+
+		byte pierceLevel = getPierceLevel();
+
+		if (hasResistance && pierceLevel <= 0) return false;
 
 		Vec3 movement = getDeltaMovement();
 		double moveSpeed = movement.length();
@@ -98,9 +102,14 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 				level().destroyBlock(pos, true);
 			}
 
-			// deep slate destroy speed is 4.5
-			float friction = Mth.clamp(1f - destroySpeed / 4.5f, 0.25f, 0.95f);
-			setDeltaMovement(movement.scale(friction));
+			if (hasResistance) {
+				// deep slate destroy speed is 4.5
+				//				float min = Mth.clamp(pierceLevel / 4f, 0.25f, 0.9f);
+				float friction = Mth.clamp((1f - destroySpeed / 4.5f), 0.25f, 0.95f);
+
+				setDeltaMovement(movement.scale(friction));
+				setPierceLevel(pierceLevel - 1);
+			}
 
 			return true;
 		}
@@ -163,6 +172,26 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 		return Mth.clamp(super.getDamage() * (float) (getDeltaMovement().length() / ModProjectiles.IMPALER_PROJECTILE.velocity()), 0f, Integer.MAX_VALUE);
 	}
 
+	public void setPierceLevel(int level) {
+		entityData.set(PIERCE_LEVEL, (byte) (level * 2));
+	}
+
+	public byte getPierceLevel() {
+		return this.entityData.get(PIERCE_LEVEL);
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putInt("pierce", getPierceLevel());
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundTag tag) {
+		super.readAdditionalSaveData(tag);
+		setPierceLevel(tag.getInt("pierce"));
+	}
+
 	@Override
 	public boolean isPickable() {
 		return false;
@@ -215,14 +244,15 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 
 		/////////////
 
+		System.out.println(level().isClientSide);
+
 		if (!tryToDestroyBlock(blockState, blockPos)) {
 			blockState.onProjectileHit(level(), blockState, result, this);
 
-			//			playSound(blockState.getSoundType().getHitSound(), 2f, 1.2f / (random.nextFloat() * 0.2f + 0.9f));
+			//playSound(blockState.getSoundType().getHitSound(), 2f, 1.2f / (random.nextFloat() * 0.2f + 0.9f));
 			playSound(ModSoundEvents.IMPALER_IMPACT.get(), 1f, 0.8f + random.nextFloat() * 0.3f);
 			Vec3 vec = result.getLocation();
-			BlockPos pos = result.getBlockPos();
-			level().addParticle(ParticleTypes.EXPLOSION, pos.getX() + vec.x, pos.getY() + vec.y, pos.getZ() + vec.z, 1d, 0d, 0d);
+			level().addParticle(ParticleTypes.EXPLOSION, vec.x, vec.y, vec.z, 1d, 0d, 0d);
 
 			ejectPassengers();
 			discard();
@@ -257,7 +287,7 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 		boolean hurtSuccess;
 		//
 		//		if (hasHighArmor || impactForce < IMPALE_FORCE_THRESHOLD) {
-		//			hurtSuccess = livingTarget.hurt(ModDamageSources.toothProjectile(level(), this, getOwner()), IMPACT_DAMAGE);
+		//			hurtSuccess = livingTarget.hurt(ModDamageSources.impalerProjectile(level(), this, getOwner()), IMPACT_DAMAGE);
 		//
 		//			double knockbackStrength = (getKnockback() / Math.max(1d, mass / 10d)) * Math.max(0d, 1d - livingTarget.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
 		//			Vec3 motion = getDeltaMovement().normalize().scale(knockbackStrength);
@@ -267,8 +297,8 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 		//		}
 		//		else {
 		float damage = getDamage();
-		hurtSuccess = livingTarget.hurt(ModDamageSources.toothProjectile(level(), this, getOwner()), damage);
-		livingTarget.startRiding(this, true);
+		hurtSuccess = livingTarget.hurt(ModDamageSources.impalerProjectile(level(), this, getOwner()), damage);
+		//		livingTarget.startRiding(this, true);
 		//		}
 
 		if (hurtSuccess && !level().isClientSide) {
@@ -295,9 +325,22 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 							.scale(slowdownFactor)
 							.add(0d, gravity + 0.1d, 0d) //give slight upwards motion
 			);
+
+			byte pierceLevel = getPierceLevel();
+			setPierceLevel(pierceLevel - 1);
+			if (pierceLevel <= 0) {
+				discard();
+			}
 		}
 
-		playSound(ModSoundEvents.IMPALER_HIT.get(), 2f, 0.8f + random.nextFloat() * 0.3f);
+		if (hurtSuccess && livingTarget.isDeadOrDying()) {
+			playSound(ModSoundEvents.IMPALER_IMPACT.get(), 1f, 0.8f + random.nextFloat() * 0.3f);
+			Vec3 vec = hitResult.getLocation();
+			level().addParticle(ParticleTypes.EXPLOSION, vec.x, vec.y, vec.z, 1d, 0d, 0d);
+		}
+		else {
+			playSound(ModSoundEvents.IMPALER_HIT.get(), 2f, 0.8f + random.nextFloat() * 0.3f);
+		}
 	}
 
 	protected void disableShield(LivingEntity victim, int cooldownTicks) {
@@ -312,7 +355,7 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 
 	@Override
 	protected ParticleOptions getParticle() {
-		return ParticleTypes.SPIT;
+		return ParticleTypes.CRIT;
 	}
 
 	@Override

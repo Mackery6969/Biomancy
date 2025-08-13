@@ -46,7 +46,8 @@ public class ModDamageTypeTagsProvider extends DamageTypeTagsProvider {
 		tag(DamageTypeTags.BYPASSES_COOLDOWN).add(
 				ModDamageTypes.BLEED,
 				ModDamageTypes.CORROSIVE_ACID,
-				ModDamageTypes.SLASH
+				ModDamageTypes.SLASH,
+				ModDamageTypes.IMPALER_PROJECTILE
 		);
 
 		tag(DamageTypeTags.NO_IMPACT).add(
@@ -62,7 +63,8 @@ public class ModDamageTypeTagsProvider extends DamageTypeTagsProvider {
 		tag(DamageTypeTags.AVOIDS_GUARDIAN_THORNS).add(
 				ModDamageTypes.BLEED,
 				ModDamageTypes.CORROSIVE_ACID,
-				ModDamageTypes.TOXIN
+				ModDamageTypes.TOXIN,
+				ModDamageTypes.IMPALER_PROJECTILE
 		);
 
 		tag(DamageTypeTags.ALWAYS_TRIGGERS_SILVERFISH).add(
@@ -73,7 +75,8 @@ public class ModDamageTypeTagsProvider extends DamageTypeTagsProvider {
 
 		tag(DamageTypeTags.ALWAYS_HURTS_ENDER_DRAGONS).add(
 				ModDamageTypes.BLEED,
-				ModDamageTypes.CORROSIVE_ACID
+				ModDamageTypes.CORROSIVE_ACID,
+				ModDamageTypes.IMPALER_PROJECTILE
 		);
 
 		tag(DamageTypeTags.IS_FALL).add(
@@ -81,7 +84,8 @@ public class ModDamageTypeTagsProvider extends DamageTypeTagsProvider {
 		);
 
 		tag(DamageTypeTags.IS_PROJECTILE).add(
-				ModDamageTypes.TOOTH_PROJECTILE
+				ModDamageTypes.TOOTH_PROJECTILE,
+				ModDamageTypes.IMPALER_PROJECTILE
 		);
 
 		tag(ModDamageTypeTags.FORGE_IS_ACID)

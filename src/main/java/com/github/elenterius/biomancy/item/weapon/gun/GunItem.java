@@ -1,13 +1,13 @@
 package com.github.elenterius.biomancy.item.weapon.gun;
 
 import com.github.elenterius.biomancy.client.util.ClientTextUtil;
+import com.github.elenterius.biomancy.entity.projectile.BaseProjectile;
 import com.github.elenterius.biomancy.init.ModProjectiles;
 import com.github.elenterius.biomancy.item.KeyPressListener;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.github.elenterius.biomancy.util.FormatUtil;
-import com.github.elenterius.biomancy.util.function.FloatOperator;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -37,9 +37,9 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 	public static final Set<Enchantment> VALID_ENCHANTMENTS = Set.of(Enchantments.PUNCH_ARROWS, Enchantments.POWER_ARROWS, Enchantments.QUICK_CHARGE);
 
 	protected final GunProperties gunProperties;
-	protected final ModProjectiles.ConfiguredProjectile<?> configuredProjectile;
+	protected final ModProjectiles.ConfiguredProjectile<? extends BaseProjectile> configuredProjectile;
 
-	protected GunItem(Properties properties, GunProperties gunProperties, ModProjectiles.ConfiguredProjectile<?> configuredProjectile) {
+	protected GunItem(Properties properties, GunProperties gunProperties, ModProjectiles.ConfiguredProjectile<? extends BaseProjectile> configuredProjectile) {
 		super(properties);
 		this.gunProperties = gunProperties;
 		this.configuredProjectile = configuredProjectile;
@@ -66,15 +66,15 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 	@Override
 	public void shoot(ServerLevel level, LivingEntity shooter, InteractionHand usedHand, ItemStack projectileWeapon) {
 		boolean success = configuredProjectile.shoot(level, shooter,
-				FloatOperator.IDENTITY,
+				baseVelocity -> modifyProjectileVelocity(baseVelocity, projectileWeapon),
 				baseDamage -> modifyProjectileDamage(baseDamage, projectileWeapon),
 				baseKnockBack -> modifyProjectileKnockBack(baseKnockBack, projectileWeapon),
 				baseInaccuracy -> modifyProjectileInaccuracy(baseInaccuracy, projectileWeapon));
 
 		if (success) {
 			configuredProjectile.playShootSound(level, shooter);
-			projectileWeapon.hurtAndBreak(1, shooter, entity -> entity.broadcastBreakEvent(usedHand));
-			consumeAmmo(shooter, projectileWeapon, 1);
+			projectileWeapon.hurtAndBreak(getDurabilityCost(projectileWeapon), shooter, entity -> entity.broadcastBreakEvent(usedHand));
+			consumeAmmo(shooter, projectileWeapon, getAmmoCost(projectileWeapon));
 		}
 	}
 
@@ -114,7 +114,7 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 
 	@Override
 	public UseAnim getUseAnimation(ItemStack stack) {
-		return UseAnim.CUSTOM;
+		return UseAnim.NONE;
 	}
 
 	@Override
@@ -125,9 +125,9 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
 		ItemStack stack = player.getItemInHand(usedHand);
+		GunState state = getGunState(stack);
 
-		if (hasAmmo(stack)) {
-			GunState state = getGunState(stack);
+		if (getAmmo(stack) >= getAmmoCost(stack)) {
 			if (state == GunState.RELOADING && level instanceof ServerLevel serverLevel) {
 				cancelReload(stack, serverLevel, player);
 			}
@@ -145,7 +145,7 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 		if (!level.isClientSide && level instanceof ServerLevel serverLevel) {
 			if (getGunState(stack) != GunState.SHOOTING_OR_CHARGING) return;
 
-			if (!hasAmmo(stack)) {
+			if (getAmmo(stack) < getAmmoCost(stack)) {
 				if (shooter instanceof Player player) {
 					player.displayClientMessage(TextComponentUtil.getFailureMsgText("not_enough_ammo"), true);
 				}
@@ -276,7 +276,7 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 		if (ammo.getItem() == Items.ARROW) { //if mobs/creative players can't find any ammo they will return arrows
 			if (shooter instanceof Player player && player.getAbilities().instabuild) {
 				ammo = ammo.copy();
-				ammo.setCount(getAmmoReloadCost());
+				ammo.setCount(getReloadCost(stack));
 				return ammo;
 			}
 
@@ -296,9 +296,19 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 	public void appendGunStats(ItemStack stack, List<Component> tooltip) {
 		DecimalFormat df = FormatUtil.getDoubleFormatter();
 
+		float velocity = modifyProjectileVelocity(configuredProjectile.velocity(), stack);
+		float bonusVelocity = velocity - configuredProjectile.velocity();
+		tooltip.add(TextComponentUtil.getTooltipText("projectile_speed").append(String.format(": %s m/s ", df.format(velocity * 20))).append(formatBonusValue(df, bonusVelocity * 20)).withStyle(ChatFormatting.GRAY));
+
 		float damage = modifyProjectileDamage(configuredProjectile.damage(), stack);
 		float bonusDamage = damage - configuredProjectile.damage();
 		tooltip.add(TextComponentUtil.getTooltipText("projectile_damage").append(String.format(": %s ", df.format(damage))).append(formatBonusValue(df, bonusDamage)).withStyle(ChatFormatting.GRAY));
+
+		int knockBack = modifyProjectileKnockBack(configuredProjectile.knockback(), stack);
+		if (knockBack != 0) {
+			int bonusValue = knockBack - configuredProjectile.knockback();
+			tooltip.add(TextComponentUtil.getTooltipText("projectile_knock_back").append(String.format(": %s ", df.format(knockBack))).append(formatBonusValue(df, bonusValue)).withStyle(ChatFormatting.GRAY));
+		}
 
 		float inaccuracy = modifyProjectileInaccuracy(configuredProjectile.inaccuracy(), stack);
 		float accuracy = -MAX_INACCURACY * inaccuracy + MAX_INACCURACY;
@@ -307,19 +317,14 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 
 		float fireRate = getFireRate(stack);
 		float bonusFireRate = fireRate - (ONE_SECOND_IN_TICKS / (float) gunProperties.delayBetweenShots());
-		tooltip.add(TextComponentUtil.getTooltipText("fire_rate").append(String.format(": %s RPS ", df.format(fireRate))).append(formatBonusValue(df, bonusFireRate)).withStyle(ChatFormatting.GRAY));
+		tooltip.add(TextComponentUtil.getTooltipText("fire_rate").append(String.format(": %s rps ", df.format(fireRate))).append(formatBonusValue(df, bonusFireRate)).withStyle(ChatFormatting.GRAY));
 
 		float reloadDurationSeconds = getReloadDurationTicks(stack) / (float) ONE_SECOND_IN_TICKS;
-		float bonusReloadReduction = -1f * (reloadDurationSeconds - (gunProperties.reloadDurationTicks() / (float) ONE_SECOND_IN_TICKS));
+		float bonusReloadReduction = reloadDurationSeconds - (gunProperties.reloadDurationTicks() / (float) ONE_SECOND_IN_TICKS);
 		tooltip.add(TextComponentUtil.getTooltipText("reload_time").append(String.format(": %ss ", df.format(reloadDurationSeconds))).append(formatBonusValue(df, bonusReloadReduction, true)).withStyle(ChatFormatting.GRAY));
 
+		tooltip.add(ComponentUtil.emptyLine());
 		tooltip.add(TextComponentUtil.getTooltipText("ammo").append(String.format(": %d/%d ", getAmmo(stack), getMaxAmmo(stack))).withStyle(ChatFormatting.GRAY));
-
-		int knockBack = modifyProjectileKnockBack(configuredProjectile.knockback(), stack);
-		if (knockBack != 0) {
-			int bonusValue = knockBack - configuredProjectile.knockback();
-			tooltip.add(TextComponentUtil.getTooltipText("projectile_knock_back").append(String.format(": %s ", df.format(knockBack))).append(formatBonusValue(df, bonusValue)).withStyle(ChatFormatting.GRAY));
-		}
 	}
 
 	private Component formatBonusValue(DecimalFormat df, float value) {
@@ -327,14 +332,12 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 	}
 
 	private Component formatBonusValue(DecimalFormat df, float value, boolean inverted) {
-		if (value == 0) {
-			return ComponentUtil.EMPTY;
-		}
+		if (value == 0f) return ComponentUtil.EMPTY;
 
-		boolean isBeneficial = inverted ? value < 0 : value > 0;
+		boolean isBeneficial = (inverted && value < 0f) || (!inverted && value > 0f);
 		Style style = isBeneficial ? TextStyles.LIME : TextStyles.ERROR;
 
-		String formattedDecimal = (value > 0 ? "+" : "") + df.format(value);
+		String formattedDecimal = (value > 0f ? "+" : "") + df.format(value);
 		MutableComponent component = ComponentUtil.literal(formattedDecimal).withStyle(style);
 
 		return ComponentUtil.mutable().append("(").append(component).append(")").withStyle(TextStyles.DARK_GRAY);

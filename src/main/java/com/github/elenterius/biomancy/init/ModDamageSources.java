@@ -1,6 +1,7 @@
 package com.github.elenterius.biomancy.init;
 
 import com.github.elenterius.biomancy.entity.projectile.BaseProjectile;
+import com.github.elenterius.biomancy.entity.projectile.ImpalerProjectile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
@@ -53,6 +54,10 @@ public final class ModDamageSources {
 
 	public static DamageSource toothProjectile(Level level, BaseProjectile projectile, @Nullable Entity shooter) {
 		return source(ModDamageTypes.TOOTH_PROJECTILE, level, projectile, shooter);
+	}
+
+	public static DamageSource impalerProjectile(Level level, ImpalerProjectile projectile, @Nullable Entity shooter) {
+		return source(ModDamageTypes.IMPALER_PROJECTILE, level, projectile, shooter);
 	}
 
 	public static DamageSource acidProjectile(Level level, BaseProjectile projectile, @Nullable Entity shooter) {

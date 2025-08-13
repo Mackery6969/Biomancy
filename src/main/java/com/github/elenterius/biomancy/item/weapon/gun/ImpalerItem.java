@@ -1,21 +1,24 @@
 package com.github.elenterius.biomancy.item.weapon.gun;
 
 import com.github.elenterius.biomancy.client.render.item.impaler.ImpalerRenderer;
-import com.github.elenterius.biomancy.init.ModItems;
+import com.github.elenterius.biomancy.client.util.ClientTextUtil;
+import com.github.elenterius.biomancy.entity.projectile.ImpalerProjectile;
 import com.github.elenterius.biomancy.init.ModProjectiles;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.init.client.ModArmPoses;
 import com.github.elenterius.biomancy.item.ItemTooltipStyleProvider;
+import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.github.elenterius.biomancy.util.animation.TriggerableAnimation;
-import com.github.elenterius.biomancy.util.function.FloatOperator;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,6 +33,10 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
@@ -47,18 +54,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
-public class ImpalerItem extends GunItem implements ItemTooltipStyleProvider, GeoItem {
+public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvider, GeoItem {
 
-	public static final Predicate<ItemStack> AMMO_PREDICATE = stack -> stack.getItem() == ModItems.NUTRIENT_PASTE.get();
 	protected static final UUID BASE_MOVEMENT_SPEED_UUID = UUID.fromString("efc325ad-c747-4c0e-80c2-f3f0f4261e91");
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
 	private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
-	public ImpalerItem(Properties properties) {
-		super(properties,
+	public ImpalerItem(int maxNutrients, Properties properties) {
+		super(maxNutrients, properties,
 				GunProperties.builder()
 						.shootBehavior(GunProperties.ShootBehavior.ON_FULL_CHARGE)
 						.timeBetweenShots(2 * 20)
@@ -80,68 +86,56 @@ public class ImpalerItem extends GunItem implements ItemTooltipStyleProvider, Ge
 	}
 
 	@Override
-	public void onReloadTick(ItemStack stack, ServerLevel level, LivingEntity shooter, long elapsedTime) {
-		if (elapsedTime % 20L == 0L) playSFX(level, shooter, ModSoundEvents.FLESHKIN_EAT.get());
-	}
-
-	@Override
-	public void onReloadStarted(ItemStack stack, ServerLevel level, LivingEntity shooter) {
-		playSFX(level, shooter, ModSoundEvents.FLESHKIN_BECOME_AWAKENED.get());
-	}
-
-	@Override
-	public void onReloadCanceled(ItemStack stack, ServerLevel level, LivingEntity shooter) {
-		playSFX(level, shooter, ModSoundEvents.FLESHKIN_BREAK.get());
-	}
-
-	@Override
-	public void onReloadStopped(ItemStack stack, ServerLevel level, LivingEntity shooter) {
-		playSFX(level, shooter, ModSoundEvents.FLESHKIN_NO.get());
-	}
-
-	@Override
-	public void onReloadFinished(ItemStack stack, ServerLevel level, LivingEntity shooter) {
-		playSFX(level, shooter, ModSoundEvents.FLESHKIN_BURP.get());
-	}
-
-	@Override
-	public int getAmmoReloadCost() {
-		return 4;
-	}
-
-	@Override
-	public Predicate<ItemStack> getAllSupportedProjectiles() {
-		return AMMO_PREDICATE;
-	}
-
-	@Override
 	public int getDefaultProjectileRange() {
-		return 32;
+		return 64;
+	}
+
+	@Override
+	public int getReloadCost(ItemStack stack) {
+		return 5;
+	}
+
+	@Override
+	public int getDurabilityCost(ItemStack projectileWeapon) {
+		return 35;
 	}
 
 	@Override
 	public void onUseTick(Level level, LivingEntity shooter, ItemStack stack, int remainingUseDuration) {
 		super.onUseTick(level, shooter, stack, remainingUseDuration);
 
-		if (!level.isClientSide && level instanceof ServerLevel serverLevel) {
-			if (getGunState(stack) != GunState.SHOOTING_OR_CHARGING) return;
+		if (level.isClientSide) return;
+		if (getGunState(stack) != GunState.SHOOTING_OR_CHARGING) return;
 
-			int elapsedTime = getUseDuration(stack) - remainingUseDuration;
-			int delayBetweenShots = getDelayBetweenShots(stack);
+		int elapsedTime = getUseDuration(stack) - remainingUseDuration;
+		int delayBetweenShots = getDelayBetweenShots(stack);
 
-			if (elapsedTime % delayBetweenShots == 0) {
-				level.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), ModSoundEvents.IMPALER_CHARGE.get(), SoundUtil.soundSourceFor(shooter), 1f, 0.8f + shooter.getRandom().nextFloat() * 0.3f);
-			}
+		if (elapsedTime % delayBetweenShots == 0) {
+			level.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), ModSoundEvents.IMPALER_CHARGE.get(), SoundUtil.soundSourceFor(shooter), 1f, 0.8f + shooter.getRandom().nextFloat() * 0.3f);
 		}
+	}
+
+	public float modifyProjectileVelocity(float baseVelocity, ItemStack stack) {
+		return baseVelocity + 0.12f * stack.getEnchantmentLevel(Enchantments.POWER_ARROWS);
+	}
+
+	@Override
+	public float modifyProjectileDamage(float baseDamage, ItemStack stack) {
+		return baseDamage + gunProperties.projectileDamageModifier() + stack.getEnchantmentLevel(Enchantments.POWER_ARROWS);
 	}
 
 	@Override
 	public void shoot(ServerLevel level, LivingEntity shooter, InteractionHand usedHand, ItemStack projectileWeapon) {
 		boolean success = configuredProjectile.shoot(level, shooter,
-				FloatOperator.IDENTITY,
+				baseVelocity -> modifyProjectileVelocity(baseVelocity, projectileWeapon),
 				baseDamage -> modifyProjectileDamage(baseDamage, projectileWeapon),
 				baseKnockBack -> modifyProjectileKnockBack(baseKnockBack, projectileWeapon),
-				baseInaccuracy -> modifyProjectileInaccuracy(baseInaccuracy, projectileWeapon));
+				baseInaccuracy -> modifyProjectileInaccuracy(baseInaccuracy, projectileWeapon),
+				projectile -> {
+					if (projectile instanceof ImpalerProjectile impalerProjectile) {
+						impalerProjectile.setPierceLevel(projectileWeapon.getEnchantmentLevel(Enchantments.PIERCING));
+					}
+				});
 
 		if (!success) return;
 
@@ -149,7 +143,8 @@ public class ImpalerItem extends GunItem implements ItemTooltipStyleProvider, Ge
 		configuredProjectile.playShootSound(level, shooter, 1.5f, 0.8f + shooter.getRandom().nextFloat() * 0.3f);
 
 		projectileWeapon.hurtAndBreak(1, shooter, entity -> entity.broadcastBreakEvent(usedHand));
-		consumeAmmo(shooter, projectileWeapon, 1);
+		consumeAmmo(shooter, projectileWeapon, getAmmoCost(projectileWeapon));
+		consumeNutrients(projectileWeapon, getDurabilityCost(projectileWeapon));
 
 		boolean isAnchored = shooter.onGround() && shooter.isCrouching();
 		double reduction = isAnchored ? 0.25d : 0.5d;
@@ -170,6 +165,36 @@ public class ImpalerItem extends GunItem implements ItemTooltipStyleProvider, Ge
 			serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(serverPlayer));
 			//level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundSetEntityMotionPacket(serverPlayer)); // not necessary because hasImpulse already broadcasts
 		}
+	}
+
+	@Override
+	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+		if (enchantment == Enchantments.PIERCING) return true;
+		if (enchantment == Enchantments.PUNCH_ARROWS) return false;
+		return super.canApplyAtEnchantingTable(stack, enchantment);
+	}
+
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
+		tooltip.addAll(ClientTextUtil.getItemInfoTooltip(stack));
+		tooltip.add(ComponentUtil.emptyLine());
+		super.appendHoverText(stack, level, tooltip, isAdvanced);
+	}
+
+	@Override
+	public void appendGunStats(ItemStack stack, List<Component> tooltip) {
+		if (Screen.hasControlDown()) return;
+		super.appendGunStats(stack, tooltip);
+	}
+
+	@Override
+	public int getDefaultTooltipHideFlags(ItemStack stack) {
+		return ItemStack.TooltipPart.MODIFIERS.getMask();
+	}
+
+	@Override
+	public UseAnim getUseAnimation(ItemStack stack) {
+		return UseAnim.CUSTOM;
 	}
 
 	@Override

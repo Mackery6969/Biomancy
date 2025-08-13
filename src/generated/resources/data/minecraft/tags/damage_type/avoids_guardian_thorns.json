@@ -2,6 +2,7 @@
   "values": [
     "biomancy:bleed",
     "biomancy:corrosive_acid",
-    "biomancy:toxin"
+    "biomancy:toxin",
+    "biomancy:impaler_projectile"
   ]
 }

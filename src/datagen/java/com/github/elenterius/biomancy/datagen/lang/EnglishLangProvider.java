@@ -250,6 +250,7 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addTooltip("accuracy", "Accuracy");
 		addTooltip("ammo", "Ammo");
 		addTooltip("reload_time", "Reload Time");
+		addTooltip("projectile_speed", "Speed");
 		addTooltip("projectile_damage", "Damage");
 		addTooltip("projectile_knock_back", "Knockback");
 
@@ -301,8 +302,8 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addSound(ModSoundEvents.INJECTOR_FAIL, "Injection Failed");
 		addSound(ModSoundEvents.MARROW_DRINK, "Slurping Bone Marrow");
 		addSound(ModSoundEvents.IMPALER_SHOOT, "Impaler shoots");
-		addSound(ModSoundEvents.IMPALER_HIT, "Impaler hits");
-		addSound(ModSoundEvents.IMPALER_IMPACT, "Impaler impacts");
+		addSound(ModSoundEvents.IMPALER_HIT, "Impaler projectile hits");
+		addSound(ModSoundEvents.IMPALER_IMPACT, "Impaler projectile impacts");
 		addSound(ModSoundEvents.IMPALER_CHARGE, "Impaler charges");
 		addSound(ModSoundEvents.ARMOR_BULLET_JUMP, "Bullet Jumping");
 		addSound(ModSoundEvents.ARMOR_EQUIP_BIO_ALCHEMIST, "Bio-Armor suit rustles");
@@ -428,9 +429,10 @@ public class EnglishLangProvider extends AbstractLangProvider {
 				"%1$s was fatally toxified by %2$s using %3$s"
 		);
 
-		addDeathMessage(ModDamageTypes.TOOTH_PROJECTILE, "[WIP]",
-				"[WIP] %1$s was forcefully implanted with teeth by %2$s",
-				"[WIP] %1$s received a lethal dental implant by %2$s using %3$s");
+		addDeathMessage(ModDamageTypes.IMPALER_PROJECTILE,
+				"%1$s was obliterated with a Impaler",
+				"%1$s was obliterated by %2$s",
+				"%1$s was fatally punctured by %2$s using %3$s");
 	}
 
 	private void addSerumTranslations() {
@@ -519,7 +521,7 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addItem(ModItems.CREATOR_MIX, "Exotic Flesh Mix", "A carefully constructed tribute for the cradle... This exquisite meal contains raw meat infused with life energy.");
 		addItem(ModItems.INJECTOR, "Bio-Injector", """
 				A simple device which utilizes a razor sharp needle to quickly and forcefully inject Serums into Mobs and Players.
-								
+				
 				Can be enchanted with:
 				 - Piercing: Increases the chance to pierce through armor
 				 - Anesthetic Touch: Nullifies the damage from the needle""");
@@ -542,14 +544,18 @@ public class EnglishLangProvider extends AbstractLangProvider {
 
 		addItem(ModItems.RAVENOUS_CLAWS, "Ravenous Claws", """
 				Extremely hungry and vicious Claws forged by starving living flesh and grafting claws onto it.
-								
+				
 				Repair the famished claws by feeding them with food via the player inventory, as you would fill a bundle.
-								
+				
 				Killing Mobs with these claws grants blood charges, which allow you to use the Awakened mode.""");
 		addItem(ModItems.CAUSTIC_GUNBLADE, "Caustic Gunblade", """
 				A caustic gunblade that can alternate between melee and ranged mode and utilizes acidic ammo to damage its targets.
 				The acidic ammunition regenerates by itself after 5s of no usage.""");
-		addItem(ModItems.IMPALER, "[WIP] Impaler", "Railgun made of flesh...");
+		addItem(ModItems.IMPALER, "Impaler", """
+				A arm-mounted artillery that launches reinforced bone spears at high velocity.
+				Consuming large amount of nutrients bundles of muscle-fibers compress and a sealed pressure bladder floods with volatile propellants.
+				Unbearable pressure builds up that cannot be contained and once the limit is reached the projectile bursts forth violently.""");
+
 		addItem(ModItems.DEV_ARM_CANNON, "[Dev Tool] Arm Cannon", "Creative/Developer Tool for testing projectiles.");
 
 		addItem(ModItems.ACOLYTE_ARMOR_HELMET, "Bio-Alchemist Helmet");
@@ -733,7 +739,7 @@ public class EnglishLangProvider extends AbstractLangProvider {
 
 		addBlock(ModBlocks.PRIMAL_ORIFICE, "Primal Orifice", "A grotesque, flesh mass riddled with holes, oozing gastric juices. These orifices appear to grow inside flesh mound chambers and can be harvested using buckets or bottles, yielding a highly acidic fluid.");
 		addBlock(ModBlocks.ACID_FLUID_BLOCK, "Gastric Acid");
-		addBlock(ModBlocks.ACID_CAULDRON,"Gastric Acid Cauldron");
+		addBlock(ModBlocks.ACID_CAULDRON, "Gastric Acid Cauldron");
 		addBlock(ModBlocks.ACID_SPLATTER, "Gastric Acid Splatter");
 		addBlock(ModBlocks.WATER_GEL_BLOCK, "Water Gel", "A hydrating water gel that supplies moisture to mobs and farmland without spilling liquids everywhere.");
 	}

@@ -260,6 +260,16 @@ public class BioForgingRecipeProvider extends RecipeProvider {
 				.setCategory(ModBioForgeTabs.TOOLS)
 				.unlockedBy(ModItems.LIVING_FLESH.get()).save(consumer);
 
+		BioForgingRecipeBuilder.create(withMaxNutrients(ModItems.IMPALER.get()))
+				.addIngredient(ModItems.LIVING_FLESH.get(), 4)
+				.addIngredient(ModItems.FLESH_BITS.get(), 32)
+				.addIngredient(ModItems.ELASTIC_FIBERS.get(), 32)
+				.addIngredient(ModItems.BONE_FRAGMENTS.get(), 16)
+				.addIngredient(ModItems.VOLATILE_GLAND.get(), 4)
+				.setCraftingCost(200)
+				.setCategory(ModBioForgeTabs.TOOLS)
+				.unlockedBy(ModItems.LIVING_FLESH.get()).save(consumer);
+
 		BioForgingRecipeBuilder.create(ModItems.INJECTOR.get())
 				.addIngredient(ModItems.FLESH_BITS.get(), 20)
 				.addIngredient(ModItems.MINERAL_FRAGMENT.get(), 10)

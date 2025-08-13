@@ -27,9 +27,22 @@ public interface Gun {
 		return stack.getOrCreateTag().getLong(SHOOT_TIMESTAMP_KEY);
 	}
 
+	default int getDurabilityCost(ItemStack stack) {
+		return 1;
+	}
+
+	default int getAmmoCost(ItemStack stack) {
+		return 1;
+	}
+
+	/// Value shouldn't be larger than max ItemStack size of 64
+	default int getReloadCost(ItemStack stack) {
+		return 1;
+	}
+
 	void stopShooting(ItemStack stack, ServerLevel level, LivingEntity shooter);
 
-	void shoot(ServerLevel level, LivingEntity shooter, InteractionHand usedHand, ItemStack projectileWeapon);
+	void shoot(ServerLevel level, LivingEntity shooter, InteractionHand usedHand, ItemStack stack);
 
 	default GunState getGunState(ItemStack stack) {
 		return GunState.fromId(stack.getOrCreateTag().getByte(WEAPON_STATE_KEY));
@@ -64,8 +77,8 @@ public interface Gun {
 		}
 
 		ItemStack ammoStack = findAmmoInInv(stack, shooter);
-		if (!ammoStack.isEmpty() && ammoStack.getCount() >= getAmmoReloadCost()) {
-			ammoStack.shrink(getAmmoReloadCost());
+		if (!ammoStack.isEmpty() && ammoStack.getCount() >= getReloadCost(stack)) {
+			ammoStack.shrink(getReloadCost(stack));
 			setAmmo(stack, getMaxAmmo(stack));
 			onReloadFinished(stack, level, shooter);
 		}
@@ -109,7 +122,7 @@ public interface Gun {
 	default boolean canReload(ItemStack stack, LivingEntity shooter) {
 		if (getAmmo(stack) >= getMaxAmmo(stack)) return false;
 		ItemStack ammo = findAmmoInInv(stack, shooter);
-		return !ammo.isEmpty() && ammo.getCount() >= getAmmoReloadCost();
+		return !ammo.isEmpty() && ammo.getCount() >= getReloadCost(stack);
 	}
 
 	default float modifyProjectileInaccuracy(float baseInaccuracy, ItemStack stack) {
@@ -126,6 +139,10 @@ public interface Gun {
 
 	int getReloadDurationTicks(ItemStack stack);
 
+	default float modifyProjectileVelocity(float baseVelocity, ItemStack stack) {
+		return baseVelocity;
+	}
+
 	float modifyProjectileDamage(float baseDamage, ItemStack stack);
 
 	int modifyProjectileKnockBack(int baseKnockBack, ItemStack stack);
@@ -135,13 +152,6 @@ public interface Gun {
 	int getMaxAmmo(ItemStack stack);
 
 	ItemStack findAmmoInInv(ItemStack stack, LivingEntity shooter);
-
-	/**
-	 * value shouldn't be larger than max ItemStack size of 64
-	 */
-	default int getAmmoReloadCost() {
-		return 1;
-	}
 
 	default boolean hasAmmo(ItemStack stack) {
 		return getAmmo(stack) > 0;

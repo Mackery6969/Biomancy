@@ -13,6 +13,7 @@ import net.minecraft.world.level.LevelReader;
 public final class ModDamageTypes {
 
 	public static final ResourceKey<DamageType> TOOTH_PROJECTILE = key("tooth_projectile");
+	public static final ResourceKey<DamageType> IMPALER_PROJECTILE = key("impaler_projectile");
 	public static final ResourceKey<DamageType> PRIMORDIAL_SPIKES = key("primordial_spikes");
 	public static final ResourceKey<DamageType> CHEST_BITE = key("chest_bite");
 	public static final ResourceKey<DamageType> CORROSIVE_ACID = key("corrosive_acid");
@@ -33,6 +34,7 @@ public final class ModDamageTypes {
 	}
 
 	public static void bootstrap(BootstapContext<DamageType> ctx) {
+		bootstrap(ctx, IMPALER_PROJECTILE, DamageScaling.NEVER, 0.5f);
 		bootstrap(ctx, TOOTH_PROJECTILE);
 		bootstrap(ctx, PRIMORDIAL_SPIKES, DamageScaling.ALWAYS, 0);
 		bootstrap(ctx, CHEST_BITE, DamageScaling.ALWAYS, 0.25f);

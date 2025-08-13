@@ -101,7 +101,7 @@ public final class ModItems {
 	public static final RegistryObject<InjectorItem> INJECTOR = registerItem("injector", props -> new InjectorItem(props.durability(200).rarity(ModRarities.RARE)));
 	public static final RegistryObject<RavenousClawsItem> RAVENOUS_CLAWS = registerItem("ravenous_claws", props -> new RavenousClawsItem(ModTiers.BIOFLESH, 4f, 3.5f, 250, props.rarity(ModRarities.VERY_RARE)));
 	public static final RegistryObject<CausticGunbladeItem> CAUSTIC_GUNBLADE = registerItem("caustic_gunblade", props -> new CausticGunbladeItem(200, props.stacksTo(1).rarity(ModRarities.VERY_RARE)));
-	public static final RegistryObject<ImpalerItem> IMPALER = registerItem("impaler", props -> new ImpalerItem(props.stacksTo(1).rarity(ModRarities.ULTRA_RARE)));
+	public static final RegistryObject<ImpalerItem> IMPALER = registerItem("impaler", props -> new ImpalerItem(200, props.stacksTo(1).rarity(ModRarities.ULTRA_RARE)));
 	public static final RegistryObject<SimpleItem> GRENADE_CASING = registerSimpleItem("grenade_casing");
 	public static final RegistryObject<GrenadeItem> TOXIN_GRENADE = registerItem("toxin_grenade", GrenadeItem::new);
 	public static final RegistryObject<GrenadeItem> ACID_GRENADE = registerItem("acid_grenade", GrenadeItem::new);

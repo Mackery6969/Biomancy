@@ -79,7 +79,7 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 				BladeProperties.builder().attackDamage(6).attackSpeed(1.2f).build(),
 				GunProperties.builder()
 						.fireRate(0.5f)
-						.maxAmmo(10).reloadDuration(10 * 20).autoReload(true)
+						.maxAmmo(10).reloadDuration(10 * 20).autoReload()
 						.build(),
 				ModProjectiles.ACID_BLOB);
 
@@ -146,8 +146,8 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 			configuredProjectile.playShootSound(level, shooter);
 		}
 
-		consumeAmmo(shooter, projectileWeapon, 1);
-		consumeNutrients(projectileWeapon, 1);
+		consumeAmmo(shooter, projectileWeapon, getAmmoCost(projectileWeapon));
+		consumeNutrients(projectileWeapon, getDurabilityCost(projectileWeapon));
 
 		setLastUseTimestamp(projectileWeapon, level.getGameTime());
 	}
@@ -217,11 +217,11 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 	@Override
 	public boolean canReload(ItemStack stack, LivingEntity shooter) {
 		long elapsedTime = shooter.level().getGameTime() - getLastUseTimestamp(stack);
-		return elapsedTime > 5 * 20 && getAmmo(stack) < getMaxAmmo(stack) && getNutrients(stack) >= getAmmoReloadCost();
+		return elapsedTime > 5 * 20 && getAmmo(stack) < getMaxAmmo(stack) && getNutrients(stack) >= getReloadCost(stack);
 	}
 
 	@Override
-	public int getAmmoReloadCost() {
+	public int getReloadCost(ItemStack stack) {
 		return 5;
 	}
 
@@ -304,7 +304,7 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 
 	@Override
 	public void onReloadFinished(ItemStack stack, ServerLevel level, LivingEntity shooter) {
-		consumeNutrients(stack, getAmmoReloadCost());
+		consumeNutrients(stack, getReloadCost(stack));
 		playSFX(level, shooter, SoundEvents.PLAYER_BURP);
 	}
 
