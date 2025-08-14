@@ -6,15 +6,14 @@ import com.github.elenterius.biomancy.client.render.item.caustic_gunblade.Causti
 import com.github.elenterius.biomancy.client.util.ClientTextUtil;
 import com.github.elenterius.biomancy.init.*;
 import com.github.elenterius.biomancy.item.CriticalHitListener;
-import com.github.elenterius.biomancy.item.ItemAttackDamageSourceProvider;
 import com.github.elenterius.biomancy.item.ItemTooltipStyleProvider;
+import com.github.elenterius.biomancy.item.MeleeDamageSourceProviderItem;
 import com.github.elenterius.biomancy.item.weapon.BladeProperties;
 import com.github.elenterius.biomancy.styles.ColorStyles;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.github.elenterius.biomancy.util.animation.TriggerableAnimation;
-import com.github.elenterius.biomancy.util.function.FloatOperator;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.model.HumanoidModel;
@@ -64,13 +63,14 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingTool, CriticalHitListener, ItemAttackDamageSourceProvider, ItemTooltipStyleProvider, GeoItem {
+public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingTool, CriticalHitListener, MeleeDamageSourceProviderItem, ItemTooltipStyleProvider, GeoItem {
 
 	protected final Multimap<Attribute, AttributeModifier> disabledBladeModifiers;
 	protected final Multimap<Attribute, AttributeModifier> disabledGunModifiers;
-	private final int maxNutrients;
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
+	private final int maxNutrients;
 
 	String LAST_USE_TIMESTAMP_KEY = "last_use_timestamp";
 
@@ -137,17 +137,16 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 		broadcastAnimation(level, shooter, projectileWeapon, Animations.SHOOT);
 
 		boolean success = configuredProjectile.shoot(level, shooter,
-				FloatOperator.IDENTITY,
+				baseVelocity -> modifyProjectileVelocity(baseVelocity, projectileWeapon),
 				baseDamage -> modifyProjectileDamage(baseDamage, projectileWeapon),
 				baseKnockBack -> modifyProjectileKnockBack(baseKnockBack, projectileWeapon),
 				baseInaccuracy -> modifyProjectileInaccuracy(baseInaccuracy, projectileWeapon));
 
 		if (success) {
 			configuredProjectile.playShootSound(level, shooter);
+			consumeAmmo(shooter, projectileWeapon, getAmmoCost(projectileWeapon));
+			consumeNutrients(projectileWeapon, getDurabilityCost(projectileWeapon));
 		}
-
-		consumeAmmo(shooter, projectileWeapon, getAmmoCost(projectileWeapon));
-		consumeNutrients(projectileWeapon, getDurabilityCost(projectileWeapon));
 
 		setLastUseTimestamp(projectileWeapon, level.getGameTime());
 	}
@@ -231,11 +230,13 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 	}
 
 	@Override
-	public @Nullable DamageSource getDamageSource(ItemStack stack, Entity target, LivingEntity attacker, float attackStrengthScale) {
+	public @Nullable DamageSource getMeleeDamageSource(ItemStack stack, Entity target, LivingEntity attacker, float attackStrengthScale) {
 		if (GunbladeMode.from(stack) != GunbladeMode.MELEE) return null;
 		if (!Abilities.ACID_COAT.isActive(stack)) return null;
 
-		return ModDamageSources.acid(attacker.level(), attacker);
+		DamageSource damageSource = ModDamageSources.acid(attacker.level(), attacker);
+		if (target.isInvulnerableTo(damageSource)) return null; //use default melee damagesource as fallback
+		return damageSource;
 	}
 
 	@Override

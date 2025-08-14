@@ -2,7 +2,7 @@ package com.github.elenterius.biomancy.mixin;
 
 import com.github.elenterius.biomancy.entity.projectile.ImpalerProjectile;
 import com.github.elenterius.biomancy.init.ModDamageTypes;
-import com.github.elenterius.biomancy.item.ItemAttackDamageSourceProvider;
+import com.github.elenterius.biomancy.item.MeleeDamageSourceProviderItem;
 import com.github.elenterius.biomancy.item.SweepAttackListener;
 import com.github.elenterius.biomancy.item.armor.LivingArmorItem;
 import com.github.elenterius.biomancy.item.shield.LivingShieldItem;
@@ -63,10 +63,10 @@ public abstract class PlayerMixin extends LivingEntity {
 	@ModifyArg(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
 	private DamageSource adjustAttackDamageSource(DamageSource source, @Share("target") LocalRef<Entity> argRef) {
 		ItemStack stack = getMainHandItem();
-		if (stack.getItem() instanceof ItemAttackDamageSourceProvider damageSourceProvider) {
+		if (stack.getItem() instanceof MeleeDamageSourceProviderItem damageSourceProvider) {
 			Entity target = argRef.get();
 			if (target != null) {
-				DamageSource damageSource = damageSourceProvider.getDamageSource(stack, target, this, getAttackStrengthScale(0.5f));
+				DamageSource damageSource = damageSourceProvider.getMeleeDamageSource(stack, target, this, getAttackStrengthScale(0.5f));
 				return damageSource != null ? damageSource : source;
 			}
 		}
@@ -82,10 +82,10 @@ public abstract class PlayerMixin extends LivingEntity {
 	@ModifyArg(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
 	private DamageSource adjustSweepAttackDamageSource(DamageSource source, @Share("sweepTarget") LocalRef<LivingEntity> argRef) {
 		ItemStack stack = getMainHandItem();
-		if (stack.getItem() instanceof ItemAttackDamageSourceProvider damageSourceProvider) {
+		if (stack.getItem() instanceof MeleeDamageSourceProviderItem damageSourceProvider) {
 			LivingEntity target = argRef.get();
 			if (target != null) {
-				DamageSource damageSource = damageSourceProvider.getDamageSource(stack, target, this, getAttackStrengthScale(0.5f));
+				DamageSource damageSource = damageSourceProvider.getMeleeDamageSource(stack, target, this, getAttackStrengthScale(0.5f));
 				return damageSource != null ? damageSource : source;
 			}
 		}

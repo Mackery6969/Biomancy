@@ -6,6 +6,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public interface ItemAttackDamageSourceProvider {
-	@Nullable DamageSource getDamageSource(ItemStack stack, Entity target, LivingEntity attacker, float attackStrengthScale);
+public interface MeleeDamageSourceProviderItem {
+	@Nullable DamageSource getMeleeDamageSource(ItemStack stack, Entity target, LivingEntity attacker, float attackStrengthScale);
 }

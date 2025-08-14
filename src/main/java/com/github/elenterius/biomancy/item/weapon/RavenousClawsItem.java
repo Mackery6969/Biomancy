@@ -6,8 +6,8 @@ import com.github.elenterius.biomancy.client.util.ClientTextUtil;
 import com.github.elenterius.biomancy.init.ModDamageSources;
 import com.github.elenterius.biomancy.init.ModParticleTypes;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
-import com.github.elenterius.biomancy.item.ItemAttackDamageSourceProvider;
 import com.github.elenterius.biomancy.item.ItemCharge;
+import com.github.elenterius.biomancy.item.MeleeDamageSourceProviderItem;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.CombatUtil;
@@ -55,7 +55,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class RavenousClawsItem extends LivingClawsItem implements GeoItem, ItemCharge, ItemAttackDamageSourceProvider {
+public class RavenousClawsItem extends LivingClawsItem implements GeoItem, ItemCharge, MeleeDamageSourceProviderItem {
 	protected static final UUID BASE_ATTACK_KNOCKBACK_UUID = UUID.fromString("6175525b-56dd-4f87-b035-86b892afe7b3");
 	private final Lazy<Multimap<Attribute, AttributeModifier>> brokenAttributes;
 	private final Lazy<Multimap<Attribute, AttributeModifier>> dormantAttributes;
@@ -210,12 +210,16 @@ public class RavenousClawsItem extends LivingClawsItem implements GeoItem, ItemC
 	}
 
 	@Override
-	public @Nullable DamageSource getDamageSource(ItemStack stack, Entity target, LivingEntity attacker, float attackStrengthScale) {
+	public @Nullable DamageSource getMeleeDamageSource(ItemStack stack, Entity target, LivingEntity attacker, float attackStrengthScale) {
 		if (attackStrengthScale <= 0.9f) return null;
 
 		return switch (getLivingToolState(stack)) {
 			case BROKEN -> null;
-			case DORMANT, AWAKENED -> ModDamageSources.slash(attacker.level(), attacker);
+			case DORMANT, AWAKENED -> {
+				DamageSource damageSource = ModDamageSources.slash(attacker.level(), attacker);
+				if (target.isInvulnerableTo(damageSource)) yield null; //use default melee damagesource as fallback
+				yield damageSource;
+			}
 		};
 	}
 
