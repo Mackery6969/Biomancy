@@ -149,7 +149,9 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 
 	public void onFall(ItemStack stack, LivingFallEvent event) {
 		if (type == Type.BOOTS && getNutrients(stack) >= 1) {
-			consumeNutrients(stack, 1);
+			if (event.getDistance() > 3f && event.getDamageMultiplier() > 0f) {
+				consumeNutrients(stack, 1);
+			}
 			float multiplier = 1f - getFallReduction(stack);
 			event.setDamageMultiplier(event.getDamageMultiplier() * multiplier);
 			event.setDistance(event.getDistance() * multiplier);
