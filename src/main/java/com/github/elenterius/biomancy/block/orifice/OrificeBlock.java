@@ -31,6 +31,7 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 
 import java.util.Optional;
+import java.util.function.ToIntFunction;
 
 public class OrificeBlock extends Block implements BucketPickup {
 
@@ -39,6 +40,10 @@ public class OrificeBlock extends Block implements BucketPickup {
 	public OrificeBlock(Properties properties) {
 		super(properties);
 		registerDefaultState(defaultBlockState().setValue(AGE.get(), AGE.getMin()));
+	}
+
+	public static ToIntFunction<BlockState> lightEmission(int maxLightValue) {
+		return (state) -> AGE.getValue(state) / AGE.getMax() * maxLightValue;
 	}
 
 	@Override
