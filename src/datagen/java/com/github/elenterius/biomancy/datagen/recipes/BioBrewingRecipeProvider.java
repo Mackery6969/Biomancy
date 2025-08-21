@@ -94,8 +94,9 @@ public class BioBrewingRecipeProvider extends RecipeProvider {
 				.unlockedBy(ModItems.EXOTIC_COMPOUND.get()).save(consumer);
 
 		BioBrewingRecipeBuilder.create(ModItems.FRENZY_SERUM.get())
-				.addIngredient(ModItems.VOLATILE_FLUID.get())
-				.addIngredient(ModItems.HORMONE_SECRETION.get())
+				.addIngredient(ModItems.UNSTABLE_COMPOUND.get())
+				.addIngredient(ModItems.GENETIC_COMPOUND.get())
+				.addIngredient(ModItems.ACID_EXTRACT.get())
 				.setReactant(ModItems.EXOTIC_COMPOUND.get())
 				.setCraftingTime(8 * 20)
 				.unlockedBy(ModItems.EXOTIC_COMPOUND.get()).save(consumer);

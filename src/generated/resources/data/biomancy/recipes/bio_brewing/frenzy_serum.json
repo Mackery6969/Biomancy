@@ -2,10 +2,13 @@
   "type": "biomancy:bio_brewing",
   "ingredients": [
     {
-      "item": "biomancy:volatile_fluid"
+      "item": "biomancy:unstable_compound"
     },
     {
-      "item": "biomancy:hormone_secretion"
+      "item": "biomancy:genetic_compound"
+    },
+    {
+      "item": "biomancy:acid_extract"
     }
   ],
   "nutrientsCost": 2,
