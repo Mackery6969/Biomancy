@@ -248,17 +248,17 @@ public class ModDespoilLoot extends DespoilLootProvider {
 			hasLoot = true;
 		}
 
-		if (!INVALID_MOBS_FOR_MEATY_LOOT.contains(entityType)) {
-			int maxCount = Mth.ceil(Math.log(volume * sinewMultiplier + 1));
-			NumberProvider countProvider = maxCount > 1 ? UniformGenerator.between(1, maxCount) : ConstantValue.exactly(1);
-
-			builder.add(
-					LootItem.lootTableItem(ModItems.MOB_SINEW.get()).setWeight(70)
-							.apply(SetItemCountFunction.setCount(countProvider))
-							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
-			);
-			hasLoot = true;
-		}
+		//		if (!INVALID_MOBS_FOR_MEATY_LOOT.contains(entityType)) {
+		//			int maxCount = Mth.ceil(Math.log(volume * sinewMultiplier + 1));
+		//			NumberProvider countProvider = maxCount > 1 ? UniformGenerator.between(1, maxCount) : ConstantValue.exactly(1);
+		//
+		//			builder.add(
+		//					LootItem.lootTableItem(ModItems.MOB_SINEW.get()).setWeight(70)
+		//							.apply(SetItemCountFunction.setCount(countProvider))
+		//							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
+		//			);
+		//			hasLoot = true;
+		//		}
 
 		if (volume >= 0.25f && !hasToxinGland && !hasVolatileGland && !INVALID_MOBS_FOR_MEATY_LOOT.contains(entityType)) {
 			int maxCount = Mth.ceil(Math.log(volume * bileGlandMultiplier + 1));
