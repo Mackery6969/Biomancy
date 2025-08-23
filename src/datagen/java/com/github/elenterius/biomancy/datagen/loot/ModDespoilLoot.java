@@ -273,7 +273,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 			builder.add(
 					LootItem.lootTableItem(ModItems.GENERIC_MOB_GLAND.get()).setWeight(weight)
 							.apply(SetItemCountFunction.setCount(countProvider))
-							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
+//							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
 			);
 			hasLoot = true;
 		}
@@ -313,7 +313,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 			builder.add(
 					LootItem.lootTableItem(ModItems.TOXIN_GLAND.get()).setWeight(75)
 							.apply(SetItemCountFunction.setCount(countProvider))
-							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
+//							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
 			);
 			hasLoot = true;
 		}
@@ -325,7 +325,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 			builder.add(
 					LootItem.lootTableItem(ModItems.VOLATILE_GLAND.get()).setWeight(50)
 							.apply(SetItemCountFunction.setCount(countProvider))
-							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
+//							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
 			);
 			hasLoot = true;
 		}
