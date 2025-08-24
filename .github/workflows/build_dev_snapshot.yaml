@@ -113,7 +113,7 @@ jobs:
           version-path: 'semantic'
           tag-prefix: '${{ steps.gradle_properties.outputs.minecraft_version }}-v2.'
           release-count: 2 # limit changelog to the current and previous snapshot
-          skip-commit: true # do not commit version bump
+#          skip-commit: true # do not commit version bump
           pre-release: true
           pre-release-identifier: 'snapshot'
 
