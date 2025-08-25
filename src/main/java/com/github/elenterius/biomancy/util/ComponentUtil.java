@@ -26,6 +26,7 @@ public final class ComponentUtil {
 	public static final Component EMPTY = CommonComponents.EMPTY;
 	public static final Component NEW_LINE = CommonComponents.NEW_LINE;
 	public static final Component EMPTY_LINE = TooltipHacks.EMPTY_LINE_COMPONENT;
+	public static final Component HORIZONTAL_LINE = TooltipHacks.HR_COMPONENT;
 	public static final Component ELLIPSIS = CommonComponents.ELLIPSIS;
 	public static final Component TEXT_SEPARATOR = Component.literal(", ");
 
@@ -61,6 +62,7 @@ public final class ComponentUtil {
 	/**
 	 * force empty line in item tooltips
 	 */
+	@Deprecated
 	public static Component emptyLine() {
 		return TooltipHacks.EMPTY_LINE_COMPONENT;
 	}
@@ -68,6 +70,7 @@ public final class ComponentUtil {
 	/**
 	 * horizontal line in item tooltips
 	 */
+	@Deprecated
 	public static Component horizontalLine() {
 		return TooltipHacks.HR_COMPONENT;
 	}
