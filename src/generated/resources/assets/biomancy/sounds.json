@@ -632,6 +632,56 @@
     ],
     "subtitle": "sounds.biomancy.fleshkin_chest.open"
   },
+  "gel_block.break": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "block.honey_block.break",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "sounds.biomancy.gel_block.break"
+  },
+  "gel_block.fall": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "block.honey_block.fall",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "sounds.biomancy.gel_block.fall"
+  },
+  "gel_block.hit": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "block.honey_block.hit",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "sounds.biomancy.gel_block.hit"
+  },
+  "gel_block.place": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "block.honey_block.place",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "sounds.biomancy.gel_block.place"
+  },
+  "gel_block.step": {
+    "sounds": [
+      {
+        "type": "event",
+        "name": "block.honey_block.step",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "sounds.biomancy.gel_block.step"
+  },
   "item.armor.bullet_jump": {
     "sounds": [
       "biomancy:item.armor.bullet_jump"

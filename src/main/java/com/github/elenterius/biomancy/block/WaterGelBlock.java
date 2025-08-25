@@ -1,16 +1,20 @@
 package com.github.elenterius.biomancy.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -31,33 +35,50 @@ public class WaterGelBlock extends HalfTransparentBlock {
 	}
 
 	@Override
+	public FluidState getFluidState(BlockState state) {
+		return Fluids.WATER.getSource(false);
+	}
+
+	@Override
+	public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
+		playerWillDestroy(level, pos, state, player);
+		return level.setBlock(pos, Fluids.EMPTY.defaultFluidState().createLegacyBlock(), level.isClientSide ? Block.UPDATE_ALL_IMMEDIATE : Block.UPDATE_ALL);
+	}
+
+	@Override
+	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+		level.scheduleTick(pos, Fluids.EMPTY, Fluids.WATER.getTickDelay(level));
+		return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+	}
+
+	@Override
 	public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float fallDistance) {
 		entity.causeFallDamage(fallDistance, 0f, level.damageSources().fall());
 	}
 
-	@Override
-	public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-		if (!(entity instanceof LivingEntity) || entity.getFeetBlockState().is(this)) {
-			Vec3 delta = entity.getDeltaMovement();
-			entity.setDeltaMovement(delta.multiply(0.8d, delta.y >= 0 ? 0.8f : 1.2f, 0.8d));
-		}
-
-		if (level.isClientSide()) return;
-
-		if (entity instanceof LivingEntity livingEntity) {
-			if (livingEntity.isSensitiveToWater()) {
-				livingEntity.hurt(level.damageSources().indirectMagic(null, null), 1f);
-			}
-
-			if (livingEntity.isOnFire() && livingEntity.isAlive()) {
-				livingEntity.extinguishFire();
-			}
-
-			if (livingEntity instanceof Axolotl axolotl) {
-				axolotl.rehydrate();
-			}
-		}
-	}
+	//	@Override
+	//	public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+	//		if (!(entity instanceof LivingEntity) || entity.getFeetBlockState().is(this)) {
+	//			Vec3 delta = entity.getDeltaMovement();
+	//			entity.setDeltaMovement(delta.multiply(0.8d, delta.y >= 0 ? 0.8f : 1.2f, 0.8d));
+	//		}
+	//
+	//		if (level.isClientSide()) return;
+	//
+	//		if (entity instanceof LivingEntity livingEntity) {
+	//			if (livingEntity.isSensitiveToWater()) {
+	//				livingEntity.hurt(level.damageSources().indirectMagic(null, null), 1f);
+	//			}
+	//
+	//			if (livingEntity.isOnFire() && livingEntity.isAlive()) {
+	//				livingEntity.extinguishFire();
+	//			}
+	//
+	//			if (livingEntity instanceof Axolotl axolotl) {
+	//				axolotl.rehydrate();
+	//			}
+	//		}
+	//	}
 
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {

@@ -48,6 +48,12 @@ public final class ModSoundEvents {
 	public static final RegistryObject<SoundEvent> BONY_FLESH_BLOCK_STEP = register("bony_flesh_block.step");
 	public static final RegistryObject<SoundEvent> BONY_FLESH_BLOCK_FALL = register("bony_flesh_block.fall");
 
+	public static final RegistryObject<SoundEvent> GEL_BLOCK_PLACE = register("gel_block.place");
+	public static final RegistryObject<SoundEvent> GEL_BLOCK_HIT = register("gel_block.hit");
+	public static final RegistryObject<SoundEvent> GEL_BLOCK_BREAK = register("gel_block.break");
+	public static final RegistryObject<SoundEvent> GEL_BLOCK_STEP = register("gel_block.step");
+	public static final RegistryObject<SoundEvent> GEL_BLOCK_FALL = register("gel_block.fall");
+
 	public static final RegistryObject<SoundEvent> FLESH_DOOR_OPEN = register("flesh_door.open");
 	public static final RegistryObject<SoundEvent> FLESH_DOOR_CLOSE = register("flesh_door.close");
 

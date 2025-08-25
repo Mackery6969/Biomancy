@@ -56,6 +56,12 @@ public class ModSoundProvider extends SoundDefinitionsProvider {
 		addSimpleRedirects(ModSoundEvents.BONY_FLESH_BLOCK_BREAK, ModSoundEvents.FLESH_BLOCK_BREAK.get(), SoundEvents.BONE_BLOCK_BREAK);
 		addSimpleRedirects(ModSoundEvents.BONY_FLESH_BLOCK_FALL, ModSoundEvents.FLESH_BLOCK_FALL.get(), SoundEvents.BONE_BLOCK_FALL);
 
+		addSimpleRedirect(ModSoundEvents.GEL_BLOCK_HIT, SoundEvents.HONEY_BLOCK_HIT, 1f, 0.6f);
+		addSimpleRedirect(ModSoundEvents.GEL_BLOCK_PLACE, SoundEvents.HONEY_BLOCK_PLACE, 1f, 0.6f);
+		addSimpleRedirect(ModSoundEvents.GEL_BLOCK_STEP, SoundEvents.HONEY_BLOCK_STEP, 1f, 0.6f);
+		addSimpleRedirect(ModSoundEvents.GEL_BLOCK_BREAK, SoundEvents.HONEY_BLOCK_BREAK, 1f, 0.6f);
+		addSimpleRedirect(ModSoundEvents.GEL_BLOCK_FALL, SoundEvents.HONEY_BLOCK_FALL, 1f, 0.6f);
+
 		addSimpleSounds(ModSoundEvents.FLESH_DOOR_OPEN, 2);
 		addSimpleSounds(ModSoundEvents.FLESH_DOOR_CLOSE, 2);
 
