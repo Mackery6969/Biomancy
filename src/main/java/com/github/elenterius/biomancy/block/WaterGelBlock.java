@@ -2,6 +2,9 @@ package com.github.elenterius.biomancy.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.ParticleUtils;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,20 +12,21 @@ import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+/// We don't schedule andy fluid ticks on purpose to avoid water spreading everywhere
 public class WaterGelBlock extends HalfTransparentBlock {
+
+	private static final FluidState WATER_SOURCE = Fluids.WATER.getSource(false);
 
 	protected static final VoxelShape SHAPE = Block.box(1, 1, 1, 15, 15, 15);
 
@@ -35,8 +39,12 @@ public class WaterGelBlock extends HalfTransparentBlock {
 	}
 
 	@Override
-	public FluidState getFluidState(BlockState state) {
-		return Fluids.WATER.getSource(false);
+	public final FluidState getFluidState(BlockState state) {
+		return getFluidState();
+	}
+
+	public FluidState getFluidState() {
+		return WATER_SOURCE;
 	}
 
 	@Override
@@ -46,39 +54,9 @@ public class WaterGelBlock extends HalfTransparentBlock {
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-		level.scheduleTick(pos, Fluids.EMPTY, Fluids.WATER.getTickDelay(level));
-		return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
-	}
-
-	@Override
 	public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float fallDistance) {
 		entity.causeFallDamage(fallDistance, 0f, level.damageSources().fall());
 	}
-
-	//	@Override
-	//	public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-	//		if (!(entity instanceof LivingEntity) || entity.getFeetBlockState().is(this)) {
-	//			Vec3 delta = entity.getDeltaMovement();
-	//			entity.setDeltaMovement(delta.multiply(0.8d, delta.y >= 0 ? 0.8f : 1.2f, 0.8d));
-	//		}
-	//
-	//		if (level.isClientSide()) return;
-	//
-	//		if (entity instanceof LivingEntity livingEntity) {
-	//			if (livingEntity.isSensitiveToWater()) {
-	//				livingEntity.hurt(level.damageSources().indirectMagic(null, null), 1f);
-	//			}
-	//
-	//			if (livingEntity.isOnFire() && livingEntity.isAlive()) {
-	//				livingEntity.extinguishFire();
-	//			}
-	//
-	//			if (livingEntity instanceof Axolotl axolotl) {
-	//				axolotl.rehydrate();
-	//			}
-	//		}
-	//	}
 
 	@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
@@ -94,8 +72,7 @@ public class WaterGelBlock extends HalfTransparentBlock {
 					return SHAPE;
 				}
 
-				Vec3 deltaMovement = entity.getDeltaMovement();
-				double horizontalLengthSqr = deltaMovement.x * deltaMovement.x + deltaMovement.z * deltaMovement.z;
+				double horizontalLengthSqr = entity.getDeltaMovement().horizontalDistanceSqr();
 
 				if ((horizontalLengthSqr > 0.0057d || canEntityWalkOnWaterGel(entity)) && collision.isAbove(SHAPE, pos, false) && !collision.isDescending()) {
 					return SHAPE;
@@ -104,11 +81,6 @@ public class WaterGelBlock extends HalfTransparentBlock {
 		}
 
 		return Shapes.empty();
-	}
-
-	@Override
-	public VoxelShape getBlockSupportShape(BlockState state, BlockGetter level, BlockPos pos) {
-		return Shapes.block();
 	}
 
 	@Override
@@ -124,6 +96,17 @@ public class WaterGelBlock extends HalfTransparentBlock {
 	@Override
 	public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
 		return true;
+	}
+
+	@Override
+	public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+		if (random.nextInt(15) == 1) {
+			BlockPos posBelow = pos.below();
+			BlockState stateBelow = level.getBlockState(posBelow);
+			if (!(stateBelow.getBlock() instanceof WaterGelBlock) && (!stateBelow.canOcclude() || !stateBelow.isFaceSturdy(level, posBelow, Direction.UP))) {
+				ParticleUtils.spawnParticleBelow(level, pos, random, ParticleTypes.DRIPPING_WATER);
+			}
+		}
 	}
 
 }
