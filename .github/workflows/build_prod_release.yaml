@@ -9,44 +9,18 @@ on:
 #    branches:
 #      - '**/prod'
 
+permissions:
+  contents: write
+
 jobs:
-  build_test:
-    name: Gradle Build Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Validate Gradle Wrapper
-        uses: gradle/wrapper-validation-action@v1
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
-      - name: Test Asset Generation
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: runData
-
-      - name: Test Build
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
-
-  changelog:
-    name: Create Changelog
-    needs: [ build_test ]
+  check_if_should_build:
+    name: Check if a build should be triggered
     runs-on: ubuntu-latest
     outputs:
-      skip_build: ${{ steps.set_outputs.outputs.skipped }}
-      tag: ${{ steps.set_outputs.outputs.tag }}
-      clean_changelog: ${{ steps.set_outputs.outputs.changelog }}
+      skip: ${{ steps.changelog.outputs.skipped }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5.0.0
 
       - name: Get Minecraft Version
         id: gradle_properties
@@ -55,7 +29,82 @@ jobs:
           path: './gradle.properties'
           properties: 'minecraft_version'
 
-      - name: Generate Conventional Changelog #this also determines the release version
+      - name: Generate Conventional Changelog
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v6.0.0
+        with:
+          preset: 'conventionalcommits'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          version-file: './mod_version.json'
+          version-path: 'semantic'
+          tag-prefix: '${{ steps.gradle_properties.outputs.minecraft_version }}-v2.'
+          release-count: 1 # limit changelog to the current snapshot
+          skip-commit: true # do not commit version bump
+          skip-tag: true # do not commit version tag
+          pre-release: true
+          pre-release-identifier: 'snapshot'
+
+
+  setup_oxipng:
+    name: Install Oxipng
+    needs: [ check_if_should_build ]
+    if: needs.check_if_should_build.outputs.skip == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cargo Install Oxipng
+        uses: baptiste0928/cargo-install@v3.3.1 #provides cache-efficient Rust crates installation
+        with:
+          crate: oxipng
+        env:
+          CARGO_TERM_COLOR: always
+
+
+  build_test:
+    name: Gradle Build Test
+    needs: [ check_if_should_build ]
+    if: needs.check_if_should_build.outputs.skip == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5.0.0
+      - uses: actions/setup-java@v5.0.0
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup/Cache Gradle & Validate Wrapper
+        uses: gradle/actions/setup-gradle@v4.4.2
+
+      - name: Test Asset Generation
+        run: ./gradlew runData
+
+      - name: Test Build
+        run: ./gradlew build
+
+
+  build_release:
+    name: Build Release
+    needs: [ build_test, setup_oxipng ]
+    if: needs.changelog.outputs.skip_build == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Oxipng
+        uses: baptiste0928/cargo-install@v3.3.2
+        with:
+          crate: oxipng
+        env:
+          CARGO_TERM_COLOR: always
+
+      - name: Checkout Repository
+        uses: actions/checkout@v5.0.0
+
+      - name: Get Minecraft Version
+        id: gradle_properties
+        uses: christian-draeger/read-properties@1.1.0
+        with:
+          path: './gradle.properties'
+          properties: 'minecraft_version'
+
+      - name: Generate Conventional Changelog
         id: changelog
         uses: TriPSs/conventional-changelog-action@v6.0.0
         with:
@@ -67,49 +116,19 @@ jobs:
           tag-prefix: '${{ steps.gradle_properties.outputs.minecraft_version }}-v2.'
           create-summary: true
 
-      - name: Set Outputs
-        id: set_outputs
-        run: |
-          echo "skipped=${{ steps.changelog.outputs.skipped }}" >> "$GITHUB_OUTPUT"
-          echo "tag=${{ steps.changelog.outputs.tag }}" >> "$GITHUB_OUTPUT"
-          {
-            echo 'changelog<<EOF'
-            echo "${{ steps.changelog.outputs.clean_changelog }}"
-            echo EOF
-          } >> "$GITHUB_OUTPUT"
-
-  build_release:
-    name: Build Release
-    needs: [ changelog ]
-    if: needs.changelog.outputs.skip_build == 'false'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ needs.changelog.outputs.tag }}
+      # ----------------------------------------------------------------------------------------------------------------
 
       - name: Setup JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v5.0.0
         with:
           java-version: '17'
           distribution: 'temurin'
 
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/actions/setup-gradle@v4.4.2
 
       - name: Generate Assets
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: runData
-
-      # We store assets at full raw quality in the repository and only optimize them for the release build
-      - name: Setup Oxipng
-        uses: baptiste0928/cargo-install@v2 #provides cache-efficient Rust crates installation
-        with:
-          crate: oxipng
-        env:
-          CARGO_TERM_COLOR: always
+        run: ./gradlew runData
 
       - name: Optimize PNG Assets
         run: |
@@ -119,28 +138,32 @@ jobs:
           CARGO_TERM_COLOR: always
 
       - name: Build Artifact
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
+        run: ./gradlew build
 
       # ----------------------------------------------------------------------------------------------------------------
 
       - name: Create Release
         id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2.3.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ needs.changelog.outputs.tag }}
           body: ${{ needs.changelog.outputs.clean_changelog }}
-          files: build/libs/*
+          files: build/libs/*.jar
+          make_latest: true
 
       # ----------------------------------------------------------------------------------------------------------------
 
       - name: Notify Discord Server
-        uses: appleboy/discord-action@0.0.3
+        uses: sarisia/actions-status-discord@v1.15.3
         with:
-          webhook_id: ${{ secrets.DISCORD_ID }}
-          webhook_token: ${{ secrets.DISCORD_TOKEN }}
-          color: "#088c7d"
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          nodetail: true
+          color: 0x088c7d
           username: "Maykr Bot"
-          message: "**:package: ${{ needs.changelog.outputs.tag }}**\n\n**Download**\n${{ fromJSON(steps.create_release.outputs.assets)[1].browser_download_url }}\n\n**Changelog**\n${{ steps.create_release.outputs.url }}"
+          content: "<@&1098316788116246550>"
+          title: ":package: New Biomancy Release Candidate Available!"
+          description: |
+            ## Version: `${{ steps.changelog.outputs.tag }}`
+            ## [View changelog and download on GitHub](${{ steps.create_release.outputs.url }})
+            File SHA-256: `${{ steps.artifact-upload.outputs.artifact-digest }}`
