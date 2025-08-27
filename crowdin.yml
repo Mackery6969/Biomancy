@@ -1,3 +1,12 @@
 files:
   - source: src/generated/resources/assets/biomancy/lang/en_us.json
     translation: /src/main/resources/assets/biomancy/lang/%locale_with_underscore%.json
+
+"commit_message": "feat(crowdin): update %language% translation [skip ci]"
+"append_commit_message": false
+
+"pull_request_title": "New translation updates"
+"pull_request_labels": [
+  "crowdin",
+  "l10n"
+]
