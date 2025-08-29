@@ -11,7 +11,11 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
  */
 public class HrTooltipClientComponent implements ClientTooltipComponent {
 
-	public HrTooltipClientComponent(HrTooltipComponent component) {}
+	private final int colorARGB;
+
+	public HrTooltipClientComponent(HrTooltipComponent component) {
+		this.colorARGB = component.colorARGB();
+	}
 
 	@Override
 	public int getHeight() {
@@ -26,14 +30,14 @@ public class HrTooltipClientComponent implements ClientTooltipComponent {
 	/**
 	 * @param tooltipWidth inner width
 	 * @param lineNumber   zero-indexed
-	 * @param color        argb
+	 * @param color        colorARGB
 	 */
-	public void renderLine(GuiGraphics guiGraphics, int posX, int posY, int tooltipWidth, int lineNumber, int color) {
+	public void renderLine(GuiGraphics guiGraphics, int posX, int posY, int tooltipWidth, int lineNumber) {
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		int yOffset = lineNumber == 1 ? 0 : 2; //handle 2px bottom margin of the first line
 		guiGraphics.pose().pushPose();
 		guiGraphics.pose().translate(0, 0, 400);
-		guiGraphics.fill(posX, posY + yOffset, posX + tooltipWidth, posY + yOffset + 4, color);
+		guiGraphics.fill(posX, posY + yOffset, posX + tooltipWidth, posY + yOffset + 4, colorARGB);
 		guiGraphics.pose().popPose();
 	}
 

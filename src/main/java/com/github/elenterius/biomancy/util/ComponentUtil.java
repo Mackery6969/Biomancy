@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.util;
 
+import com.github.elenterius.biomancy.styles.ColorStyles;
 import com.github.elenterius.biomancy.tooltip.EmptyLineTooltipComponent;
 import com.github.elenterius.biomancy.tooltip.HrTooltipComponent;
 import com.github.elenterius.biomancy.tooltip.TooltipContents;
@@ -26,7 +27,7 @@ public final class ComponentUtil {
 	public static final Component EMPTY = CommonComponents.EMPTY;
 	public static final Component NEW_LINE = CommonComponents.NEW_LINE;
 	public static final Component EMPTY_LINE = TooltipHacks.EMPTY_LINE_COMPONENT;
-	public static final Component HORIZONTAL_LINE = TooltipHacks.HR_COMPONENT;
+	public static final Component HORIZONTAL_LINE = TooltipHacks.wrap(new HrTooltipComponent(ColorStyles.WHITE_ARGB));
 	public static final Component ELLIPSIS = CommonComponents.ELLIPSIS;
 	public static final Component TEXT_SEPARATOR = Component.literal(", ");
 
@@ -60,19 +61,10 @@ public final class ComponentUtil {
 	}
 
 	/**
-	 * force empty line in item tooltips
-	 */
-	@Deprecated
-	public static Component emptyLine() {
-		return TooltipHacks.EMPTY_LINE_COMPONENT;
-	}
-
-	/**
 	 * horizontal line in item tooltips
 	 */
-	@Deprecated
-	public static Component horizontalLine() {
-		return TooltipHacks.HR_COMPONENT;
+	public static Component horizontalLine(int colorARGB) {
+		return TooltipHacks.wrap(new HrTooltipComponent(colorARGB));
 	}
 
 	/**
@@ -100,13 +92,11 @@ public final class ComponentUtil {
 		return MutableComponent.create(new SelectorContents(pattern, separator));
 	}
 
-	public static MutableComponent tooltip(TooltipComponent component) {
+	public static Component wrap(TooltipComponent component) {
 		return TooltipHacks.wrap(component);
 	}
 
 	private static final class TooltipHacks {
-
-		static final MutableComponent HR_COMPONENT = wrap(new HrTooltipComponent());
 
 		/**
 		 * This is a component for {@link CommonComponents#EMPTY}
@@ -114,11 +104,11 @@ public final class ComponentUtil {
 		 * When tooltip text is too wide it is wrapped around by forge ({@link ForgeHooksClient#gatherTooltipComponents}) to the next line and {@link CommonComponents#EMPTY}
 		 * components (empty strings) are discarded by minecraft's {@link net.minecraft.client.StringSplitter#splitLines StringSplitter#splitLines} method.<br>
 		 */
-		static final MutableComponent EMPTY_LINE_COMPONENT = wrap(new EmptyLineTooltipComponent());
+		static final Component EMPTY_LINE_COMPONENT = wrap(new EmptyLineTooltipComponent());
 
 		private TooltipHacks() {}
 
-		private static MutableComponent wrap(TooltipComponent component) {
+		private static Component wrap(TooltipComponent component) {
 			return MutableComponent.create(new TooltipContents(component));
 		}
 
@@ -143,7 +133,7 @@ public final class ComponentUtil {
 			}
 
 			if (word.equals("\n")) {
-				lines.add(ComponentUtil.emptyLine());
+				lines.add(EMPTY_LINE);
 			}
 			else if (word.contains("\n")) {
 				word = word.replace("\n", "");
@@ -180,7 +170,7 @@ public final class ComponentUtil {
 			String word = text.substring(start, end);
 
 			if (word.equals("\n")) {
-				lines.add(ComponentUtil.emptyLine());
+				lines.add(EMPTY_LINE);
 			}
 			else if (word.contains("\n")) {
 				word = word.replace("\n", "");

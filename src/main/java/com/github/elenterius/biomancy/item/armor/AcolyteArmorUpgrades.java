@@ -47,7 +47,7 @@ public final class AcolyteArmorUpgrades {
 	public static void appendHoverText(ItemStack stack, List<Component> tooltip) {
 		for (Upgrade upgrade : UPGRADES) {
 			if (hasUpgrade(stack, upgrade)) {
-				tooltip.add(ComponentUtil.emptyLine());
+				tooltip.add(ComponentUtil.EMPTY_LINE);
 				upgrade.appendHoverText(stack, tooltip);
 			}
 		}

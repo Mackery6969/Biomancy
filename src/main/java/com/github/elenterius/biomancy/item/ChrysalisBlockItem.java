@@ -197,7 +197,7 @@ public class ChrysalisBlockItem extends SimpleBlockItem {
 		CompoundTag tag = compoundTag.getCompound(ENTITY_KEY);
 		MutableComponent entityName = ComponentUtil.translatable(tag.getString(ENTITY_NAME_KEY));
 
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 		tooltip.add(TextComponentUtil.getTooltipText("contains", entityName).withStyle(TextStyles.ITALIC_GRAY));
 
 		float volume = tag.getFloat(ENTITY_VOLUME_KEY);

@@ -41,12 +41,12 @@ public class LivingArmorItem extends ArmorItem implements SimpleLivingTool {
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
 		tooltip.addAll(ClientTextUtil.getItemInfoTooltip(stack));
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 
 		appendLivingToolTooltip(stack, tooltip);
 
 		if (stack.isEnchanted()) {
-			tooltip.add(ComponentUtil.emptyLine());
+			tooltip.add(ComponentUtil.EMPTY_LINE);
 		}
 	}
 

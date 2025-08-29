@@ -141,7 +141,7 @@ public final class AdaptiveDamageResistanceHandler {
 
 			if (!compoundTag.contains("list")) return;
 
-			tooltip.add(ComponentUtil.emptyLine());
+			tooltip.add(ComponentUtil.EMPTY_LINE);
 			tooltip.add(ComponentUtil.mutable().withStyle(TextStyles.GRAY)
 					.append(ComponentUtil.literal("Adaptations:"))
 			);

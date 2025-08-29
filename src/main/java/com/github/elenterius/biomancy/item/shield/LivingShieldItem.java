@@ -104,12 +104,12 @@ public class LivingShieldItem extends SimpleShieldItem implements SimpleLivingTo
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
 		super.appendHoverText(stack, level, tooltip, isAdvanced);
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 
 		appendLivingToolTooltip(stack, tooltip);
 
 		if (stack.isEnchanted()) {
-			tooltip.add(ComponentUtil.emptyLine());
+			tooltip.add(ComponentUtil.EMPTY_LINE);
 		}
 	}
 

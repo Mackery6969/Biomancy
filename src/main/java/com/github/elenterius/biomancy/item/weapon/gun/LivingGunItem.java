@@ -157,14 +157,14 @@ public abstract class LivingGunItem extends GunItem implements SimpleLivingTool 
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
 		appendGunStats(stack, tooltip);
 
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 		appendLivingToolTooltip(stack, tooltip);
 
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 		tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getActionText("reload")).withStyle(TextStyles.DARK_GRAY));
 
 		if (stack.isEnchanted()) {
-			tooltip.add(ComponentUtil.emptyLine());
+			tooltip.add(ComponentUtil.EMPTY_LINE);
 		}
 	}
 

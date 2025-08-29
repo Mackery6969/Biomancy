@@ -76,15 +76,15 @@ public final class AcolyteArmorItem extends LivingArmorGeoItem implements Knowle
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
 		AcolyteArmorUpgrades.appendHoverText(stack, tooltip);
 
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 		tooltip.add(TextComponentUtil.getAbilityText("fleshkin_affinity").withStyle(ChatFormatting.GRAY));
 		tooltip.add(ComponentUtil.literal(" ").append(TextComponentUtil.getAbilityText("fleshkin_affinity.desc")).withStyle(ChatFormatting.DARK_GRAY));
 
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 		tooltip.add(TextComponentUtil.getAbilityText("bio_alchemical_epidermis").withStyle(ChatFormatting.GRAY));
 		tooltip.add(ComponentUtil.literal(" ").append(TextComponentUtil.getAbilityText("bio_alchemical_epidermis.desc")).withStyle(ChatFormatting.DARK_GRAY));
 
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 
 		//		CompoundTag compoundTag = stack.getOrCreateTag().getCompound("damage_resistance_tracker");
 		//		AdaptiveDamageResistanceHandler.DamageTypeResistanceTracker.appendTooltipText(compoundTag, tooltip);
@@ -92,7 +92,7 @@ public final class AcolyteArmorItem extends LivingArmorGeoItem implements Knowle
 		appendLivingToolTooltip(stack, tooltip);
 
 		if (stack.isEnchanted()) {
-			tooltip.add(ComponentUtil.emptyLine());
+			tooltip.add(ComponentUtil.EMPTY_LINE);
 		}
 	}
 

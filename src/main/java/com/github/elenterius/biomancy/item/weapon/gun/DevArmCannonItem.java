@@ -160,20 +160,19 @@ public class DevArmCannonItem extends Item implements GeoItem, IArmPoseProvider,
 
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
-		tooltip.add(ComponentUtil.horizontalLine());
 		tooltip.addAll(ClientTextUtil.getItemInfoTooltip(stack));
 
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 		tooltip.add(ComponentUtil.literal("The quick brown fox jumps over the lazy dog.").withStyle(TextStyles.PRIMORDIAL_RUNES_GRAY));
 
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 		byte index = stack.getOrCreateTag().getByte("ProjectileIndex");
 		if (index < 0 || index >= ModProjectiles.PRECONFIGURED_PROJECTILES.size()) {
 			index = 0;
 		}
 		tooltip.add(ComponentUtil.literal(ModProjectiles.PRECONFIGURED_PROJECTILES.get(index).name()));
 
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 
 		tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getActionText("open_inventory")).withStyle(TextStyles.PRIMORDIAL_RUNES_GRAY));
 		// /tellraw @a {"text":"The quick brown fox jumps over the lazy dog. 1234567890!?","color":"#9e1316","font":"biomancy:caro_invitica"}

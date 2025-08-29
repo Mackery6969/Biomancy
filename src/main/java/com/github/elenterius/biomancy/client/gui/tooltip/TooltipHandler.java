@@ -3,7 +3,6 @@ package com.github.elenterius.biomancy.client.gui.tooltip;
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.api.nutrients.Nutrients;
 import com.github.elenterius.biomancy.init.ItemComments;
-import com.github.elenterius.biomancy.init.ModRarities;
 import com.github.elenterius.biomancy.item.ItemTooltipStyleProvider;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.tooltip.EmptyLineTooltipComponent;
@@ -96,13 +95,11 @@ public final class TooltipHandler {
 
 	public static void onPostRenderTooltip(ItemStack stack, List<ClientTooltipComponent> components, Font font, GuiGraphics guiGraphics, int posX, int posY, int tooltipWidth, int tooltipHeight) {
 		if (!components.isEmpty()) {
-			int color = stack.getItem() instanceof ItemTooltipStyleProvider provider ? provider.getTooltipColorWithAlpha(stack) : ModRarities.getARGBColor(stack);
-
 			int y = posY;
 			for (int i = 0; i < components.size(); i++) {
 				ClientTooltipComponent clientComponent = components.get(i);
 				if (clientComponent instanceof HrTooltipClientComponent hrComponent) {
-					hrComponent.renderLine(guiGraphics, posX, y, tooltipWidth, i, color);
+					hrComponent.renderLine(guiGraphics, posX, y, tooltipWidth, i);
 				}
 				y += clientComponent.getHeight() + (i == 0 ? 2 : 0);
 			}

@@ -319,16 +319,16 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
 		AcolyteArmorUpgrades.appendHoverText(stack, tooltip);
 
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 		tooltip.add(TextComponentUtil.getAbilityText("fleshkin_affinity").withStyle(ChatFormatting.GRAY));
 		tooltip.add(ComponentUtil.space().append(TextComponentUtil.getAbilityText("fleshkin_affinity.desc")).withStyle(ChatFormatting.DARK_GRAY));
 
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 		tooltip.add(TextComponentUtil.getAbilityText("imposing_aura").withStyle(ChatFormatting.GRAY));
 		tooltip.add(ComponentUtil.space().append(TextComponentUtil.getAbilityText("imposing_aura.desc")).withStyle(ChatFormatting.DARK_GRAY));
 
 		if (type == Type.LEGGINGS) {
-			tooltip.add(ComponentUtil.emptyLine());
+			tooltip.add(ComponentUtil.EMPTY_LINE);
 			tooltip.add(TextComponentUtil.getAbilityText("strong_legs").withStyle(ChatFormatting.GRAY));
 			tooltip.add(ComponentUtil.space().append(TextComponentUtil.getAbilityText("strong_legs.desc")).withStyle(ChatFormatting.DARK_GRAY));
 
@@ -339,14 +339,14 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 			}
 		}
 		else if (type == Type.BOOTS) {
-			tooltip.add(ComponentUtil.emptyLine());
+			tooltip.add(ComponentUtil.EMPTY_LINE);
 			tooltip.add(TextComponentUtil.getAbilityText("padded_soles").withStyle(ChatFormatting.GRAY));
 
 			int pct = (int) (getFallReduction(stack) * 100f);
 			tooltip.add(ComponentUtil.space().append(pct + "% Fall Reduction").withStyle(ChatFormatting.DARK_GRAY));
 		}
 
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 
 		//		CompoundTag compoundTag = stack.getOrCreateTag().getCompound("damage_resistance_tracker");
 		//		AdaptiveDamageResistanceHandler.DamageTypeResistanceTracker.appendTooltipText(compoundTag, tooltip);
@@ -354,7 +354,7 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 		appendLivingToolTooltip(stack, tooltip);
 
 		if (stack.isEnchanted()) {
-			tooltip.add(ComponentUtil.emptyLine());
+			tooltip.add(ComponentUtil.EMPTY_LINE);
 		}
 	}
 

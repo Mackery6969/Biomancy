@@ -462,7 +462,7 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
 		tooltip.addAll(ClientTextUtil.getItemInfoTooltip(stack));
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 
 		CompoundTag tag = stack.getOrCreateTag();
 		if (tag.contains(INVENTORY_TAG)) {
@@ -472,7 +472,7 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 				short amount = tag.getCompound(INVENTORY_TAG).getShort(LargeSingleItemStackHandler.ITEM_AMOUNT_TAG);
 				tooltip.add(ComponentUtil.literal(String.format("%dx ", amount)).append(serum.getDisplayName(serumData)).withStyle(ChatFormatting.GRAY));
 				serum.appendTooltip(serumData, level, tooltip, isAdvanced);
-				tooltip.add(ComponentUtil.emptyLine());
+				tooltip.add(ComponentUtil.EMPTY_LINE);
 			}
 		}
 

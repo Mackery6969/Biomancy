@@ -213,7 +213,7 @@ public class EssenceItem extends Item implements ItemTooltipStyleProvider {
 			CompoundTag tag = compoundTag.getCompound(ESSENCE_DATA_KEY);
 
 			if (tag.hasUUID(ENTITY_UUID_KEY)) {
-				tooltip.add(ComponentUtil.emptyLine());
+				tooltip.add(ComponentUtil.EMPTY_LINE);
 
 				UUID entityUUID = tag.getUUID(ENTITY_UUID_KEY);
 
@@ -229,7 +229,7 @@ public class EssenceItem extends Item implements ItemTooltipStyleProvider {
 
 		int tier = compoundTag.getInt(ESSENCE_TIER_KEY);
 		if (tier > 0) {
-			tooltip.add(ComponentUtil.emptyLine());
+			tooltip.add(ComponentUtil.EMPTY_LINE);
 			tooltip.add(ComponentUtil.literal("Tier: " + tier));
 		}
 	}

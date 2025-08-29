@@ -289,7 +289,7 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
 		appendGunStats(stack, tooltip);
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 		tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getActionText("reload")).withStyle(TextStyles.DARK_GRAY));
 	}
 
@@ -323,7 +323,7 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 		float bonusReloadReduction = reloadDurationSeconds - (gunProperties.reloadDurationTicks() / (float) ONE_SECOND_IN_TICKS);
 		tooltip.add(TextComponentUtil.getTooltipText("reload_time").append(String.format(": %ss ", df.format(reloadDurationSeconds))).append(formatBonusValue(df, bonusReloadReduction, true)).withStyle(ChatFormatting.GRAY));
 
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 		tooltip.add(TextComponentUtil.getTooltipText("ammo").append(String.format(": %d/%d ", getAmmo(stack), getMaxAmmo(stack))).withStyle(ChatFormatting.GRAY));
 	}
 

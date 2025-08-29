@@ -263,7 +263,7 @@ public class FleshkinChestBlock extends BaseEntityBlock implements SimpleWaterlo
 
 		CompoundTag tag = BlockItem.getBlockEntityData(stack);
 		if (tag != null) {
-			tooltip.add(ComponentUtil.emptyLine());
+			tooltip.add(ComponentUtil.EMPTY_LINE);
 
 			if (isAuthorized(Minecraft.getInstance().player.getUUID(), tag)) {
 				CompoundTag inventoryTag = tag.getCompound("Inventory");
@@ -289,7 +289,7 @@ public class FleshkinChestBlock extends BaseEntityBlock implements SimpleWaterlo
 					if (totalCount - count > 0) {
 						tooltip.add((ComponentUtil.translatable("container.shulkerBox.more", totalCount - count)).withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY));
 					}
-					tooltip.add(ComponentUtil.emptyLine());
+					tooltip.add(ComponentUtil.EMPTY_LINE);
 					tooltip.add(ComponentUtil.literal(String.format("%d/%d ", totalCount, FleshkinChestBlockEntity.SLOTS)).append(ComponentUtil.translatable("tooltip.biomancy.slots")).withStyle(ChatFormatting.GRAY));
 				}
 			}

@@ -79,7 +79,7 @@ public class FrenzySerum extends BasicSerum {
 
 		Map<Attribute, AttributeModifier> effectModifiers = effect.getAttributeModifiers();
 		if (!effectModifiers.isEmpty()) {
-			tooltips.add(ComponentUtil.emptyLine());
+			tooltips.add(ComponentUtil.EMPTY_LINE);
 
 			for (Map.Entry<Attribute, AttributeModifier> entry : effectModifiers.entrySet()) {
 				AttributeModifier modifier = entry.getValue();

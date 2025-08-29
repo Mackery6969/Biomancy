@@ -292,12 +292,12 @@ public class RavenousClawsItem extends LivingClawsItem implements GeoItem, ItemC
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
 		tooltip.addAll(ClientTextUtil.getItemInfoTooltip(stack));
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 
 		appendLivingToolTooltip(stack, tooltip);
 
 		if (stack.isEnchanted()) {
-			tooltip.add(ComponentUtil.emptyLine());
+			tooltip.add(ComponentUtil.EMPTY_LINE);
 		}
 	}
 
@@ -312,14 +312,14 @@ public class RavenousClawsItem extends LivingClawsItem implements GeoItem, ItemC
 			case DORMANT -> {
 				tooltip.add(TextComponentUtil.getAbilityText("bleed_proc").append(" (8% chance)").withStyle(ChatFormatting.GRAY));
 				tooltip.add(ComponentUtil.literal(" ").append(TextComponentUtil.getAbilityText("bleed_proc.desc")).withStyle(ChatFormatting.DARK_GRAY));
-				tooltip.add(ComponentUtil.emptyLine());
+				tooltip.add(ComponentUtil.EMPTY_LINE);
 			}
 			case AWAKENED -> {
 				tooltip.add(TextComponentUtil.getAbilityText("bleed_proc").append(" (20% chance)").withStyle(ChatFormatting.GRAY));
 				tooltip.add(ComponentUtil.literal(" ").append(TextComponentUtil.getAbilityText("bleed_proc.desc")).withStyle(ChatFormatting.DARK_GRAY));
 				tooltip.add(TextComponentUtil.getAbilityText("blood_explosion").append(" (20% chance)").withStyle(ChatFormatting.GRAY));
 				tooltip.add(ComponentUtil.literal(" ").append(TextComponentUtil.getAbilityText("blood_explosion.desc")).withStyle(ChatFormatting.DARK_GRAY));
-				tooltip.add(ComponentUtil.emptyLine());
+				tooltip.add(ComponentUtil.EMPTY_LINE);
 			}
 		}
 
@@ -331,16 +331,16 @@ public class RavenousClawsItem extends LivingClawsItem implements GeoItem, ItemC
 
 		switch (livingToolState) {
 			case BROKEN -> {
-				tooltip.add(ComponentUtil.emptyLine());
+				tooltip.add(ComponentUtil.EMPTY_LINE);
 				tooltip.add(livingToolState.getTooltip());
 			}
 			case DORMANT -> {
-				tooltip.add(ComponentUtil.emptyLine());
+				tooltip.add(ComponentUtil.EMPTY_LINE);
 				tooltip.add(livingToolState.getTooltip().withStyle(TextStyles.ITALIC_GRAY));
 				tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getActionText("enable_awakened_mode")));
 			}
 			case AWAKENED -> {
-				tooltip.add(ComponentUtil.emptyLine());
+				tooltip.add(ComponentUtil.EMPTY_LINE);
 				tooltip.add(livingToolState.getTooltip().withStyle(TextStyles.ITALIC_GRAY));
 				tooltip.add(ClientTextUtil.pressButtonTo(ClientTextUtil.getDefaultKey(), TextComponentUtil.getActionText("disable_awakened_mode")));
 			}

@@ -26,9 +26,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,9 +41,8 @@ public class StorageSacBlockItem extends BlockItem implements ItemTooltipStylePr
 		return stack.getCapability(ModCapabilities.ITEM_HANDLER).map(ItemHandlerWrapper::new);
 	}
 
-	@Nullable
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+	public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
 		return new InventoryCapability(stack);
 	}
 
@@ -111,7 +109,7 @@ public class StorageSacBlockItem extends BlockItem implements ItemTooltipStylePr
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
 		tooltip.addAll(ClientTextUtil.getItemInfoTooltip(stack));
-		tooltip.add(ComponentUtil.tooltip(new StorageSacTooltipComponent(getItemHandler(stack).orElse(null))));
+		tooltip.add(ComponentUtil.wrap(new StorageSacTooltipComponent(getItemHandler(stack).orElse(null))));
 		super.appendHoverText(stack, level, tooltip, flag);
 	}
 
@@ -135,9 +133,8 @@ public class StorageSacBlockItem extends BlockItem implements ItemTooltipStylePr
 			inventory = ItemStackInventory.create(StorageSacBlockEntity.SLOTS, 64, stack, SERIALIZER);
 		}
 
-		@Nonnull
 		@Override
-		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
+		public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
 			return ModCapabilities.ITEM_HANDLER.orEmpty(capability, inventory.getLazyOptional());
 		}
 

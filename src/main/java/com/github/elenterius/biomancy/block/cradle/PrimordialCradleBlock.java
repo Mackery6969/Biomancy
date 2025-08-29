@@ -249,7 +249,7 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 		boolean hasProcGenValues = tag.contains(PrimordialCradleBlockEntity.PROC_GEN_VALUES_KEY);
 
 		if (hasProcGenValues) {
-			tooltip.add(ComponentUtil.emptyLine());
+			tooltip.add(ComponentUtil.EMPTY_LINE);
 			tooltip.add(ComponentUtil.literal("Seeded with:").withStyle(TextStyles.PRIMORDIAL_RUNES_MUTED_PURPLE));
 
 			MoundShape.ProcGenValues procGenValues = MoundShape.ProcGenValues.readFrom(tag.getCompound(PrimordialCradleBlockEntity.PROC_GEN_VALUES_KEY));
@@ -265,21 +265,21 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 							.append(ComponentUtil.literal(" Humidity").withStyle(TextStyles.PRIMORDIAL_RUNES_MUTED_PURPLE))
 			);
 
-			if (!hasPrimalEnergy) tooltip.add(ComponentUtil.emptyLine());
+			if (!hasPrimalEnergy) tooltip.add(ComponentUtil.EMPTY_LINE);
 		}
 
 		if (hasPrimalEnergy) {
-			tooltip.add(ComponentUtil.emptyLine());
+			tooltip.add(ComponentUtil.EMPTY_LINE);
 			tooltip.add(
 					ComponentUtil.literal(df.format(primalEnergy)).withStyle(TextStyles.PRIMORDIAL_RUNES_PURPLE)
 							.append(ComponentUtil.literal(" Primal Energy").withStyle(TextStyles.PRIMORDIAL_RUNES_MUTED_PURPLE))
 			);
 
-			if (!hasTributes) tooltip.add(ComponentUtil.emptyLine());
+			if (!hasTributes) tooltip.add(ComponentUtil.EMPTY_LINE);
 		}
 
 		if (hasTributes) {
-			tooltip.add(ComponentUtil.emptyLine());
+			tooltip.add(ComponentUtil.EMPTY_LINE);
 
 			CompoundTag sacrificeTag = tag.getCompound(PrimordialCradleBlockEntity.SACRIFICE_KEY);
 			byte biomass = sacrificeTag.getByte("Biomass");

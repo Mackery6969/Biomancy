@@ -72,7 +72,7 @@ public interface OwnableEntityBlock extends EntityBlock {
 			ownerName = ClientTextUtil.tryToGetPlayerNameOnClientSide(entityData.getUUID(NBT_KEY_OWNER));
 		}
 
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 		tooltip.add(TextComponentUtil.getTooltipText("owner", ComponentUtil.literal(ownerName).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.GRAY));
 
 		if (entityData.contains(NBT_KEY_USER_LIST)) {

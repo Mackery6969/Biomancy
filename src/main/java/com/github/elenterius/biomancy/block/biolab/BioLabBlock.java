@@ -126,7 +126,7 @@ public class BioLabBlock extends HorizontalFacingMachineBlock {
 	public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
 		int fuelAmount = getFuelAmount(stack);
 		if (fuelAmount > 0) {
-			tooltip.add(ComponentUtil.emptyLine());
+			tooltip.add(ComponentUtil.EMPTY_LINE);
 			DecimalFormat df = FormatUtil.getIntegerFormatter();
 			tooltip.add(ComponentUtil.translatable("tooltip.biomancy.nutrients_fuel").withStyle(ChatFormatting.GRAY));
 			tooltip.add(ComponentUtil.literal("%s/%s u".formatted(df.format(fuelAmount), df.format(BioLabBlockEntity.MAX_FUEL))).withStyle(TextStyles.NUTRIENTS));

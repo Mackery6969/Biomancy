@@ -85,7 +85,7 @@ public interface SpecialLivingTool extends LivingTool {
 
 	default void appendLivingToolTooltip(ItemStack stack, List<Component> tooltip) {
 		tooltip.add(getLivingToolState(stack).getTooltip().withStyle(TextStyles.ITALIC_GRAY));
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 		LivingTool.super.appendLivingToolTooltip(stack, tooltip);
 	}
 

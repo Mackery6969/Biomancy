@@ -190,7 +190,7 @@ public class ModularLarynxBlock extends BaseEntityBlock {
 	public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
 		super.appendHoverText(stack, level, tooltip, flag);
 
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 		tooltip.add(getExtraTooltip(this, "1").withStyle(ChatFormatting.GRAY));
 		tooltip.add(ComponentUtil.literal(" ").append(getExtraTooltip(this, "2")).withStyle(ChatFormatting.DARK_GRAY));
 		tooltip.add(getExtraTooltip(this, "3").withStyle(ChatFormatting.GRAY));

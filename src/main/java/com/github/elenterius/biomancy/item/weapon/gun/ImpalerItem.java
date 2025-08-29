@@ -177,7 +177,7 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
 		tooltip.addAll(ClientTextUtil.getItemInfoTooltip(stack));
-		tooltip.add(ComponentUtil.emptyLine());
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 		super.appendHoverText(stack, level, tooltip, isAdvanced);
 	}
 
