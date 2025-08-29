@@ -22,11 +22,11 @@ public final class ModRarities {
 
 	public static int getRGBColor(ItemStack stack) {
 		TextColor color = stack.getRarity().getStyleModifier().apply(Style.EMPTY).getColor();
-		return color != null ? color.getValue() : -1;
+		return color != null ? color.getValue() : 0xFF_FF_FF;
 	}
 
 	public static int getARGBColor(ItemStack stack) {
-		return getRGBColor(stack) | 0xFF_000000;
+		return getRGBColor(stack) | 0xFF_00_00_00;
 	}
 
 }

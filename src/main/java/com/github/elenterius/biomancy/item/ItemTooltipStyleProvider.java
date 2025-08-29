@@ -17,11 +17,7 @@ public interface ItemTooltipStyleProvider {
 		return ComponentUtil.translatable(getTooltipKey(stack));
 	}
 
-	default int getTooltipColor(ItemStack stack) {
-		return ModRarities.getRGBColor(stack);
-	}
-
-	default int getTooltipColorWithAlpha(ItemStack stack) {
+	default int getTooltipColorARGB(ItemStack stack) {
 		return ModRarities.getARGBColor(stack);
 	}
 

@@ -39,11 +39,11 @@ public final class TooltipHandler {
 	public static void onRenderTooltipColor(final RenderTooltipEvent.Color tooltipEvent) {
 		ItemStack stack = tooltipEvent.getItemStack();
 
-		if (stack.isEmpty() && Minecraft.getInstance().screen instanceof ScreenTooltipStyleProvider screenStyleProvider) {
-			screenStyleProvider.getTooltipStyle().applyColorTo(tooltipEvent);
+		if (stack.isEmpty() && Minecraft.getInstance().screen instanceof ScreenTooltipStyleProvider styleProvider) {
+			styleProvider.getTooltipStyle().applyColorTo(tooltipEvent);
 		}
-		else if (stack.getItem() instanceof ItemTooltipStyleProvider itemStyleProvider) {
-			itemStyleProvider.getTooltipStyle().applyColorTo(tooltipEvent);
+		else if (stack.getItem() instanceof ItemTooltipStyleProvider styleProvider) {
+			styleProvider.getTooltipStyle().applyColorTo(tooltipEvent);
 		}
 	}
 
@@ -59,10 +59,15 @@ public final class TooltipHandler {
 
 	@SubscribeEvent
 	public static void onGatherTooltipComponents(final RenderTooltipEvent.GatherComponents event) {
-		ItemStack stack = event.getItemStack();
-		final boolean isTooltip = stack.getItem() instanceof ItemTooltipStyleProvider;
-
 		List<Either<FormattedText, TooltipComponent>> tooltipElements = event.getTooltipElements();
+		ItemStack stack = event.getItemStack();
+		final boolean isOurTooltip = stack.getItem() instanceof ItemTooltipStyleProvider;
+
+		replaceComponents(tooltipElements, isOurTooltip);
+		appendComponents(tooltipElements, stack);
+	}
+
+	private static void replaceComponents(List<Either<FormattedText, TooltipComponent>> tooltipElements, boolean isOurTooltip) {
 		for (int i = 0; i < tooltipElements.size(); i++) {
 			Either<FormattedText, TooltipComponent> either = tooltipElements.get(i);
 			final int index = i;
@@ -74,13 +79,15 @@ public final class TooltipHandler {
 					if (componentContents instanceof TooltipContents contents) {
 						tooltipElements.set(index, Either.right(contents.component()));
 					}
-					else if (isTooltip && component == CommonComponents.EMPTY) { //vanilla bugfix: fixes empty lines disappearing when long text is wrapped
+					else if (isOurTooltip && component == CommonComponents.EMPTY) { //vanilla bugfix: fixes empty lines disappearing when long text is wrapped
 						tooltipElements.set(index, Either.right(EMPTY_LINE));
 					}
 				}
 			});
 		}
+	}
 
+	private static void appendComponents(List<Either<FormattedText, TooltipComponent>> tooltipElements, ItemStack stack) {
 		if (Minecraft.getInstance().screen instanceof ScreenNutrientFuelConsumer) {
 			int fuelValue = Nutrients.getFuelValue(stack);
 			int repairValue = Nutrients.getRepairValue(stack);
