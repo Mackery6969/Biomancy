@@ -12,7 +12,7 @@ import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 public class FleshChickenModel<T extends FleshChicken> extends DefaultedEntityGeoModel<T> {
 
 	public FleshChickenModel() {
-		super(BiomancyMod.createRL("mob/flesh_chicken"), true);
+		super(BiomancyMod.rl("mob/flesh_chicken"), true);
 	}
 
 	@Override

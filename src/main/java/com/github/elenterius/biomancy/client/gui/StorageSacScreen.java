@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class StorageSacScreen extends AbstractContainerScreen<StorageSacMenu> implements ScreenTooltipStyleProvider {
 
-	private static final ResourceLocation BACKGROUND_TEXTURE = BiomancyMod.createRL("textures/gui/menu_storage_sac.png");
+	private static final ResourceLocation BACKGROUND_TEXTURE = BiomancyMod.rl("textures/gui/menu_storage_sac.png");
 
 	public StorageSacScreen(StorageSacMenu menu, Inventory playerInventory, Component title) {
 		super(menu, playerInventory, title);

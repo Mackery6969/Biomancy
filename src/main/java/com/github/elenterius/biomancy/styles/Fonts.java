@@ -16,7 +16,7 @@ public final class Fonts {
 
 	public static final class PrimordialRunes {
 
-		public static final ResourceLocation CARO_INVITICA = BiomancyMod.createRL("caro_invitica");
+		public static final ResourceLocation CARO_INVITICA = BiomancyMod.rl("caro_invitica");
 		public static final int GLYPH_WIDTH = 8;
 
 		/// only updated on the client side

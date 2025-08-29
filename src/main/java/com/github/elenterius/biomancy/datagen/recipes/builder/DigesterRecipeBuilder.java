@@ -64,17 +64,17 @@ public final class DigesterRecipeBuilder implements RecipeBuilder<DigesterRecipe
 	}
 
 	public static DigesterRecipeBuilder create(String outputName, ItemData result) {
-		ResourceLocation rl = BiomancyMod.createRL(outputName + "_from_" + result.getItemPath());
+		ResourceLocation rl = BiomancyMod.rl(outputName + "_from_" + result.getItemPath());
 		return new DigesterRecipeBuilder(rl, result);
 	}
 
 	public static DigesterRecipeBuilder create(ItemData result) {
-		ResourceLocation rl = BiomancyMod.createRL(result.getItemPath());
+		ResourceLocation rl = BiomancyMod.rl(result.getItemPath());
 		return new DigesterRecipeBuilder(rl, result);
 	}
 
 	public static DigesterRecipeBuilder create(ItemData result, String postSuffix) {
-		ResourceLocation rl = BiomancyMod.createRL(result.getItemPath() + "_from_" + postSuffix);
+		ResourceLocation rl = BiomancyMod.rl(result.getItemPath() + "_from_" + postSuffix);
 		return new DigesterRecipeBuilder(rl, result);
 	}
 

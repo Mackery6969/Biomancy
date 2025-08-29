@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class FoodItemPredicate extends ItemPredicate {
 
-	public static final ResourceLocation ID = BiomancyMod.createRL("is_food_item");
+	public static final ResourceLocation ID = BiomancyMod.rl("is_food_item");
 
 	public FoodItemPredicate() {}
 

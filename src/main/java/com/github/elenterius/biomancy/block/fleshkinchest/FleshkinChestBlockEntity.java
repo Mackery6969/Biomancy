@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.block.fleshkinchest;
 
+import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.block.ownable.OwnableContainerBlockEntity;
 import com.github.elenterius.biomancy.init.ModBlockEntities;
 import com.github.elenterius.biomancy.init.ModDamageSources;
@@ -8,7 +9,6 @@ import com.github.elenterius.biomancy.inventory.InventoryHandler;
 import com.github.elenterius.biomancy.inventory.InventoryHandlers;
 import com.github.elenterius.biomancy.inventory.ItemHandlerUtil;
 import com.github.elenterius.biomancy.menu.FleshkinChestMenu;
-import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.util.animation.TriggerableAnimation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -140,7 +140,7 @@ public class FleshkinChestBlockEntity extends OwnableContainerBlockEntity implem
 	}
 
 	public Component getDefaultName() {
-		return TextComponentUtil.getTranslationText("container", "fleshkin_chest");
+		return BiomancyMod.translatableFrom("container", "fleshkin_chest");
 	}
 
 	@Nullable

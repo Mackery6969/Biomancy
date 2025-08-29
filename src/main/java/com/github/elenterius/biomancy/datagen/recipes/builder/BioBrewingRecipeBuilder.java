@@ -60,12 +60,12 @@ public final class BioBrewingRecipeBuilder implements RecipeBuilder<BioBrewingRe
 	}
 
 	public static BioBrewingRecipeBuilder create(String outputName, ItemData result) {
-		ResourceLocation rl = BiomancyMod.createRL(outputName);
+		ResourceLocation rl = BiomancyMod.rl(outputName);
 		return new BioBrewingRecipeBuilder(rl, result);
 	}
 
 	public static BioBrewingRecipeBuilder create(ItemData result) {
-		ResourceLocation rl = BiomancyMod.createRL(result.getItemPath());
+		ResourceLocation rl = BiomancyMod.rl(result.getItemPath());
 		return new BioBrewingRecipeBuilder(rl, result);
 	}
 

@@ -42,7 +42,7 @@ public class BioBrewingCategory implements IRecipeCategory<BioBrewingRecipe> {
 
 	public BioBrewingCategory(IGuiHelper guiHelper) {
 		icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModItems.BIO_LAB.get()));
-		ResourceLocation texture = BiomancyMod.createRL("textures/gui/jei/bio_lab_recipe.png");
+		ResourceLocation texture = BiomancyMod.rl("textures/gui/jei/bio_lab_recipe.png");
 		background = guiHelper.drawableBuilder(texture, 0, 0, 134, 54).setTextureSize(134, 54).addPadding(0, 4, 0, 0).build();
 
 		inputInventoryWrapper = new RecipeWrapper(new ItemStackHandler(BioLabBlockEntity.INPUT_SLOTS));

@@ -2,7 +2,9 @@ package com.github.elenterius.biomancy;
 
 import com.github.elenterius.biomancy.init.*;
 import com.github.elenterius.biomancy.integration.ModsCompatHandler;
+import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.github.elenterius.biomancy.util.EventCalendar;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -62,12 +64,20 @@ public final class BiomancyMod {
 		ModsCompatHandler.onBiomancyInit(modEventBus);
 	}
 
-	public static ResourceLocation createRL(String path) {
+	public static ResourceLocation rl(String path) {
 		return new ResourceLocation(MOD_ID, path);
 	}
 
-	public static String createRLString(String path) {
+	public static String rlStr(String path) {
 		return MOD_ID + ":" + path;
+	}
+
+	public static String translationKey(String prefix, String suffix) {
+		return prefix + "." + MOD_ID + "." + suffix;
+	}
+
+	public static MutableComponent translatableFrom(String prefix, String suffix) {
+		return ComponentUtil.translatable(translationKey(prefix, suffix));
 	}
 
 }

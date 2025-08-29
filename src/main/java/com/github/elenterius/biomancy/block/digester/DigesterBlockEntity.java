@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.block.digester;
 
+import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.api.nutrients.FuelHandler;
 import com.github.elenterius.biomancy.api.nutrients.FuelHandlerImpl;
 import com.github.elenterius.biomancy.block.base.MachineBlock;
@@ -14,7 +15,6 @@ import com.github.elenterius.biomancy.inventory.InventoryHandler;
 import com.github.elenterius.biomancy.inventory.InventoryHandlers;
 import com.github.elenterius.biomancy.inventory.ItemHandlerUtil;
 import com.github.elenterius.biomancy.menu.DigesterMenu;
-import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.util.sounds.LoopingSoundHelper;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import net.minecraft.core.BlockPos;
@@ -99,7 +99,7 @@ public class DigesterBlockEntity extends MachineBlockEntity<DigestingRecipe, Dig
 
 	@Override
 	public Component getName() {
-		return TextComponentUtil.getTranslationText("container", Objects.requireNonNull(ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(getType())).getPath());
+		return BiomancyMod.translatableFrom("container", Objects.requireNonNull(ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(getType())).getPath());
 	}
 
 	@Nullable

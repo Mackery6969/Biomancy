@@ -9,7 +9,7 @@ import software.bernie.geckolib.model.DefaultedItemGeoModel;
 public class DevArmCannonModel extends DefaultedItemGeoModel<DevArmCannonItem> {
 
 	public DevArmCannonModel() {
-		super(BiomancyMod.createRL("weapon/arm_cannon"));
+		super(BiomancyMod.rl("weapon/arm_cannon"));
 	}
 
 	@Override

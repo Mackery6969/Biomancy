@@ -68,7 +68,7 @@ public final class ModCapabilities {
 				}
 			};
 
-			event.addCapability(BiomancyMod.createRL("no_knockback"), volatileCapProvider);
+			event.addCapability(BiomancyMod.rl("no_knockback"), volatileCapProvider);
 			event.addListener(optionalCap::invalidate);
 		}
 

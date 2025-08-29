@@ -9,7 +9,7 @@ import software.bernie.geckolib.model.DefaultedItemGeoModel;
 public class GuideBookModel extends DefaultedItemGeoModel<GuideBookItem> {
 
 	public GuideBookModel() {
-		super(BiomancyMod.createRL("guide_book"));
+		super(BiomancyMod.rl("guide_book"));
 	}
 
 	@Override

@@ -10,12 +10,8 @@ public final class TextComponentUtil {
 
 	private TextComponentUtil() {}
 
-	public static String getTranslationKey(String prefix, String suffix) {
-		return prefix + "." + BiomancyMod.MOD_ID + "." + suffix;
-	}
-
-	public static MutableComponent getTranslationText(String prefix, String suffix) {
-		return ComponentUtil.translatable(getTranslationKey(prefix, suffix));
+	private static String key(String prefix, String suffix) {
+		return BiomancyMod.translationKey(prefix, suffix);
 	}
 
 	public static String getItemTooltipKey(Item item) {
@@ -31,19 +27,19 @@ public final class TextComponentUtil {
 	}
 
 	public static MutableComponent getTooltipText(String tooltipKey) {
-		return ComponentUtil.translatable(getTranslationKey("tooltip", tooltipKey));
+		return ComponentUtil.translatable(key("tooltip", tooltipKey));
 	}
 
 	public static MutableComponent getTooltipText(String tooltipKey, Object... formatArgs) {
-		return ComponentUtil.translatable(getTranslationKey("tooltip", tooltipKey), formatArgs);
+		return ComponentUtil.translatable(key("tooltip", tooltipKey), formatArgs);
 	}
 
 	public static MutableComponent getMsgText(String msgKey) {
-		return ComponentUtil.translatable(getTranslationKey("msg", msgKey));
+		return ComponentUtil.translatable(key("msg", msgKey));
 	}
 
 	public static MutableComponent getMsgText(String msgKey, Object... formatArgs) {
-		return ComponentUtil.translatable(getTranslationKey("msg", msgKey), formatArgs);
+		return ComponentUtil.translatable(key("msg", msgKey), formatArgs);
 	}
 
 	public static MutableComponent getFailureMsgText(String msgKey) {
@@ -55,11 +51,11 @@ public final class TextComponentUtil {
 	}
 
 	public static MutableComponent getAbilityText(String key) {
-		return ComponentUtil.translatable(getTranslationKey("ability", key));
+		return ComponentUtil.translatable(key("ability", key));
 	}
 
 	public static MutableComponent getActionText(String key) {
-		return ComponentUtil.translatable(getTranslationKey("tooltip", "action." + key));
+		return ComponentUtil.translatable(key("tooltip", "action." + key));
 	}
 
 }

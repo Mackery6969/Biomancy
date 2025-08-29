@@ -9,7 +9,7 @@ import software.bernie.geckolib.model.DefaultedItemGeoModel;
 public class RavenousClawsModel extends DefaultedItemGeoModel<RavenousClawsItem> {
 
 	public RavenousClawsModel() {
-		super(BiomancyMod.createRL("weapon/ravenous_claws"));
+		super(BiomancyMod.rl("weapon/ravenous_claws"));
 	}
 
 	@Override

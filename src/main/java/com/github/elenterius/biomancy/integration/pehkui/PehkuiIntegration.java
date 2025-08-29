@@ -66,11 +66,11 @@ public final class PehkuiIntegration {
 	}
 
 	private static ScaleModifier registerScaleModifier(String name, Supplier<ScaleModifier> factory) {
-		return ScaleRegistries.register(ScaleRegistries.SCALE_MODIFIERS, BiomancyMod.createRL(name), factory.get());
+		return ScaleRegistries.register(ScaleRegistries.SCALE_MODIFIERS, BiomancyMod.rl(name), factory.get());
 	}
 
 	private static ScaleType registerScaleType(String name, UnaryOperator<ScaleType.Builder> builder) {
-		return ScaleRegistries.register(ScaleRegistries.SCALE_TYPES, BiomancyMod.createRL(name), builder.apply(ScaleType.Builder.create()).build());
+		return ScaleRegistries.register(ScaleRegistries.SCALE_TYPES, BiomancyMod.rl(name), builder.apply(ScaleType.Builder.create()).build());
 	}
 
 	static final class PehkuiHelperImpl implements PehkuiHelper {

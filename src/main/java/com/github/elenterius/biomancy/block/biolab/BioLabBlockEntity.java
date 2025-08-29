@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.block.biolab;
 
+import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.api.nutrients.FuelHandler;
 import com.github.elenterius.biomancy.api.nutrients.FuelHandlerImpl;
 import com.github.elenterius.biomancy.api.nutrients.Nutrients;
@@ -18,7 +19,6 @@ import com.github.elenterius.biomancy.inventory.InventoryHandler;
 import com.github.elenterius.biomancy.inventory.InventoryHandlers;
 import com.github.elenterius.biomancy.inventory.ItemHandlerUtil;
 import com.github.elenterius.biomancy.menu.BioLabMenu;
-import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.util.sounds.LoopingSoundHelper;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import net.minecraft.core.BlockPos;
@@ -123,7 +123,7 @@ public class BioLabBlockEntity extends MachineBlockEntity<BioBrewingRecipe, BioL
 
 	@Override
 	public Component getName() {
-		return TextComponentUtil.getTranslationText("container", "bio_lab");
+		return BiomancyMod.translatableFrom("container", "bio_lab");
 	}
 
 	@Nullable

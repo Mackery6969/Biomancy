@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 public final class ModBioForgeTabs {
 
-	public static final ResourceLocation REGISTRY_KEY = BiomancyMod.createRL("bio_forge_tab");
+	public static final ResourceLocation REGISTRY_KEY = BiomancyMod.rl("bio_forge_tab");
 	public static final DeferredRegister<BioForgeTab> BIO_FORGE_TABS = DeferredRegister.create(REGISTRY_KEY, BiomancyMod.MOD_ID);
 	public static final Supplier<IForgeRegistry<BioForgeTab>> REGISTRY = BIO_FORGE_TABS.makeRegistry(RegistryBuilder::new);
 

@@ -9,7 +9,7 @@ import software.bernie.geckolib.model.DefaultedBlockGeoModel;
 public class BioForgeModel extends DefaultedBlockGeoModel<BioForgeBlockEntity> {
 
 	public BioForgeModel() {
-		super(BiomancyMod.createRL("bio_forge"));
+		super(BiomancyMod.rl("bio_forge"));
 	}
 
 	@Override

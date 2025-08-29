@@ -9,7 +9,7 @@ import software.bernie.geckolib.model.DefaultedBlockGeoModel;
 public class TongueModel extends DefaultedBlockGeoModel<TongueBlockEntity> {
 
 	public TongueModel() {
-		super(BiomancyMod.createRL("tongue"));
+		super(BiomancyMod.rl("tongue"));
 	}
 
 	@Override

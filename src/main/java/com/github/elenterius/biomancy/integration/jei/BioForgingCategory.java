@@ -37,7 +37,7 @@ public class BioForgingCategory implements IRecipeCategory<BioForgingRecipe> {
 
 	public BioForgingCategory(IGuiHelper guiHelper) {
 		icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModItems.BIO_FORGE.get()));
-		ResourceLocation texture = BiomancyMod.createRL("textures/gui/jei/bio_forge_recipe.png");
+		ResourceLocation texture = BiomancyMod.rl("textures/gui/jei/bio_forge_recipe.png");
 		background = guiHelper.drawableBuilder(texture, 0, 0, 152, 32).setTextureSize(152, 32).build();
 	}
 

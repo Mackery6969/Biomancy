@@ -63,12 +63,12 @@ public final class BioForgingRecipeBuilder implements RecipeBuilder<BioForgingRe
 	}
 
 	public static BioForgingRecipeBuilder create(String outputName, ItemData result) {
-		ResourceLocation rl = BiomancyMod.createRL(outputName);
+		ResourceLocation rl = BiomancyMod.rl(outputName);
 		return new BioForgingRecipeBuilder(rl, result);
 	}
 
 	public static BioForgingRecipeBuilder create(ItemData result) {
-		ResourceLocation rl = BiomancyMod.createRL(result.getItemPath());
+		ResourceLocation rl = BiomancyMod.rl(result.getItemPath());
 		return new BioForgingRecipeBuilder(rl, result);
 	}
 

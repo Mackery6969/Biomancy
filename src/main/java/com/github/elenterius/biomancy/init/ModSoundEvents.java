@@ -124,11 +124,11 @@ public final class ModSoundEvents {
 	private ModSoundEvents() {}
 
 	private static RegistryObject<SoundEvent> register(String name) {
-		return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(BiomancyMod.createRL(name)));
+		return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(BiomancyMod.rl(name)));
 	}
 
 	private static RegistryObject<SoundEvent> register(String name, float fixedRange) {
-		return SOUND_EVENTS.register(name, () -> SoundEvent.createFixedRangeEvent(BiomancyMod.createRL(name), fixedRange));
+		return SOUND_EVENTS.register(name, () -> SoundEvent.createFixedRangeEvent(BiomancyMod.rl(name), fixedRange));
 	}
 
 }

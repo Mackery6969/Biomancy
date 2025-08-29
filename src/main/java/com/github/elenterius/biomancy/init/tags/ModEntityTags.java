@@ -21,7 +21,7 @@ public final class ModEntityTags {
 	private ModEntityTags() {}
 
 	private static TagKey<EntityType<?>> tag(String name) {
-		return TagKey.create(Registries.ENTITY_TYPE, BiomancyMod.createRL(name));
+		return TagKey.create(Registries.ENTITY_TYPE, BiomancyMod.rl(name));
 	}
 
 	private static TagKey<EntityType<?>> forgeTag(String name) {

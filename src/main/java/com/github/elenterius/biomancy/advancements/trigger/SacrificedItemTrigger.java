@@ -12,7 +12,7 @@ import net.minecraft.world.level.ItemLike;
 
 public class SacrificedItemTrigger extends SimpleCriterionTrigger<SacrificedItemTrigger.TriggerInstance> {
 
-	private static final ResourceLocation ID = BiomancyMod.createRL("sacrificed_item");
+	private static final ResourceLocation ID = BiomancyMod.rl("sacrificed_item");
 
 	@Override
 	public ResourceLocation getId() {

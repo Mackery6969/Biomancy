@@ -9,7 +9,7 @@ import software.bernie.geckolib.model.DefaultedBlockGeoModel;
 public class FleshkinChestModel extends DefaultedBlockGeoModel<FleshkinChestBlockEntity> {
 
 	public FleshkinChestModel() {
-		super(BiomancyMod.createRL("fleshkin_chest"));
+		super(BiomancyMod.rl("fleshkin_chest"));
 	}
 
 	@Override

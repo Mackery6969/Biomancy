@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class DigesterScreen extends AbstractContainerScreen<DigesterMenu> implements ScreenTooltipStyleProvider, ScreenNutrientFuelConsumer {
 
-	private static final ResourceLocation BACKGROUND_TEXTURE = BiomancyMod.createRL("textures/gui/menu_digester.png");
+	private static final ResourceLocation BACKGROUND_TEXTURE = BiomancyMod.rl("textures/gui/menu_digester.png");
 
 	public DigesterScreen(DigesterMenu menu, Inventory playerInventory, Component title) {
 		super(menu, playerInventory, title);

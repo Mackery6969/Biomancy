@@ -21,7 +21,7 @@ public final class ModBlockTags {
 	private ModBlockTags() {}
 
 	private static TagKey<Block> tag(String name) {
-		return BlockTags.create(BiomancyMod.createRL(name));
+		return BlockTags.create(BiomancyMod.rl(name));
 	}
 
 }

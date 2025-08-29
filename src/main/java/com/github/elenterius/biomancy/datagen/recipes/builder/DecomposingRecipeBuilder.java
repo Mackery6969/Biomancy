@@ -53,7 +53,7 @@ public final class DecomposingRecipeBuilder implements RecipeBuilder<Decomposing
 	private String group;
 
 	private DecomposingRecipeBuilder() {
-		this.recipeId = BiomancyMod.createRL("unknown");
+		this.recipeId = BiomancyMod.rl("unknown");
 	}
 
 	public static DecomposingRecipeBuilder create() {
@@ -118,7 +118,7 @@ public final class DecomposingRecipeBuilder implements RecipeBuilder<Decomposing
 	}
 
 	public DecomposingRecipeBuilder setIngredient(TagKey<Item> tagKey, int quantity) {
-		return setIngredient(Ingredient.of(tagKey), quantity, BiomancyMod.createRL(tagKey.location().toDebugFileName()));
+		return setIngredient(Ingredient.of(tagKey), quantity, BiomancyMod.rl(tagKey.location().toDebugFileName()));
 	}
 
 	public DecomposingRecipeBuilder setIngredient(RegistryObject<? extends Item> itemHolder) {
@@ -134,12 +134,12 @@ public final class DecomposingRecipeBuilder implements RecipeBuilder<Decomposing
 	}
 
 	public DecomposingRecipeBuilder setIngredient(ItemLike itemLike, int quantity) {
-		setIngredient(Ingredient.of(itemLike), quantity, BiomancyMod.createRL(getRegistryKey(itemLike).getPath()));
+		setIngredient(Ingredient.of(itemLike), quantity, BiomancyMod.rl(getRegistryKey(itemLike).getPath()));
 		return this;
 	}
 
 	public DecomposingRecipeBuilder setIngredient(DatagenIngredient ingredient) {
-		setIngredient(ingredient, 1, BiomancyMod.createRL(ingredient.resourceLocation.getNamespace() + "_" + ingredient.resourceLocation.getPath()));
+		setIngredient(ingredient, 1, BiomancyMod.rl(ingredient.resourceLocation.getNamespace() + "_" + ingredient.resourceLocation.getPath()));
 		return this;
 	}
 

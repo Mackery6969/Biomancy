@@ -29,7 +29,7 @@ public final class AcolyteArmorUpgrades {
 	}
 
 	private static Upgrade register(String name) {
-		Upgrade upgrade = new Upgrade(BiomancyMod.createRL(name));
+		Upgrade upgrade = new Upgrade(BiomancyMod.rl(name));
 		UPGRADES.add(upgrade);
 		return upgrade;
 	}

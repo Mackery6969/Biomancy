@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.block.decomposer;
 
+import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.api.nutrients.FuelHandler;
 import com.github.elenterius.biomancy.api.nutrients.FuelHandlerImpl;
 import com.github.elenterius.biomancy.block.base.MachineBlock;
@@ -15,7 +16,6 @@ import com.github.elenterius.biomancy.inventory.InventoryHandler;
 import com.github.elenterius.biomancy.inventory.InventoryHandlers;
 import com.github.elenterius.biomancy.inventory.ItemHandlerUtil;
 import com.github.elenterius.biomancy.menu.DecomposerMenu;
-import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.util.sounds.LoopingSoundHelper;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import net.minecraft.core.BlockPos;
@@ -106,7 +106,7 @@ public class DecomposerBlockEntity extends MachineBlockEntity<DecomposingRecipe,
 
 	@Override
 	public Component getName() {
-		return TextComponentUtil.getTranslationText("container", "decomposer");
+		return BiomancyMod.translatableFrom("container", "decomposer");
 	}
 
 	@Nullable

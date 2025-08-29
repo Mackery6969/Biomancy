@@ -25,7 +25,7 @@ public final class ModItemTags {
 	private ModItemTags() {}
 
 	private static TagKey<Item> tag(String name) {
-		return ItemTags.create(BiomancyMod.createRL(name));
+		return ItemTags.create(BiomancyMod.rl(name));
 	}
 
 	private static TagKey<Item> forgeTag(String path) {

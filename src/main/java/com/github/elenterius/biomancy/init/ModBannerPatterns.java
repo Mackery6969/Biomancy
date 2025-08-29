@@ -19,11 +19,11 @@ public final class ModBannerPatterns {
 	private ModBannerPatterns() {}
 
 	private static RegistryObject<BannerPattern> register(String name) {
-		return BANNERS.register(name, () -> new BannerPattern(BiomancyMod.createRLString(name)));
+		return BANNERS.register(name, () -> new BannerPattern(BiomancyMod.rlStr(name)));
 	}
 
 	private static TagKey<BannerPattern> createTagKey(String name) {
-		return TagKey.create(Registries.BANNER_PATTERN, BiomancyMod.createRL("pattern_item/" + name));
+		return TagKey.create(Registries.BANNER_PATTERN, BiomancyMod.rl("pattern_item/" + name));
 	}
 
 	private static TagKey<BannerPattern> createTagKey(RegistryObject<BannerPattern> registryObject) {

@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class BioLabScreen extends AbstractContainerScreen<BioLabMenu> implements ScreenTooltipStyleProvider, ScreenNutrientFuelConsumer {
 
-	private static final ResourceLocation BACKGROUND_TEXTURE = BiomancyMod.createRL("textures/gui/menu_bio_lab.png");
+	private static final ResourceLocation BACKGROUND_TEXTURE = BiomancyMod.rl("textures/gui/menu_bio_lab.png");
 
 	public BioLabScreen(BioLabMenu menu, Inventory playerInventory, Component title) {
 		super(menu, playerInventory, title);

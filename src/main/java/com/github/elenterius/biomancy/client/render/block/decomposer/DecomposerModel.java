@@ -9,7 +9,7 @@ import software.bernie.geckolib.model.DefaultedBlockGeoModel;
 public class DecomposerModel extends DefaultedBlockGeoModel<DecomposerBlockEntity> {
 
 	public DecomposerModel() {
-		super(BiomancyMod.createRL("decomposer"));
+		super(BiomancyMod.rl("decomposer"));
 	}
 
 	@Override

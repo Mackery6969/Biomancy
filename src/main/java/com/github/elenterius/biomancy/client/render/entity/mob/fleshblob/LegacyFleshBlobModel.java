@@ -14,7 +14,7 @@ import static com.github.elenterius.biomancy.client.render.entity.mob.fleshblob.
 
 public class LegacyFleshBlobModel<T extends EaterFleshBlob> extends GeoModel<T> {
 
-	protected static final ResourceLocation TEXTURE = BiomancyMod.createRL("textures/entity/mob/flesh_blob/flesh_blob_legacy.png");
+	protected static final ResourceLocation TEXTURE = BiomancyMod.rl("textures/entity/mob/flesh_blob/flesh_blob_legacy.png");
 
 	@Override
 	public ResourceLocation getModelResource(T fleshBlob) {

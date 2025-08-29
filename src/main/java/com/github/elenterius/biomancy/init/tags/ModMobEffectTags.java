@@ -56,7 +56,7 @@ public final class ModMobEffectTags {
 	}
 
 	private static TagKey<MobEffect> tag(String name) {
-		return createTag(BiomancyMod.createRL(name));
+		return createTag(BiomancyMod.rl(name));
 	}
 
 	private static TagKey<MobEffect> forgeTag(String name) {

@@ -469,7 +469,7 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 		void cancel(ServerLevel level, ItemStack stack, LivingEntity itemOwner);
 
 		default String getTranslationKey() {
-			return TextComponentUtil.getTranslationKey("ability", name());
+			return BiomancyMod.translationKey("ability", name());
 		}
 
 		default void appendAbilityDescription(ItemStack stack, List<Component> components) {
@@ -482,7 +482,7 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 	protected static final class Abilities {
 		public static final ItemAbility ACID_COAT = new ItemAbility() {
 			static final String NAME = "acid_coat";
-			static final String KEY = BiomancyMod.createRLString(NAME);
+			static final String KEY = BiomancyMod.rlStr(NAME);
 			static final String REMAINING_USES = "uses";
 
 			@Override

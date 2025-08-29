@@ -14,7 +14,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.Collections;
 import java.util.Set;
 
-import static com.github.elenterius.biomancy.BiomancyMod.createRL;
+import static com.github.elenterius.biomancy.BiomancyMod.rl;
 
 public final class ModLoot {
 
@@ -44,7 +44,7 @@ public final class ModLoot {
 		private Entity() {}
 
 		private static ResourceLocation register(String id) {
-			return register(createRL(id));
+			return register(rl(id));
 		}
 
 		private static ResourceLocation register(ResourceLocation key) {

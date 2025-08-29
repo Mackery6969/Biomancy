@@ -7,7 +7,7 @@ import software.bernie.geckolib.model.DefaultedItemGeoModel;
 public class ImpalerModel extends DefaultedItemGeoModel<ImpalerItem> {
 
 	public ImpalerModel() {
-		super(BiomancyMod.createRL("weapon/impaler"));
+		super(BiomancyMod.rl("weapon/impaler"));
 	}
 
 }

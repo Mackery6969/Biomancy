@@ -13,14 +13,14 @@ import java.util.Locale;
 
 public class FleshBlobModel<T extends EaterFleshBlob> extends GeoModel<T> {
 
-	protected static final ResourceLocation BASE_TEXTURE = BiomancyMod.createRL("textures/entity/mob/flesh_blob/flesh_blob_neutral.png");
-	protected static final ResourceLocation HUNGRY_TEXTURE = BiomancyMod.createRL("textures/entity/mob/flesh_blob/flesh_blob_hostile.png");
-	protected static final ResourceLocation CLOWN_TEXTURE = BiomancyMod.createRL("textures/entity/mob/flesh_blob/flesh_blob_clown.png");
-	protected static final ResourceLocation TROLL_TEXTURE = BiomancyMod.createRL("textures/entity/mob/flesh_blob/flesh_blob_troll.png");
-	protected static final ResourceLocation WATCHER_TEXTURE = BiomancyMod.createRL("textures/entity/mob/flesh_blob/flesh_blob_watcher.png");
+	protected static final ResourceLocation BASE_TEXTURE = BiomancyMod.rl("textures/entity/mob/flesh_blob/flesh_blob_neutral.png");
+	protected static final ResourceLocation HUNGRY_TEXTURE = BiomancyMod.rl("textures/entity/mob/flesh_blob/flesh_blob_hostile.png");
+	protected static final ResourceLocation CLOWN_TEXTURE = BiomancyMod.rl("textures/entity/mob/flesh_blob/flesh_blob_clown.png");
+	protected static final ResourceLocation TROLL_TEXTURE = BiomancyMod.rl("textures/entity/mob/flesh_blob/flesh_blob_troll.png");
+	protected static final ResourceLocation WATCHER_TEXTURE = BiomancyMod.rl("textures/entity/mob/flesh_blob/flesh_blob_watcher.png");
 
-	protected static final ResourceLocation MODEL = BiomancyMod.createRL("geo/entity/mob/flesh_blob.geo.json");
-	protected static final ResourceLocation ANIMATION = BiomancyMod.createRL("animations/entity/mob/flesh_blob.animation.json");
+	protected static final ResourceLocation MODEL = BiomancyMod.rl("geo/entity/mob/flesh_blob.geo.json");
+	protected static final ResourceLocation ANIMATION = BiomancyMod.rl("animations/entity/mob/flesh_blob.animation.json");
 
 	@Override
 	public ResourceLocation getModelResource(T fleshBlob) {

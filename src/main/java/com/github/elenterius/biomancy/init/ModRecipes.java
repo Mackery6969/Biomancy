@@ -81,8 +81,8 @@ public final class ModRecipes {
 	}
 
 	public static void registerIngredientSerializers() {
-		CraftingHelper.register(BiomancyMod.createRL("food_nutrition"), AnyFoodIngredient.Serializer.INSTANCE);
-		CraftingHelper.register(BiomancyMod.createRL("essence"), EssenceIngredient.Serializer.INSTANCE);
+		CraftingHelper.register(BiomancyMod.rl("food_nutrition"), AnyFoodIngredient.Serializer.INSTANCE);
+		CraftingHelper.register(BiomancyMod.rl("essence"), EssenceIngredient.Serializer.INSTANCE);
 	}
 
 	private static <T extends RecipeType<?>, R extends Recipe<Container>> RegistryObject<RecipeSerializer<R>> registerRecipeSerializer(RegistryObject<T> recipeType, Supplier<RecipeSerializer<R>> serializerSupplier) {
@@ -104,7 +104,7 @@ public final class ModRecipes {
 	}
 
 	private static <T extends Recipe<Container>> RegistryObject<AdvancedRecipeType<T>> registerRecipeType(String namespacedId) {
-		return RECIPE_TYPES.register(namespacedId, () -> new AdvancedRecipeType<>(BiomancyMod.createRLString(namespacedId)));
+		return RECIPE_TYPES.register(namespacedId, () -> new AdvancedRecipeType<>(BiomancyMod.rlStr(namespacedId)));
 	}
 
 }

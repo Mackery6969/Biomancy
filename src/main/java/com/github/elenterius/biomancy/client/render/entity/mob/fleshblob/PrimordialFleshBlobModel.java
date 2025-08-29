@@ -16,8 +16,8 @@ import static com.github.elenterius.biomancy.client.render.entity.mob.fleshblob.
 
 public class PrimordialFleshBlobModel<T extends EaterFleshBlob & PrimordialFleshkin> extends GeoModel<T> {
 
-	protected static final ResourceLocation BASE_TEXTURE = BiomancyMod.createRL("textures/entity/mob/flesh_blob/primordial_flesh_blob_neutral.png");
-	protected static final ResourceLocation HUNGRY_TEXTURE = BiomancyMod.createRL("textures/entity/mob/flesh_blob/primordial_flesh_blob_hostile.png");
+	protected static final ResourceLocation BASE_TEXTURE = BiomancyMod.rl("textures/entity/mob/flesh_blob/primordial_flesh_blob_neutral.png");
+	protected static final ResourceLocation HUNGRY_TEXTURE = BiomancyMod.rl("textures/entity/mob/flesh_blob/primordial_flesh_blob_hostile.png");
 
 	@Override
 	public ResourceLocation getModelResource(T fleshBlob) {

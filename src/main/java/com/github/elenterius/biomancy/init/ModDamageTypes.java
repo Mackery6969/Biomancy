@@ -26,7 +26,7 @@ public final class ModDamageTypes {
 	private ModDamageTypes() {}
 
 	private static ResourceKey<DamageType> key(String name) {
-		return ResourceKey.create(Registries.DAMAGE_TYPE, BiomancyMod.createRL(name));
+		return ResourceKey.create(Registries.DAMAGE_TYPE, BiomancyMod.rl(name));
 	}
 
 	public static Holder.Reference<DamageType> getHolder(ResourceKey<DamageType> key, LevelReader level) {

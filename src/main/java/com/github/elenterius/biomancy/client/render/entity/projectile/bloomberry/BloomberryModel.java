@@ -9,7 +9,7 @@ import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 public class BloomberryModel extends DefaultedEntityGeoModel<BloomberryProjectile> {
 
 	public BloomberryModel() {
-		super(BiomancyMod.createRL("projectile/bloomberry"));
+		super(BiomancyMod.rl("projectile/bloomberry"));
 	}
 
 	@Override

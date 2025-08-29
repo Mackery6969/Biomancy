@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class FleshkinChestScreen extends AbstractContainerScreen<FleshkinChestMenu> implements ScreenTooltipStyleProvider {
 
-	private static final ResourceLocation BACKGROUND_TEXTURE = BiomancyMod.createRL("textures/gui/menu_fleshkin_chest.png");
+	private static final ResourceLocation BACKGROUND_TEXTURE = BiomancyMod.rl("textures/gui/menu_fleshkin_chest.png");
 
 	public FleshkinChestScreen(FleshkinChestMenu menu, Inventory playerInventory, Component title) {
 		super(menu, playerInventory, title);

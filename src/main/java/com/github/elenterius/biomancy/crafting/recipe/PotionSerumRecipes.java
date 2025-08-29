@@ -210,7 +210,7 @@ public final class PotionSerumRecipes {
 	}
 
 	private static BioBrewingRecipe createRecipe(String name, List<Ingredient> ingredients, ItemStack reactant, Potion result) {
-		ResourceLocation id = BiomancyMod.createRL(name);
+		ResourceLocation id = BiomancyMod.rl(name);
 
 		List<IngredientStack> ingredientStacks = new ArrayList<>();
 		for (Ingredient ingredient : ingredients) {

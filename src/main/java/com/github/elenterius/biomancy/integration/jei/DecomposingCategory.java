@@ -45,7 +45,7 @@ public class DecomposingCategory implements IRecipeCategory<DecomposingRecipe> {
 
 	public DecomposingCategory(IGuiHelper guiHelper) {
 		icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.DECOMPOSER.get()));
-		background = guiHelper.drawableBuilder(BiomancyMod.createRL("textures/gui/jei/decomposer_recipe.png"), 0, 0, 132, 64).setTextureSize(132, 64).build();
+		background = guiHelper.drawableBuilder(BiomancyMod.rl("textures/gui/jei/decomposer_recipe.png"), 0, 0, 132, 64).setTextureSize(132, 64).build();
 
 		inputInventoryWrapper = new RecipeWrapper(new ItemStackHandler(DigesterBlockEntity.INPUT_SLOTS));
 	}

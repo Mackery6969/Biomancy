@@ -27,7 +27,7 @@ public final class ModDamageTypeTags {
 	private ModDamageTypeTags() {}
 
 	private static TagKey<DamageType> tag(String name) {
-		return TagKey.create(Registries.DAMAGE_TYPE, BiomancyMod.createRL(name));
+		return TagKey.create(Registries.DAMAGE_TYPE, BiomancyMod.rl(name));
 	}
 
 	private static TagKey<DamageType> forgeTag(String name) {

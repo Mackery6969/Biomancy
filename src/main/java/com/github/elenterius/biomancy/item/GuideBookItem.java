@@ -39,7 +39,7 @@ public class GuideBookItem extends SimpleItem implements GeoItem {
 	public static final RawAnimation OPEN_THEN_IDLE_ANIM = RawAnimation.begin().thenPlay("opening").thenLoop("open_idle");
 	public static final RawAnimation CLOSE_THEN_IDLE_ANIM = RawAnimation.begin().thenPlay("closing").thenLoop("closed_idle");
 
-	public static final ResourceLocation GUIDE_BOOK_ID = BiomancyMod.createRL("guide_book");
+	public static final ResourceLocation GUIDE_BOOK_ID = BiomancyMod.rl("guide_book");
 	protected static final String BOOK_OPEN_KEY = "IsBookOpen";
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 

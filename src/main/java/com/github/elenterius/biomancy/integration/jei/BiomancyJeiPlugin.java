@@ -32,7 +32,7 @@ import java.util.Objects;
 @JeiPlugin
 public class BiomancyJeiPlugin implements IModPlugin {
 
-	private static final ResourceLocation ID = BiomancyMod.createRL("plugin");
+	private static final ResourceLocation ID = BiomancyMod.rl("plugin");
 
 	@Override
 	public ResourceLocation getPluginUid() {

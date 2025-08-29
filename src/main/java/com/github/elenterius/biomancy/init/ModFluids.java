@@ -61,9 +61,9 @@ public final class ModFluids {
 	private static RegistryObject<FluidType> registerType(String name, UnaryOperator<FluidType.Properties> operator) {
 		return FLUID_TYPES.register(name, () -> new FluidType(operator.apply(createFluidTypeProperties())) {
 
-			private final ResourceLocation stillTexture = BiomancyMod.createRL("fluid/%s_still".formatted(name));
-			private final ResourceLocation flowingTexture = BiomancyMod.createRL("fluid/%s_flowing".formatted(name));
-			private final ResourceLocation overlayTexture = BiomancyMod.createRL("fluid/%s_overlay".formatted(name));
+			private final ResourceLocation stillTexture = BiomancyMod.rl("fluid/%s_still".formatted(name));
+			private final ResourceLocation flowingTexture = BiomancyMod.rl("fluid/%s_flowing".formatted(name));
+			private final ResourceLocation overlayTexture = BiomancyMod.rl("fluid/%s_overlay".formatted(name));
 
 			@Override
 			public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {

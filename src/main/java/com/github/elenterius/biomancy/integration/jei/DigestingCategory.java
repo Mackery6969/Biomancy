@@ -42,7 +42,7 @@ public class DigestingCategory implements IRecipeCategory<DigestingRecipe> {
 
 	public DigestingCategory(IGuiHelper guiHelper) {
 		icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModItems.DIGESTER.get()));
-		ResourceLocation texture = BiomancyMod.createRL("textures/gui/jei/digester_recipe.png");
+		ResourceLocation texture = BiomancyMod.rl("textures/gui/jei/digester_recipe.png");
 		background = guiHelper.drawableBuilder(texture, 0, 0, 80, 47).setTextureSize(80, 47).addPadding(0, 4, 0, 0).build();
 
 		inputInventoryWrapper = new RecipeWrapper(new ItemStackHandler(DigesterBlockEntity.INPUT_SLOTS));

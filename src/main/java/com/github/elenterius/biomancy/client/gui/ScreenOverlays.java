@@ -46,15 +46,15 @@ import org.joml.Matrix4f;
 public final class ScreenOverlays {
 
 	//hud overlays
-	public static final ResourceLocation INJECTOR_COOL_DOWN = BiomancyMod.createRL("textures/gui/indicator_injector_cooldown.png");
-	public static final ResourceLocation ORNATE_CORNER_BOTTOM_RIGHT = BiomancyMod.createRL("textures/gui/ornate_corner_br.png");
-	public static final ResourceLocation CHARGE_BAR = BiomancyMod.createRL("textures/gui/charge_bar.png");
-	public static final ResourceLocation ATTACK_REACH = BiomancyMod.createRL("textures/gui/indicator_attack_reach.png");
+	public static final ResourceLocation INJECTOR_COOL_DOWN = BiomancyMod.rl("textures/gui/indicator_injector_cooldown.png");
+	public static final ResourceLocation ORNATE_CORNER_BOTTOM_RIGHT = BiomancyMod.rl("textures/gui/ornate_corner_br.png");
+	public static final ResourceLocation CHARGE_BAR = BiomancyMod.rl("textures/gui/charge_bar.png");
+	public static final ResourceLocation ATTACK_REACH = BiomancyMod.rl("textures/gui/indicator_attack_reach.png");
 
 	//fullscreen overlays
-	public static final ResourceLocation VEINS = BiomancyMod.createRL("textures/gui/overlay/veins.png");
-	public static final ResourceLocation VIGNETTE = BiomancyMod.createRL("textures/gui/overlay/vignette.png");
-	public static final ResourceLocation MEMBRANE = BiomancyMod.createRL("textures/gui/overlay/membrane.png");
+	public static final ResourceLocation VEINS = BiomancyMod.rl("textures/gui/overlay/veins.png");
+	public static final ResourceLocation VIGNETTE = BiomancyMod.rl("textures/gui/overlay/vignette.png");
+	public static final ResourceLocation MEMBRANE = BiomancyMod.rl("textures/gui/overlay/membrane.png");
 	public static final ResourceLocation WATER_GEL = new ResourceLocation("minecraft", "textures/misc/underwater.png");
 
 	public static final IGuiOverlay INSIDE_BLOCK_OVERLAY = (gui, guiGraphics, partialTicks, screenWidth, screenHeight) -> {

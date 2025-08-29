@@ -9,7 +9,7 @@ import software.bernie.geckolib.model.DefaultedBlockGeoModel;
 public class PrimordialCradleModel extends DefaultedBlockGeoModel<PrimordialCradleBlockEntity> {
 
 	public PrimordialCradleModel() {
-		super(BiomancyMod.createRL("primordial_cradle"));
+		super(BiomancyMod.rl("primordial_cradle"));
 	}
 
 	@Override

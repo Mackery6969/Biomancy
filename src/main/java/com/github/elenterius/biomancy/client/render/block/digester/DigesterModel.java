@@ -9,7 +9,7 @@ import software.bernie.geckolib.model.DefaultedBlockGeoModel;
 public class DigesterModel extends DefaultedBlockGeoModel<DigesterBlockEntity> {
 
 	public DigesterModel() {
-		super(BiomancyMod.createRL("digester"));
+		super(BiomancyMod.rl("digester"));
 	}
 
 	@Override

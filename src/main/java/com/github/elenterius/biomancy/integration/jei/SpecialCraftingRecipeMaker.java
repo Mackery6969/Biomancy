@@ -62,7 +62,7 @@ public final class SpecialCraftingRecipeMaker {
 	private static <A extends ArmorItem> CraftingRecipe createHelmetUpgradeRecipe(RegistryObject<A> armorItem) {
 		NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY, Ingredient.of(ModItems.PRIMORDIAL_CORE.get()), Ingredient.of(armorItem.get()));
 		ItemStack result = AcolyteArmorUpgrades.addUpgrade(armorItem.get().getDefaultInstance(), AcolyteArmorUpgrades.PRIMORDIAL_SIGHT);
-		return new ShapelessRecipe(BiomancyMod.createRL("special_crafting/" + armorItem.getId().getPath() + "_upgrade"), "", CraftingBookCategory.MISC, result, inputs);
+		return new ShapelessRecipe(BiomancyMod.rl("special_crafting/" + armorItem.getId().getPath() + "_upgrade"), "", CraftingBookCategory.MISC, result, inputs);
 	}
 
 	public static List<CraftingRecipe> createPlayerHeadRecipes() {
@@ -74,7 +74,7 @@ public final class SpecialCraftingRecipeMaker {
 		ItemStack result = createPlayerHead("jeb_");
 
 		return List.of(
-				new ShapelessRecipe(BiomancyMod.createRL("special_crafting/player_head"), "", CraftingBookCategory.MISC, result, inputs)
+				new ShapelessRecipe(BiomancyMod.rl("special_crafting/player_head"), "", CraftingBookCategory.MISC, result, inputs)
 		);
 	}
 
@@ -156,8 +156,8 @@ public final class SpecialCraftingRecipeMaker {
 		String inverted = isInverted ? "inverted." : "";
 		String unique = entityUUID != null ? "unique." : "";
 
-		ResourceLocation createRecipeId = BiomancyMod.createRL(name + "." + inverted + unique + entityType.getDescriptionId());
-		ResourceLocation resetRecipeId = BiomancyMod.createRL(name + ".reset." + inverted + unique + entityType.getDescriptionId());
+		ResourceLocation createRecipeId = BiomancyMod.rl(name + "." + inverted + unique + entityType.getDescriptionId());
+		ResourceLocation resetRecipeId = BiomancyMod.rl(name + ".reset." + inverted + unique + entityType.getDescriptionId());
 
 		return new CraftingRecipe[]{
 				new ShapelessRecipe(createRecipeId, name, CraftingBookCategory.MISC, membraneStack, inputs),

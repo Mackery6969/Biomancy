@@ -7,7 +7,7 @@ import software.bernie.geckolib.model.DefaultedItemGeoModel;
 public class CausticGunbladeModel extends DefaultedItemGeoModel<CausticGunbladeItem> {
 
 	public CausticGunbladeModel() {
-		super(BiomancyMod.createRL("weapon/caustic_gunblade"));
+		super(BiomancyMod.rl("weapon/caustic_gunblade"));
 	}
 
 	//	@Override

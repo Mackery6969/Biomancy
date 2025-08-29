@@ -34,7 +34,7 @@ import org.joml.Matrix4f;
 
 public class InjectorScreen extends Screen {
 
-	public static final ResourceLocation ICONS = BiomancyMod.createRL("textures/gui/wheel_icons.png");
+	public static final ResourceLocation ICONS = BiomancyMod.rl("textures/gui/wheel_icons.png");
 
 	public static final int CANCEL_ID = -1;
 	public static final int CLEAR_ID = -2;

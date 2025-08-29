@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class StorageSacTooltipClientComponent implements ClientTooltipComponent {
 
-	public static final ResourceLocation TEXTURE = BiomancyMod.createRL("textures/gui/tooltip/embedded/storage_sac_slots.png");
+	public static final ResourceLocation TEXTURE = BiomancyMod.rl("textures/gui/tooltip/embedded/storage_sac_slots.png");
 	private static final int OFFSET = 2;
 	private final @Nullable ItemHandlerWrapper itemHandler;
 	private final boolean isStorageSacEmpty;

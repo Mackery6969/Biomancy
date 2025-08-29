@@ -22,11 +22,11 @@ import java.util.UUID;
 
 public final class ClientTextUtil {
 
-	private static final MutableComponent CTRL_KEY_TEXT = ComponentUtil.translatable("keyboard." + BiomancyMod.MOD_ID + ".ctrl");
-	private static final MutableComponent ALT_KEY_TEXT = ComponentUtil.translatable("keyboard." + BiomancyMod.MOD_ID + ".alt");
-	private static final MutableComponent SHIFT_KEY_TEXT = ComponentUtil.translatable("keyboard." + BiomancyMod.MOD_ID + ".shift");
-	private static final MutableComponent RIGHT_MOUSE_KEY_TEXT = ComponentUtil.translatable("keyboard." + BiomancyMod.MOD_ID + ".right_mouse");
-	private static final MutableComponent SHOW_INFO = ComponentUtil.translatable("tooltip." + BiomancyMod.MOD_ID + ".action.show_info");
+	private static final MutableComponent CTRL_KEY_TEXT = BiomancyMod.translatableFrom("keyboard", "ctrl");
+	private static final MutableComponent ALT_KEY_TEXT = BiomancyMod.translatableFrom("keyboard", "alt");
+	private static final MutableComponent SHIFT_KEY_TEXT = BiomancyMod.translatableFrom("keyboard", "shift");
+	private static final MutableComponent RIGHT_MOUSE_KEY_TEXT = BiomancyMod.translatableFrom("keyboard", "right_mouse");
+	private static final MutableComponent SHOW_INFO = BiomancyMod.translatableFrom("tooltip", "action.show_info");
 
 	private ClientTextUtil() {}
 
@@ -55,11 +55,11 @@ public final class ClientTextUtil {
 	}
 
 	public static MutableComponent holdButtonTo(MutableComponent key, Object action) {
-		return ComponentUtil.translatable(TextComponentUtil.getTranslationKey("tooltip", "hold_button_to"), key.withStyle(TextStyles.KEYBOARD_INPUT), action);
+		return ComponentUtil.translatable(BiomancyMod.translationKey("tooltip", "hold_button_to"), key.withStyle(TextStyles.KEYBOARD_INPUT), action);
 	}
 
 	public static MutableComponent pressButtonTo(MutableComponent key, Object action) {
-		return ComponentUtil.translatable(TextComponentUtil.getTranslationKey("tooltip", "press_button_to"), key.withStyle(TextStyles.KEYBOARD_INPUT), action);
+		return ComponentUtil.translatable(BiomancyMod.translationKey("tooltip", "press_button_to"), key.withStyle(TextStyles.KEYBOARD_INPUT), action);
 	}
 
 	public static MutableComponent getAltKey() {

@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class DecomposerScreen extends AbstractContainerScreen<DecomposerMenu> implements ScreenTooltipStyleProvider, ScreenNutrientFuelConsumer {
 
-	private static final ResourceLocation BACKGROUND_TEXTURE = BiomancyMod.createRL("textures/gui/menu_decomposer.png");
+	private static final ResourceLocation BACKGROUND_TEXTURE = BiomancyMod.rl("textures/gui/menu_decomposer.png");
 
 	public DecomposerScreen(DecomposerMenu menu, Inventory playerInventory, Component title) {
 		super(menu, playerInventory, title);

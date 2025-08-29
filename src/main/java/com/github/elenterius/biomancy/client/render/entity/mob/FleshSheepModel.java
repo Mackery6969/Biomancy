@@ -14,7 +14,7 @@ import software.bernie.geckolib.model.data.EntityModelData;
 public class FleshSheepModel<T extends FleshSheep> extends DefaultedEntityGeoModel<T> {
 
 	public FleshSheepModel() {
-		super(BiomancyMod.createRL("mob/flesh_sheep"), true);
+		super(BiomancyMod.rl("mob/flesh_sheep"), true);
 	}
 
 	@Override

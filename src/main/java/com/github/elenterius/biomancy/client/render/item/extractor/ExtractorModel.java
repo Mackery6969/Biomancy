@@ -7,7 +7,7 @@ import software.bernie.geckolib.model.DefaultedItemGeoModel;
 public class ExtractorModel extends DefaultedItemGeoModel<ExtractorItem> {
 
 	public ExtractorModel() {
-		super(BiomancyMod.createRL("extractor"));
+		super(BiomancyMod.rl("extractor"));
 	}
 
 }

@@ -36,7 +36,7 @@ import java.util.Objects;
 
 public class BioForgeScreen extends AbstractContainerScreen<BioForgeMenu> implements ScreenTooltipStyleProvider, ScreenNutrientFuelConsumer {
 
-	private static final ResourceLocation BACKGROUND_TEXTURE = BiomancyMod.createRL("textures/gui/menu_bio_forge.png");
+	private static final ResourceLocation BACKGROUND_TEXTURE = BiomancyMod.rl("textures/gui/menu_bio_forge.png");
 	private final TabsHelper tabsHelper = new TabsHelper();
 	private final IngredientsHelper ingredientsHelper = new IngredientsHelper();
 	private BioForgeScreenController recipeBook;

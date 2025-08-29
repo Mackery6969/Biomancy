@@ -41,8 +41,8 @@ import java.util.function.Function;
 
 public class ModBlockStateProvider extends BlockStateProvider {
 
-	protected static final ResourceLocation FLESH_PARTICLE_TEXTURE = BiomancyMod.createRL("block/packed_flesh");
-	protected static final ResourceLocation PRIMAL_PARTICLE_TEXTURE = BiomancyMod.createRL("block/primal_flesh");
+	protected static final ResourceLocation FLESH_PARTICLE_TEXTURE = BiomancyMod.rl("block/packed_flesh");
+	protected static final ResourceLocation PRIMAL_PARTICLE_TEXTURE = BiomancyMod.rl("block/primal_flesh");
 
 	public ModBlockStateProvider(PackOutput packOutput, ExistingFileHelper fileHelper) {
 		super(packOutput, BiomancyMod.MOD_ID, fileHelper);
@@ -169,7 +169,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		storageSac(ModBlocks.STORAGE_SAC);
 		directionalBlockWithItem(ModBlocks.CHRYSALIS.get());
 
-		particleOnly(ModBlocks.ACID_FLUID_BLOCK, BiomancyMod.createRL("block/acid_flat"));
+		particleOnly(ModBlocks.ACID_FLUID_BLOCK, BiomancyMod.rl("block/acid_flat"));
 		layeredCauldron(ModBlocks.ACID_CAULDRON);
 		multifaceBlockWithPropertyVariants(ModBlocks.ACID_SPLATTER.get(), AcidSplatterBlock.AGE.get(), String::valueOf);
 
@@ -705,7 +705,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 	public void bioLantern(FleshLanternBlock block) {
 		String path = path(block);
 		ResourceLocation texture = blockAsset(block);
-		ResourceLocation template = BiomancyMod.createRL("block/template/bio_lantern");
+		ResourceLocation template = BiomancyMod.rl("block/template/bio_lantern");
 
 		ModelFile model = models().singleTexture(path, template, texture).renderType("cutout");
 		ModelFile hangingModel = models().singleTexture(path + "_hanging", extend(template, "_hanging"), texture).renderType("cutout");
@@ -725,13 +725,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
 	public void veinsBlock(MultifaceBlock block) {
 		String name = path(block);
-		ResourceLocation templateModel = BiomancyMod.createRL("block/template/face_plane");
+		ResourceLocation templateModel = BiomancyMod.rl("block/template/face_plane");
 		ModelFile model = models().singleTexture(name, templateModel, blockAsset(block)).renderType("cutout");
 		multifaceBlock(block, model);
 	}
 
 	public <T extends JumpPadBlock> void jumpPad(RegistryObject<T> block) {
-		ResourceLocation templateModel = BiomancyMod.createRL("block/template/jump_pad");
+		ResourceLocation templateModel = BiomancyMod.rl("block/template/jump_pad");
 		multifaceBlockWithPropertyVariants(block.get(), JumpPadBlock.ENABLED, bool -> bool == true ? "enabled" : "disabled", templateModel, "solid",
 				(direction, propertyValue, model) -> {
 					if (propertyValue && direction == Direction.DOWN) {
@@ -772,7 +772,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 	}
 
 	public <T extends Comparable<T>> void multifaceBlockWithPropertyVariants(Block block, Property<T> property, Function<T, String> suffixNameFunc) {
-		ResourceLocation templateModel = BiomancyMod.createRL("block/template/face_plane");
+		ResourceLocation templateModel = BiomancyMod.rl("block/template/face_plane");
 		multifaceBlockWithPropertyVariants(block, property, suffixNameFunc, templateModel, "cutout", (direction, propertyValue, model) -> {});
 	}
 
@@ -832,7 +832,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		String s = thick ? "thick" : "thin";
 
 		BlockModelBuilder defaultPaneModel = models()
-				.withExistingParent(name, BiomancyMod.createRL("block/template/%s_pane".formatted(s)))
+				.withExistingParent(name, BiomancyMod.rl("block/template/%s_pane".formatted(s)))
 				.texture("front", texture)
 				.texture("side", extend(texture, "_side"));
 
@@ -840,7 +840,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 			defaultPaneModel.renderType(renderType);
 		}
 
-		BlockModelBuilder middlePaneModel = models().withExistingParent(name + "_middle", BiomancyMod.createRL("block/template/%s_pane_middle".formatted(s)))
+		BlockModelBuilder middlePaneModel = models().withExistingParent(name + "_middle", BiomancyMod.rl("block/template/%s_pane_middle".formatted(s)))
 				.texture("front", texture)
 				.texture("side", extend(texture, "_side"));
 
@@ -885,10 +885,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		ResourceLocation texture = blockAsset(block);
 		String name = path(block);
 
-		ModelFile openModel = models().singleTexture(name + "_open", BiomancyMod.createRL("block/template/thin_pane"), extend(texture, "_open"));
-		ModelFile middleOpenModel = models().singleTexture(name + "_middle_open", BiomancyMod.createRL("block/template/thin_pane_middle"), extend(texture, "_open"));
-		ModelFile closedModel = models().singleTexture(name + "_closed", BiomancyMod.createRL("block/template/thin_pane"), extend(texture, "_closed"));
-		ModelFile middleClosedModel = models().singleTexture(name + "_middle_closed", BiomancyMod.createRL("block/template/thin_pane_middle"), extend(texture, "_closed"));
+		ModelFile openModel = models().singleTexture(name + "_open", BiomancyMod.rl("block/template/thin_pane"), extend(texture, "_open"));
+		ModelFile middleOpenModel = models().singleTexture(name + "_middle_open", BiomancyMod.rl("block/template/thin_pane_middle"), extend(texture, "_open"));
+		ModelFile closedModel = models().singleTexture(name + "_closed", BiomancyMod.rl("block/template/thin_pane"), extend(texture, "_closed"));
+		ModelFile middleClosedModel = models().singleTexture(name + "_middle_closed", BiomancyMod.rl("block/template/thin_pane_middle"), extend(texture, "_closed"));
 
 		irisDoor(block, openModel, closedModel, middleOpenModel, middleClosedModel);
 
@@ -927,14 +927,14 @@ public class ModBlockStateProvider extends BlockStateProvider {
 	}
 
 	public void fleshDoor(FleshDoorBlock block) {
-		ModelFile.ExistingModelFile bottomModel = models().getExistingFile(BiomancyMod.createRL("block/flesh_door_bottom"));
-		ModelFile.ExistingModelFile bottomOpenModel = models().getExistingFile(BiomancyMod.createRL("block/flesh_door_bottom_open"));
-		ModelFile.ExistingModelFile bottomMiddleModel = models().getExistingFile(BiomancyMod.createRL("block/flesh_door_bottom_middle"));
-		ModelFile.ExistingModelFile bottomMiddleOpenModel = models().getExistingFile(BiomancyMod.createRL("block/flesh_door_bottom_middle_open"));
-		ModelFile.ExistingModelFile topModel = models().getExistingFile(BiomancyMod.createRL("block/flesh_door_top"));
-		ModelFile.ExistingModelFile topOpenModel = models().getExistingFile(BiomancyMod.createRL("block/flesh_door_top_open"));
-		ModelFile.ExistingModelFile topMiddleModel = models().getExistingFile(BiomancyMod.createRL("block/flesh_door_top_middle"));
-		ModelFile.ExistingModelFile topMiddleOpenModel = models().getExistingFile(BiomancyMod.createRL("block/flesh_door_top_middle_open"));
+		ModelFile.ExistingModelFile bottomModel = models().getExistingFile(BiomancyMod.rl("block/flesh_door_bottom"));
+		ModelFile.ExistingModelFile bottomOpenModel = models().getExistingFile(BiomancyMod.rl("block/flesh_door_bottom_open"));
+		ModelFile.ExistingModelFile bottomMiddleModel = models().getExistingFile(BiomancyMod.rl("block/flesh_door_bottom_middle"));
+		ModelFile.ExistingModelFile bottomMiddleOpenModel = models().getExistingFile(BiomancyMod.rl("block/flesh_door_bottom_middle_open"));
+		ModelFile.ExistingModelFile topModel = models().getExistingFile(BiomancyMod.rl("block/flesh_door_top"));
+		ModelFile.ExistingModelFile topOpenModel = models().getExistingFile(BiomancyMod.rl("block/flesh_door_top_open"));
+		ModelFile.ExistingModelFile topMiddleModel = models().getExistingFile(BiomancyMod.rl("block/flesh_door_top_middle"));
+		ModelFile.ExistingModelFile topMiddleOpenModel = models().getExistingFile(BiomancyMod.rl("block/flesh_door_top_middle_open"));
 
 		getVariantBuilder(block)
 				.forAllStatesExcept(state -> {

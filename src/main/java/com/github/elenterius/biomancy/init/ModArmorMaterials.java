@@ -10,7 +10,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import java.util.function.Supplier;
 
 public enum ModArmorMaterials implements ArmorMaterial {
-	ACOLYTE(BiomancyMod.createRLString("acolyte"),
+	ACOLYTE(BiomancyMod.rlStr("acolyte"),
 			1,
 			new int[]{2, 6, 5, 2},
 			0.25f,
@@ -19,7 +19,7 @@ public enum ModArmorMaterials implements ArmorMaterial {
 			() -> Ingredient.EMPTY,
 			ModSoundEvents.ARMOR_EQUIP_BIO_ALCHEMIST
 	),
-	WARRIOR(BiomancyMod.createRLString("warrior"),
+	WARRIOR(BiomancyMod.rlStr("warrior"),
 			1,
 			new int[]{3, 8, 6, 3},
 			0.5f,

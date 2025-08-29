@@ -366,31 +366,31 @@ public class VanillaRecipeProvider extends RecipeProvider {
 	}
 
 	protected ResourceLocation getSpecialCraftingRecipeId(ItemLike itemLike) {
-		return BiomancyMod.createRL("special_crafting/" + getItemName(itemLike));
+		return BiomancyMod.rl("special_crafting/" + getItemName(itemLike));
 	}
 
 	protected ResourceLocation getCraftingRecipeId(ItemLike itemLike) {
-		return BiomancyMod.createRL("crafting/" + getItemName(itemLike));
+		return BiomancyMod.rl("crafting/" + getItemName(itemLike));
 	}
 
 	protected ResourceLocation getRecipeId(ItemLike itemLike) {
-		return BiomancyMod.createRL(getItemName(itemLike));
+		return BiomancyMod.rl(getItemName(itemLike));
 	}
 
 	protected ResourceLocation getConversionRecipeId(ItemLike result, ItemLike ingredient) {
-		return BiomancyMod.createRL(getItemName(result) + "_from_" + getItemName(ingredient));
+		return BiomancyMod.rl(getItemName(result) + "_from_" + getItemName(ingredient));
 	}
 
 	protected ResourceLocation getStoneCuttingRecipeId(ItemLike result, ItemLike ingredient) {
-		return BiomancyMod.createRL("stonecutting/" + getItemName(result) + "_from_" + getItemName(ingredient));
+		return BiomancyMod.rl("stonecutting/" + getItemName(result) + "_from_" + getItemName(ingredient));
 	}
 
 	protected ResourceLocation getSmeltingRecipeId(ItemLike itemLike) {
-		return BiomancyMod.createRL("smelting/" + getItemName(itemLike));
+		return BiomancyMod.rl("smelting/" + getItemName(itemLike));
 	}
 
 	protected ResourceLocation getBlastingRecipeId(ItemLike itemLike) {
-		return BiomancyMod.createRL("blasting/" + getItemName(itemLike));
+		return BiomancyMod.rl("blasting/" + getItemName(itemLike));
 	}
 
 	protected void special(Consumer<FinishedRecipe> consumer, ItemLike result, RecipeSerializer<? extends CraftingRecipe> serializer) {

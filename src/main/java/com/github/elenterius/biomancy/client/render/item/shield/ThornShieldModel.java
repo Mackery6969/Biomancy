@@ -9,7 +9,7 @@ import software.bernie.geckolib.model.DefaultedItemGeoModel;
 public class ThornShieldModel extends DefaultedItemGeoModel<ThornShieldItem> {
 
 	public ThornShieldModel() {
-		super(BiomancyMod.createRL("shield/thorn_shield"));
+		super(BiomancyMod.rl("shield/thorn_shield"));
 	}
 
 	@Override

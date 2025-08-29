@@ -9,7 +9,7 @@ import software.bernie.geckolib.model.DefaultedItemGeoModel;
 public class InjectorModel extends DefaultedItemGeoModel<InjectorItem> {
 
 	public InjectorModel() {
-		super(BiomancyMod.createRL("injector"));
+		super(BiomancyMod.rl("injector"));
 	}
 
 	@Override

@@ -16,7 +16,7 @@ import software.bernie.geckolib.renderer.GeoEntityRenderer;
 public class ImpalerProjectileRenderer extends GeoEntityRenderer<ImpalerProjectile> {
 
 	public ImpalerProjectileRenderer(EntityRendererProvider.Context renderManager) {
-		super(renderManager, new DefaultedEntityGeoModel<>(BiomancyMod.createRL("projectile/impaler_projectile")));
+		super(renderManager, new DefaultedEntityGeoModel<>(BiomancyMod.rl("projectile/impaler_projectile")));
 	}
 
 	@Override

@@ -9,7 +9,7 @@ import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 public class AcidBlobModel extends DefaultedEntityGeoModel<AcidBlobProjectile> {
 
 	public AcidBlobModel() {
-		super(BiomancyMod.createRL("projectile/acid_blob"));
+		super(BiomancyMod.rl("projectile/acid_blob"));
 	}
 
 	@Override

@@ -122,7 +122,7 @@ public final class WorkbenchRecipeBuilder {
 
 		@Override
 		public void save(Consumer<FinishedRecipe> consumer, @Nullable RecipeCategory category) {
-			save(consumer, BiomancyMod.createRL(getItemName(internalBuilder.getResult())));
+			save(consumer, BiomancyMod.rl(getItemName(internalBuilder.getResult())));
 		}
 
 		public void save(Consumer<FinishedRecipe> consumer, ResourceLocation recipeId) {
@@ -177,7 +177,7 @@ public final class WorkbenchRecipeBuilder {
 
 		@Override
 		public void save(Consumer<FinishedRecipe> consumer, @Nullable RecipeCategory category) {
-			save(consumer, BiomancyMod.createRL(getItemName(internalBuilder.getResult())));
+			save(consumer, BiomancyMod.rl(getItemName(internalBuilder.getResult())));
 		}
 
 		public void save(Consumer<FinishedRecipe> consumer, ResourceLocation recipeId) {

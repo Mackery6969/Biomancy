@@ -8,7 +8,7 @@ import software.bernie.geckolib.renderer.GeoArmorRenderer;
 public final class WarriorArmorRenderer extends GeoArmorRenderer<WarriorArmorItem> {
 
 	public WarriorArmorRenderer() {
-		super(new DefaultedItemGeoModel<>(BiomancyMod.createRL("armor/warrior_armor")));
+		super(new DefaultedItemGeoModel<>(BiomancyMod.rl("armor/warrior_armor")));
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.block.storagesac;
 
+import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.block.base.SimpleContainerBlockEntity;
 import com.github.elenterius.biomancy.init.ModBlockEntities;
 import com.github.elenterius.biomancy.init.ModCapabilities;
@@ -7,7 +8,6 @@ import com.github.elenterius.biomancy.inventory.InventoryHandler;
 import com.github.elenterius.biomancy.inventory.InventoryHandlers;
 import com.github.elenterius.biomancy.inventory.ItemHandlerUtil;
 import com.github.elenterius.biomancy.menu.StorageSacMenu;
-import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.util.ItemStackCounter;
 import com.github.elenterius.biomancy.util.PlayerInteractionPredicate;
 import net.minecraft.core.BlockPos;
@@ -60,7 +60,7 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 
 	@Override
 	public Component getDefaultName() {
-		return TextComponentUtil.getTranslationText("container", "sac");
+		return BiomancyMod.translatableFrom("container", "sac");
 	}
 
 	public List<ItemStackCounter.CountedItem> getItemsForRendering() {

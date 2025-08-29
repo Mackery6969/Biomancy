@@ -141,7 +141,7 @@ public class FoodDigestingRecipe extends DynamicProcessingRecipe implements Dige
 
 		public static void save(Consumer<FinishedRecipe> consumer, int multiplier, ItemStack stack) {
 			ResourceLocation key = BuiltInRegistries.ITEM.getKey(stack.getItem());
-			ResourceLocation id = BiomancyMod.createRL(key.getPath() + "_from_digesting_dynamic_food");
+			ResourceLocation id = BiomancyMod.rl(key.getPath() + "_from_digesting_dynamic_food");
 			String subFolder = ModRecipes.DIGESTING_RECIPE_TYPE.getId().getPath();
 			save(consumer, multiplier, stack, new ResourceLocation(id.getNamespace(), subFolder + "/" + id.getPath()));
 		}

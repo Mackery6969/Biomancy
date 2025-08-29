@@ -10,14 +10,14 @@ import software.bernie.geckolib.model.GeoModel;
 
 public class MawHopperModel extends GeoModel<MawHopperBlockEntity> {
 
-	protected static final ResourceLocation SOURCE_MODEL = BiomancyMod.createRL("geo/block/maw_hopper.geo.json");
-	protected static final ResourceLocation STRAIGHT_MODEL = BiomancyMod.createRL("geo/block/maw_hopper_connected_straight.geo.json");
-	protected static final ResourceLocation CORNER_MODEL = BiomancyMod.createRL("geo/block/maw_hopper_connected_corner.geo.json");
+	protected static final ResourceLocation SOURCE_MODEL = BiomancyMod.rl("geo/block/maw_hopper.geo.json");
+	protected static final ResourceLocation STRAIGHT_MODEL = BiomancyMod.rl("geo/block/maw_hopper_connected_straight.geo.json");
+	protected static final ResourceLocation CORNER_MODEL = BiomancyMod.rl("geo/block/maw_hopper_connected_corner.geo.json");
 
-	protected static final ResourceLocation TEXTURE = BiomancyMod.createRL("textures/block/maw_hopper.png");
+	protected static final ResourceLocation TEXTURE = BiomancyMod.rl("textures/block/maw_hopper.png");
 
-	protected static final ResourceLocation INPUT_ANIMATION = BiomancyMod.createRL("animations/block/maw_hopper.animation.json");
-	protected static final ResourceLocation CONNECTED_ANIMATION = BiomancyMod.createRL("animations/block/maw_hopper_connected.animation.json");
+	protected static final ResourceLocation INPUT_ANIMATION = BiomancyMod.rl("animations/block/maw_hopper.animation.json");
+	protected static final ResourceLocation CONNECTED_ANIMATION = BiomancyMod.rl("animations/block/maw_hopper_connected.animation.json");
 
 	@Override
 	public ResourceLocation getModelResource(MawHopperBlockEntity blockEntity) {
