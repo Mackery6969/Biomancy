@@ -80,6 +80,7 @@ public final class ModCreativeModeTabs {
 
 	private static CreativeModeTab.Builder alchemyTab(CreativeModeTab.Builder builder) {
 		return builder
+				.withTabsBefore(MAIN.getId())
 				.displayItems((params, output) -> {
 					List<RegistryObject<? extends Item>> includeItems = List.of(
 							ModItems.BIO_LAB,
