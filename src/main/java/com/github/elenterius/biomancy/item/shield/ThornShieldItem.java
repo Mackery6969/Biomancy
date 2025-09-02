@@ -9,10 +9,8 @@ import com.github.elenterius.geckolibextras.GLibExtras;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -37,12 +35,10 @@ public class ThornShieldItem extends LivingShieldItem implements Equipable, Shie
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-		InteractionResultHolder<ItemStack> result = super.use(level, player, hand);
+	public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
 		if (level instanceof ServerLevel serverLevel) {
-			GeoItem.getOrAssignId(result.getObject(), serverLevel);
+			GeoItem.getOrAssignId(stack, serverLevel); //hack to always ensure we have a unique id for the animation
 		}
-		return result;
 	}
 
 	@Override
@@ -86,7 +82,7 @@ public class ThornShieldItem extends LivingShieldItem implements Equipable, Shie
 				}
 			}
 
-			if (!state.isCurrentAnimationStage("retracted")) {
+			if (state.getController().getCurrentAnimation() != null && !state.isCurrentAnimationStage("retracted")) {
 				return state.setAndContinue(Animations.TRANSITION_TO_RETRACTED);
 			}
 
