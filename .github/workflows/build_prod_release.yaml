@@ -31,12 +31,12 @@ jobs:
 
       - name: Generate Conventional Changelog
         id: changelog
-        uses: TriPSs/conventional-changelog-action@v6.0.0
+        uses: TriPSs/conventional-changelog-action@v6.1.0
         with:
           preset: 'conventionalcommits'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          version-file: './mod_version.json'
-          version-path: 'semantic'
+          version-file: './gradle.properties'
+          version-path: 'mod_semantic_version'
           tag-prefix: '${{ steps.gradle_properties.outputs.minecraft_version }}-v2.'
           release-count: 1 # limit changelog to the current snapshot
           skip-commit: true # do not commit version bump
@@ -106,12 +106,12 @@ jobs:
 
       - name: Generate Conventional Changelog
         id: changelog
-        uses: TriPSs/conventional-changelog-action@v6.0.0
+        uses: TriPSs/conventional-changelog-action@v6.1.0
         with:
           preset: 'conventionalcommits'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          version-file: './mod_version.json'
-          version-path: 'semantic'
+          version-file: './gradle.properties'
+          version-path: 'mod_semantic_version'
           git-message: 'chore(release): {version}'
           tag-prefix: '${{ steps.gradle_properties.outputs.minecraft_version }}-v2.'
           create-summary: true
