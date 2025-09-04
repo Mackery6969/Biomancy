@@ -243,6 +243,10 @@ public final class ModItems {
 
 	private ModItems() {}
 
+	public static Stream<Item> stream() {
+		return ModItems.ITEMS.getEntries().stream().map(RegistryObject::get);
+	}
+
 	public static <T extends Item> Stream<T> findItems(Class<T> clazz) {
 		return ModItems.ITEMS.getEntries().stream()
 				.map(RegistryObject::get)

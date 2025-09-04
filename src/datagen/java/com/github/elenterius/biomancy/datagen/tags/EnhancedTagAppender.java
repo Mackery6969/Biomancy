@@ -8,7 +8,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.Collection;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public record EnhancedTagAppender<T>(IntrinsicHolderTagsProvider.IntrinsicTagAppender<T> delegate, IForgeRegistry<T> forgeRegistry) {
 
@@ -32,6 +34,18 @@ public record EnhancedTagAppender<T>(IntrinsicHolderTagsProvider.IntrinsicTagApp
 
 	@SafeVarargs
 	public final EnhancedTagAppender<T> add(T... entries) {
+		for (T entry : entries) {
+			add(entry);
+		}
+		return this;
+	}
+
+	public EnhancedTagAppender<T> add(Stream<T> stream) {
+		stream.forEach(this::add);
+		return this;
+	}
+
+	public EnhancedTagAppender<T> add(Collection<T> entries) {
 		for (T entry : entries) {
 			add(entry);
 		}

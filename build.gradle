@@ -222,6 +222,8 @@ dependencies {
 
 	runtimeOnly fg.deobf("maven.modrinth:appleskin:2.5.1+mc1.20.1") // display extra food information
 
+	// runtimeOnly fg.deobf("maven.modrinth:tooltip-overhaul:XLqxRPzw") // v1.0.0
+
 	runtimeOnly fg.deobf("maven.modrinth:alexs-mobs:1.22.9")
 	runtimeOnly fg.deobf("maven.modrinth:alexs-caves:2.0.2")
 	runtimeOnly fg.deobf("maven.modrinth:ice-and-fire-dragons:2.1.13-1.20.1-beta-5")

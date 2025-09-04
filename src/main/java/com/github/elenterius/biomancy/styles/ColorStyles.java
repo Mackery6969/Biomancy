@@ -10,7 +10,7 @@ public final class ColorStyles {
 	public static final int WHITE_ARGB = 0xFF_FFFFFF;
 	public static final int BLACK_ARGB = 0xFF_000000;
 
-	public static final int TOOLTIP_BACKGROUND_ARGB = 0xF2_000000; // 242 :)
+	public static final int TOOLTIP_BACKGROUND_ARGB = 0xF2_040404; // alpha of 242 :)
 	public static final int TOOLTIP_BORDER_ARGB = 0xFF_903E55;
 
 	public static final int NUTRIENTS_FUEL_BAR = 0x94A856;

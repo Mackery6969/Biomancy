@@ -24,6 +24,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import static net.minecraft.world.item.Items.*;
@@ -40,6 +42,10 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 
 	private static TagKey<Item> conventionalTag(String path) {
 		return ItemTags.create(new ResourceLocation("c", path));
+	}
+
+	private static TagKey<Item> biomancyTag(String path) {
+		return ItemTags.create(BiomancyMod.rl(path));
 	}
 
 	protected EnhancedTagAppender<Item> createTag(TagKey<Item> tag) {
@@ -88,6 +94,120 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 				.add(ModItems.NUTRIENT_PASTE.get())
 				.add(ModItems.NUTRIENT_BAR.get())
 				.add(ModItems.LIVING_FLESH.get());
+
+		Set<Item> advancedTypes = Set.of(
+				ModItems.ACID_GRENADE.get(),
+				ModItems.DECAY_GRENADE.get(),
+				ModItems.INCENDIARY_GRENADE.get(),
+				ModItems.TOXIN_GRENADE.get(),
+
+				ModItems.FERTILIZER.get(),
+				ModItems.AGEING_SERUM.get(),
+				ModItems.CLEANSING_SERUM.get(),
+				ModItems.ENLARGEMENT_SERUM.get(),
+				ModItems.FRENZY_SERUM.get(),
+				ModItems.REJUVENATION_SERUM.get(),
+				ModItems.SHRINKING_SERUM.get(),
+				ModItems.POTION_SERUM.get(),
+				ModItems.BREEDING_STIMULANT.get(),
+				ModItems.INSOMNIA_CURE.get(),
+				ModItems.ABSORPTION_BOOST.get(),
+
+				ModItems.FLESH_SPIKE.get(),
+				ModItems.ONEWAY_MEMBRANE.get(),
+				ModItems.IMPERMEABLE_MEMBRANE.get(),
+				ModItems.IMPERMEABLE_MEMBRANE_PANE.get(),
+				ModItems.BABY_PERMEABLE_MEMBRANE.get(),
+				ModItems.BABY_PERMEABLE_MEMBRANE_PANE.get(),
+				ModItems.ADULT_PERMEABLE_MEMBRANE.get(),
+				ModItems.ADULT_PERMEABLE_MEMBRANE_PANE.get(),
+				ModItems.UNDEAD_PERMEABLE_MEMBRANE.get(),
+				ModItems.UNDEAD_PERMEABLE_MEMBRANE_PANE.get(),
+
+				ModItems.CHISELED_FLESH_BLOCK.get(),
+				ModItems.FLESH_PILLAR.get(),
+				ModItems.ORNATE_FLESH_BLOCK.get(),
+				ModItems.ORNATE_FLESH_SLAB.get(),
+				ModItems.TUBULAR_FLESH_BLOCK.get(),
+
+				ModItems.INJECTOR.get(),
+				ModItems.ESSENCE_EXTRACTOR.get(),
+				ModItems.ESSENCE.get(),
+				ModItems.MAW_HOPPER.get(),
+				ModItems.TONGUE.get(),
+				ModItems.MODULAR_LARYNX.get(),
+				ModItems.JUMP_PAD.get(),
+				ModItems.CHRYSALIS.get()
+		);
+		Set<Item> specialTypes = Set.of(
+				ModItems.TAB_ICON.get(),
+				ModItems.DEV_ARM_CANNON.get(),
+				ModItems.GUIDE_BOOK.get(),
+
+				ModItems.BIO_FORGE.get(),
+				ModItems.BIO_LAB.get(),
+				ModItems.DECOMPOSER.get(),
+				ModItems.DIGESTER.get(),
+
+				ModItems.FLESHKIN_CHEST.get(),
+				ModItems.FLESHKIN_PRESSURE_PLATE.get(),
+				ModItems.BIOMETRIC_MEMBRANE.get(),
+
+				ModItems.RAVENOUS_CLAWS.get(),
+				ModItems.IMPALER.get(),
+				ModItems.THORN_SHIELD.get(),
+				ModItems.CAUSTIC_GUNBLADE.get(),
+
+				ModItems.ACOLYTE_ARMOR_HELMET.get(),
+				ModItems.ACOLYTE_ARMOR_CHESTPLATE.get(),
+				ModItems.ACOLYTE_ARMOR_LEGGINGS.get(),
+				ModItems.ACOLYTE_ARMOR_BOOTS.get(),
+				ModItems.WARRIOR_ARMOR_HELMET.get(),
+				ModItems.WARRIOR_ARMOR_CHESTPLATE.get(),
+				ModItems.WARRIOR_ARMOR_LEGGINGS.get(),
+				ModItems.WARRIOR_ARMOR_BOOTS.get()
+		);
+		Set<Item> primordialTypes = Set.of(
+				ModItems.DESPOIL_SICKLE.get(),
+				ModItems.LIVING_FLESH.get(),
+				ModItems.CREATOR_MIX.get(),
+
+				ModItems.PRIMORDIAL_FLESH_BLOB_SPAWN_EGG.get(),
+				ModItems.PRIMORDIAL_HUNGRY_FLESH_BLOB_SPAWN_EGG.get(),
+
+				ModItems.PRIMORDIAL_CRADLE.get(),
+				ModItems.PRIMORDIAL_CORE.get(),
+				ModItems.PRIMAL_BLOOM.get(),
+				ModItems.BLOOMBERRY.get(),
+				ModItems.BLOOMLIGHT.get(),
+				ModItems.PRIMORDIAL_BIO_LANTERN.get(),
+				ModItems.PRIMAL_ORIFICE.get(),
+				ModItems.PRIMAL_PERMEABLE_MEMBRANE.get(),
+				ModItems.PRIMAL_PERMEABLE_MEMBRANE_PANE.get(),
+
+				ModItems.PRIMAL_FLESH_BLOCK.get(),
+				ModItems.PRIMAL_FLESH_WALL.get(),
+				ModItems.PRIMAL_FLESH_STAIRS.get(),
+				ModItems.PRIMAL_FLESH_SLAB.get(),
+				ModItems.POROUS_PRIMAL_FLESH_BLOCK.get(),
+				ModItems.POROUS_PRIMAL_FLESH_WALL.get(),
+				ModItems.POROUS_PRIMAL_FLESH_STAIRS.get(),
+				ModItems.POROUS_PRIMAL_FLESH_SLAB.get(),
+				ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get(),
+				ModItems.SMOOTH_PRIMAL_FLESH_WALL.get(),
+				ModItems.SMOOTH_PRIMAL_FLESH_STAIRS.get(),
+				ModItems.SMOOTH_PRIMAL_FLESH_SLAB.get()
+		);
+
+		Set<Item> types = new HashSet<>();
+		types.addAll(advancedTypes);
+		types.addAll(specialTypes);
+		types.addAll(primordialTypes);
+
+		createTag(biomancyTag("normal_type")).add(ModItems.stream().filter(item -> !types.contains(item)));
+		createTag(biomancyTag("advanced_type")).add(advancedTypes);
+		createTag(biomancyTag("special_type")).add(specialTypes);
+		createTag(biomancyTag("primordial_type")).add(primordialTypes);
 	}
 
 	private void addMinecraftTags() {
