@@ -47,7 +47,7 @@ public class EssenceIngredient extends AbstractIngredient {
 		partialTag.put(EssenceItem.ESSENCE_DATA_KEY, essenceTag);
 		if (tier > 0) partialTag.putInt(EssenceItem.ESSENCE_TIER_KEY, tier);
 
-		ItemStack stack = EssenceItem.fromEntityType(entityType, 0);
+		ItemStack stack = EssenceItem.fromEntityType(entityType, tier); //we set the tier here only for visual purposes
 
 		return new EssenceIngredient(stack, partialTag);
 	}
