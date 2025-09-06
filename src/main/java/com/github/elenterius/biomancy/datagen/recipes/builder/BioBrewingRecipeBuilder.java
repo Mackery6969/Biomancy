@@ -3,6 +3,7 @@ package com.github.elenterius.biomancy.datagen.recipes.builder;
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.crafting.IngredientStack;
 import com.github.elenterius.biomancy.crafting.recipe.BioBrewingRecipe;
+import com.github.elenterius.biomancy.crafting.recipe.RecipeUtil;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.ModRecipes;
 import com.google.gson.JsonArray;
@@ -218,22 +219,22 @@ public final class BioBrewingRecipeBuilder implements RecipeBuilder<BioBrewingRe
 			for (IngredientStack ingredient : ingredients) {
 				jsonArray.add(ingredient.toJson());
 			}
-			json.add("ingredients", jsonArray);
+			json.add(RecipeUtil.JsonKeys.INGREDIENTS, jsonArray);
 
 			if (!reactant.isEmpty()) {
-				json.add("reactant", reactant.toJson());
+				json.add(RecipeUtil.JsonKeys.REACTANT, reactant.toJson());
 			}
 
-			json.add("result", result.toJson());
+			json.add(RecipeUtil.JsonKeys.RESULT, result.toJson());
 
-			json.addProperty("processingTime", craftingTime);
-			json.addProperty("nutrientsCost", craftingCost);
+			json.addProperty(RecipeUtil.JsonKeys.PROCESSING_TIME, craftingTime);
+			json.addProperty(RecipeUtil.JsonKeys.NUTRIENTS_COST, craftingCost);
 
 			//serialize conditions
 			if (!conditions.isEmpty()) {
 				JsonArray array = new JsonArray();
 				conditions.forEach(c -> array.add(CraftingHelper.serialize(c)));
-				json.add("conditions", array);
+				json.add(RecipeUtil.JsonKeys.CONDITIONS, array);
 			}
 		}
 

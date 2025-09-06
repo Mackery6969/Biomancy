@@ -92,15 +92,15 @@ public class StaticDigestingRecipe extends StaticProcessingRecipe implements Dig
 		@Override
 		public StaticDigestingRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
 
-			Ingredient ingredient = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "ingredient"));
+			Ingredient ingredient = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, RecipeUtil.JsonKeys.INGREDIENT));
 
 			if (ingredient.isEmpty()) {
 				throw new JsonParseException("No ingredient found for %s/%s recipe".formatted(ForgeRegistries.RECIPE_SERIALIZERS.getKey(this), recipeId));
 			}
 
-			ItemStack resultStack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
-			int time = GsonHelper.getAsInt(json, "processingTime", 100);
-			int cost = GsonHelper.getAsInt(json, "nutrientsCost", 1);
+			ItemStack resultStack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, RecipeUtil.JsonKeys.RESULT));
+			int time = GsonHelper.getAsInt(json, RecipeUtil.JsonKeys.PROCESSING_TIME, 100);
+			int cost = GsonHelper.getAsInt(json, RecipeUtil.JsonKeys.NUTRIENTS_COST, 1);
 
 			return new StaticDigestingRecipe(recipeId, resultStack, time, cost, ingredient);
 		}

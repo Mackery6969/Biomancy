@@ -34,6 +34,7 @@ public final class Nutrients {
 	public static void registerFuel(Item resourceItem, int value) {
 		FUEL_VALUES.put(resourceItem, value);
 	}
+
 	public static void registerRepairMaterial(Item resourceItem, int value) {
 		REPAIR_VALUES.put(resourceItem, value);
 	}

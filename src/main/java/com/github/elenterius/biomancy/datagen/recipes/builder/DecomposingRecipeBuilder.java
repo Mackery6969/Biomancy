@@ -4,6 +4,7 @@ import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.crafting.IngredientStack;
 import com.github.elenterius.biomancy.crafting.VariableOutput;
 import com.github.elenterius.biomancy.crafting.recipe.DecomposingRecipe;
+import com.github.elenterius.biomancy.crafting.recipe.RecipeUtil;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.ModRecipes;
 import com.github.elenterius.biomancy.util.ItemStackCounter;
@@ -271,24 +272,24 @@ public final class DecomposingRecipeBuilder implements RecipeBuilder<Decomposing
 		@Override
 		public void serializeRecipeData(JsonObject json) {
 			if (!group.isEmpty()) {
-				json.addProperty("group", group);
+				json.addProperty(RecipeUtil.JsonKeys.GROUP, group);
 			}
 
-			json.add("ingredient", ingredientStack.toJson());
+			json.add(RecipeUtil.JsonKeys.INGREDIENT, ingredientStack.toJson());
 
 			JsonArray jsonArray = new JsonArray();
 			for (VariableOutput output : outputs) {
 				jsonArray.add(output.serialize());
 			}
-			json.add("results", jsonArray);
+			json.add(RecipeUtil.JsonKeys.RESULTS, jsonArray);
 
-			json.addProperty("processingTime", craftingTime);
-			json.addProperty("nutrientsCost", craftingCost);
+			json.addProperty(RecipeUtil.JsonKeys.PROCESSING_TIME, craftingTime);
+			json.addProperty(RecipeUtil.JsonKeys.NUTRIENTS_COST, craftingCost);
 
 			if (!conditions.isEmpty()) {
 				JsonArray array = new JsonArray();
 				conditions.forEach(c -> array.add(CraftingHelper.serialize(c)));
-				json.add("conditions", array);
+				json.add(RecipeUtil.JsonKeys.CONDITIONS, array);
 			}
 		}
 

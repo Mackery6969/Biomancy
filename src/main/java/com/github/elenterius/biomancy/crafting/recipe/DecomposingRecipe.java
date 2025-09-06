@@ -108,16 +108,16 @@ public class DecomposingRecipe extends StaticProcessingRecipe {
 
 		@Override
 		public DecomposingRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-			JsonObject input = GsonHelper.getAsJsonObject(json, "ingredient");
+			JsonObject input = GsonHelper.getAsJsonObject(json, RecipeUtil.JsonKeys.INGREDIENT);
 			IngredientStack ingredientStack = IngredientStack.fromJson(input);
 
-			List<VariableOutput> results = RecipeUtil.readVariableProductionOutputs(GsonHelper.getAsJsonArray(json, "results"));
+			List<VariableOutput> results = RecipeUtil.readVariableProductionOutputs(GsonHelper.getAsJsonArray(json, RecipeUtil.JsonKeys.RESULTS));
 			if (results.size() > MAX_OUTPUTS) {
 				throw new JsonParseException(String.format("Too many outputs for %s recipe. Max amount is %d", ForgeRegistries.RECIPE_SERIALIZERS.getKey(this), MAX_OUTPUTS));
 			}
 
-			int time = GsonHelper.getAsInt(json, "processingTime", 100);
-			int cost = GsonHelper.getAsInt(json, "nutrientsCost", DEFAULT_CRAFTING_COST_NUTRIENTS);
+			int time = GsonHelper.getAsInt(json, RecipeUtil.JsonKeys.PROCESSING_TIME, 100);
+			int cost = GsonHelper.getAsInt(json, RecipeUtil.JsonKeys.NUTRIENTS_COST, DEFAULT_CRAFTING_COST_NUTRIENTS);
 
 			return new DecomposingRecipe(recipeId, results, ingredientStack, time, cost);
 		}

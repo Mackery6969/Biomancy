@@ -130,7 +130,7 @@ public class BioBrewingRecipe extends StaticProcessingRecipe {
 
 		@Override
 		public BioBrewingRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-			List<IngredientStack> ingredients = RecipeUtil.readIngredientStacks(GsonHelper.getAsJsonArray(json, "ingredients"));
+			List<IngredientStack> ingredients = RecipeUtil.readIngredientStacks(GsonHelper.getAsJsonArray(json, RecipeUtil.JsonKeys.INGREDIENTS));
 
 			if (ingredients.isEmpty()) {
 				throw new JsonParseException("No ingredients found for %s recipe".formatted(ForgeRegistries.RECIPE_SERIALIZERS.getKey(this)));
@@ -145,12 +145,12 @@ public class BioBrewingRecipe extends StaticProcessingRecipe {
 				if (count > 64) throw new IllegalArgumentException("Ingredient quantity of %d is larger than 64".formatted(count));
 			}
 
-			Ingredient reactant = json.has("reactant") ? RecipeUtil.readIngredient(json, "reactant") : Ingredient.EMPTY;
+			Ingredient reactant = json.has("reactant") ? RecipeUtil.readIngredient(json, RecipeUtil.JsonKeys.REACTANT) : Ingredient.EMPTY;
 
-			ItemStack resultStack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
+			ItemStack resultStack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, RecipeUtil.JsonKeys.RESULT));
 
-			int time = GsonHelper.getAsInt(json, "processingTime", 100);
-			int cost = GsonHelper.getAsInt(json, "nutrientsCost", DEFAULT_CRAFTING_COST_NUTRIENTS);
+			int time = GsonHelper.getAsInt(json, RecipeUtil.JsonKeys.PROCESSING_TIME, 100);
+			int cost = GsonHelper.getAsInt(json, RecipeUtil.JsonKeys.NUTRIENTS_COST, DEFAULT_CRAFTING_COST_NUTRIENTS);
 
 			return new BioBrewingRecipe(recipeId, resultStack, time, cost, ingredients, reactant);
 		}

@@ -2,6 +2,7 @@ package com.github.elenterius.biomancy.crafting.recipe;
 
 import com.github.elenterius.biomancy.crafting.IngredientStack;
 import com.github.elenterius.biomancy.crafting.VariableOutput;
+import com.github.elenterius.biomancy.menu.BioForgeTab;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.core.NonNullList;
@@ -22,37 +23,67 @@ import java.util.List;
 
 public final class RecipeUtil {
 
+	public static final class JsonKeys {
+		public static final String INGREDIENT = "ingredient";
+		public static final String INGREDIENTS = "ingredients";
+		public static final String REACTANT = "reactant";
+		public static final String RESULT = "result";
+		public static final String RESULTS = "results";
+		public static final String PROCESSING_TIME = "processingTime";
+		public static final String NUTRIENTS_COST = "nutrientsCost";
+		public static final String BIO_FORGE_TAB = BioForgeTab.JSON_KEY;
+
+		// misc recipe stuff
+		public static final String GROUP = "group";
+		public static final String CONDITIONS = "conditions";
+
+		// item related keys
+		public static final String COUNT = "count";
+		public static final String TAG = "tag";
+		public static final String ID = "id";
+
+		private JsonKeys() {}
+	}
+
+	public static final class TagKeys {
+		public static final String FORGE_CAPS = "ForgeCaps";
+
+		private TagKeys() {}
+	}
+
 	private RecipeUtil() {}
 
 	@SuppressWarnings("DataFlowIssue")
 	public static JsonObject writeItemStack(ItemStack stack) {
 		JsonObject json = new JsonObject();
-		json.addProperty("id", ForgeRegistries.ITEMS.getKey(stack.getItem()).toString());
-		if (stack.getCount() > 1) json.addProperty("count", stack.getCount());
-		if (stack.hasTag()) json.addProperty("tag", stack.getTag().toString());
+		json.addProperty(JsonKeys.ID, ForgeRegistries.ITEMS.getKey(stack.getItem()).toString());
+		if (stack.getCount() > 1) json.addProperty(JsonKeys.COUNT, stack.getCount());
+		if (stack.hasTag()) json.addProperty(JsonKeys.TAG, stack.getTag().toString());
 		return json;
 	}
 
 	@SuppressWarnings("DataFlowIssue")
 	public static ItemStack readItemStack(JsonObject json) {
-		String itemName = GsonHelper.getAsString(json, "id");
+		String itemName = GsonHelper.getAsString(json, JsonKeys.ID);
 		Item item = CraftingHelper.getItem(itemName, false);
-		if (json.has("tag")) {
-			CompoundTag tag = CraftingHelper.getNBT(json.get("tag"));
+		if (json.has(JsonKeys.TAG)) {
+			CompoundTag tag = CraftingHelper.getNBT(json.get(JsonKeys.TAG));
 			CompoundTag tmp = new CompoundTag();
 
-			if (tag.contains("ForgeCaps")) {
-				tmp.put("ForgeCaps", tag.get("ForgeCaps"));
-				tag.remove("ForgeCaps");
+			if (tag.contains(TagKeys.FORGE_CAPS)) {
+				tmp.put(TagKeys.FORGE_CAPS, tag.get(TagKeys.FORGE_CAPS));
+				tag.remove(TagKeys.FORGE_CAPS);
 			}
 
-			tmp.put("tag", tag);
-			tmp.putString("id", itemName);
-			tmp.putInt("Count", GsonHelper.getAsInt(json, "count", 1));
+			tmp.put(JsonKeys.TAG, tag);
+			tmp.putString(JsonKeys.ID, itemName);
+
+			//TODO: verify in mc 1.21.1 if the ItemStack still expects count with a capital C
+			tmp.putInt("Count", GsonHelper.getAsInt(json, JsonKeys.COUNT, 1));
 
 			return ItemStack.of(tmp);
 		}
-		return new ItemStack(item, GsonHelper.getAsInt(json, "count", 1));
+		return new ItemStack(item, GsonHelper.getAsInt(json, JsonKeys.COUNT, 1));
 	}
 
 	@SuppressWarnings("deprecation")

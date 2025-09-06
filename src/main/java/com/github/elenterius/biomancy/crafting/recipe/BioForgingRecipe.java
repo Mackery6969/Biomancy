@@ -177,7 +177,7 @@ public class BioForgingRecipe implements Recipe<Container> {
 
 		@Override
 		public BioForgingRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-			List<IngredientStack> ingredients = RecipeUtil.readIngredientStacks(GsonHelper.getAsJsonArray(json, "ingredients"));
+			List<IngredientStack> ingredients = RecipeUtil.readIngredientStacks(GsonHelper.getAsJsonArray(json, RecipeUtil.JsonKeys.INGREDIENTS));
 
 			if (ingredients.isEmpty()) {
 				throw new JsonParseException("No ingredients for recipe");
@@ -187,9 +187,9 @@ public class BioForgingRecipe implements Recipe<Container> {
 				throw new JsonParseException("Too many ingredients for recipe. The maximum is " + MAX_INGREDIENTS);
 			}
 
-			ItemStack resultStack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
+			ItemStack resultStack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, RecipeUtil.JsonKeys.RESULT));
 
-			int cost = GsonHelper.getAsInt(json, "nutrientsCost", DEFAULT_CRAFTING_COST_NUTRIENTS);
+			int cost = GsonHelper.getAsInt(json, RecipeUtil.JsonKeys.NUTRIENTS_COST, DEFAULT_CRAFTING_COST_NUTRIENTS);
 
 			BioForgeTab tab = BioForgeTab.fromJson(json);
 			if (tab == null) {

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public final class BioForgeTab {
-	private static final String JSON_KEY = "bio_forge_tab";
+	public static final String JSON_KEY = "bio_forge_tab";
 	private final int sortPriority;
 	private final Item iconItem;
 
