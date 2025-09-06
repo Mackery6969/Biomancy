@@ -1,0 +1,1 @@
+com.github.elenterius.biomancy.integration.kubejs.BiomancyKubeJSPlugin biomancy
