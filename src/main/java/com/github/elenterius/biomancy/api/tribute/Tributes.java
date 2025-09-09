@@ -18,7 +18,7 @@ import java.util.function.Predicate;
 @ApiStatus.Experimental
 public final class Tributes {
 
-	//TODO: make this data pack driven
+	//TODO: make this data pack driven in the far future
 	private static final Map<Item, Tribute> TRIBUTES = new HashMap<>();
 	private static final List<FuzzyTribute> FUZZY_TRIBUTES = new ArrayList<>();
 

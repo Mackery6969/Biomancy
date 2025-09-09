@@ -1,10 +1,19 @@
 package com.github.elenterius.biomancy.integration.kubejs;
 
+import com.github.elenterius.biomancy.api.nutrients.Nutrients;
+import com.github.elenterius.biomancy.api.serum.Serum;
+import com.github.elenterius.biomancy.api.tribute.SimpleTribute;
+import com.github.elenterius.biomancy.api.tribute.Tributes;
+import com.github.elenterius.biomancy.crafting.EssenceIngredient;
 import com.github.elenterius.biomancy.crafting.IngredientStack;
 import com.github.elenterius.biomancy.crafting.ItemCountRange;
 import com.github.elenterius.biomancy.crafting.VariableOutput;
 import com.github.elenterius.biomancy.crafting.recipe.RecipeUtil;
+import com.github.elenterius.biomancy.init.ModBioForgeTabs;
 import com.github.elenterius.biomancy.init.ModRecipes;
+import com.github.elenterius.biomancy.init.ModSerums;
+import com.github.elenterius.biomancy.item.EssenceItem;
+import com.github.elenterius.biomancy.menu.BioForgeTab;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
@@ -15,16 +24,35 @@ import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
+import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
 import dev.latvian.mods.kubejs.script.ScriptType;
+import dev.latvian.mods.kubejs.typings.Info;
+import dev.latvian.mods.kubejs.typings.Param;
 import dev.latvian.mods.kubejs.util.ClassFilter;
 import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.UUID;
 
 public class BiomancyKubeJSPlugin extends KubeJSPlugin {
 
 	public static final Logger LOGGER = LogManager.getLogger("Biomancy KubeJS Plugin");
+
+	public static final RegistryInfo<Serum> SERUM_REGISTRY = RegistryInfo.of(ModSerums.SERUMS.getRegistryKey(), Serum.class);
+	public static final RegistryInfo<BioForgeTab> BIO_FORGE_TAB_REGISTRY = RegistryInfo.of(ModBioForgeTabs.BIO_FORGE_TABS.getRegistryKey(), BioForgeTab.class);
+
+	@Override
+	public void init() {
+		SERUM_REGISTRY.addType("basic", SerumBuilder.class, SerumBuilder::new);
+		RegistryInfo.ITEM.addType("biomancy:basic_serum", SerumItemBuilder.class, SerumItemBuilder::new);
+
+		BIO_FORGE_TAB_REGISTRY.addType("basic", BioForgeTabBuilder.class, BioForgeTabBuilder::new);
+	}
 
 	@Override
 	public void registerClasses(ScriptType type, ClassFilter filter) {
@@ -39,7 +67,11 @@ public class BiomancyKubeJSPlugin extends KubeJSPlugin {
 
 	@Override
 	public void registerBindings(BindingsEvent event) {
-		event.add("Biomancy", new BiomancyKJSBindings());
+		event.add("Biomancy$EssenceIngredient", EssenceIngredientUtil.class);
+		event.add("Biomancy$EssenceItem", EssenceItemUtil.class);
+		event.add("Biomancy$Nutrients", Nutrients.class);
+		event.add("Biomancy$Tributes", Tributes.class);
+		event.add("Biomancy$SimpleTribute", SimpleTribute.class);
 	}
 
 	@SuppressWarnings("DataFlowIssue")
@@ -158,6 +190,85 @@ public class BiomancyKubeJSPlugin extends KubeJSPlugin {
 		RecipeKey<OutputItem[]> RESULTS = VARIABLE_OUTPUT.asArray().key(RecipeUtil.JsonKeys.RESULTS);
 
 		RecipeSchema SCHEMA = new RecipeSchema(RecipeKeys.INGREDIENT, RESULTS, RecipeKeys.PROCESSING_TIME, RecipeKeys.NUTRIENTS_COST);
+	}
+
+	interface EssenceIngredientUtil {
+
+		@Info(
+				value = "Creates a essence ingredient that matches a specific tier",
+				params = {
+						@Param(name = "entityType"),
+						@Param(name = "tier", value = "The tier that this essence ingredient requires. Valid tiers are: 0, 1, 2 or 3")
+				}
+		)
+		static EssenceIngredient fromTier(EntityType<?> entityType, int tier) {
+			BiomancyKubeJSPlugin.LOGGER.warn("Creating EssenceIngredient for {} with tier {}", entityType.getDescriptionId(), tier);
+			return EssenceIngredient.of(entityType, tier);
+		}
+
+		@Info(
+				value = "Creates a essence ingredient that matches any tier",
+				params = {@Param(name = "entityType")}
+		)
+		static EssenceIngredient from(EntityType<?> entityType) {
+			BiomancyKubeJSPlugin.LOGGER.warn("Creating EssenceIngredient for {} with tier -1", entityType.getDescriptionId());
+			return EssenceIngredient.of(entityType);
+		}
+
+	}
+
+	interface EssenceItemUtil {
+
+		@Info(
+				value = "Creates a tier 1 essence from the EntityType of a LivingEntity",
+				params = {@Param(name = "entityType")}
+		)
+		static ItemStack from(EntityType<?> entityType) {
+			return EssenceItem.fromEntityType(entityType, 1);
+		}
+
+		@Info(
+				value = "Creates a tier x essence from the EntityType of a LivingEntity",
+				params = {
+						@Param(name = "entityType"),
+						@Param(name = "tier", value = "Quality tier of the essence. Valid tiers are: 1, 2 or 3")
+				}
+		)
+		static ItemStack fromTier(EntityType<?> entityType, int tier) {
+			return EssenceItem.fromEntityType(entityType, tier);
+		}
+
+		@Info(
+				value = "Creates a unique essence from the EntityType of a LivingEntity",
+				params = {
+						@Param(name = "entityType"),
+						@Param(name = "uuid", value = "UUID of the LivingEntity")
+				}
+		)
+		static ItemStack fromUUID(EntityType<?> entityType, UUID uuid) {
+			return EssenceItem.fromEntityType(entityType, uuid);
+		}
+
+		@Info(
+				value = "Creates a tier 1 or 2 essence from a LivingEntity",
+				params = {@Param(name = "livingEntity")}
+		)
+		static ItemStack fromLiving(LivingEntity livingEntity) {
+			return EssenceItem.fromEntity(livingEntity, 0, 0);
+		}
+
+		@Info(
+				value = "Creates a tier x essence from a LivingEntity. The tier depends on the enchantment level of surgical precision.",
+				params = {
+						@Param(name = "livingEntity"),
+						@Param(name = "surgicalPrecisionLevel", value = "Level of surgical precision enchantment"),
+						@Param(name = "lootingLevel", value = "Level of looting enchantment")
+				}
+		)
+		static ItemStack fromLivingWith(LivingEntity livingEntity, int surgicalPrecisionLevel, int lootingLevel) {
+			return EssenceItem.fromEntity(livingEntity, surgicalPrecisionLevel, lootingLevel);
+		}
+
 	}
 
 }

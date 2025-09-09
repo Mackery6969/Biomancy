@@ -19,6 +19,7 @@ import java.util.Objects;
 public abstract class BasicSerum implements Serum {
 
 	private final int color;
+	private String translationKey = null;
 
 	protected BasicSerum(int color) {
 		this.color = color;
@@ -41,7 +42,10 @@ public abstract class BasicSerum implements Serum {
 
 	@Override
 	public String getNameTranslationKey() {
-		return Serum.makeTranslationKey(Objects.requireNonNull(ModSerums.REGISTRY.get().getKey(this)));
+		if (translationKey == null) {
+			translationKey = Serum.makeTranslationKey(Objects.requireNonNull(ModSerums.REGISTRY.get().getKey(this)));
+		}
+		return translationKey;
 	}
 
 	public void appendTooltip(CompoundTag tag, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
