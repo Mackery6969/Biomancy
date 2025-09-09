@@ -71,8 +71,10 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup/Cache Gradle & Validate Wrapper
+      - name: Setup Gradle, Validate Wrapper and Enable Caching
         uses: gradle/actions/setup-gradle@v4.4.2
+        with:
+          cache-read-only: false
 
       - name: Test Asset Generation
         run: ./gradlew runData
@@ -128,6 +130,8 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4.4.2
+        with:
+          cache-read-only: false
 
       - name: Generate Assets
         run: ./gradlew runData
@@ -176,12 +180,3 @@ jobs:
           description: |
             ## Version: `${{ steps.changelog.outputs.tag }}`
             ## [View changelog and download on GitHub](${{ steps.create_release.outputs.url }})
-            File SHA-256: `${{ steps.artifact-upload.outputs.artifact-digest }}`
-
-
-#      - name: Attach Changelog
-#        uses: sinshutu/upload-to-discord@v2.0.0
-#        env:
-#          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
-#        with:
-#          args: build/libs/*.jar CHANGELOG.md
