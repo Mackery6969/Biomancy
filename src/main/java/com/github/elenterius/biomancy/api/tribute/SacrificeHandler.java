@@ -124,10 +124,20 @@ public class SacrificeHandler implements INBTSerializable<CompoundTag> {
 		markDirty();
 	}
 
+	public void setSuccess(int amount) {
+		successValue = amount;
+		markDirty();
+	}
+
 	public void addHostile(int amount) {
 		if (amount == 0) return;
 
 		hostileValue = SaturatedMath.add(hostileValue, amount);
+		markDirty();
+	}
+
+	public void setHostile(int amount) {
+		hostileValue = amount;
 		markDirty();
 	}
 
@@ -138,10 +148,20 @@ public class SacrificeHandler implements INBTSerializable<CompoundTag> {
 		markDirty();
 	}
 
+	public void setAnomaly(int amount) {
+		anomalyValue = amount;
+		markDirty();
+	}
+
 	public void addDisease(int amount) {
 		if (amount == 0) return;
 
 		diseaseValue = SaturatedMath.add(diseaseValue, amount);
+		markDirty();
+	}
+
+	public void setDisease(int amount) {
+		diseaseValue = amount;
 		markDirty();
 	}
 

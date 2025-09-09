@@ -29,6 +29,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -65,7 +66,7 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-	private final SacrificeHandler sacrificeHandler;
+	protected final SacrificeHandler sacrificeHandler;
 	private LazyOptional<IFluidHandler> optionalFluidConsumer;
 
 	private long ticks;
@@ -249,12 +250,26 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 			}
 		}
 
+		final boolean canSpawnMob = PrimordialCradleEvents.triggerCanSpawnMob(level, this);
+
 		float successChance = sacrificeHandler.getSuccessChance();
 		float energyMultiplier = sacrificeHandler.getLifeEnergyPct();
 
-		if (level.random.nextFloat() < successChance) {
+		if (canSpawnMob && level.random.nextFloat() < successChance) {
+			final Mob customMob = PrimordialCradleEvents.triggerSpawnCustomMob(level, this);
 
-			if (level.random.nextFloat() < sacrificeHandler.getAnomalyChance()) {
+			if (customMob != null) {
+				float yaw = PrimordialCradleBlock.getYRotation(getBlockState());
+				customMob.moveTo(pos.getX() + 0.5f, pos.getY() + 4f / 16f, pos.getZ() + 0.5f, yaw, 0);
+				customMob.yHeadRot = customMob.getYRot();
+				customMob.yBodyRot = customMob.getYRot();
+				customMob.push(level.random.nextGaussian() * 0.02d, 0.5d, level.random.nextGaussian() * 0.02d);
+				level.addFreshEntity(customMob);
+
+				addPrimalEnergy(Math.round(2048 * energyMultiplier));
+				SoundUtil.Server.playBlockSound(level, pos, ModSoundEvents.CRADLE_SPAWN_MOB);
+			}
+			else if (level.random.nextFloat() < sacrificeHandler.getAnomalyChance()) {
 				spawnPrimordialFleshBlob(level, pos, sacrificeHandler);
 				addPrimalEnergy(Math.round(4096 * energyMultiplier));
 				SoundUtil.Server.playBlockSound(level, pos, ModSoundEvents.CRADLE_SPAWN_PRIMORDIAL_MOB);

@@ -4,6 +4,7 @@ import com.github.elenterius.biomancy.api.nutrients.Nutrients;
 import com.github.elenterius.biomancy.api.serum.Serum;
 import com.github.elenterius.biomancy.api.tribute.SimpleTribute;
 import com.github.elenterius.biomancy.api.tribute.Tributes;
+import com.github.elenterius.biomancy.block.cradle.PrimordialCradleEvents;
 import com.github.elenterius.biomancy.crafting.EssenceIngredient;
 import com.github.elenterius.biomancy.crafting.IngredientStack;
 import com.github.elenterius.biomancy.crafting.ItemCountRange;
@@ -34,6 +35,7 @@ import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,6 +54,14 @@ public class BiomancyKubeJSPlugin extends KubeJSPlugin {
 		RegistryInfo.ITEM.addType("biomancy:basic_serum", SerumItemBuilder.class, SerumItemBuilder::new);
 
 		BIO_FORGE_TAB_REGISTRY.addType("basic", BioForgeTabBuilder.class, BioForgeTabBuilder::new);
+
+		MinecraftForge.EVENT_BUS.addListener(BiomancyKJSEvents::canCradleSpawnMob);
+		MinecraftForge.EVENT_BUS.addListener(BiomancyKJSEvents::onCradleSpawnCustomMob);
+	}
+
+	@Override
+	public void registerEvents() {
+		BiomancyKJSEvents.GROUP.register();
 	}
 
 	@Override
@@ -72,6 +82,8 @@ public class BiomancyKubeJSPlugin extends KubeJSPlugin {
 		event.add("Biomancy$Nutrients", Nutrients.class);
 		event.add("Biomancy$Tributes", Tributes.class);
 		event.add("Biomancy$SimpleTribute", SimpleTribute.class);
+		event.add("Biomancy$CradleEvent$CanSpawnMob", PrimordialCradleEvents.CanSpawnMob.class);
+		event.add("Biomancy$CradleEvent$SpawnCustomMob", PrimordialCradleEvents.SpawnCustomMob.class);
 	}
 
 	@SuppressWarnings("DataFlowIssue")
