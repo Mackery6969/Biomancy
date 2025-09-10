@@ -238,9 +238,9 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addAbility("bio_alchemical_epidermis.desc", "+15% Resistance to harmful Status-Effects\n +25% Injection Success\n -25% Injection Damage");
 		addAbility("imposing_aura", "Imposing Aura");
 		addAbility("imposing_aura.desc", "When wearing a full set of this armor all nearby beings are afflicted with weakness and feeble mobs start to panic");
-		addAbility("strong_legs", "Copepods' Leap");
-		addAbility("strong_legs.desc", """
-				Consumes nutrients to boost normal jump power. When you jump and hold Shift the ability consumes 10 nutrients to perform a bullet jump.
+		addAbility("bullet_jump", "Bullet Jump");
+		addAbility("bullet_jump.desc", """
+				When you jump and hold Shift the ability consumes 10 nutrients to perform a bullet jump.
 				A bullet jump is a spinning movement technique that is similar to a dash. If you wear an elytra the bullet jump transforms into a launch boost.""");
 		addAbility("padded_soles", "Padded Soles");
 		addAbility(AcolyteArmorUpgrades.PRIMORDIAL_SIGHT.getId().getPath(), "Primordial Sight");
@@ -574,10 +574,10 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addItem(ModItems.ACOLYTE_ARMOR_CHESTPLATE, "Bio-Alchemist Chestplate");
 		addItem(ModItems.ACOLYTE_ARMOR_LEGGINGS, "Bio-Alchemist Leggings");
 		addItem(ModItems.ACOLYTE_ARMOR_BOOTS, "Bio-Alchemist Boots");
-		addItem(ModItems.WARRIOR_ARMOR_HELMET, "[WIP] Warrior Helmet");
-		addItem(ModItems.WARRIOR_ARMOR_CHESTPLATE, "[WIP] Warrior Chestplate");
-		addItem(ModItems.WARRIOR_ARMOR_LEGGINGS, "[WIP] Warrior Leggings");
-		addItem(ModItems.WARRIOR_ARMOR_BOOTS, "[WIP] Warrior Boots");
+		addItem(ModItems.WARRIOR_ARMOR_HELMET, "Warrior Helmet");
+		addItem(ModItems.WARRIOR_ARMOR_CHESTPLATE, "Warrior Chestplate");
+		addItem(ModItems.WARRIOR_ARMOR_LEGGINGS, "Warrior Leggings");
+		addItem(ModItems.WARRIOR_ARMOR_BOOTS, "Warrior Boots");
 
 		addItem(ModItems.THORN_SHIELD, "The Thorn", "Cute but prickly shield.");
 

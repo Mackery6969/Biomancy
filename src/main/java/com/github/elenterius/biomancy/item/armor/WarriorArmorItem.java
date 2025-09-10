@@ -34,9 +34,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -76,10 +74,6 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 			AttributeModifier movementSpeedPenalty = new AttributeModifier(uuid, "Armor movement speed penalty", -0.2d, AttributeModifier.Operation.MULTIPLY_BASE);
 			defaultBuilder.put(Attributes.MOVEMENT_SPEED, movementSpeedPenalty);
 			brokenBuilder.put(Attributes.MOVEMENT_SPEED, movementSpeedPenalty);
-
-			AttributeModifier armorWeight = new AttributeModifier(uuid, "Armor weight penalty", 0.4d, AttributeModifier.Operation.MULTIPLY_BASE);
-			defaultBuilder.put(ForgeMod.ENTITY_GRAVITY.get(), armorWeight);
-			brokenBuilder.put(ForgeMod.ENTITY_GRAVITY.get(), armorWeight);
 		}
 		else if (type == Type.LEGGINGS) {
 			defaultBuilder.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(uuid, "Armor movement speed bonus", 0.2d, AttributeModifier.Operation.MULTIPLY_BASE));
@@ -99,9 +93,9 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 		return slot == type.getSlot() ? brokenAttributeModifiers : ImmutableMultimap.of();
 	}
 
-	public double getJumpBoostPower(ItemStack stack) {
-		return type == ArmorItem.Type.LEGGINGS && getNutrients(stack) > 0 ? 0.15d : 0d;
-	}
+	//	public double getJumpBoostPower(ItemStack stack) {
+	//		return type == ArmorItem.Type.LEGGINGS && getNutrients(stack) > 0 ? 0.15d : 0d;
+	//	}
 
 	public float getFallReduction(ItemStack stack) {
 		return type == Type.BOOTS && getNutrients(stack) > 0 ? 0.5f : 0f;
@@ -115,9 +109,10 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 
 		if (isBulletJumpKeyDown) {
 			if (livingEntity instanceof ServerPlayer player) {
-				if (getNutrients(stack) >= 10) {
+				int cost = player.isAutoSpinAttack() ? 20 : 10;
+				if (getNutrients(stack) >= cost) {
 					if (bulletJump(player)) {
-						consumeNutrients(stack, 10);
+						consumeNutrients(stack, cost);
 						return true;
 					}
 				}
@@ -129,20 +124,21 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 			return false;
 		}
 
-		double jumpBoostPower = getJumpBoostPower(stack);
-		if (jumpBoostPower != 0d) {
-			if (getNutrients(stack) >= 1) {
-				livingEntity.setDeltaMovement(livingEntity.getDeltaMovement().add(0d, jumpBoostPower, 0d));
-				livingEntity.hasImpulse = true;
-				livingEntity.hurtMarked = true;
-				consumeNutrients(stack, 1);
-				return true;
-			}
-			else if (livingEntity instanceof ServerPlayer player) {
-				player.displayClientMessage(TextComponentUtil.getFailureMsgText("not_enough_nutrients"), true);
-				SoundUtil.Server.sendSoundToClient(player, ModSoundEvents.FLESHKIN_NO.get(), player.getSoundSource(), 1f, 1f + player.level().getRandom().nextFloat() * 0.4f);
-			}
-		}
+		//      // if we reintroduce this we must set the delta movement on the client side as well due to syncing issues
+		//		double jumpBoostPower = getJumpBoostPower(stack);
+		//		if (jumpBoostPower != 0d) {
+		//			if (getNutrients(stack) >= 1) {
+		//				livingEntity.setDeltaMovement(livingEntity.getDeltaMovement().add(0d, jumpBoostPower, 0d));
+		//				livingEntity.hasImpulse = true;
+		//				livingEntity.hurtMarked = true;
+		//				consumeNutrients(stack, 1);
+		//				return true;
+		//			}
+		//			else if (livingEntity instanceof ServerPlayer player) {
+		//				player.displayClientMessage(TextComponentUtil.getFailureMsgText("not_enough_nutrients"), true);
+		//				SoundUtil.Server.sendSoundToClient(player, ModSoundEvents.FLESHKIN_NO.get(), player.getSoundSource(), 1f, 1f + player.level().getRandom().nextFloat() * 0.4f);
+		//			}
+		//		}
 
 		return false;
 	}
@@ -206,7 +202,7 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 					velocity.z + jumpDirection.z * power
 			);
 
-			player.startAutoSpinAttack(20);
+			player.startAutoSpinAttack(20); //note: we can't pick longer duration because auto spin ticks don't reset when the player collides with the ground
 			if (player.onGround()) {
 				//hack to allow consecutive execution of spin attacks when the user holds down shift continuously
 				player.move(MoverType.SELF, new Vec3(0d, 1.1999999f, 0d));
@@ -283,7 +279,7 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 			private GeoArmorRenderer<?> renderer;
 
 			@Override
-			public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot slot, HumanoidModel<?> original) {
+			public HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot slot, HumanoidModel<?> original) {
 				if (renderer == null) {
 					renderer = new WarriorArmorRenderer();
 				}
@@ -329,14 +325,14 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 
 		if (type == Type.LEGGINGS) {
 			tooltip.add(ComponentUtil.EMPTY_LINE);
-			tooltip.add(TextComponentUtil.getAbilityText("strong_legs").withStyle(ChatFormatting.GRAY));
-			tooltip.add(ComponentUtil.space().append(TextComponentUtil.getAbilityText("strong_legs.desc")).withStyle(ChatFormatting.DARK_GRAY));
+			tooltip.add(TextComponentUtil.getAbilityText("bullet_jump").withStyle(ChatFormatting.GRAY));
+			tooltip.add(ComponentUtil.space().append(TextComponentUtil.getAbilityText("bullet_jump.desc")).withStyle(ChatFormatting.DARK_GRAY));
 
-			double jumpBoostPower = getJumpBoostPower(stack);
-			if (jumpBoostPower != 0d) {
-				String prefix = jumpBoostPower > 0d ? "+" : "";
-				tooltip.add(ComponentUtil.space().append(prefix + jumpBoostPower + " Jump Boost Power").withStyle(ChatFormatting.DARK_GRAY));
-			}
+			//			double jumpBoostPower = getJumpBoostPower(stack);
+			//			if (jumpBoostPower != 0d) {
+			//				String prefix = jumpBoostPower > 0d ? "+" : "";
+			//				tooltip.add(ComponentUtil.space().append(prefix + jumpBoostPower + " Jump Boost Power").withStyle(ChatFormatting.DARK_GRAY));
+			//			}
 		}
 		else if (type == Type.BOOTS) {
 			tooltip.add(ComponentUtil.EMPTY_LINE);
