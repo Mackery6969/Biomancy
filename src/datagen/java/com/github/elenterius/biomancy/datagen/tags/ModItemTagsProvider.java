@@ -24,6 +24,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -204,10 +205,10 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 		types.addAll(specialTypes);
 		types.addAll(primordialTypes);
 
-		createTag(biomancyTag("normal_type")).add(ModItems.stream().filter(item -> !types.contains(item)));
-		createTag(biomancyTag("advanced_type")).add(advancedTypes);
-		createTag(biomancyTag("special_type")).add(specialTypes);
-		createTag(biomancyTag("primordial_type")).add(primordialTypes);
+		createTag(biomancyTag("normal_type")).add(ModItems.stream().filter(item -> !types.contains(item)).sorted(Comparator.comparing(Item::getDescriptionId)));
+		createTag(biomancyTag("advanced_type")).add(advancedTypes.stream().sorted(Comparator.comparing(Item::getDescriptionId)));
+		createTag(biomancyTag("special_type")).add(specialTypes.stream().sorted(Comparator.comparing(Item::getDescriptionId)));
+		createTag(biomancyTag("primordial_type")).add(primordialTypes.stream().sorted(Comparator.comparing(Item::getDescriptionId)));
 	}
 
 	private void addMinecraftTags() {
