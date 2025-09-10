@@ -69,7 +69,7 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 			defaultBuilder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(uuid, "Armor attack damage bonus", 0.2d, AttributeModifier.Operation.MULTIPLY_BASE));
 			defaultBuilder.put(Attributes.ATTACK_KNOCKBACK, new AttributeModifier(uuid, "Armor attack knockback bonus", 0.5d, AttributeModifier.Operation.ADDITION));
 
-			AttributeModifier attackSpeedPenalty = new AttributeModifier(uuid, "Armor attack speed penalty", -0.2d, AttributeModifier.Operation.MULTIPLY_BASE);
+			AttributeModifier attackSpeedPenalty = new AttributeModifier(uuid, "Armor attack speed penalty", -0.1d, AttributeModifier.Operation.MULTIPLY_BASE);
 			defaultBuilder.put(Attributes.ATTACK_SPEED, attackSpeedPenalty);
 			brokenBuilder.put(Attributes.ATTACK_SPEED, attackSpeedPenalty);
 
