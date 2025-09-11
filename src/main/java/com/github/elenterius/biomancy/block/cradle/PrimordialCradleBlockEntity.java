@@ -2,10 +2,10 @@ package com.github.elenterius.biomancy.block.cradle;
 
 import com.github.elenterius.biomancy.BiomancyConfig;
 import com.github.elenterius.biomancy.api.tribute.SacrificeHandler;
-import com.github.elenterius.biomancy.api.tribute.SimpleTribute;
 import com.github.elenterius.biomancy.api.tribute.Tribute;
 import com.github.elenterius.biomancy.block.base.SimpleSyncedBlockEntity;
 import com.github.elenterius.biomancy.config.PrimalEnergySettings;
+import com.github.elenterius.biomancy.entity.mob.PrimordialFleshkin;
 import com.github.elenterius.biomancy.entity.mob.fleshblob.FleshBlob;
 import com.github.elenterius.biomancy.init.*;
 import com.github.elenterius.biomancy.item.armor.AcolyteArmorItem;
@@ -25,6 +25,8 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
@@ -39,6 +41,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
@@ -223,12 +226,9 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 
 		float radius = 8f;
 		AABB aabb = AABB.ofSize(Vec3.atCenterOf(pos), radius * 2, radius * 2, radius * 2);
-		List<Player> nearbyPlayers = level.getEntitiesOfClass(Player.class, aabb, EntitySelector.NO_SPECTATORS.and(Entity::isAlive));
+		List<ServerPlayer> nearbyPlayers = level.getEntitiesOfClass(ServerPlayer.class, aabb, EntitySelector.NO_SPECTATORS.and(Entity::isAlive));
 
 		if (!nearbyPlayers.isEmpty()) {
-			Tribute tribute = SimpleTribute.builder().successModifier(1).hostileModifier(-5).build();
-			Tribute specialTribute = SimpleTribute.builder().successModifier(20).hostileModifier(-1000).build();
-
 			final Set<HashCode> HASHES = Set.of(
 					HashCode.fromString("20f0bf6814e62bb7297669efb542f0af6ee0be1a9b87d0702853d8cc5aa15dc4"),
 					HashCode.fromString("2853ecb1a83a461153a2f8b6a274eab0c4597a9ef7d622673dab419543d486b6")
@@ -237,53 +237,40 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 			for (Player player : nearbyPlayers) {
 				for (ItemStack armor : player.getArmorSlots()) {
 					if (armor.getItem() instanceof AcolyteArmorItem) {
-						sacrificeHandler.addTribute(tribute);
+						sacrificeHandler.addSuccess(1);
+						sacrificeHandler.addHostile(-5);
 					}
 				}
 
 				if (player.isCrouching()) {
 					HashCode hashCode = Hashing.sha256().hashString(player.getStringUUID(), StandardCharsets.UTF_8);
 					if (HASHES.contains(hashCode)) {
-						sacrificeHandler.addTribute(specialTribute);
+						sacrificeHandler.addSuccess(20);
+						sacrificeHandler.addHostile(-1000);
 					}
 				}
 			}
 		}
 
-		final boolean canSpawnMob = PrimordialCradleEvents.triggerCanSpawnMob(level, this);
+		final boolean canSpawnMob = PrimordialCradleEvents.triggerCanSpawnMob(level, this, nearbyPlayers);
 
 		float successChance = sacrificeHandler.getSuccessChance();
 		float energyMultiplier = sacrificeHandler.getLifeEnergyPct();
 
 		if (canSpawnMob && level.random.nextFloat() < successChance) {
-			final Mob customMob = PrimordialCradleEvents.triggerSpawnCustomMob(level, this);
-
-			if (customMob != null) {
-				float yaw = PrimordialCradleBlock.getYRotation(getBlockState());
-				customMob.moveTo(pos.getX() + 0.5f, pos.getY() + 4f / 16f, pos.getZ() + 0.5f, yaw, 0);
-				customMob.yHeadRot = customMob.getYRot();
-				customMob.yBodyRot = customMob.getYRot();
-				customMob.push(level.random.nextGaussian() * 0.02d, 0.5d, level.random.nextGaussian() * 0.02d);
-				level.addFreshEntity(customMob);
-
-				addPrimalEnergy(Math.round(2048 * energyMultiplier));
-				SoundUtil.Server.playBlockSound(level, pos, ModSoundEvents.CRADLE_SPAWN_MOB);
-			}
-			else if (level.random.nextFloat() < sacrificeHandler.getAnomalyChance()) {
-				spawnPrimordialFleshBlob(level, pos, sacrificeHandler);
+			if (level.random.nextFloat() < sacrificeHandler.getAnomalyChance()) {
+				spawnPrimordialFleshBlob(level, pos, sacrificeHandler, nearbyPlayers);
 				addPrimalEnergy(Math.round(4096 * energyMultiplier));
-				SoundUtil.Server.playBlockSound(level, pos, ModSoundEvents.CRADLE_SPAWN_PRIMORDIAL_MOB);
 			}
 			else {
 				if (sacrificeHandler.getHostileChance() < -4.2f) {
-					spawnLegacyFleshBlob(level, pos, sacrificeHandler);
+					spawnLegacyFleshBlob(level, pos, sacrificeHandler, nearbyPlayers);
 				}
 				else {
-					spawnFleshBlob(level, pos, sacrificeHandler);
+					spawnFleshBlob(level, pos, sacrificeHandler, nearbyPlayers);
 				}
 
 				addPrimalEnergy(Math.round(2048 * energyMultiplier));
-				SoundUtil.Server.playBlockSound(level, pos, ModSoundEvents.CRADLE_SPAWN_MOB);
 			}
 
 			PrimordialEcosystem.tryToReplaceBlock(level, pos.below(), ModBlocks.PRIMAL_FLESH.get().defaultBlockState());
@@ -369,45 +356,49 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 		return amount;
 	}
 
-	public void spawnPrimordialFleshBlob(ServerLevel level, BlockPos pos, SacrificeHandler sacrificeHandler) {
+	public void spawnPrimordialFleshBlob(ServerLevel level, BlockPos pos, SacrificeHandler sacrificeHandler, List<ServerPlayer> nearbyPlayers) {
 		EntityType<? extends FleshBlob> entityType = level.random.nextFloat() < sacrificeHandler.getHostileChance() ? ModEntityTypes.PRIMORDIAL_HUNGRY_FLESH_BLOB.get() : ModEntityTypes.PRIMORDIAL_FLESH_BLOB.get();
-		spawnPrimordialFleshBlob(level, pos, entityType);
+		spawnPrimordialFleshBlob(level, pos, entityType, nearbyPlayers);
 	}
 
-	public void spawnPrimordialFleshBlob(ServerLevel level, BlockPos pos, EntityType<? extends FleshBlob> fleshBlobType) {
+	public void spawnPrimordialFleshBlob(ServerLevel level, BlockPos pos, EntityType<? extends FleshBlob> fleshBlobType, List<ServerPlayer> nearbyPlayers) {
 		FleshBlob fleshBlob = fleshBlobType.create(level);
 		if (fleshBlob != null) {
-			float yaw = PrimordialCradleBlock.getYRotation(getBlockState());
-			fleshBlob.moveTo(pos.getX() + 0.5f, pos.getY() + 4f / 16f, pos.getZ() + 0.5f, yaw, 0);
-			fleshBlob.yHeadRot = fleshBlob.getYRot();
-			fleshBlob.yBodyRot = fleshBlob.getYRot();
 			fleshBlob.restrictTo(pos, 32);
-			fleshBlob.push(level.random.nextGaussian() * 0.02d, 0.5d, level.random.nextGaussian() * 0.02d);
-			level.addFreshEntity(fleshBlob);
+			spawnMob(level, pos, fleshBlob, nearbyPlayers);
 		}
 	}
 
-	public void spawnLegacyFleshBlob(ServerLevel level, BlockPos pos, SacrificeHandler sacrificeHandler) {
-		spawnFleshBlob(level, pos, sacrificeHandler, ModEntityTypes.LEGACY_FLESH_BLOB.get());
+	public void spawnLegacyFleshBlob(ServerLevel level, BlockPos pos, SacrificeHandler sacrificeHandler, List<ServerPlayer> nearbyPlayers) {
+		spawnFleshBlob(level, pos, sacrificeHandler, ModEntityTypes.LEGACY_FLESH_BLOB.get(), nearbyPlayers);
 	}
 
-	public void spawnFleshBlob(ServerLevel level, BlockPos pos, SacrificeHandler sacrificeHandler) {
+	public void spawnFleshBlob(ServerLevel level, BlockPos pos, SacrificeHandler sacrificeHandler, List<ServerPlayer> nearbyPlayers) {
 		EntityType<? extends FleshBlob> entityType = level.random.nextFloat() < sacrificeHandler.getHostileChance() ? ModEntityTypes.HUNGRY_FLESH_BLOB.get() : ModEntityTypes.FLESH_BLOB.get();
-		spawnFleshBlob(level, pos, sacrificeHandler, entityType);
+		spawnFleshBlob(level, pos, sacrificeHandler, entityType, nearbyPlayers);
 	}
 
-	public void spawnFleshBlob(ServerLevel level, BlockPos pos, SacrificeHandler sacrificeHandler, EntityType<? extends FleshBlob> fleshBlobType) {
+	public void spawnFleshBlob(ServerLevel level, BlockPos pos, SacrificeHandler sacrificeHandler, EntityType<? extends FleshBlob> fleshBlobType, List<ServerPlayer> nearbyPlayers) {
 		FleshBlob fleshBlob = fleshBlobType.create(level);
 		if (fleshBlob != null) {
-			float yaw = PrimordialCradleBlock.getYRotation(getBlockState());
-			fleshBlob.moveTo(pos.getX() + 0.5f, pos.getY() + 4f / 16f, pos.getZ() + 0.5f, yaw, 0);
-			fleshBlob.yHeadRot = fleshBlob.getYRot();
-			fleshBlob.yBodyRot = fleshBlob.getYRot();
 			fleshBlob.setTumors(sacrificeHandler.getTumorFactor());
 			fleshBlob.restrictTo(pos, 24);
-			fleshBlob.push(level.random.nextGaussian() * 0.02d, 0.5d, level.random.nextGaussian() * 0.02d);
-			level.addFreshEntity(fleshBlob);
+			spawnMob(level, pos, fleshBlob, nearbyPlayers);
 		}
+	}
+
+	public void spawnMob(ServerLevel level, BlockPos pos, Mob mobToSpawn, List<ServerPlayer> nearbyPlayers) {
+		mobToSpawn = PrimordialCradleEvents.triggerOnSpawnMob(level, this, mobToSpawn, nearbyPlayers);
+
+		float yaw = PrimordialCradleBlock.getYRotation(getBlockState());
+		mobToSpawn.moveTo(pos.getX() + 0.5f, pos.getY() + 4f / 16f, pos.getZ() + 0.5f, yaw, 0);
+		mobToSpawn.yHeadRot = mobToSpawn.getYRot();
+		mobToSpawn.yBodyRot = mobToSpawn.getYRot();
+		mobToSpawn.push(level.random.nextGaussian() * 0.02d, 0.5d, level.random.nextGaussian() * 0.02d);
+		level.addFreshEntity(mobToSpawn);
+
+		RegistryObject<SoundEvent> soundEvent = mobToSpawn instanceof PrimordialFleshkin ? ModSoundEvents.CRADLE_SPAWN_PRIMORDIAL_MOB : ModSoundEvents.CRADLE_SPAWN_MOB;
+		SoundUtil.Server.playBlockSound(level, pos, soundEvent);
 	}
 
 	public void attackAOE() {

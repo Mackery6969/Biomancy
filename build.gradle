@@ -73,7 +73,6 @@ minecraft {
 			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
 
 			property 'geckolib.disable_examples', 'true'
-			property 'biomancy.disable_kubejs', 'true'
 
 			// Hot-Swapping via JBR, includes schema changes
 			// https://forge.gemwire.uk/wiki/Hotswap#Applying_schema_changes
@@ -97,12 +96,6 @@ minecraft {
 			workingDirectory project.file('run/client')
 			property 'forge.enabledGameTestNamespaces', mod_id
 			args '--username', 'Dev2'
-		}
-
-		clientKubeJS {
-			parent runs.client
-			workingDirectory project.file('run/client')
-			property 'biomancy.disable_kubejs', 'false'
 		}
 
 		server {
@@ -241,6 +234,12 @@ dependencies {
 	compileOnly fg.deobf("dev.latvian.mods:rhino-forge:2001.2.3-build.10")
 	compileOnly fg.deobf("dev.architectury:architectury-forge:9.1.12")
 
+	// needs to be commented out for datagen to work
+//	runtimeOnly fg.deobf("dev.latvian.mods:kubejs-forge:2001.6.5-build.20")
+//	runtimeOnly fg.deobf("dev.latvian.mods:rhino-forge:2001.2.3-build.10")
+//	runtimeOnly fg.deobf("dev.architectury:architectury-forge:9.1.12")
+//	runtimeOnly fg.deobf("maven.modrinth:probejs:6.0.0")
+
 	// display extra food information
 	runtimeOnly fg.deobf("maven.modrinth:appleskin:2.5.1+mc1.20.1")
 
@@ -273,15 +272,6 @@ dependencies {
 	datagenImplementation fg.deobf("maven.modrinth:sons-of-sins:2.1.6")
 
 	datagenImplementation sourceSets.main.output
-}
-
-if (System.getProperty("biomancy.disable_kubejs") == "false") {
-	dependencies {
-		runtimeOnly fg.deobf("dev.latvian.mods:kubejs-forge:2001.6.5-build.20")
-		runtimeOnly fg.deobf("dev.latvian.mods:rhino-forge:2001.2.3-build.10")
-		runtimeOnly fg.deobf("dev.architectury:architectury-forge:9.1.12")
-		runtimeOnly fg.deobf("maven.modrinth:probejs:6.0.0")
-	}
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

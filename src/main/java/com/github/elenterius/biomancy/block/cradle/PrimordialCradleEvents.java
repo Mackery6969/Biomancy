@@ -2,23 +2,26 @@ package com.github.elenterius.biomancy.block.cradle;
 
 import com.github.elenterius.biomancy.api.tribute.SacrificeHandler;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Mob;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public final class PrimordialCradleEvents {
 
-	public static boolean triggerCanSpawnMob(ServerLevel level, PrimordialCradleBlockEntity cradle) {
-		CanSpawnMob event = new CanSpawnMob(level, cradle);
+	public static boolean triggerCanSpawnMob(ServerLevel level, PrimordialCradleBlockEntity cradle, List<ServerPlayer> nearbyPlayers) {
+		CanSpawnMob event = new CanSpawnMob(level, cradle, nearbyPlayers);
 		return !MinecraftForge.EVENT_BUS.post(event);
 	}
 
-	public static @Nullable Mob triggerSpawnCustomMob(ServerLevel level, PrimordialCradleBlockEntity cradle) {
-		SpawnCustomMob event = new SpawnCustomMob(level, cradle);
+	public static Mob triggerOnSpawnMob(ServerLevel level, PrimordialCradleBlockEntity cradle, Mob mobToSpawn, List<ServerPlayer> nearbyPlayers) {
+		OnSpawnMob event = new OnSpawnMob(level, cradle, mobToSpawn, nearbyPlayers);
 		boolean cancelled = MinecraftForge.EVENT_BUS.post(event);
-		return !cancelled ? event.getCustomMob() : null;
+		return !cancelled ? event.getMobToSpawn() : mobToSpawn;
 	}
 
 	@Cancelable
@@ -26,10 +29,12 @@ public final class PrimordialCradleEvents {
 
 		private final ServerLevel level;
 		private final PrimordialCradleBlockEntity cradle;
+		private final List<ServerPlayer> nearbyPlayers;
 
-		public CanSpawnMob(ServerLevel level, PrimordialCradleBlockEntity cradle) {
+		public CanSpawnMob(ServerLevel level, PrimordialCradleBlockEntity cradle, List<ServerPlayer> nearbyPlayers) {
 			this.level = level;
 			this.cradle = cradle;
+			this.nearbyPlayers = nearbyPlayers;
 		}
 
 		public ServerLevel getLevel() {
@@ -49,18 +54,27 @@ public final class PrimordialCradleEvents {
 			cradle.sacrificeHandler.setHostile(100);
 		}
 
+		public List<ServerPlayer> getNearbyPlayers() {
+			return nearbyPlayers;
+		}
+
 	}
 
 	@Cancelable
-	public static class SpawnCustomMob extends Event {
+	public static class OnSpawnMob extends Event {
 
 		private final ServerLevel level;
 		private final PrimordialCradleBlockEntity cradle;
-		private @Nullable Mob customMob;
+		private final List<ServerPlayer> nearbyPlayers;
 
-		public SpawnCustomMob(ServerLevel level, PrimordialCradleBlockEntity cradle) {
+		private final Mob originalMobSpawn;
+		private @Nullable Mob overrideMobSpawn;
+
+		public OnSpawnMob(ServerLevel level, PrimordialCradleBlockEntity cradle, Mob mobToSpawn, List<ServerPlayer> nearbyPlayers) {
 			this.level = level;
 			this.cradle = cradle;
+			this.nearbyPlayers = nearbyPlayers;
+			this.originalMobSpawn = mobToSpawn;
 		}
 
 		public ServerLevel getLevel() {
@@ -71,17 +85,25 @@ public final class PrimordialCradleEvents {
 			return cradle;
 		}
 
-		public SacrificeHandler getSacrificeHandler() {
-			return cradle.sacrificeHandler;
+		public Mob getOriginalMob() {
+			return originalMobSpawn;
 		}
 
 		@Nullable
-		public Mob getCustomMob() {
-			return customMob;
+		public Mob getMobOverride() {
+			return overrideMobSpawn;
 		}
 
-		public void setCustomMob(Mob mob) {
-			customMob = mob;
+		public void setMobOverride(@Nullable Mob mob) {
+			overrideMobSpawn = mob;
+		}
+
+		public Mob getMobToSpawn() {
+			return overrideMobSpawn != null ? overrideMobSpawn : originalMobSpawn;
+		}
+
+		public List<ServerPlayer> getNearbyPlayers() {
+			return nearbyPlayers;
 		}
 
 	}

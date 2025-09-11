@@ -7,14 +7,17 @@ import dev.latvian.mods.kubejs.event.*;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Mob;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 final class BiomancyKJSEvents {
 
 	static final EventGroup GROUP = EventGroup.of("BiomancyEvents");
 	static final EventHandler CAN_SPAWN_MOB = GROUP.server("canCradleSpawnMob", () -> CanCradleSpawnMobEventKJS.class);
-	static final EventHandler ON_SPAWN_CUSTOM_MOB = GROUP.server("onCradleSpawnCustomMob", () -> OnCradleSpawnCustomMobEventKJS.class);
+	static final EventHandler ON_SPAWN_MOB = GROUP.server("onCradleSpawnMob", () -> OnCradleSpawnMobEventKJS.class);
 
 	static void canCradleSpawnMob(PrimordialCradleEvents.CanSpawnMob forgeEvent) {
 		if (!CAN_SPAWN_MOB.hasListeners()) return;
@@ -25,10 +28,10 @@ final class BiomancyKJSEvents {
 		}
 	}
 
-	static void onCradleSpawnCustomMob(PrimordialCradleEvents.SpawnCustomMob forgeEvent) {
-		if (!ON_SPAWN_CUSTOM_MOB.hasListeners()) return;
+	static void onCradleSpawnMob(PrimordialCradleEvents.OnSpawnMob forgeEvent) {
+		if (!ON_SPAWN_MOB.hasListeners()) return;
 
-		EventResult eventResult = ON_SPAWN_CUSTOM_MOB.post(new OnCradleSpawnCustomMobEventKJS(forgeEvent));
+		EventResult eventResult = ON_SPAWN_MOB.post(new OnCradleSpawnMobEventKJS(forgeEvent));
 		if (eventResult.interruptFalse()) {
 			forgeEvent.setCanceled(true);
 		}
@@ -52,13 +55,71 @@ final class BiomancyKJSEvents {
 			return forgeEvent.getCradle();
 		}
 
+		@Info("All players that were present in a 8 block radius")
+		public List<ServerPlayer> getNearbyPlayers() {
+			return forgeEvent.getNearbyPlayers();
+		}
+
 		@Info("""
 				Provides info about values like success, hostility, anomaly, etc.
 				
-				You may edit these values.
-				But if you want to prevent the spawn of any mob you must cancel this event instead.""")
-		public SacrificeHandler getSacrificeHandler() {
+				You may modify these values if you know what you are doing.
+				
+				If you want to prevent the spawn of any mob regardless of the success chance you must cancel this event instead.""")
+		public SacrificeHandler getInternalValues() {
 			return forgeEvent.getSacrificeHandler();
+		}
+
+		@Info("Get the probability that a mob will spawn")
+		public float getSuccessChance() {
+			return forgeEvent.getSacrificeHandler().getSuccessChance();
+		}
+
+		@Info(
+				value = "Set the probability that a mob will spawn",
+				params = @Param(name = "probability", value = "floating point number")
+		)
+		public void setSuccessChance(float probability) {
+			forgeEvent.getSacrificeHandler().setSuccess(Math.round(probability * 100));
+		}
+
+		@Info("Get the probability that a hostile flesh blob will spawn")
+		public float getHostileChance() {
+			return forgeEvent.getSacrificeHandler().getHostileChance();
+		}
+
+		@Info(
+				value = "Set the probability that a hostile flesh blob will spawn",
+				params = @Param(name = "probability", value = "floating point number")
+		)
+		public void setHostileChance(float probability) {
+			forgeEvent.getSacrificeHandler().setHostile(Math.round(probability * 100));
+		}
+
+		@Info("Get the probability that a primordial flesh blob will spawn")
+		public float getAnomalyChance() {
+			return forgeEvent.getSacrificeHandler().getAnomalyChance();
+		}
+
+		@Info(
+				value = "Set the probability that a primordial flesh blob will spawn",
+				params = @Param(name = "probability", value = "floating point number")
+		)
+		public void setAnomalyChance(float probability) {
+			forgeEvent.getSacrificeHandler().setAnomaly(Math.round(probability * 100));
+		}
+
+		@Info("Get the probability of how many tumors a flesh blob will have")
+		public float getDiseaseChance() {
+			return forgeEvent.getSacrificeHandler().getTumorFactor();
+		}
+
+		@Info(
+				value = "Set the probability of how many tumors a flesh blob will have",
+				params = @Param(name = "probability", value = "floating point number")
+		)
+		public void setDiseaseChance(float probability) {
+			forgeEvent.getSacrificeHandler().setDisease(Math.round(probability * 100));
 		}
 
 		@Info("Cancel the event and force the cradle to attack")
@@ -70,14 +131,17 @@ final class BiomancyKJSEvents {
 	}
 
 	@Info("""
-			Allows you to provide your own mob that should be spawned instead of an flesh blob.
+			Allows you to override with [#setMobOverride] what mob the cradle spawns.
+			If you don't set the override the cradle will spawn a Flesh Blob according to its own logic.
+			
 			Placement and rotation of the mob is handled by the cradle.
 			
-			The event is cancelable.""")
-	static class OnCradleSpawnCustomMobEventKJS extends EventJS {
-		private final PrimordialCradleEvents.SpawnCustomMob forgeEvent;
+			Canceling this event won't stop the cradle from spawning a Flesh Blob. Use the CanCradleSpawnMob event for that.""")
+	static class OnCradleSpawnMobEventKJS extends EventJS {
 
-		public OnCradleSpawnCustomMobEventKJS(PrimordialCradleEvents.SpawnCustomMob forgeEvent) {
+		private final PrimordialCradleEvents.OnSpawnMob forgeEvent;
+
+		public OnCradleSpawnMobEventKJS(PrimordialCradleEvents.OnSpawnMob forgeEvent) {
 			this.forgeEvent = forgeEvent;
 		}
 
@@ -89,22 +153,52 @@ final class BiomancyKJSEvents {
 			return forgeEvent.getCradle();
 		}
 
-		@Info("Provides info about values like success, hostility, anomaly, etc.")
-		public SacrificeHandler getSacrificeHandler() {
-			return forgeEvent.getSacrificeHandler();
+		@Info("All players that were present in a 8 block radius")
+		public List<ServerPlayer> getNearbyPlayers() {
+			return forgeEvent.getNearbyPlayers();
 		}
 
-		@Nullable
-		public Mob getCustomMob() {
-			return forgeEvent.getCustomMob();
+		@Info("Get the original mob the cradle wanted to spawn")
+		public Mob getOriginalMob() {
+			return forgeEvent.getOriginalMob();
+		}
+
+		@Info("Get the mob spawn override if there is any. Nullable.")
+		public @Nullable Mob getMobOverride() {
+			return forgeEvent.getMobOverride();
 		}
 
 		@Info(
-				value = "Set the mob that should be spawned instead of an flesh blob. Positioning and rotation of the mob is handled by the cradle.\n\nWARNING! Do not add the mob to the level yourself!",
-				params = {@Param("mob")}
+				value = """
+						Set the mob that should be spawned instead of an flesh blob. Positioning and rotation of the mob is handled by the cradle.
+						
+						WARNING! Do not add the mob to the level yourself!""",
+				params = {
+						@Param(name = "mob", value = "Override what mob to spawn. Setting this value to null only clears the override and won't stop the cradle form spawning flesh blobs.")
+				}
 		)
-		public void setCustomMob(Mob mob) {
-			forgeEvent.setCustomMob(mob);
+		public void setMobOverride(@Nullable Mob mob) {
+			forgeEvent.setMobOverride(mob);
+		}
+
+		@Info("Get the probability that a mob will spawn")
+		public float getSuccessChance() {
+			return forgeEvent.getCradle().getSuccessChance();
+		}
+
+		@Info("Get the probability that a hostile flesh blob will spawn")
+		public float getHostileChance() {
+			return forgeEvent.getCradle().getHostileChance();
+		}
+
+		@Info("Get the probability that a primordial flesh blob will spawn")
+		public float getAnomalyChance() {
+			return forgeEvent.getCradle().getAnomalyChance();
+		}
+
+		@Info("Get the probability of how many tumors a flesh blob will have")
+		public float getDiseaseChance() {
+			return forgeEvent.getCradle().getDiseaseChance();
 		}
 
 	}
