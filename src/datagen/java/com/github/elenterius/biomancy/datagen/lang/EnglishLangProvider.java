@@ -288,12 +288,6 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		add("jei.biomancy.recipe.digester", "Digester Recipes");
 		add("jei.biomancy.recipe.bio_forge", "Bio-Forge Recipes");
 
-		add("key.tooltipoverhaul.biomancy.rarity." + ModRarities.COMMON.name(), "Common");
-		add("key.tooltipoverhaul.biomancy.rarity." + ModRarities.UNCOMMON.name(), "Uncommon");
-		add("key.tooltipoverhaul.biomancy.rarity." + ModRarities.RARE.name(), "Rare");
-		add("key.tooltipoverhaul.biomancy.rarity." + ModRarities.VERY_RARE.name(), "Very Rare");
-		add("key.tooltipoverhaul.biomancy.rarity." + ModRarities.ULTRA_RARE.name(), "Ultra Rare");
-
 		addSoundTranslations();
 		addBannerPatternTranslations();
 		addPainting(ModPaintings.JERRY_PROVIDES, "Jerry Provides", "Shroomie");
