@@ -236,11 +236,13 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addAbility("fleshkin_affinity.desc", "+25% Acid Resistance");
 		addAbility("bio_alchemical_epidermis", "Bio-Alchemical Epidermis");
 		addAbility("bio_alchemical_epidermis.desc", "+15% Resistance to harmful Status-Effects\n +25% Injection Success\n -25% Injection Damage");
-		addAbility("imposing_aura", "Imposing Aura");
-		addAbility("imposing_aura.desc", "When wearing a full set of this armor all nearby beings are afflicted with weakness and feeble mobs start to panic");
+		addAbility("imposing_roar", "Imposing Roar");
+		addAbility("imposing_roar.desc", """
+				When wearing a full set of this armor you can expend %1$s nutrients to emit a powerful roar that affects all mobs and players in a %2$s meter radius for %3$s seconds.
+				Nearby allies are buffed, non-allies are afflicted with weakness and animals will start to panic.""");
 		addAbility("bullet_jump", "Bullet Jump");
 		addAbility("bullet_jump.desc", """
-				When you jump and hold Shift the ability consumes 10 nutrients to perform a bullet jump.
+				When you jump and hold Shift the ability consumes %1$s nutrients to perform a bullet jump. Each consecutive use increases the cost to %2$s which resets after %3$s seconds of rest.
 				A bullet jump is a spinning movement technique that is similar to a dash. If you wear an elytra the bullet jump transforms into a launch boost.""");
 		addAbility("padded_soles", "Padded Soles");
 		addAbility(AcolyteArmorUpgrades.PRIMORDIAL_SIGHT.getId().getPath(), "Primordial Sight");
@@ -306,6 +308,7 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addSound(ModSoundEvents.IMPALER_IMPACT, "Impaler projectile impacts");
 		addSound(ModSoundEvents.IMPALER_CHARGE, "Impaler charges");
 		addSound(ModSoundEvents.ARMOR_BULLET_JUMP, "Bullet Jumping");
+		addSound(ModSoundEvents.ARMOR_IMPOSING_ROAR, "Imposing Roaring");
 		addSound(ModSoundEvents.ARMOR_EQUIP_BIO_ALCHEMIST, "Bio-Armor suit rustles");
 		addSound(ModSoundEvents.ARMOR_EQUIP_WARRIOR, "Bio-Armor plate thunks");
 		addSound(ModSoundEvents.CHRYSALIS_INSERT, "Mob packed");

@@ -23,6 +23,7 @@ public final class ModSoundEvents {
 	public static final RegistryObject<SoundEvent> IMPALER_IMPACT = register("item.impaler.impact");
 	public static final RegistryObject<SoundEvent> IMPALER_CHARGE = register("item.impaler.charge");
 	public static final RegistryObject<SoundEvent> ARMOR_BULLET_JUMP = register("item.armor.bullet_jump");
+	public static final RegistryObject<SoundEvent> ARMOR_IMPOSING_ROAR = register("item.armor.imposing_roar");
 	public static final RegistryObject<SoundEvent> ARMOR_EQUIP_BIO_ALCHEMIST = register("item.armor.equip_bio_alchemist");
 	public static final RegistryObject<SoundEvent> ARMOR_EQUIP_WARRIOR = register("item.armor.equip_warrior");
 	public static final RegistryObject<SoundEvent> CHRYSALIS_INSERT = register("item.chrysalis.insert");

@@ -706,6 +706,12 @@
     ],
     "subtitle": "sounds.biomancy.item.armor.equip_warrior"
   },
+  "item.armor.imposing_roar": {
+    "sounds": [
+      "biomancy:item.armor.imposing_roar"
+    ],
+    "subtitle": "sounds.biomancy.item.armor.imposing_roar"
+  },
   "item.bone_marrow.drink": {
     "sounds": [
       {

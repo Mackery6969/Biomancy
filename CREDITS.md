@@ -39,6 +39,7 @@ The mod contains sounds from **Freesound.org**, please check `3RD_PARTY_LICENSE.
 	- 71 salto membrana.wav by **checholio**
 	- Slime Jump 1 by **qubodup**
 	- Swishes and swooshes by **florianreichelt**
+- `item.armor.imposing_roar.ogg` made by modifying DEVIL BEAST by **Thirstjournal**
 
 ## Translations
 

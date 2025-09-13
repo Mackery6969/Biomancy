@@ -33,6 +33,7 @@ public class ModSoundProvider extends SoundDefinitionsProvider {
 		addSimpleSound(ModSoundEvents.IMPALER_IMPACT);
 		addSimpleSound(ModSoundEvents.IMPALER_CHARGE);
 		addSimpleSound(ModSoundEvents.ARMOR_BULLET_JUMP);
+		addSimpleSound(ModSoundEvents.ARMOR_IMPOSING_ROAR);
 		addSimpleRedirect(ModSoundEvents.ARMOR_EQUIP_BIO_ALCHEMIST, SoundEvents.ARMOR_EQUIP_TURTLE);
 		addSimpleRedirect(ModSoundEvents.ARMOR_EQUIP_WARRIOR, SoundEvents.ARMOR_EQUIP_TURTLE);
 		addSimpleRedirect(ModSoundEvents.CHRYSALIS_INSERT, SoundEvents.FROG_EAT);

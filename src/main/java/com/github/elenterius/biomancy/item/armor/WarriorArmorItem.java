@@ -19,6 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -36,6 +37,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
@@ -51,10 +53,16 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeReader, ItemTooltipStyleProvider {
+public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeReader, ItemTooltipStyleProvider, KeyPressListener {
+
+	public static final Predicate<ItemStack> ARMOR_SET_PREDICATE = itemStack -> itemStack.getItem() instanceof WarriorArmorItem;
 
 	public static final int[] BULLET_JUMP_COST = {10, 15, 25, 40};
 	public static final int BULLET_JUMP_COST_COOLDOWN = 5 * 20;
+
+	public static final int IMPOSING_ROAR_COST = 100;
+	public static final int IMPOSING_ROAR_DURATION = 30 * 20;
+	public static final double IMPOSING_ROAR_RADIUS = 16d;
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -104,6 +112,38 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 	//	public double getJumpBoostPower(ItemStack stack) {
 	//		return type == ArmorItem.Type.LEGGINGS && getNutrients(stack) > 0 ? 0.15d : 0d;
 	//	}
+
+	@Override
+	public InteractionResultHolder<Byte> onClientKeyPress(ItemStack stack, Level level, Player player, EquipmentSlot slot, byte flags) {
+		if (type != Type.HELMET || player.getItemBySlot(EquipmentSlot.HEAD) != stack) return InteractionResultHolder.fail(flags);
+		if (!CombatUtil.hasFulLArmorSetEquipped(player, ARMOR_SET_PREDICATE)) return InteractionResultHolder.fail(flags);
+
+		int nutrients = getNutrientsFromEquippedArmor(player, ARMOR_SET_PREDICATE);
+		if (nutrients < IMPOSING_ROAR_COST) {
+			player.displayClientMessage(TextComponentUtil.getFailureMsgText("not_enough_nutrients"), true);
+			player.playSound(ModSoundEvents.FLESHKIN_NO.get(), 0.8f, 0.8f + player.level().getRandom().nextFloat() * 0.4f);
+			return InteractionResultHolder.fail(flags);
+		}
+
+		return InteractionResultHolder.success(flags);
+	}
+
+	@Override
+	public void onServerReceiveKeyPress(ItemStack stack, ServerLevel level, Player player, byte flags) {
+		if (type != Type.HELMET || player.getItemBySlot(EquipmentSlot.HEAD) != stack) return;
+		if (!CombatUtil.hasFulLArmorSetEquipped(player, ARMOR_SET_PREDICATE)) return;
+
+		int nutrients = getNutrientsFromEquippedArmor(player, ARMOR_SET_PREDICATE);
+		if (nutrients >= IMPOSING_ROAR_COST) {
+			consumeNutrientsFromEquippedArmor(player, IMPOSING_ROAR_COST, ARMOR_SET_PREDICATE);
+			imposingRoar(level, player);
+
+			int range = 256;
+			float volume = range / 16f;
+			level.playSound(null, player, ModSoundEvents.ARMOR_IMPOSING_ROAR.get(), SoundSource.PLAYERS, volume, 0.9f + player.getRandom().nextFloat() * 0.2f);
+			player.gameEvent(GameEvent.ENTITY_ROAR);
+		}
+	}
 
 	public float getFallReduction(ItemStack stack) {
 		return type == Type.BOOTS && getNutrients(stack) > 0 ? 0.5f : 0f;
@@ -273,43 +313,36 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 		return false;
 	}
 
-	@Override
-	public void onInventoryTick(ItemStack stack, Level level, Player player, int slotIndex, int selectedIndex) {
-		super.onInventoryTick(stack, level, player, slotIndex, selectedIndex);
-
-		if (type != Type.CHESTPLATE || player.getItemBySlot(EquipmentSlot.CHEST) != stack) return;
-		if (level.isClientSide) return;
-		if (player.tickCount % 20 != 0) return;
-
-		for (ItemStack stackInArmorSlot : player.getArmorSlots()) {
-			if (stackInArmorSlot.getItem() instanceof WarriorArmorItem armor) {
-				if (!armor.hasNutrients(stackInArmorSlot)) return;
-			}
-			else return;
-		}
-
-		int effectDuration = 5 * 20;
-		double radius = 8;
-		double radiusSqr = radius * radius;
+	protected void imposingRoar(ServerLevel level, Player player) {
+		double radiusSqr = IMPOSING_ROAR_RADIUS * IMPOSING_ROAR_RADIUS;
 		Vec3 center = player.getBoundingBox().getCenter();
 
 		Predicate<Entity> predicate = EntitySelector.LIVING_ENTITY_STILL_ALIVE.and(EntitySelector.NO_CREATIVE_OR_SPECTATOR);
-		List<LivingEntity> livingEntities = level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(radius), predicate);
+		List<LivingEntity> livingEntities = level.getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(IMPOSING_ROAR_RADIUS), predicate);
 
 		for (LivingEntity livingEntity : livingEntities) {
 			if (livingEntity == player) continue;
 			if (center.distanceToSqr(livingEntity.getX(), livingEntity.getY(0.5d), livingEntity.getZ()) >= radiusSqr) continue;
 
-			livingEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, effectDuration));
+			if (livingEntity.isAlliedTo(player)) {
+				livingEntity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, IMPOSING_ROAR_DURATION, 1));
+				livingEntity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, IMPOSING_ROAR_DURATION));
+			}
+			else {
+				livingEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, IMPOSING_ROAR_DURATION));
 
-			if (livingEntity instanceof Mob mob) {
-				for (WrappedGoal wrappedGoal : mob.goalSelector.getAvailableGoals()) {
-					if (wrappedGoal.getGoal() instanceof PanicGoal) {
-						livingEntity.setLastHurtByMob(player);
+				if (livingEntity instanceof Mob mob) {
+					for (WrappedGoal wrappedGoal : mob.goalSelector.getAvailableGoals()) {
+						if (wrappedGoal.getGoal() instanceof PanicGoal) {
+							livingEntity.setLastHurtByMob(player);
+							livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, IMPOSING_ROAR_DURATION));
+						}
 					}
 				}
 			}
 		}
+
+		player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, IMPOSING_ROAR_DURATION));
 	}
 
 	@Override
@@ -358,27 +391,30 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 		tooltip.add(TextComponentUtil.getAbilityText("fleshkin_affinity").withStyle(ChatFormatting.GRAY));
 		tooltip.add(ComponentUtil.space().append(TextComponentUtil.getAbilityText("fleshkin_affinity.desc")).withStyle(ChatFormatting.DARK_GRAY));
 
-		tooltip.add(ComponentUtil.EMPTY_LINE);
-		tooltip.add(TextComponentUtil.getAbilityText("imposing_aura").withStyle(ChatFormatting.GRAY));
-		tooltip.add(ComponentUtil.space().append(TextComponentUtil.getAbilityText("imposing_aura.desc")).withStyle(ChatFormatting.DARK_GRAY));
+		switch (type) {
+			case HELMET -> {
+				tooltip.add(ComponentUtil.EMPTY_LINE);
+				tooltip.add(TextComponentUtil.getAbilityText("imposing_roar").withStyle(ChatFormatting.GRAY));
+				tooltip.add(ComponentUtil.space().append(TextComponentUtil.getAbilityText("imposing_roar.desc", IMPOSING_ROAR_COST, IMPOSING_ROAR_RADIUS, IMPOSING_ROAR_DURATION / 20)).withStyle(ChatFormatting.DARK_GRAY));
+			}
+			case LEGGINGS -> {
+				tooltip.add(ComponentUtil.EMPTY_LINE);
+				tooltip.add(TextComponentUtil.getAbilityText("bullet_jump").withStyle(ChatFormatting.GRAY));
+				tooltip.add(ComponentUtil.space().append(TextComponentUtil.getAbilityText("bullet_jump.desc", BULLET_JUMP_COST[0], abilityCostToString(BULLET_JUMP_COST), BULLET_JUMP_COST_COOLDOWN / 20)).withStyle(ChatFormatting.DARK_GRAY));
 
-		if (type == Type.LEGGINGS) {
-			tooltip.add(ComponentUtil.EMPTY_LINE);
-			tooltip.add(TextComponentUtil.getAbilityText("bullet_jump").withStyle(ChatFormatting.GRAY));
-			tooltip.add(ComponentUtil.space().append(TextComponentUtil.getAbilityText("bullet_jump.desc")).withStyle(ChatFormatting.DARK_GRAY));
+				//			double jumpBoostPower = getJumpBoostPower(stack);
+				//			if (jumpBoostPower != 0d) {
+				//				String prefix = jumpBoostPower > 0d ? "+" : "";
+				//				tooltip.add(ComponentUtil.space().append(prefix + jumpBoostPower + " Jump Boost Power").withStyle(ChatFormatting.DARK_GRAY));
+				//			}
+			}
+			case BOOTS -> {
+				tooltip.add(ComponentUtil.EMPTY_LINE);
+				tooltip.add(TextComponentUtil.getAbilityText("padded_soles").withStyle(ChatFormatting.GRAY));
 
-			//			double jumpBoostPower = getJumpBoostPower(stack);
-			//			if (jumpBoostPower != 0d) {
-			//				String prefix = jumpBoostPower > 0d ? "+" : "";
-			//				tooltip.add(ComponentUtil.space().append(prefix + jumpBoostPower + " Jump Boost Power").withStyle(ChatFormatting.DARK_GRAY));
-			//			}
-		}
-		else if (type == Type.BOOTS) {
-			tooltip.add(ComponentUtil.EMPTY_LINE);
-			tooltip.add(TextComponentUtil.getAbilityText("padded_soles").withStyle(ChatFormatting.GRAY));
-
-			int pct = (int) (getFallReduction(stack) * 100f);
-			tooltip.add(ComponentUtil.space().append(pct + "% Fall Reduction").withStyle(ChatFormatting.DARK_GRAY));
+				int pct = (int) (getFallReduction(stack) * 100f);
+				tooltip.add(ComponentUtil.space().append(pct + "% Fall Reduction").withStyle(ChatFormatting.DARK_GRAY));
+			}
 		}
 
 		tooltip.add(ComponentUtil.EMPTY_LINE);
@@ -391,6 +427,17 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 		if (stack.isEnchanted()) {
 			tooltip.add(ComponentUtil.EMPTY_LINE);
 		}
+	}
+
+	public static String abilityCostToString(int[] array) {
+		if (array.length == 0) return "0";
+
+		StringBuilder builder = new StringBuilder();
+		for (int value : array) {
+			builder.append(value);
+			builder.append("/");
+		}
+		return builder.toString();
 	}
 
 }

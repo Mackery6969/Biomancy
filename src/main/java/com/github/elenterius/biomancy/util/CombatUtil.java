@@ -8,13 +8,18 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 
 public final class CombatUtil {
 	private CombatUtil() {}
@@ -30,6 +35,19 @@ public final class CombatUtil {
 		int pierceLevel = weapon.getEnchantmentLevel(Enchantments.PIERCING);
 		float pct = CombatRules.getDamageAfterAbsorb(20f, target.getArmorValue(), (float) target.getAttributeValue(Attributes.ARMOR_TOUGHNESS)) / 20f;
 		return target.getRandom().nextFloat() < pct + 0.075f * pierceLevel + pierceProbability;
+	}
+
+	public static boolean hasFulLArmorSetEquipped(Player player, Predicate<ItemStack> predicate) {
+		Set<ArmorItem.Type> equippedTypes = EnumSet.noneOf(ArmorItem.Type.class);
+
+		for (ItemStack stackInArmorSlot : player.getArmorSlots()) {
+			if (stackInArmorSlot.getItem() instanceof ArmorItem armor && predicate.test(stackInArmorSlot)) {
+				equippedTypes.add(armor.getType());
+			}
+			else return false;
+		}
+
+		return equippedTypes.size() == ArmorItem.Type.values().length;
 	}
 
 	public static void performWaterAOE(Level level, Entity attacker, double maxDistance) {

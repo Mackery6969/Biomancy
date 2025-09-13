@@ -4,9 +4,11 @@ import com.github.elenterius.biomancy.api.livingtool.SimpleLivingTool;
 import com.github.elenterius.biomancy.client.util.ClientTextUtil;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.styles.ColorStyles;
+import com.github.elenterius.biomancy.util.ArrayUtil;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
@@ -28,6 +30,7 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class LivingArmorItem extends ArmorItem implements SimpleLivingTool {
 
@@ -36,6 +39,99 @@ public class LivingArmorItem extends ArmorItem implements SimpleLivingTool {
 	public LivingArmorItem(ArmorMaterial material, Type type, int maxNutrients, Properties properties) {
 		super(material, type, properties);
 		this.maxNutrients = maxNutrients;
+	}
+
+	public static int getNutrientsFromEquippedArmor(Player player, Predicate<ItemStack> predicate) {
+		int nutrients = 0;
+		for (ItemStack stackInArmorSlot : player.getArmorSlots()) {
+			if (stackInArmorSlot.getItem() instanceof LivingArmorItem armor && predicate.test(stackInArmorSlot)) {
+				nutrients += armor.getNutrients(stackInArmorSlot);
+			}
+		}
+		return nutrients;
+	}
+
+	public static void consumeNutrientsFromEquippedArmor(Player player, final int amount, Predicate<ItemStack> predicate) {
+		NonNullList<ItemStack> armorSlots = player.getInventory().armor;
+
+		int[] availableNutrients = new int[armorSlots.size()];
+
+		for (int i = 0; i < armorSlots.size(); i++) {
+			ItemStack stackInSlot = armorSlots.get(i);
+			if (stackInSlot.getItem() instanceof LivingArmorItem armor && predicate.test(stackInSlot)) {
+				availableNutrients[i] = armor.getNutrients(stackInSlot);
+			}
+		}
+
+		int[] consumed = consumeBalanced(amount, availableNutrients);
+
+		for (int i = 0; i < armorSlots.size(); i++) {
+			ItemStack stackInSlot = armorSlots.get(i);
+			if (stackInSlot.getItem() instanceof LivingArmorItem armor && consumed[i] > 0) {
+				armor.consumeNutrients(stackInSlot, consumed[i]);
+			}
+		}
+	}
+
+	private static int[] consumeBalanced(final int targetAmount, int... array) {
+		int[] remaining = ArrayUtil.copyOf(array);
+		int[] consumed = new int[array.length];
+
+		int needed = targetAmount;
+
+		while (needed > 0) {
+			if (ArrayUtil.sum(remaining) <= 0) break;
+
+			int validIndices = 0;
+			int index = -1;
+			int max = 0;
+			for (int i = 0; i < remaining.length; i++) {
+				int n = remaining[i];
+				if (n > max) {
+					max = n;
+					index = i;
+				}
+				if (n > 0) validIndices++;
+			}
+
+			if (max == 0) break;
+
+			int nextMax = 0;
+			for (int n : remaining) {
+				if (n < max && n > nextMax) {
+					nextMax = n;
+				}
+			}
+
+			if (nextMax > 0) {
+				int toConsume = Math.min(max - nextMax, needed);
+				consumed[index] += toConsume;
+				remaining[index] -= toConsume;
+			}
+			else {
+				int toConsume = needed / validIndices;
+
+				for (int i = 0; i < remaining.length; i++) {
+					if (remaining[i] > 0) {
+						int min = Math.min(toConsume, remaining[i]);
+						consumed[i] += min;
+						remaining[i] -= min;
+					}
+				}
+
+				int remainder = needed % validIndices;
+				for (int i = 0; i < remainder; i++) {
+					if (remaining[i] > 0) {
+						consumed[i] += 1;
+						remaining[i] -= 1;
+					}
+				}
+			}
+
+			needed = targetAmount - ArrayUtil.sum(consumed);
+		}
+
+		return consumed;
 	}
 
 	@Override
