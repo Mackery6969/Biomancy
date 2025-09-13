@@ -6,7 +6,7 @@ import com.github.elenterius.biomancy.api.serum.Serum;
 import com.github.elenterius.biomancy.api.serum.SerumContainer;
 import com.github.elenterius.biomancy.client.util.ClientTextUtil;
 import com.github.elenterius.biomancy.init.*;
-import com.github.elenterius.biomancy.init.client.ClientSetupHandler;
+import com.github.elenterius.biomancy.init.client.ModKeyBindings;
 import com.github.elenterius.biomancy.item.ItemTooltipStyleProvider;
 import com.github.elenterius.biomancy.item.MaykerBannerPatternItem;
 import com.github.elenterius.biomancy.item.armor.AcolyteArmorUpgrades;
@@ -178,8 +178,11 @@ public class EnglishLangProvider extends AbstractLangProvider {
 	protected void addTranslations() {
 		add(ModCreativeModeTabs.MAIN.get().getDisplayName(), "Biomancy");
 		add(ModCreativeModeTabs.BIO_ALCHEMY.get().getDisplayName(), "Biomancy: Bio-Alchemy");
-		add(ClientSetupHandler.ITEM_DEFAULT_KEY_BINDING.getCategory(), "Biomancy Mod");
-		add(ClientSetupHandler.ITEM_DEFAULT_KEY_BINDING.getName(), "Default Item Action");
+
+		add(ModKeyBindings.MAIN_CATEGORY, "Biomancy Mod");
+		add(ModKeyBindings.MAIN_HAND_ITEM_ACTION.getName(), "Main-Hand Item Action");
+		add(ModKeyBindings.OFF_HAND_ITEM_ACTION.getName(), "Off-Hand Item Action");
+		add(ModKeyBindings.EQUIPPED_ARMOR_ACTION.getName(), "Equipped Armor Action");
 
 		addItemTranslations();
 		addBlockTranslations();

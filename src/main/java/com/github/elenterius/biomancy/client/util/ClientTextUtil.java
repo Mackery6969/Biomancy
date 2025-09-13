@@ -1,7 +1,7 @@
 package com.github.elenterius.biomancy.client.util;
 
 import com.github.elenterius.biomancy.BiomancyMod;
-import com.github.elenterius.biomancy.init.client.ClientSetupHandler;
+import com.github.elenterius.biomancy.init.client.ModKeyBindings;
 import com.github.elenterius.biomancy.item.ItemTooltipStyleProvider;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.styles.TextStyles;
@@ -79,7 +79,7 @@ public final class ClientTextUtil {
 	}
 
 	public static MutableComponent getDefaultKey() {
-		return ComponentUtil.keybind(ClientSetupHandler.ITEM_DEFAULT_KEY_BINDING);
+		return ComponentUtil.keybind(ModKeyBindings.MAIN_HAND_ITEM_ACTION);
 	}
 
 	public static String tryToGetPlayerNameOnClientSide(UUID uuid) {

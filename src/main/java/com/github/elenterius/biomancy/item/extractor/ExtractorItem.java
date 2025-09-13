@@ -24,7 +24,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -119,13 +118,13 @@ public class ExtractorItem extends Item implements KeyPressListener, ItemTooltip
 	}
 
 	@Override
-	public InteractionResultHolder<Byte> onClientKeyPress(ItemStack stack, Level level, Player player, EquipmentSlot slot, byte flags) {
+	public KeyPressResult onClientKeyPress(ItemStack stack, Level level, Player player, EquipmentSlot slot, byte flags) {
 		//TODO: add cooldown?
 		if (!interactWithPlayerSelf(stack, player)) {
 			SoundUtil.Client.playItemSound(level, player, ModSoundEvents.INJECTOR_FAIL.get());
-			return InteractionResultHolder.fail(flags); //don't send button press to server
+			return KeyPressResult.fail(); //don't send button press to server
 		}
-		return InteractionResultHolder.success(flags);
+		return KeyPressResult.success(flags);
 	}
 
 	@Override

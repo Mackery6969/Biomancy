@@ -15,7 +15,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
@@ -35,10 +34,12 @@ public class ControlStaffItem extends Item implements KeyPressListener, ItemTool
 	}
 
 	@Override
-	public InteractionResultHolder<Byte> onClientKeyPress(ItemStack stack, Level level, Player player, EquipmentSlot slot, byte flags) {
+	public KeyPressResult onClientKeyPress(ItemStack stack, Level level, Player player, EquipmentSlot slot, byte flags) {
+		if (slot != EquipmentSlot.MAINHAND) return KeyPressResult.fail();
+
 		ControllableMob.Command command = getCommand(stack).cycle();
 		player.playSound(SoundEvents.GENERIC_HURT, 0.8f, 0.25f + level.random.nextFloat() * 0.25f);
-		return InteractionResultHolder.success(command.serialize());
+		return KeyPressResult.success(command.serialize());
 	}
 
 	@Override

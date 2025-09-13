@@ -40,8 +40,6 @@ import com.github.elenterius.biomancy.tooltip.EmptyLineTooltipComponent;
 import com.github.elenterius.biomancy.tooltip.HrTooltipComponent;
 import com.github.elenterius.biomancy.tooltip.StorageSacTooltipComponent;
 import com.github.elenterius.biomancy.util.TransliterationUtil;
-import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.particle.AttackSweepParticle;
 import net.minecraft.client.particle.HugeExplosionParticle;
 import net.minecraft.client.particle.PlayerCloudParticle;
@@ -57,22 +55,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
-import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import org.lwjgl.glfw.GLFW;
 
 @Mod.EventBusSubscriber(modid = BiomancyMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class ClientSetupHandler {
-
-	public static final KeyMapping ITEM_DEFAULT_KEY_BINDING = new KeyMapping(
-			String.format("key.%s.item_default", BiomancyMod.MOD_ID),
-			KeyConflictContext.UNIVERSAL,
-			InputConstants.Type.KEYSYM,
-			GLFW.GLFW_KEY_V,
-			"key.categories." + BiomancyMod.MOD_ID
-	);
 
 	private ClientSetupHandler() {}
 
@@ -96,7 +84,7 @@ public final class ClientSetupHandler {
 
 	@SubscribeEvent
 	public static void registerKeyMappings(final RegisterKeyMappingsEvent event) {
-		event.register(ITEM_DEFAULT_KEY_BINDING);
+		ModKeyBindings.register(event::register);
 	}
 
 	@SubscribeEvent

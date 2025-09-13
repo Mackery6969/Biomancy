@@ -41,8 +41,8 @@ public abstract class GunbladeItem extends GunItem implements Vanishable {
 	}
 
 	@Override
-	public InteractionResultHolder<Byte> onClientKeyPress(ItemStack stack, Level level, Player player, EquipmentSlot slot, byte flags) {
-		return InteractionResultHolder.success(flags);
+	public KeyPressResult onClientKeyPress(ItemStack stack, Level level, Player player, EquipmentSlot slot, byte flags) {
+		return KeyPressResult.success(flags);
 	}
 
 	@Override

@@ -79,18 +79,18 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 	}
 
 	@Override
-	public InteractionResultHolder<Byte> onClientKeyPress(ItemStack stack, Level level, Player player, EquipmentSlot slot, byte flags) {
+	public KeyPressResult onClientKeyPress(ItemStack stack, Level level, Player player, EquipmentSlot slot, byte flags) {
 		GunState state = getGunState(stack);
 		if (state == GunState.NONE && !canReload(stack, player)) {
 			playSFX(level, player, SoundEvents.DISPENSER_FAIL);
-			return InteractionResultHolder.fail(flags); //don't send button press to server
+			return KeyPressResult.fail(); //don't send button press to server
 		}
 
 		if (state == GunState.SHOOTING_OR_CHARGING) {
-			return InteractionResultHolder.fail(flags); //don't send button press to server
+			return KeyPressResult.fail(); //don't send button press to server
 		}
 
-		return InteractionResultHolder.success(flags);
+		return KeyPressResult.success(flags);
 	}
 
 	@Override

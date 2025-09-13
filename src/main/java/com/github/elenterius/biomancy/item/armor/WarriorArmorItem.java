@@ -1,13 +1,16 @@
 package com.github.elenterius.biomancy.item.armor;
 
 import com.github.elenterius.biomancy.client.render.item.armor.WarriorArmorRenderer;
+import com.github.elenterius.biomancy.client.util.ClientTextUtil;
 import com.github.elenterius.biomancy.entity.misc.LivingEntityData;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
+import com.github.elenterius.biomancy.init.client.ModKeyBindings;
 import com.github.elenterius.biomancy.item.ItemTooltipStyleProvider;
 import com.github.elenterius.biomancy.item.KeyPressListener;
 import com.github.elenterius.biomancy.item.KnowledgeReader;
 import com.github.elenterius.biomancy.mixin.accessor.ArmorItemAccessor;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
+import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.CombatUtil;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
@@ -21,7 +24,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -114,18 +116,18 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 	//	}
 
 	@Override
-	public InteractionResultHolder<Byte> onClientKeyPress(ItemStack stack, Level level, Player player, EquipmentSlot slot, byte flags) {
-		if (type != Type.HELMET || player.getItemBySlot(EquipmentSlot.HEAD) != stack) return InteractionResultHolder.fail(flags);
-		if (!CombatUtil.hasFulLArmorSetEquipped(player, ARMOR_SET_PREDICATE)) return InteractionResultHolder.fail(flags);
+	public KeyPressResult onClientKeyPress(ItemStack stack, Level level, Player player, EquipmentSlot slot, byte flags) {
+		if (slot != EquipmentSlot.HEAD || type != Type.HELMET) return KeyPressResult.fail();
+		if (!CombatUtil.hasFulLArmorSetEquipped(player, ARMOR_SET_PREDICATE)) return KeyPressResult.fail();
 
 		int nutrients = getNutrientsFromEquippedArmor(player, ARMOR_SET_PREDICATE);
 		if (nutrients < IMPOSING_ROAR_COST) {
 			player.displayClientMessage(TextComponentUtil.getFailureMsgText("not_enough_nutrients"), true);
 			player.playSound(ModSoundEvents.FLESHKIN_NO.get(), 0.8f, 0.8f + player.level().getRandom().nextFloat() * 0.4f);
-			return InteractionResultHolder.fail(flags);
+			return KeyPressResult.fail();
 		}
 
-		return InteractionResultHolder.success(flags);
+		return KeyPressResult.success(flags);
 	}
 
 	@Override
@@ -396,6 +398,7 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 				tooltip.add(ComponentUtil.EMPTY_LINE);
 				tooltip.add(TextComponentUtil.getAbilityText("imposing_roar").withStyle(ChatFormatting.GRAY));
 				tooltip.add(ComponentUtil.space().append(TextComponentUtil.getAbilityText("imposing_roar.desc", IMPOSING_ROAR_COST, IMPOSING_ROAR_RADIUS, IMPOSING_ROAR_DURATION / 20)).withStyle(ChatFormatting.DARK_GRAY));
+				tooltip.add(ClientTextUtil.pressButtonTo(ComponentUtil.keybind(ModKeyBindings.EQUIPPED_ARMOR_ACTION), TextComponentUtil.getActionText("activate")).withStyle(TextStyles.DARK_GRAY));
 			}
 			case LEGGINGS -> {
 				tooltip.add(ComponentUtil.EMPTY_LINE);

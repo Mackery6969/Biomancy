@@ -77,12 +77,12 @@ public class DevArmCannonItem extends Item implements GeoItem, IArmPoseProvider,
 	}
 
 	@Override
-	public InteractionResultHolder<Byte> onClientKeyPress(ItemStack stack, Level level, Player player, EquipmentSlot slot, byte flags) {
+	public KeyPressResult onClientKeyPress(ItemStack stack, Level level, Player player, EquipmentSlot slot, byte flags) {
 		if (slot.getType() == EquipmentSlot.Type.HAND) {
 			InteractionHand hand = slot == EquipmentSlot.MAINHAND ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
 			tryToOpenClientScreen(hand);
 		}
-		return InteractionResultHolder.fail(flags); //don't send button press to server
+		return KeyPressResult.fail(); //don't send button press to server
 	}
 
 	@Override
