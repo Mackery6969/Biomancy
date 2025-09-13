@@ -4,18 +4,23 @@ import com.github.elenterius.biomancy.client.render.item.armor.WarriorArmorRende
 import com.github.elenterius.biomancy.entity.misc.LivingEntityData;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.item.ItemTooltipStyleProvider;
+import com.github.elenterius.biomancy.item.KeyPressListener;
 import com.github.elenterius.biomancy.item.KnowledgeReader;
 import com.github.elenterius.biomancy.mixin.accessor.ArmorItemAccessor;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
+import com.github.elenterius.biomancy.util.CombatUtil;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -47,6 +52,9 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeReader, ItemTooltipStyleProvider {
+
+	public static final int[] BULLET_JUMP_COST = {10, 15, 25, 40};
+	public static final int BULLET_JUMP_COST_COOLDOWN = 5 * 20;
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -109,10 +117,11 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 
 		if (isBulletJumpKeyDown) {
 			if (livingEntity instanceof ServerPlayer player) {
-				int cost = player.isAutoSpinAttack() ? 20 : 10;
+				int cost = getBulletJumpCost(player, stack);
 				if (getNutrients(stack) >= cost) {
 					if (bulletJump(player)) {
 						consumeNutrients(stack, cost);
+						increaseBulletJumpCost(player, stack);
 						return true;
 					}
 				}
@@ -141,6 +150,36 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 		//		}
 
 		return false;
+	}
+
+	private static int getBulletJumpCost(ServerPlayer player, ItemStack stack) {
+		CompoundTag tag = stack.getOrCreateTag();
+		long timestamp = tag.getLong("bullet_jump_timestamp");
+		long elapsedTime = player.level().getGameTime() - timestamp;
+
+		if (elapsedTime > BULLET_JUMP_COST_COOLDOWN) {
+			return BULLET_JUMP_COST[0];
+		}
+
+		int index = Mth.clamp(tag.getInt("bullet_jump_cost_index"), 0, BULLET_JUMP_COST.length - 1);
+		return BULLET_JUMP_COST[index];
+	}
+
+	private static void increaseBulletJumpCost(ServerPlayer player, ItemStack stack) {
+		CompoundTag tag = stack.getOrCreateTag();
+		long timestamp = tag.getLong("bullet_jump_timestamp");
+		long gameTime = player.level().getGameTime();
+		long elapsedTime = gameTime - timestamp;
+
+		if (elapsedTime > BULLET_JUMP_COST_COOLDOWN) {
+			tag.putInt("bullet_jump_cost_index", 0);
+		}
+		else {
+			int index = Mth.clamp(tag.getInt("bullet_jump_cost_index") + 1, 0, BULLET_JUMP_COST.length - 1);
+			tag.putInt("bullet_jump_cost_index", index);
+		}
+
+		tag.putLong("bullet_jump_timestamp", gameTime);
 	}
 
 	public void onFall(ItemStack stack, LivingFallEvent event) {
