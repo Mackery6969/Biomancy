@@ -240,6 +240,7 @@ public class DigestingRecipeProvider extends RecipeProvider {
 		alexsMobsRecipe(1, AMBlockRegistry.CROCODILE_EGG.get()).save(consumer);
 		alexsMobsRecipe(1, AMBlockRegistry.TERRAPIN_EGG.get()).save(consumer);
 		alexsMobsRecipe(2, AMBlockRegistry.PLATYPUS_EGG.get()).save(consumer);
+		alexsMobsRecipe(1, AMBlockRegistry.BANANA_PEEL.get()).save(consumer);
 	}
 
 	private void buildAlexsCavesRecipes(Consumer<FinishedRecipe> consumer) {

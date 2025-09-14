@@ -1,10 +1,16 @@
 {
   "type": "biomancy:decomposing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "alexscaves"
+    }
+  ],
   "ingredient": {
-    "item": "minecraft:beetroot"
+    "item": "alexscaves:cycad"
   },
   "nutrientsCost": 1,
-  "processingTime": 80,
+  "processingTime": 105,
   "results": [
     {
       "countRange": {

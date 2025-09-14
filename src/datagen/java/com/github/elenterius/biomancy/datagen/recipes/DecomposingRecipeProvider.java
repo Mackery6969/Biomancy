@@ -194,7 +194,6 @@ public class DecomposingRecipeProvider extends RecipeProvider {
 		DecomposingRecipeBuilder.create().setIngredient(Items.MUTTON).addOutput(ModItems.FLESH_BITS.get(), 2, 4).addOutput(ModItems.ELASTIC_FIBERS.get(), 1, 2).addOutput(ModItems.BONE_FRAGMENTS.get(), 2, 3).unlockedBy(Items.MUTTON).save(consumer);
 		DecomposingRecipeBuilder.create().setIngredient(Items.CHORUS_FRUIT).addOutput(ModItems.MINERAL_FRAGMENT.get(), 1, 3).addOutput(ModItems.EXOTIC_DUST.get(), 1, 2).addOutput(ModItems.BILE.get(), 0, 1).addOutput(ModItems.ORGANIC_MATTER.get(), 1).unlockedBy(Items.CHORUS_FRUIT).save(consumer);
 		DecomposingRecipeBuilder.create().setIngredient(Items.POPPED_CHORUS_FRUIT).addOutput(ModItems.MINERAL_FRAGMENT.get(), 1, 2).addOutput(ModItems.EXOTIC_DUST.get(), 1, 2).addOutput(ModItems.BILE.get(), 0, 1).addOutput(ModItems.ORGANIC_MATTER.get(), 1).unlockedBy(Items.POPPED_CHORUS_FRUIT).save(consumer);
-		DecomposingRecipeBuilder.create().setIngredient(Items.BEETROOT).addOutput(ModItems.ORGANIC_MATTER.get(), 2, 4).unlockedBy(Items.BEETROOT).save(consumer);
 		DecomposingRecipeBuilder.create().setIngredient(Items.TOTEM_OF_UNDYING).addExtraCraftingCost(2).addOutput(ModItems.EXOTIC_DUST.get(), 25).addOutput(ModItems.GEM_FRAGMENTS.get(), 15).addOutput(ModItems.MINERAL_FRAGMENT.get(), 10).unlockedBy(Items.TOTEM_OF_UNDYING).save(consumer);
 		DecomposingRecipeBuilder.create().setIngredient(Items.SHULKER_SHELL).addOutput(ModItems.MINERAL_FRAGMENT.get(), 6, 10).addOutput(ModItems.TOUGH_FIBERS.get(), 4, 7).addOutput(ModItems.STONE_POWDER.get(), 1, 2).unlockedBy(Items.SHULKER_SHELL).save(consumer);
 		DecomposingRecipeBuilder.create().setIngredient(Items.IRON_NUGGET).addOutput(ModItems.MINERAL_FRAGMENT.get(), 0, 1).unlockedBy(Items.IRON_NUGGET).save(consumer);
@@ -221,6 +220,7 @@ public class DecomposingRecipeProvider extends RecipeProvider {
 		DecomposingRecipeBuilder.create().setIngredient(Tags.Items.LEATHER).addOutput(ModItems.TOUGH_FIBERS.get(), 1, 4).unlockedBy(Tags.Items.LEATHER).save(consumer);
 		DecomposingRecipeBuilder.create().setIngredient(Tags.Items.EGGS).addOutput(ModItems.HORMONE_SECRETION.get(), 0, 1).addOutput(ModItems.ORGANIC_MATTER.get(), 0, 2).unlockedBy(Tags.Items.EGGS).save(consumer);
 		DecomposingRecipeBuilder.create().setIngredient(Tags.Items.SEEDS).addOutput(ModItems.ORGANIC_MATTER.get(), 1, 2).unlockedBy(Tags.Items.SEEDS).save(consumer);
+		DecomposingRecipeBuilder.create().setIngredient(Tags.Items.CROPS).addOutput(ModItems.ORGANIC_MATTER.get(), 2, 4).unlockedBy(Tags.Items.CROPS).save(consumer);
 
 		DecomposingRecipeBuilder.create().setIngredient(Tags.Items.BONES).addOutput(ModItems.BONE_FRAGMENTS.get(), 3, 6).unlockedBy(Tags.Items.BONES).save(consumer);
 		DecomposingRecipeBuilder.create().setIngredient(ModItemTags.C_WITHER_BONES).addOutput(ModItems.BONE_FRAGMENTS.get(), 3, 6).addOutput(ModItems.WITHERING_OOZE.get(), 3, 5).unlockedBy(ModItemTags.C_WITHER_BONES).save(consumer);
@@ -855,6 +855,9 @@ public class DecomposingRecipeProvider extends RecipeProvider {
 				.addOutput(ModItems.HORMONE_SECRETION.get(), -1, 1)
 				.addOutput(ModItems.ORGANIC_MATTER.get(), 0, 1)
 				.unlockedBy(AMBlockRegistry.TRIOPS_EGGS.get()).save(consumer);
+
+		DecomposingRecipeBuilder.create().setIngredient(AMItemRegistry.BANANA.get()).addOutput(ModItems.ORGANIC_MATTER.get(), 2, 3).unlockedBy(AMItemRegistry.BANANA.get()).save(consumer);
+		DecomposingRecipeBuilder.create().setIngredient(AMBlockRegistry.BANANA_PEEL.get()).addOutput(ModItems.ORGANIC_MATTER.get(), 1, 2).unlockedBy(AMBlockRegistry.BANANA_PEEL.get()).save(consumer);
 	}
 
 	private void buildAlexsDelightRecipes(Consumer<FinishedRecipe> consumer) {
@@ -1116,6 +1119,39 @@ public class DecomposingRecipeProvider extends RecipeProvider {
 				.addOutput(ModItems.BIO_LUMENS.get(), 5, 9)
 				.addOutput(ModItems.BILE.get(), 2, 3)
 				.unlockedBy(ACBlockRegistry.CARMINE_FROGLIGHT.get()).save(consumer);
+
+		alexsCavesRecipe()
+				.setIngredient(ACBlockRegistry.PEWEN_PINES.get())
+				.addExtraCraftingTime(10)
+				.addOutput(ModItems.ORGANIC_MATTER.get(), 2, 4)
+				.unlockedBy(ACBlockRegistry.PEWEN_PINES.get()).save(consumer);
+
+		alexsCavesRecipe()
+				.setIngredient(ACBlockRegistry.PEWEN_BRANCH.get())
+				.addExtraCraftingTime(10)
+				.addOutput(ModItems.ORGANIC_MATTER.get(), 2, 4)
+				.unlockedBy(ACBlockRegistry.PEWEN_BRANCH.get()).save(consumer);
+
+		alexsCavesRecipe().setIngredient(ACBlockRegistry.FIDDLEHEAD.get()).addOutput(ModItems.ORGANIC_MATTER.get(), 2, 4).unlockedBy(ACBlockRegistry.FIDDLEHEAD.get()).save(consumer);
+		alexsCavesRecipe().setIngredient(ACBlockRegistry.ARCHAIC_VINE.get()).addOutput(ModItems.ORGANIC_MATTER.get(), 2, 4).unlockedBy(ACBlockRegistry.ARCHAIC_VINE.get()).save(consumer);
+		alexsCavesRecipe().setIngredient(ACBlockRegistry.UNDERWEED.get()).addOutput(ModItems.ORGANIC_MATTER.get(), 1, 2).unlockedBy(ACBlockRegistry.UNDERWEED.get()).save(consumer);
+		alexsCavesRecipe().setIngredient(ACBlockRegistry.THORNWOOD_BRANCH.get()).addOutput(ModItems.ORGANIC_MATTER.get(), 1, 2).unlockedBy(ACBlockRegistry.THORNWOOD_BRANCH.get()).save(consumer);
+
+		alexsCavesRecipe()
+				.setIngredient(ACBlockRegistry.CYCAD.get())
+				.addExtraCraftingTime(25)
+				.addOutput(ModItems.ORGANIC_MATTER.get(), 2, 4)
+				.unlockedBy(ACBlockRegistry.CYCAD.get()).save(consumer);
+
+		alexsCavesRecipe()
+				.setIngredient(ACBlockRegistry.TREE_STAR.get())
+				.addOutput(ModItems.ORGANIC_MATTER.get(), 4, 6)
+				.unlockedBy(ACBlockRegistry.TREE_STAR.get()).save(consumer);
+
+		alexsCavesRecipe()
+				.setIngredient(ACBlockRegistry.FERN_THATCH.get())
+				.addOutput(ModItems.ORGANIC_MATTER.get(), 3, 5)
+				.unlockedBy(ACBlockRegistry.FERN_THATCH.get()).save(consumer);
 	}
 
 	private void buildIceAndFireRecipes(Consumer<FinishedRecipe> consumer) {
