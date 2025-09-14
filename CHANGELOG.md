@@ -1,3 +1,17 @@
+## [8.31.0-snapshot.0](https://github.com/Elenterius/Biomancy/compare/1.20.1-v2.8.30.0-snapshot.0...1.20.1-v2.8.31.0-snapshot.0) (2025-09-14)
+
+
+### Features
+
+* add new biomancy keybinds and fix support for modifier keys ([1d65a95](https://github.com/Elenterius/Biomancy/commit/1d65a9510610694f9812eb50f61a3eef25ca6219))
+* **kubejs-plugin:** rework onCradleSpawnCustomMob event into onCradleSpawnMob event which provides the original mob the cradle wanted to spawn ([fc526c4](https://github.com/Elenterius/Biomancy/commit/fc526c41bfb1f93f14c4ebff1464b7144b448c4e))
+* **recipes:** make any crops ([#forge](https://github.com/Elenterius/Biomancy/issues/forge):crops), AlexMobs banana & peel and more AlexCaves plants decomposable ([7d11057](https://github.com/Elenterius/Biomancy/commit/7d110573cb891db299b5df65a1a7aa87018e8c5a))
+* **warrior-armor:** make consecutive bullet jumps more expensive (10/15/25/40) and reset the cost after 5 seconds of no bullet jump use ([0948232](https://github.com/Elenterius/Biomancy/commit/09482328cb1805a55c1f1c09a201119e5606aede))
+* **warrior-armor:** reduce attack damage bonus from 20% to 10% ([28e3313](https://github.com/Elenterius/Biomancy/commit/28e33139da802bcbf3c609073f65ccb2d9d13b51))
+* **warrior-armor:** reduce attack speed penalty from -20% to -10% ([ea4196e](https://github.com/Elenterius/Biomancy/commit/ea4196e953973318fde95e462008a5f711ae079d))
+* **warrior-armor:** remove jump boost buff and rename leap ability to bullet jump ([a3180c2](https://github.com/Elenterius/Biomancy/commit/a3180c2e5a485af7950218719ce97dd93be3b56d))
+* **warrior-armor:** replace passive ability 'Imposing Aura' with active ability 'Imposing Roar' ([33f6016](https://github.com/Elenterius/Biomancy/commit/33f6016341f6ec2f13631b29fc958aadc4860841))
+
 ## [8.30.0-snapshot.0](https://github.com/Elenterius/Biomancy/compare/1.20.1-v2.8.29.1-snapshot.0...1.20.1-v2.8.30.0-snapshot.0) (2025-09-10)
 
 
@@ -23,11 +37,4 @@
 * fix mixin incompatibility with iron spells mod ([bd57e1e](https://github.com/Elenterius/Biomancy/commit/bd57e1e79988cfeaa109cbb1881463d56abf1a99)), closes [#173](https://github.com/Elenterius/Biomancy/issues/173)
 * fix order of item tags ([42e7a6d](https://github.com/Elenterius/Biomancy/commit/42e7a6dea3e28f17496c128e86bbc057babfb55e))
 * fix shield retraction animation playing on first use ([a2208e8](https://github.com/Elenterius/Biomancy/commit/a2208e806a562509c3f53bfd3362fef28f5c4ec7))
-
-## [8.29.1-snapshot.0](https://github.com/Elenterius/Biomancy/compare/1.20.1-v2.8.29.0-snapshot.0...1.20.1-v2.8.29.1-snapshot.0) (2025-08-27)
-
-
-### Bug Fixes
-
-* fix big flesh blobs not being able to attack other mobs due to flawed attack reach calculations ([3aad7aa](https://github.com/Elenterius/Biomancy/commit/3aad7aa0040eb6dac882cfa1691d959ee8a4da5e))
 
