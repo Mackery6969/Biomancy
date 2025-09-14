@@ -32,6 +32,14 @@ public final class CombatUtil {
 			}
 		}
 
+		if (attacker != null) {
+			for (ItemStack itemStack : attacker.getArmorSlots()) {
+				if (itemStack.getItem() instanceof AcolyteArmorItem) {
+					pierceProbability += 0.25f;
+				}
+			}
+		}
+
 		int pierceLevel = weapon.getEnchantmentLevel(Enchantments.PIERCING);
 		float pct = CombatRules.getDamageAfterAbsorb(20f, target.getArmorValue(), (float) target.getAttributeValue(Attributes.ARMOR_TOUGHNESS)) / 20f;
 		return target.getRandom().nextFloat() < pct + 0.075f * pierceLevel + pierceProbability;
