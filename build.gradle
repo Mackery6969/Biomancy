@@ -216,6 +216,7 @@ dependencies {
 	minecraftLibrary(group: "com.h2database", name: "h2-mvstore", version: "2.3.232")
 	jarJar(group: "com.h2database", name: "h2-mvstore", version: "[2.3.230,3.0.0)")
 
+	// Pehkui mod for rescaling of Mobs/Players
 	implementation fg.deobf("maven.modrinth:pehkui:3.7.12+1.20.1-forge")
 
 	// Modonomicon

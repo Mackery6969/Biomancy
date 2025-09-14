@@ -9,17 +9,19 @@ public class ServerConfig {
 	public final ForgeConfigSpec.BooleanValue addTradesToWanderingTrader;
 	public final ForgeConfigSpec.EnumValue<PrimalEnergySettings.SupplyAmount> primalEnergySupplyOfCradle;
 
+	public final ForgeConfigSpec.DoubleValue pehkuiMaxScale;
+	public final ForgeConfigSpec.DoubleValue pehkuiMinScale;
+	public final ForgeConfigSpec.DoubleValue pehkuiScaleIncrement;
+	public final ForgeConfigSpec.DoubleValue pehkuiScaleDecrement;
+
 	public ServerConfig(ForgeConfigSpec.Builder builder) {
 		builder.push("recipes");
-
 		doBioForgeRecipeProgression = builder
 				.comment("Determines if the BioForge recipes need to be unlocked to be able to craft them")
 				.define("doBioForgeRecipeProgression", false);
-
 		builder.pop();
 
 		builder.push("trades");
-
 		addTradesToVillagers = builder
 				.comment("Determines if villagers will sell biomancy items")
 				.define("addTradesToVillagers", true);
@@ -27,15 +29,31 @@ public class ServerConfig {
 		addTradesToWanderingTrader = builder
 				.comment("Determines if wandering traders will sell biomancy items")
 				.define("addTradesToWanderingTrader", true);
-
 		builder.pop();
 
 		builder.push("flesh-growth");
-
 		primalEnergySupplyOfCradle = builder
 				.comment("Determines how much primal energy the Cradle can supply to nearby malignant flesh veins")
 				.defineEnum("primalEnergySupplyOfCradle", PrimalEnergySettings.SupplyAmount.LIMITED);
+		builder.pop();
 
+		builder.push("pehkui-integration");
+		builder.push("enlargement-serum");
+		pehkuiMaxScale = builder
+				.comment("Maximum scale a mob/player can reach. A value of 2.0 doubles the size of the mob/player.")
+				.defineInRange("maxScale", 2d, 0.01d, 100d);
+		pehkuiScaleIncrement = builder
+				.comment("How much to add to the scale on each injection.")
+				.defineInRange("scaleStep", 0.25d, 0.01d, 100d);
+		builder.pop();
+		builder.push("shrinking-serum");
+		pehkuiMinScale = builder
+				.comment("Minimum scale a mob/player can reach. A value of 0.5 half's the size of the mob/player.")
+				.defineInRange("minScale", 0.25d, 0.01d, 100d);
+		pehkuiScaleDecrement = builder
+				.comment("How much to subtract from the scale on each injection.")
+				.defineInRange("scaleStep", 0.25d, 0.01d, 100d);
+		builder.pop();
 		builder.pop();
 	}
 

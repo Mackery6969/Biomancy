@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.serum;
 
+import com.github.elenterius.biomancy.BiomancyConfig;
 import com.github.elenterius.biomancy.entity.mob.fleshblob.FleshBlob;
 import com.github.elenterius.biomancy.integration.ModsCompatHandler;
 import com.github.elenterius.biomancy.integration.pehkui.PehkuiHelper;
@@ -52,8 +53,11 @@ public class EnlargementSerum extends BasicSerum {
 	private void resizeWithPehkui(LivingEntity target) {
 		PehkuiHelper pehkuiHelper = ModsCompatHandler.getPehkuiHelper();
 		float currentScale = pehkuiHelper.getScale(target);
-		if (currentScale < 2f) {
-			pehkuiHelper.setScale(target, Mth.clamp(currentScale + 0.25f, 0.25f, 2f));
+		float maxScale = BiomancyConfig.SERVER.pehkuiMaxScale.get().floatValue();
+		if (currentScale < maxScale) {
+			float minScale = BiomancyConfig.SERVER.pehkuiMinScale.get().floatValue();
+			float scaleStep = BiomancyConfig.SERVER.pehkuiScaleIncrement.get().floatValue();
+			pehkuiHelper.setScale(target, Mth.clamp(currentScale + scaleStep, minScale, maxScale));
 		}
 	}
 
