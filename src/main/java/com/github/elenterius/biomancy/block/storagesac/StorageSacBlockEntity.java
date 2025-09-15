@@ -10,6 +10,7 @@ import com.github.elenterius.biomancy.inventory.ItemHandlerUtil;
 import com.github.elenterius.biomancy.menu.StorageSacMenu;
 import com.github.elenterius.biomancy.util.ItemStackCounter;
 import com.github.elenterius.biomancy.util.PlayerInteractionPredicate;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -17,6 +18,9 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -24,12 +28,18 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,18 +53,67 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 
 	private List<ItemStackCounter.CountedItem> top5ItemsByCount = List.of();
 
+	public static final String LOOT_TABLE_KEY = RandomizableContainerBlockEntity.LOOT_TABLE_TAG;
+	public static final String LOOT_TABLE_SEED_TAG = RandomizableContainerBlockEntity.LOOT_TABLE_SEED_TAG;
+
+	protected @Nullable ResourceLocation lootTableId;
+	protected long lootTableSeed;
+
 	public StorageSacBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntities.STORAGE_SAC.get(), pos, state);
 		inventory = InventoryHandlers.denyItemWithFilledInventory(SLOTS, this::onInventoryChanged);
 	}
 
-	@Nullable
+	protected boolean tryLoadLootTable(CompoundTag tag) {
+		if (!tag.contains(LOOT_TABLE_KEY, Tag.TAG_STRING)) return false;
+
+		lootTableId = ResourceLocation.parse(tag.getString(LOOT_TABLE_KEY));
+		lootTableSeed = tag.getLong(LOOT_TABLE_SEED_TAG);
+		return true;
+	}
+
+	protected boolean trySaveLootTable(CompoundTag tag) {
+		if (lootTableId == null) return false;
+
+		tag.putString(LOOT_TABLE_KEY, lootTableId.toString());
+		if (lootTableSeed != 0L) {
+			tag.putLong(LOOT_TABLE_SEED_TAG, lootTableSeed);
+		}
+		return true;
+	}
+
+	public void unpackLootTable(@Nullable Player player) {
+		if (lootTableId == null) return;
+		if (!(level instanceof ServerLevel serverLevel)) return;
+
+		LootTable lootTable = serverLevel.getServer().getLootData().getLootTable(lootTableId);
+
+		if (player instanceof ServerPlayer) {
+			CriteriaTriggers.GENERATE_LOOT.trigger((ServerPlayer) player, lootTableId);
+		}
+
+		lootTableId = null;
+		LootParams.Builder builder = new LootParams.Builder(serverLevel).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(worldPosition));
+		if (player != null) {
+			builder.withLuck(player.getLuck()).withParameter(LootContextParams.THIS_ENTITY, player);
+		}
+
+		lootTable.fill(inventory.getRecipeWrapper(), builder.create(LootContextParamSets.CHEST), lootTableSeed);
+	}
+
+	public void setLootTable(ResourceLocation lootTableId, long lootTableSeed) {
+		this.lootTableId = lootTableId;
+		this.lootTableSeed = lootTableSeed;
+	}
+
 	@Override
-	public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
+	public @Nullable AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
+		if (lootTableId != null && player.isSpectator()) return null;
 		return StorageSacMenu.createServerMenu(containerId, playerInventory, this);
 	}
 
 	public InventoryHandler<?> getInventory() {
+		unpackLootTable(null);
 		return inventory;
 	}
 
@@ -74,6 +133,7 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 	}
 
 	public boolean isEmpty() {
+		unpackLootTable(null);
 		return inventory.isEmpty();
 	}
 
@@ -107,21 +167,25 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 	}
 
 	@Override
-	@Nullable
-	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+	public @Nullable ClientboundBlockEntityDataPacket getUpdatePacket() {
 		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	@Override
 	protected void saveAdditional(CompoundTag tag) {
 		super.saveAdditional(tag);
+
+		if (trySaveLootTable(tag)) return;
+
 		tag.put(INVENTORY_KEY, inventory.serializeNBT());
-		//		tag.put(TOP5_BY_COUNT_KEY, serializeTop5()); //serialize for block destruction
+		//tag.put(TOP5_BY_COUNT_KEY, serializeTop5()); //serialize for block destruction
 	}
 
 	@Override
 	public void load(CompoundTag tag) {
 		super.load(tag);
+
+		if (tryLoadLootTable(tag)) return;
 
 		if (tag.contains(INVENTORY_KEY)) {
 			inventory.deserializeNBT(tag.getCompound(INVENTORY_KEY));
@@ -166,13 +230,14 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 
 	@Override
 	public void dropContainerContents(Level level, BlockPos pos) {
+		unpackLootTable(null);
 		ItemHandlerUtil.dropContents(level, pos, inventory);
 	}
 
-	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+	public <T> @NotNull LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
 		if (!remove && cap == ModCapabilities.ITEM_HANDLER) {
+			unpackLootTable(null);
 			return inventory.getLazyOptional().cast();
 		}
 		return super.getCapability(cap, side);
