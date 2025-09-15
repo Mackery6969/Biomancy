@@ -38,7 +38,7 @@ public class GuideBookProvider extends AbstractBookProvider {
 		context.book("guide_book");
 		BookModel book = BookModel.create(GuideBookItem.GUIDE_BOOK_ID, context.bookName())
 				.withTooltip(context.bookTooltip())
-				.withCustomBookItem(ModItems.GUIDE_BOOK.getId()).withGenerateBookItem(false)
+				.withCustomBookItem(ModItems.DEV_GUIDE_BOOK.getId()).withGenerateBookItem(false)
 				.withCraftingTexture(BiomancyMod.rl("textures/gui/modonomicon/crafting_textures.png"))
 				.withBookContentTexture(BiomancyMod.rl("textures/gui/modonomicon/book_content.png"))
 				.withBookOverviewTexture(BiomancyMod.rl("textures/gui/modonomicon/book_overview.png"));

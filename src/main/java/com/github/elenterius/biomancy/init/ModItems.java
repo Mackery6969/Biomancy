@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 public final class ModItems {
 
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, BiomancyMod.MOD_ID);
+	public static final DeferredRegister<Item> DEV_ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, BiomancyMod.MOD_ID);
 
 	//# Material / Mob Loot
 	public static final RegistryObject<SimpleItem> MOB_FANG = registerSimpleItem("mob_fang");
@@ -95,7 +96,6 @@ public final class ModItems {
 	public static final RegistryObject<EssenceItem> ESSENCE = registerItem("essence", EssenceItem::new);
 
 	//# Tools
-	public static final RegistryObject<GuideBookItem> GUIDE_BOOK = registerItem("guide_book", props -> new GuideBookItem(props.stacksTo(1).rarity(ModRarities.RARE)));
 	public static final RegistryObject<DespoilingSwordItem> DESPOIL_SICKLE = registerItem("despoil_sickle", props -> SwordSmithy.forge(DespoilingSwordItem::new, ModTiers.PRIMAL_FLESH, 10, 1, props.rarity(ModRarities.VERY_RARE)));
 	public static final RegistryObject<ExtractorItem> ESSENCE_EXTRACTOR = registerItem("extractor", props -> new ExtractorItem(props.durability(200).rarity(ModRarities.RARE)));
 	public static final RegistryObject<InjectorItem> INJECTOR = registerItem("injector", props -> new InjectorItem(props.durability(200).rarity(ModRarities.RARE)));
@@ -132,9 +132,12 @@ public final class ModItems {
 
 	public static final RegistryObject<MaykerBannerPatternItem> MASCOT_BANNER_PATTERNS = registerItem("mascot_patterns", props -> new MaykerBannerPatternItem(ModBannerPatterns.TAG_MASCOT, props));
 
-	//## Dev
+	//## Internal
 	public static final RegistryObject<SimpleItem> TAB_ICON = registerSimpleItem("tab_icon");
-	public static final RegistryObject<DevArmCannonItem> DEV_ARM_CANNON = registerItem("dev_arm_cannon", props -> new DevArmCannonItem(props.stacksTo(1).durability(ModTiers.BIOFLESH.getUses()).rarity(ModRarities.ULTRA_RARE)));
+
+	//## Dev
+	public static final RegistryObject<DevArmCannonItem> DEV_ARM_CANNON = registerDevItem("dev_arm_cannon", props -> new DevArmCannonItem(props.stacksTo(1).durability(ModTiers.BIOFLESH.getUses()).rarity(ModRarities.ULTRA_RARE)));
+	public static final RegistryObject<GuideBookItem> DEV_GUIDE_BOOK = registerDevItem("guide_book", props -> new GuideBookItem(props.stacksTo(1).rarity(ModRarities.RARE)));
 
 	//# Block Items
 
@@ -262,6 +265,10 @@ public final class ModItems {
 	}
 
 	private static <T extends Item> RegistryObject<T> registerItem(String name, Function<Item.Properties, T> factory) {
+		return ITEMS.register(name, () -> factory.apply(createProperties()));
+	}
+
+	private static <T extends Item> RegistryObject<T> registerDevItem(String name, Function<Item.Properties, T> factory) {
 		return ITEMS.register(name, () -> factory.apply(createProperties()));
 	}
 

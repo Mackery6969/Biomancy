@@ -178,6 +178,8 @@ public class EnglishLangProvider extends AbstractLangProvider {
 	protected void addTranslations() {
 		add(ModCreativeModeTabs.MAIN.get().getDisplayName(), "Biomancy");
 		add(ModCreativeModeTabs.BIO_ALCHEMY.get().getDisplayName(), "Biomancy: Bio-Alchemy");
+		add(ModCreativeModeTabs.DEV.get().getDisplayName(), "Biomancy: Dev Tools");
+		add(ModCreativeModeTabs.DEV_STRUCTURES.get().getDisplayName(), "Biomancy: Dev Structures");
 
 		add(ModKeyBindings.MAIN_CATEGORY, "Biomancy Mod");
 		add(ModKeyBindings.MAIN_HAND_ITEM_ACTION.getName(), "Main-Hand Item Action");
@@ -529,7 +531,7 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addItem(ModItems.VIAL, "Organic Vial", "A small organic container with very high alchemical resistance, perfect for holding reactive substances.\nThe vial dissolves on use.");
 		addItem(ModItems.LIVING_FLESH, "Living Flesh", "It's alive!\nUnfortunately, it looks too dumb to be the brain of a mob. You should turn it into a construct instead.");
 		addItem(ModItems.PRIMORDIAL_CORE, "Primordial Core", "A ominous artifact made of flesh. Looking at it makes you feel uneasy...");
-		addItem(ModItems.GUIDE_BOOK, "[WIP] Primordial Index", "[WIP] Ask questions?");
+		addItem(ModItems.DEV_GUIDE_BOOK, "[WIP] Primordial Index", "[WIP] Ask questions?");
 		addItem(ModItems.CREATOR_MIX, "Exotic Flesh Mix", "A carefully constructed tribute for the cradle... This exquisite meal contains raw meat infused with life energy.");
 		addItem(ModItems.INJECTOR, "Bio-Injector", """
 				A simple device which utilizes a razor sharp needle to quickly and forcefully inject Serums into Mobs and Players.

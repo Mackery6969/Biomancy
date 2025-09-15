@@ -73,6 +73,7 @@ minecraft {
 			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
 
 			property 'geckolib.disable_examples', 'true'
+			property 'biomancy.dev_mode', 'true'
 
 			// Hot-Swapping via JBR, includes schema changes
 			// https://forge.gemwire.uk/wiki/Hotswap#Applying_schema_changes

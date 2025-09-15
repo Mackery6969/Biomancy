@@ -25,6 +25,8 @@ public final class BiomancyMod {
 
 	public static final EventCalendar EVENT_CALENDAR = new EventCalendar();
 
+	public static final String DEV_MODE_PROPERTY_KEY = "biomancy.dev_mode";
+
 	public BiomancyMod() {
 		GeckoLib.initialize();
 
@@ -35,8 +37,13 @@ public final class BiomancyMod {
 
 		ModBlocks.BLOCKS.register(modEventBus);
 		ModItems.ITEMS.register(modEventBus);
-		ModCreativeModeTabs.CREATIVE_TABS.register(modEventBus);
 		ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
+		ModCreativeModeTabs.CREATIVE_TABS.register(modEventBus);
+
+		if (isDevModeEnabled()) {
+			ModItems.DEV_ITEMS.register(modEventBus);
+			ModCreativeModeTabs.CREATIVE_DEV_TABS.register(modEventBus);
+		}
 
 		ModFluids.FLUID_TYPES.register(modEventBus);
 		ModFluids.FLUIDS.register(modEventBus);
@@ -62,6 +69,10 @@ public final class BiomancyMod {
 
 		BiomancyConfig.register(modLoadingContext);
 		ModsCompatHandler.onBiomancyInit(modEventBus);
+	}
+
+	public static boolean isDevModeEnabled() {
+		return Boolean.getBoolean(DEV_MODE_PROPERTY_KEY);
 	}
 
 	public static ResourceLocation rl(String path) {
