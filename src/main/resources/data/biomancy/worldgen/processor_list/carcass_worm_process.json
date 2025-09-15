@@ -1,0 +1,66 @@
+[
+  {
+    "processor_type": "minecraft:block_rot",
+    "integrity": 0.4,
+    "rottable_blocks": "biomancy:fibrous_flesh"
+  },
+  {
+    "processor_type": "minecraft:block_rot",
+    "integrity": 0.9,
+    "rottable_blocks": [
+      "minecraft:bone_block",
+      "biomancy:flesh_slab"
+    ]
+  },
+  {
+    "processor_type": "minecraft:rule",
+    "rules": [
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "biomancy:flesh",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "biomancy:flesh_slab",
+          "Properties": {
+            "type": "half_up"
+          }
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "biomancy:flesh",
+          "probability": 0.2
+        },
+        "output_state": {
+          "Name": "biomancy:flesh_spike",
+          "Properties": {
+            "facing": "up",
+            "spikes": "2"
+          }
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "minecraft:bone_block",
+          "probability": 0.2
+        },
+        "output_state": {
+          "Name": "minecraft:calcite"
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 19011220,
+    "separation": 10,
+    "spacing": 15,
+    "spread_type": "triangular"
+  },
+  "structures": [
+    {
+      "structure": "biomancy:carcass_worm",
+      "weight": 1
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "biomancy:abandoned_lab/lab_chest",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 33,
+      "element": {
+        "location": "biomancy:abandoned_lab/chest_trap",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 67,
+      "element": {
+        "location": "biomancy:abandoned_lab/chest_basic",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

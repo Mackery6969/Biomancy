@@ -14,8 +14,10 @@
 - Jasdan
 - Tyfin
 - Shorepion
-- Kitteh6660
 - SlimeSB
+- Kitteh6660
+- Tarnisheart
+- lordketer
 
 And many more people from the Biomancy Discord and Biomancy Crowdin Translation Team.
 
@@ -52,6 +54,10 @@ The mod contains sounds from **Freesound.org**, please check `3RD_PARTY_LICENSE.
 ## Fonts
 
 - `Caro Invitica` by **Tyfin**
+
+## Worldgen &Structures
+
+All current structures are made by lordketer & Tarnisheart.
 
 ## Artwork
 

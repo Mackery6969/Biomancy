@@ -1,0 +1,60 @@
+{
+  "name": "biomancy:carcass_worm/segment",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 50,
+      "element": {
+        "location": "biomancy:carcass_worm/body_1",
+        "processors": "biomancy:carcass_worm_process",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 50,
+      "element": {
+        "location": "biomancy:carcass_worm/body_2",
+        "processors": "biomancy:carcass_worm_process",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 50,
+      "element": {
+        "location": "biomancy:carcass_worm/end_1",
+        "processors": "biomancy:carcass_worm_process",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 50,
+      "element": {
+        "location": "biomancy:carcass_worm/end_2",
+        "processors": "biomancy:carcass_worm_process",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 50,
+      "element": {
+        "location": "biomancy:carcass_worm/end_3",
+        "processors": "biomancy:carcass_worm_process",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 50,
+      "element": {
+        "location": "biomancy:carcass_worm/end_4",
+        "processors": "biomancy:carcass_worm_process",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

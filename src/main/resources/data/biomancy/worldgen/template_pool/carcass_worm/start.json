@@ -1,0 +1,24 @@
+{
+  "name": "biomancy:carcass_worm/start",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 50,
+      "element": {
+        "location": "biomancy:carcass_worm/main_1",
+        "processors": "biomancy:carcass_worm_process",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 50,
+      "element": {
+        "location": "biomancy:carcass_worm/main_2",
+        "processors": "biomancy:carcass_worm_process",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+[
+  {
+    "processor_type": "minecraft:rule",
+    "rules": [
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "biomancy:impermeable_membrane",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:air"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "minecraft:dark_oak_planks",
+          "probability": 0.5
+        },
+        "output_state": {
+          "Name": "biomancy:flesh"
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_blockstate_match",
+          "block_state": {
+            "Name": "minecraft:dark_oak_slab",
+            "Properties": {
+              "type": "top"
+            }
+          },
+          "probability": 0.5
+        },
+        "output_state": {
+          "Name": "biomancy:flesh_slab",
+          "Properties": {
+            "type": "half_down"
+          }
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_blockstate_match",
+          "block_state": {
+            "Name": "minecraft:dark_oak_slab",
+            "Properties": {
+              "type": "bottom"
+            }
+          },
+          "probability": 0.5
+        },
+        "output_state": {
+          "Name": "biomancy:flesh_slab",
+          "Properties": {
+            "type": "half_up"
+          }
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "minecraft:deepslate_bricks",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:cracked_deepslate_bricks"
+        }
+      }
+    ]
+  },
+  {
+    "processor_type": "minecraft:block_rot",
+    "integrity": 0.8,
+    "rottable_blocks": [
+      "minecraft:deepslate_bricks"
+    ]
+  }
+]

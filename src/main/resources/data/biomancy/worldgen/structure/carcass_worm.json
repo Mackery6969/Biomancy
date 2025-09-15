@@ -1,0 +1,21 @@
+{
+  "biomes": "#minecraft:is_overworld",
+  "adapt_noise": false,
+  "spawn_overrides": { },
+  "type": "minecraft:jigsaw",
+  "start_pool": "biomancy:carcass_worm/start",
+  "size": 6,
+  "step": "underground_structures",
+  "start_height": {
+    "type": "minecraft:uniform",
+    "min_inclusive": {
+      "absolute": -30
+    },
+    "max_inclusive": {
+      "absolute": 10
+    }
+  },
+  "max_distance_from_center": 100,
+  "terrain_adaptation": "none",
+  "use_expansion_hack": false
+}

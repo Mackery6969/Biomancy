@@ -1,0 +1,15 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 19011220,
+    "separation": 3,
+    "spacing": 7,
+    "spread_type": "triangular"
+  },
+  "structures": [
+    {
+      "structure": "biomancy:abandoned_lab",
+      "weight": 1
+    }
+  ]
+}
