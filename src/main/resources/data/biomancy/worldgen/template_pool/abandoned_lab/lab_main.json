@@ -5,7 +5,7 @@
     {
       "weight": 50,
       "element": {
-        "location": "biomancy:abandoned_lab/main1",
+        "location": "biomancy:abandoned_lab/main_1",
         "processors": "biomancy:abandoned_lab_process",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
@@ -14,7 +14,7 @@
     {
       "weight": 50,
       "element": {
-        "location": "biomancy:abandoned_lab/main2",
+        "location": "biomancy:abandoned_lab/main_2",
         "processors": "biomancy:abandoned_lab_process",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
@@ -23,7 +23,7 @@
     {
       "weight": 50,
       "element": {
-        "location": "biomancy:abandoned_lab/main3",
+        "location": "biomancy:abandoned_lab/main_3",
         "processors": "biomancy:abandoned_lab_process",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"

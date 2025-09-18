@@ -1,47 +1,56 @@
 {
-  "name": "biomancy:abandoned_lab/lab_machine",
+  "name": "biomancy:globule/segments",
   "fallback": "minecraft:empty",
   "elements": [
     {
-      "weight": 50,
+      "weight": 70,
       "element": {
-        "location": "biomancy:abandoned_lab/machine_1",
+        "location": "biomancy:globule/globule_passage",
         "processors": "minecraft:empty",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
     },
     {
-      "weight": 50,
+      "weight": 70,
       "element": {
-        "location": "biomancy:abandoned_lab/machine_2",
+        "location": "biomancy:globule/globule_room",
         "processors": "minecraft:empty",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
     },
     {
-      "weight": 50,
+      "weight": 70,
       "element": {
-        "location": "biomancy:abandoned_lab/machine_3",
+        "location": "biomancy:globule/globule_tee",
         "processors": "minecraft:empty",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
     },
     {
-      "weight": 50,
+      "weight": 70,
       "element": {
-        "location": "biomancy:abandoned_lab/machine_4",
+        "location": "biomancy:globule/globule_cradle",
         "processors": "minecraft:empty",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
     },
     {
-      "weight": 50,
+      "weight": 70,
       "element": {
-        "location": "biomancy:abandoned_lab/machine_5",
+        "location": "biomancy:globule/globule_acid",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 70,
+      "element": {
+        "location": "biomancy:globule/globule_spikes",
         "processors": "minecraft:empty",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
