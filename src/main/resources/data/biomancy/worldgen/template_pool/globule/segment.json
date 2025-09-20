@@ -1,9 +1,9 @@
 {
-  "name": "biomancy:globule/segments",
+  "name": "biomancy:globule/segment",
   "fallback": "minecraft:empty",
   "elements": [
     {
-      "weight": 70,
+      "weight": 50,
       "element": {
         "location": "biomancy:globule/globule_passage",
         "processors": "minecraft:empty",
@@ -12,7 +12,7 @@
       }
     },
     {
-      "weight": 70,
+      "weight": 50,
       "element": {
         "location": "biomancy:globule/globule_room",
         "processors": "minecraft:empty",
@@ -21,7 +21,7 @@
       }
     },
     {
-      "weight": 70,
+      "weight": 50,
       "element": {
         "location": "biomancy:globule/globule_tee",
         "processors": "minecraft:empty",
@@ -30,7 +30,7 @@
       }
     },
     {
-      "weight": 70,
+      "weight": 44,
       "element": {
         "location": "biomancy:globule/globule_cradle",
         "processors": "minecraft:empty",
@@ -39,7 +39,7 @@
       }
     },
     {
-      "weight": 70,
+      "weight": 40,
       "element": {
         "location": "biomancy:globule/globule_acid",
         "processors": "minecraft:empty",
@@ -48,7 +48,7 @@
       }
     },
     {
-      "weight": 70,
+      "weight": 46,
       "element": {
         "location": "biomancy:globule/globule_spikes",
         "processors": "minecraft:empty",
