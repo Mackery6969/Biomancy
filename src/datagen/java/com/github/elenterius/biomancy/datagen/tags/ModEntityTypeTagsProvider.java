@@ -57,7 +57,7 @@ public class ModEntityTypeTagsProvider extends EntityTypeTagsProvider {
 		createTag(ModEntityTags.CAPTURING_BY_CHRYSALIS_NOT_ALLOWED)
 				.addTag(ModEntityTags.C_BOSSES)
 				.add(EntityType.WARDEN, EntityType.ELDER_GUARDIAN, EntityType.GIANT)
-				.addOptional(ACEntityRegistry.GUM_WORM, ACEntityRegistry.TREMORSAURUS, ACEntityRegistry.LUXTRUCTOSAURUS)
+				.addOptional(ACEntityRegistry.GUM_WORM, ACEntityRegistry.TREMORZILLA, ACEntityRegistry.HULLBREAKER)
 				.addOptional(AMEntityRegistry.VOID_WORM);
 
 		createTag(ModEntityTags.FLESHKIN).add(
