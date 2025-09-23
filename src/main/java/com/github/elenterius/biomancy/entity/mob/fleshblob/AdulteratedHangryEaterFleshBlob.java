@@ -37,6 +37,7 @@ public class AdulteratedHangryEaterFleshBlob extends EaterFleshBlob implements E
 
 	public AdulteratedHangryEaterFleshBlob(EntityType<? extends AdulteratedHangryEaterFleshBlob> entityType, Level level) {
 		super(entityType, level);
+		setPersistenceRequired();
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {

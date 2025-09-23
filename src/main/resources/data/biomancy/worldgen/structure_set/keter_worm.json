@@ -1,0 +1,20 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spread_type": "triangular",
+    "salt": 32913221,
+    "separation": 12,
+    "spacing": 35,
+    "frequency": 0.1
+  },
+  "structures": [
+    {
+      "structure": "biomancy:keter_worm",
+      "weight": 1
+    }
+  ],
+  "exclusion_zone": {
+    "other_set": "minecraft:mineshafts",
+    "chunk_count": 4
+  }
+}

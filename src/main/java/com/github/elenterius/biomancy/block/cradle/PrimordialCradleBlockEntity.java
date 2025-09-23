@@ -365,6 +365,7 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 		FleshBlob fleshBlob = fleshBlobType.create(level);
 		if (fleshBlob != null) {
 			fleshBlob.restrictTo(pos, 32);
+			fleshBlob.setPersistenceRequired();
 			spawnMob(level, pos, fleshBlob, nearbyPlayers);
 		}
 	}
@@ -383,6 +384,7 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 		if (fleshBlob != null) {
 			fleshBlob.setTumors(sacrificeHandler.getTumorFactor());
 			fleshBlob.restrictTo(pos, 24);
+			fleshBlob.setPersistenceRequired();
 			spawnMob(level, pos, fleshBlob, nearbyPlayers);
 		}
 	}

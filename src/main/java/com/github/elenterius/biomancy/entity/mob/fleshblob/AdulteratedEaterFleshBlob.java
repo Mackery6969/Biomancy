@@ -23,6 +23,7 @@ public class AdulteratedEaterFleshBlob extends EaterFleshBlob implements Adulter
 
 	public AdulteratedEaterFleshBlob(EntityType<? extends AdulteratedEaterFleshBlob> entityType, Level level) {
 		super(entityType, level);
+		setPersistenceRequired();
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {

@@ -114,11 +114,6 @@ public abstract class FleshBlob extends PathfinderMob implements Fleshkin, JumpM
 	}
 
 	@Override
-	public boolean removeWhenFarAway(double distanceToClosestPlayer) {
-		return false;
-	}
-
-	@Override
 	public EntityDimensions getDimensions(Pose pose) {
 		return getType().getDimensions().scale(getScale());
 	}

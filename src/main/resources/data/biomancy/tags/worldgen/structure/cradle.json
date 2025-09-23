@@ -1,6 +1,6 @@
 {
   "replace": false,
   "values": [
-    "biomancy:carcass_worm"
+    "biomancy:carcass_worm", "biomancy:keter_worm"
   ]
 }
