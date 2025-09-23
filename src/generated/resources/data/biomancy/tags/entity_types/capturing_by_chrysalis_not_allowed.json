@@ -20,6 +20,10 @@
       "required": false
     },
     {
+      "id": "alexscaves:forsaken",
+      "required": false
+    },
+    {
       "id": "alexsmobs:void_worm",
       "required": false
     }
