@@ -1,15 +1,15 @@
 {
   "type": "minecraft:jigsaw",
-  "start_pool": "biomancy:globule/start",
   "biomes": "#minecraft:is_overworld",
-  "spawn_overrides": { },
+  "step": "surface_structures",
+  "start_pool": "biomancy:globule/start",
   "max_distance_from_center": 90,
   "size": 6,
   "project_start_to_heightmap": "WORLD_SURFACE_WG",
   "start_height": {
-    "absolute": 1
+    "absolute": 2
   },
-  "step": "surface_structures",
-  "terrain_adaptation": "bury",
-  "use_expansion_hack": false
+  "terrain_adaptation": "beard_thin",
+  "use_expansion_hack": false,
+  "spawn_overrides": { }
 }
