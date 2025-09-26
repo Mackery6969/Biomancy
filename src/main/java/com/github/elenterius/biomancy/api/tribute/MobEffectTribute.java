@@ -1,7 +1,9 @@
 package com.github.elenterius.biomancy.api.tribute;
 
 import com.github.elenterius.biomancy.init.tags.ModMobEffectTags;
+import com.github.elenterius.biomancy.item.PotionSerumItem;
 import com.github.elenterius.biomancy.mixin.accessor.SuspiciousStewItemAccessor;
+import com.github.elenterius.biomancy.serum.PotionSerum;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -20,17 +22,26 @@ public record MobEffectTribute(int lifeEnergy, int successModifier, int diseaseM
 	static Tribute from(ItemStack stack) {
 		boolean isPotionItem = stack.getItem() instanceof PotionItem; //we don't check if the potion has no effects because it should contain an effect in 99% of cases
 
+		boolean isPotionSerum = stack.getItem() instanceof PotionSerumItem;
+
 		boolean isSuspiciousStewItem = stack.getItem() instanceof SuspiciousStewItem;
 
 		FoodProperties food = stack.getFoodProperties(null);
 		boolean isFoodItem = food != null && !food.getEffects().isEmpty(); //we check if the food has any effects because they are optional
 
-		if (!isPotionItem && !isSuspiciousStewItem && !isFoodItem) return Tribute.EMPTY; //avoid creation of new empty objects
+		if (!isPotionItem && !isSuspiciousStewItem && !isFoodItem && !isPotionSerum) return Tribute.EMPTY; //avoid creation of new empty objects
 
 		Builder builder = new Builder();
 
 		if (isPotionItem) {
 			List<MobEffectInstance> effectInstances = PotionUtils.getMobEffects(stack);
+			for (MobEffectInstance effectInstance : effectInstances) {
+				builder.addEffect(effectInstance);
+			}
+		}
+
+		if (stack.getItem() instanceof PotionSerumItem potionSerumItem) {
+			List<MobEffectInstance> effectInstances = PotionSerum.getAllEffects(potionSerumItem.getSerumData(stack));
 			for (MobEffectInstance effectInstance : effectInstances) {
 				builder.addEffect(effectInstance);
 			}
