@@ -21,7 +21,7 @@ public final class ModProjectiles {
 
 	public static final List<ConfiguredProjectile<? extends BaseProjectile>> PRECONFIGURED_PROJECTILES = new ArrayList<>();
 	public static final ConfiguredProjectile<ToothProjectile> TOOTH = create("Sharp Tooth", 1.75f, 5f, 0, 0.92f, ToothProjectile::new);
-	public static final ConfiguredProjectile<ImpalerProjectile> IMPALER_PROJECTILE = create("Impaler Projectile", 3f, 20f, 0, 0.99f, ModSoundEvents.IMPALER_SHOOT.get(), ImpalerProjectile::new);
+	public static final ConfiguredProjectile<ImpalerProjectile> IMPALER_PROJECTILE = create("Impaler Projectile", 3f, 24f, 0, 0.99f, ModSoundEvents.IMPALER_SHOOT.get(), ImpalerProjectile::new);
 	public static final ConfiguredProjectile<AcidBlobProjectile> ACID_BLOB = create("Acid Blob", 1.5f, 2, 0, 0.9f, ModSoundEvents.ACID_BLOB_SHOOT.get(), (level, x, y, z) -> new AcidBlobProjectile(level, x, y, z, false));
 	public static final ConfiguredProjectile<AcidBlobProjectile> FALLING_ACID_BLOB = create("Falling Acid Blob", 0.1f, 2, 0, 0.9f, ModSoundEvents.ACID_BLOB_FALL.get(), AcidBlobProjectile::new);
 	public static final ConfiguredProjectile<AcidSpitProjectile> GASTRIC_SPIT = create("Gastric Acid Spit", 1.5f, 1, 0, 0.25f, ModSoundEvents.ACID_SPIT.get(), AcidSpitProjectile::new);
