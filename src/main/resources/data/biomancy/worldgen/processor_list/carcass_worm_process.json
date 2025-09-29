@@ -2,14 +2,14 @@
   {
     "processor_type": "minecraft:block_rot",
     "integrity": 0.4,
-    "rottable_blocks": "biomancy:fibrous_flesh"
+    "rottable_blocks": "biomancy:fibrous_primal_flesh"
   },
   {
     "processor_type": "minecraft:block_rot",
     "integrity": 0.9,
     "rottable_blocks": [
       "minecraft:bone_block",
-      "biomancy:flesh_slab"
+      "biomancy:primal_flesh_slab"
     ]
   },
   {
@@ -21,11 +21,11 @@
         },
         "input_predicate": {
           "predicate_type": "minecraft:random_block_match",
-          "block": "biomancy:flesh",
+          "block": "biomancy:primal_flesh",
           "probability": 0.3
         },
         "output_state": {
-          "Name": "biomancy:flesh_slab",
+          "Name": "biomancy:primal_flesh_slab",
           "Properties": {
             "type": "half_up"
           }
@@ -37,11 +37,11 @@
         },
         "input_predicate": {
           "predicate_type": "minecraft:random_block_match",
-          "block": "biomancy:flesh",
+          "block": "biomancy:primal_flesh",
           "probability": 0.2
         },
         "output_state": {
-          "Name": "biomancy:flesh_spike",
+          "Name": "biomancy:primal_flesh_spike",
           "Properties": {
             "facing": "up",
             "spikes": "2"
