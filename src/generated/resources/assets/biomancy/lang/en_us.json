@@ -176,7 +176,7 @@
   "item.biomancy.chroma_sheep_spawn_egg": "Chroma Sheep Spawn Egg",
   "item.biomancy.thick_fur_sheep_spawn_egg": "Thick Fur Sheep Spawn Egg",
   "block.biomancy.primordial_cradle": "Primordial Cradle",
-  "block.biomancy.primordial_cradle.tooltip": "Offer adequate Tributes to the cradle and summon forth primordial messengers of exquisite flesh.",
+  "block.biomancy.primordial_cradle.tooltip": "Offer raw meats together with items containing life energy. Depending on what you feed the cradle it will summon different flesh mobs.",
   "block.biomancy.decomposer": "Decomposer",
   "block.biomancy.decomposer.tooltip": "A bio-machine that deconstructs items into their base components.\nThe Decomposer consumes nutrients to function.",
   "block.biomancy.digester": "Digester",

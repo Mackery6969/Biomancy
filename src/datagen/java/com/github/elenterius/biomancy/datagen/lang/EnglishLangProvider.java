@@ -32,7 +32,6 @@ import java.util.function.Supplier;
 public class EnglishLangProvider extends AbstractLangProvider {
 
 	public static final Marker LOG_MARKER = MarkerFactory.getMarker("EnglishTranslationProvider");
-	private static final String EMPTY_STRING = "";
 
 	private List<Item> itemsToTranslate = List.of();
 	private List<Block> blocksToTranslate = List.of();
@@ -622,7 +621,7 @@ public class EnglishLangProvider extends AbstractLangProvider {
 	}
 
 	private void addBlockTranslations() {
-		addBlock(ModBlocks.PRIMORDIAL_CRADLE, "Primordial Cradle", "Offer adequate Tributes to the cradle and summon forth primordial messengers of exquisite flesh.");
+		addBlock(ModBlocks.PRIMORDIAL_CRADLE, "Primordial Cradle", "Offer raw meats together with items containing life energy. Depending on what you feed the cradle it will summon different flesh mobs.");
 
 		addBlock(ModBlocks.DECOMPOSER, "Decomposer", "A bio-machine that deconstructs items into their base components.\nThe Decomposer consumes nutrients to function.");
 		addBlock(ModBlocks.DIGESTER, "Digester", "A machine born from flesh that converts food and plants into extremely bio-available nutrients.");
