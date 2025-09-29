@@ -95,6 +95,10 @@ public final class ModBlocks {
 	public static final RegistryObject<StairBlock> SMOOTH_PRIMAL_FLESH_STAIRS = registerStairs(SMOOTH_PRIMAL_FLESH, StairBlock::new);
 	public static final RegistryObject<DirectionalSlabBlock> SMOOTH_PRIMAL_FLESH_SLAB = registerSlab(SMOOTH_PRIMAL_FLESH, DirectionalSlabBlock::new);
 	public static final RegistryObject<WallBlock> SMOOTH_PRIMAL_FLESH_WALL = registerWall(SMOOTH_PRIMAL_FLESH, WallBlock::new);
+	public static final RegistryObject<FleshBlock> FIBROUS_PRIMAL_FLESH = register("fibrous_primal_flesh", properties -> new FleshBlock(properties, ModPlantTypes.PRIMAL_FLESH));
+	public static final RegistryObject<StairBlock> FIBROUS_PRIMAL_FLESH_STAIRS = registerStairs(FIBROUS_PRIMAL_FLESH, StairBlock::new);
+	public static final RegistryObject<WallBlock> FIBROUS_PRIMAL_FLESH_WALL = registerWall(FIBROUS_PRIMAL_FLESH, WallBlock::new);
+	public static final RegistryObject<DirectionalSlabBlock> FIBROUS_PRIMAL_FLESH_SLAB = registerSlab(FIBROUS_PRIMAL_FLESH, DirectionalSlabBlock::new);
 	public static final RegistryObject<FleshBlock> POROUS_PRIMAL_FLESH = register("porous_primal_flesh", properties -> new FleshBlock(properties, ModPlantTypes.PRIMAL_FLESH));
 	public static final RegistryObject<StairBlock> POROUS_PRIMAL_FLESH_STAIRS = registerStairs(POROUS_PRIMAL_FLESH, StairBlock::new);
 	public static final RegistryObject<DirectionalSlabBlock> POROUS_PRIMAL_FLESH_SLAB = registerSlab(POROUS_PRIMAL_FLESH, DirectionalSlabBlock::new);

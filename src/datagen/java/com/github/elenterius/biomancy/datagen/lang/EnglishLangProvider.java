@@ -739,6 +739,10 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addBlock(ModBlocks.SMOOTH_PRIMAL_FLESH_SLAB, "Smooth Primal Flesh Slab", "Primitive and pure, you better not touch this with your dirty mitts.");
 		addBlock(ModBlocks.SMOOTH_PRIMAL_FLESH_STAIRS, "Smooth Primal Flesh Stairs", "Stairs made of primal flesh.\nFeels primitive and pure...");
 		addBlock(ModBlocks.SMOOTH_PRIMAL_FLESH_WALL, "Smooth Primal Flesh Wall", "Wall of primal flesh. Is this Terraria?\nYou better start running >:D");
+		addBlock(ModBlocks.FIBROUS_PRIMAL_FLESH, "Fibrous Primal Flesh Block", "A unusual block flesh made from the innards of someone.");
+		addBlock(ModBlocks.FIBROUS_PRIMAL_FLESH_SLAB, "Fibrous Primal Flesh Slab", "A unusual slab of flesh made from the innards of someone.");
+		addBlock(ModBlocks.FIBROUS_PRIMAL_FLESH_STAIRS, "Fibrous Primal Flesh Stairs", "Stairs made of unusual flesh made from the innards of someone.");
+		addBlock(ModBlocks.FIBROUS_PRIMAL_FLESH_WALL, "Fibrous Primal Flesh Wall", "A unusual wall of flesh made from the innards of someone.");
 		addBlock(ModBlocks.POROUS_PRIMAL_FLESH, "Porous Primal Flesh Block", "Primitive and pure, you better not touch this with your dirty mitts.");
 		addBlock(ModBlocks.POROUS_PRIMAL_FLESH_SLAB, "Porous Primal Flesh Slab", "Primitive and pure, you better not touch this with your dirty mitts.");
 		addBlock(ModBlocks.POROUS_PRIMAL_FLESH_STAIRS, "Porous Primal Flesh Stairs", "Stairs made of primal flesh.\nFeels primitive and pure...");

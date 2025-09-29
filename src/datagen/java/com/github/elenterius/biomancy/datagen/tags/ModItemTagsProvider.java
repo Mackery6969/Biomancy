@@ -197,7 +197,11 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 				ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get(),
 				ModItems.SMOOTH_PRIMAL_FLESH_WALL.get(),
 				ModItems.SMOOTH_PRIMAL_FLESH_STAIRS.get(),
-				ModItems.SMOOTH_PRIMAL_FLESH_SLAB.get()
+				ModItems.SMOOTH_PRIMAL_FLESH_SLAB.get(),
+				ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get(),
+				ModItems.FIBROUS_PRIMAL_FLESH_WALL.get(),
+				ModItems.FIBROUS_PRIMAL_FLESH_STAIRS.get(),
+				ModItems.FIBROUS_PRIMAL_FLESH_SLAB.get()
 		);
 
 		Set<Item> types = new HashSet<>();

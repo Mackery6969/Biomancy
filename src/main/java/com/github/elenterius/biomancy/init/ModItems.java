@@ -218,6 +218,10 @@ public final class ModItems {
 	public static final RegistryObject<SimpleBlockItem> SMOOTH_PRIMAL_FLESH_SLAB = registerSimpleBlockItem(ModBlocks.SMOOTH_PRIMAL_FLESH_SLAB);
 	public static final RegistryObject<SimpleBlockItem> SMOOTH_PRIMAL_FLESH_STAIRS = registerSimpleBlockItem(ModBlocks.SMOOTH_PRIMAL_FLESH_STAIRS);
 	public static final RegistryObject<SimpleBlockItem> SMOOTH_PRIMAL_FLESH_WALL = registerSimpleBlockItem(ModBlocks.SMOOTH_PRIMAL_FLESH_WALL);
+	public static final RegistryObject<SimpleBlockItem> FIBROUS_PRIMAL_FLESH_BLOCK = registerSimpleBlockItem(ModBlocks.FIBROUS_PRIMAL_FLESH);
+	public static final RegistryObject<SimpleBlockItem> FIBROUS_PRIMAL_FLESH_SLAB = registerSimpleBlockItem(ModBlocks.FIBROUS_PRIMAL_FLESH_SLAB);
+	public static final RegistryObject<SimpleBlockItem> FIBROUS_PRIMAL_FLESH_STAIRS = registerSimpleBlockItem(ModBlocks.FIBROUS_PRIMAL_FLESH_STAIRS);
+	public static final RegistryObject<SimpleBlockItem> FIBROUS_PRIMAL_FLESH_WALL = registerSimpleBlockItem(ModBlocks.FIBROUS_PRIMAL_FLESH_WALL);
 	public static final RegistryObject<SimpleBlockItem> POROUS_PRIMAL_FLESH_BLOCK = registerSimpleBlockItem(ModBlocks.POROUS_PRIMAL_FLESH);
 	public static final RegistryObject<SimpleBlockItem> POROUS_PRIMAL_FLESH_SLAB = registerSimpleBlockItem(ModBlocks.POROUS_PRIMAL_FLESH_SLAB);
 	public static final RegistryObject<SimpleBlockItem> POROUS_PRIMAL_FLESH_STAIRS = registerSimpleBlockItem(ModBlocks.POROUS_PRIMAL_FLESH_STAIRS);

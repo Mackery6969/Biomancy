@@ -331,6 +331,10 @@ public class DecomposingRecipeProvider extends RecipeProvider {
 		DecomposingRecipeBuilder.create().setIngredient(ModItems.SMOOTH_PRIMAL_FLESH_SLAB.get()).addOutput(ModItems.FLESH_BITS.get(), 0, 1).unlockedBy(ModItems.SMOOTH_PRIMAL_FLESH_SLAB.get()).save(consumer);
 		DecomposingRecipeBuilder.create().setIngredient(ModItems.SMOOTH_PRIMAL_FLESH_STAIRS.get()).addOutput(ModItems.FLESH_BITS.get(), 0, 1).unlockedBy(ModItems.SMOOTH_PRIMAL_FLESH_STAIRS.get()).save(consumer);
 		DecomposingRecipeBuilder.create().setIngredient(ModItems.SMOOTH_PRIMAL_FLESH_WALL.get()).addOutput(ModItems.FLESH_BITS.get(), 0, 2).unlockedBy(ModItems.SMOOTH_PRIMAL_FLESH_WALL.get()).save(consumer);
+		DecomposingRecipeBuilder.create().setIngredient(ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get()).addOutput(ModItems.FLESH_BITS.get(), 0, 2).unlockedBy(ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get()).save(consumer);
+		DecomposingRecipeBuilder.create().setIngredient(ModItems.FIBROUS_PRIMAL_FLESH_SLAB.get()).addOutput(ModItems.FLESH_BITS.get(), 0, 1).unlockedBy(ModItems.FIBROUS_PRIMAL_FLESH_SLAB.get()).save(consumer);
+		DecomposingRecipeBuilder.create().setIngredient(ModItems.FIBROUS_PRIMAL_FLESH_STAIRS.get()).addOutput(ModItems.FLESH_BITS.get(), 0, 1).unlockedBy(ModItems.FIBROUS_PRIMAL_FLESH_STAIRS.get()).save(consumer);
+		DecomposingRecipeBuilder.create().setIngredient(ModItems.FIBROUS_PRIMAL_FLESH_WALL.get()).addOutput(ModItems.FLESH_BITS.get(), 0, 2).unlockedBy(ModItems.FIBROUS_PRIMAL_FLESH_WALL.get()).save(consumer);
 		DecomposingRecipeBuilder.create().setIngredient(ModItems.POROUS_PRIMAL_FLESH_BLOCK.get()).addOutput(ModItems.FLESH_BITS.get(), 0, 2).unlockedBy(ModItems.POROUS_PRIMAL_FLESH_BLOCK.get()).save(consumer);
 		DecomposingRecipeBuilder.create().setIngredient(ModItems.POROUS_PRIMAL_FLESH_SLAB.get()).addOutput(ModItems.FLESH_BITS.get(), 0, 1).unlockedBy(ModItems.POROUS_PRIMAL_FLESH_SLAB.get()).save(consumer);
 		DecomposingRecipeBuilder.create().setIngredient(ModItems.POROUS_PRIMAL_FLESH_STAIRS.get()).addOutput(ModItems.FLESH_BITS.get(), 0, 1).unlockedBy(ModItems.POROUS_PRIMAL_FLESH_STAIRS.get()).save(consumer);

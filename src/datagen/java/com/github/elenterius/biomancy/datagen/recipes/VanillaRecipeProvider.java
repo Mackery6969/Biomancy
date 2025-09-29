@@ -315,6 +315,18 @@ public class VanillaRecipeProvider extends RecipeProvider {
 		stonecutting(consumer, ModItems.SMOOTH_PRIMAL_FLESH_STAIRS.get(), ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get());
 		stonecutting(consumer, ModItems.SMOOTH_PRIMAL_FLESH_WALL.get(), ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get());
 
+		WorkbenchRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get())
+				.requires(ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get())
+				.unlockedBy(ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get())
+				.save(consumer);
+		stairs(consumer, ModItems.FIBROUS_PRIMAL_FLESH_STAIRS.get(), ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get());
+		slab(consumer, ModItems.FIBROUS_PRIMAL_FLESH_SLAB.get(), ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get());
+		blockFromSlabs(consumer, ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get(), ModItems.FIBROUS_PRIMAL_FLESH_SLAB.get());
+		wall(consumer, ModItems.FIBROUS_PRIMAL_FLESH_WALL.get(), ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get());
+		stonecutting(consumer, ModItems.FIBROUS_PRIMAL_FLESH_SLAB.get(), ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get(), 2);
+		stonecutting(consumer, ModItems.FIBROUS_PRIMAL_FLESH_STAIRS.get(), ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get());
+		stonecutting(consumer, ModItems.FIBROUS_PRIMAL_FLESH_WALL.get(), ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get());
+
 		WorkbenchRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModItems.POROUS_PRIMAL_FLESH_BLOCK.get(), 4)
 				.define('M', ModItems.MALIGNANT_FLESH_BLOCK.get())
 				.define('P', ModItems.PRIMAL_FLESH_BLOCK.get())
