@@ -15,6 +15,6 @@
   ],
   "exclusion_zone": {
     "other_set": "minecraft:mineshafts",
-    "chunk_count": 4
+    "chunk_count": 5
   }
 }

@@ -5,10 +5,10 @@
     {
       "weight": 1,
       "element": {
+        "element_type": "minecraft:single_pool_element",
         "location": "biomancy:keter_worm/worm_head",
-        "processors": "minecraft:empty",
         "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
+        "processors": "minecraft:empty"
       }
     }
   ]
