@@ -2,22 +2,34 @@ package com.github.elenterius.biomancy.init;
 
 import com.github.elenterius.biomancy.BiomancyConfig;
 import com.github.elenterius.biomancy.BiomancyMod;
+import com.github.elenterius.biomancy.init.tags.ModStructureTags;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MapItem;
 import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraftforge.common.BasicItemListing;
 import net.minecraftforge.event.entity.player.TradeWithVillagerEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.village.WandererTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,44 +57,6 @@ public final class ModVillagerTrades {
 		else if (event.getType() == VillagerProfession.CLERIC) {
 			addClericTrades(event.getTrades());
 		}
-	}
-
-	@SubscribeEvent
-	public static void onWandererTrades(final WandererTradesEvent event) {
-		if (Boolean.FALSE.equals(BiomancyConfig.SERVER.addTradesToWanderingTrader.get())) return;
-
-		List<VillagerTrades.ItemListing> genericTrades = event.getGenericTrades();
-		genericTrades.add(sellToPlayer(ModItems.EXOTIC_DUST.get(), 4, 2, 16, 5));
-		genericTrades.add(sellToPlayer(ModItems.FLESH_SPIKE.get(), 2, 16, 5));
-		genericTrades.add(buyFromPlayer(ModItems.NUTRIENT_BAR.get(), 2, 8, 5));
-
-		List<VillagerTrades.ItemListing> rareTrades = event.getRareTrades();
-		rareTrades.add(sellToPlayer(ModItems.INSOMNIA_CURE.get(), 10, 8, 20));
-		rareTrades.add(sellToPlayer(ModItems.CREATOR_MIX.get(), 10, 5, 20));
-	}
-
-	private static BasicItemListing buyFromPlayer(Item item, int emeralds, int maxTrades, int xp) {
-		return new BasicItemListing(new ItemStack(item), new ItemStack(Items.EMERALD, emeralds), maxTrades, xp, 0.05F);
-	}
-
-	private static BasicItemListing buyFromPlayer(Item item, int amount, int emeralds, int maxTrades, int xp) {
-		return new BasicItemListing(new ItemStack(item, amount), new ItemStack(Items.EMERALD, emeralds), maxTrades, xp, 0.05F);
-	}
-
-	private static BasicItemListing convertItem(Item item, int emeralds, Item result, int resultAmount, int maxTrades, int xp) {
-		return new BasicItemListing(new ItemStack(item), new ItemStack(Items.EMERALD, emeralds), new ItemStack(result, resultAmount), maxTrades, xp, 0.05F);
-	}
-
-	private static BasicItemListing convertItem(Item item, int emeralds, Item result, int maxTrades, int xp) {
-		return new BasicItemListing(new ItemStack(item), new ItemStack(Items.EMERALD, emeralds), new ItemStack(result), maxTrades, xp, 0.05F);
-	}
-
-	private static BasicItemListing sellToPlayer(Item item, int emeralds, int maxTrades, int xp) {
-		return new BasicItemListing(emeralds, new ItemStack(item), maxTrades, xp, 0.05F);
-	}
-
-	private static BasicItemListing sellToPlayer(Item item, int amount, int emeralds, int maxTrades, int xp) {
-		return new BasicItemListing(emeralds, new ItemStack(item, amount), maxTrades, xp, 0.05F);
 	}
 
 	private static void addClericTrades(Int2ObjectMap<List<VillagerTrades.ItemListing>> trades) {
@@ -125,6 +99,51 @@ public final class ModVillagerTrades {
 		);
 	}
 
+	@SubscribeEvent
+	public static void onWandererTrades(final WandererTradesEvent event) {
+		if (Boolean.FALSE.equals(BiomancyConfig.SERVER.addTradesToWanderingTrader.get())) return;
+
+		List<VillagerTrades.ItemListing> genericTrades = event.getGenericTrades();
+		genericTrades.add(sellToPlayer(ModItems.ACID_EXTRACT.get(), 4, 2, 16, 1));
+		genericTrades.add(sellToPlayer(ModItems.GELLING_AGENT.get(), 2, 16, 1));
+		genericTrades.add(buyFromPlayer(ModItems.NUTRIENT_BAR.get(), 2, 8, 5));
+		genericTrades.add(sellExplorationMapToPlayer(ModStructureTags.SMALL_WORM, MapDecoration.Type.RED_X, 5, 2, 10));
+		genericTrades.add(sellExplorationMapToPlayer(ModStructureTags.LAB, MapDecoration.Type.RED_X, 5, 2, 10));
+
+		List<VillagerTrades.ItemListing> rareTrades = event.getRareTrades();
+		rareTrades.add(sellToPlayer(ModItems.CLEANSING_SERUM.get(), 10, 8, 20));
+		rareTrades.add(sellExplorationMapToPlayer(ModStructureTags.GIANT_WORM, MapDecoration.Type.RED_X, 10, 2, 20));
+		rareTrades.add(sellExplorationMapToPlayer(ModStructureTags.VAULT, MapDecoration.Type.RED_X, 10, 2, 20));
+	}
+
+	private static BasicItemListing buyFromPlayer(Item item, int emeralds, int maxTrades, int xp) {
+		return new BasicItemListing(new ItemStack(item), new ItemStack(Items.EMERALD, emeralds), maxTrades, xp, 0.05F);
+	}
+
+	private static BasicItemListing buyFromPlayer(Item item, int amount, int emeralds, int maxTrades, int xp) {
+		return new BasicItemListing(new ItemStack(item, amount), new ItemStack(Items.EMERALD, emeralds), maxTrades, xp, 0.05F);
+	}
+
+	private static BasicItemListing convertItem(Item item, int emeralds, Item result, int resultAmount, int maxTrades, int xp) {
+		return new BasicItemListing(new ItemStack(item), new ItemStack(Items.EMERALD, emeralds), new ItemStack(result, resultAmount), maxTrades, xp, 0.05F);
+	}
+
+	private static BasicItemListing convertItem(Item item, int emeralds, Item result, int maxTrades, int xp) {
+		return new BasicItemListing(new ItemStack(item), new ItemStack(Items.EMERALD, emeralds), new ItemStack(result), maxTrades, xp, 0.05F);
+	}
+
+	private static BasicItemListing sellToPlayer(Item item, int emeralds, int maxTrades, int xp) {
+		return new BasicItemListing(emeralds, new ItemStack(item), maxTrades, xp, 0.05F);
+	}
+
+	private static BasicItemListing sellToPlayer(Item item, int amount, int emeralds, int maxTrades, int xp) {
+		return new BasicItemListing(emeralds, new ItemStack(item, amount), maxTrades, xp, 0.05F);
+	}
+
+	private static VillagerTrades.ItemListing sellExplorationMapToPlayer(TagKey<Structure> destination, MapDecoration.Type destinationType, int emeralds, int maxTrades, int xp) {
+		return new ExplorerMapListing(emeralds, destination, BiomancyMod.translationKey("filled_map", destination.location().getPath()), destinationType, maxTrades, xp);
+	}
+
 	enum TradeLevel {
 		NOVICE, APPRENTICE, JOURNEYMAN, EXPERT, MASTER;
 
@@ -132,7 +151,7 @@ public final class ModVillagerTrades {
 			return trades.get(ordinal() + 1);
 		}
 
-		void addItemListings(Int2ObjectMap<List<VillagerTrades.ItemListing>> trades, BasicItemListing... listings) {
+		void addItemListings(Int2ObjectMap<List<VillagerTrades.ItemListing>> trades, VillagerTrades.ItemListing... listings) {
 			getItemListings(trades).addAll(Arrays.asList(listings));
 		}
 
@@ -155,6 +174,42 @@ public final class ModVillagerTrades {
 			if (ORGANS.contains(merchantOffer.getCostB().getItem())) {
 				CriteriaTriggers.TRADE.trigger(player, villager, merchantOffer.getCostB());
 			}
+		}
+
+	}
+
+	static class ExplorerMapListing implements VillagerTrades.ItemListing {
+		private final int emeralds;
+		private final TagKey<Structure> destination;
+		private final String displayName;
+		private final MapDecoration.Type destinationType;
+		private final int maxTrades;
+		private final int xp;
+
+		public ExplorerMapListing(int emeralds, TagKey<Structure> destination, String displayName, MapDecoration.Type destinationType, int maxTrades, int xp) {
+			this.emeralds = emeralds;
+			this.destination = destination;
+			this.displayName = displayName;
+			this.destinationType = destinationType;
+			this.maxTrades = maxTrades;
+			this.xp = xp;
+		}
+
+		@Override
+		public @Nullable MerchantOffer getOffer(Entity trader, RandomSource random) {
+			if (trader.level() instanceof ServerLevel serverLevel) {
+				BlockPos blockpos = serverLevel.findNearestMapStructure(destination, trader.blockPosition(), 100, true);
+
+				if (blockpos != null) {
+					ItemStack stack = MapItem.create(serverLevel, blockpos.getX(), blockpos.getZ(), (byte) 2, true, true);
+					MapItem.renderBiomePreviewMap(serverLevel, stack);
+					MapItemSavedData.addTargetDecoration(stack, blockpos, "+", destinationType);
+					stack.setHoverName(Component.translatable(displayName));
+					return new MerchantOffer(new ItemStack(Items.EMERALD, emeralds), new ItemStack(Items.COMPASS), stack, maxTrades, xp, 0.2f);
+				}
+			}
+
+			return null;
 		}
 
 	}

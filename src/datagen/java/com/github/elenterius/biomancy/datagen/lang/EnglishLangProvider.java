@@ -7,6 +7,7 @@ import com.github.elenterius.biomancy.api.serum.SerumContainer;
 import com.github.elenterius.biomancy.client.util.ClientTextUtil;
 import com.github.elenterius.biomancy.init.*;
 import com.github.elenterius.biomancy.init.client.ModKeyBindings;
+import com.github.elenterius.biomancy.init.tags.ModStructureTags;
 import com.github.elenterius.biomancy.item.ItemTooltipStyleProvider;
 import com.github.elenterius.biomancy.item.MaykerBannerPatternItem;
 import com.github.elenterius.biomancy.item.armor.AcolyteArmorUpgrades;
@@ -297,6 +298,11 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addSoundTranslations();
 		addBannerPatternTranslations();
 		addPainting(ModPaintings.JERRY_PROVIDES, "Jerry Provides", "Shroomie");
+
+		add(BiomancyMod.translationKey("filled_map", ModStructureTags.SMALL_WORM.location().getPath()), "Map to Lesser Maw remains");
+		add(BiomancyMod.translationKey("filled_map", ModStructureTags.GIANT_WORM.location().getPath()), "Map to Elder Maw remains");
+		add(BiomancyMod.translationKey("filled_map", ModStructureTags.VAULT.location().getPath()), "Map to Nautilus Vault");
+		add(BiomancyMod.translationKey("filled_map", ModStructureTags.LAB.location().getPath()), "Map to Abandoned Lab");
 	}
 
 	private void addSoundTranslations() {
