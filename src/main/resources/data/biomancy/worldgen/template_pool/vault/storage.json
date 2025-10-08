@@ -1,0 +1,33 @@
+{
+  "name": "biomancy:vault/storage",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "biomancy:vault/storage1",
+        "processors": "biomancy:vault_corruption"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "biomancy:vault/storage2",
+        "processors": "biomancy:vault_corruption"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "biomancy:vault/storage3",
+        "processors": "biomancy:vault_corruption"
+      }
+    }
+  ]
+}

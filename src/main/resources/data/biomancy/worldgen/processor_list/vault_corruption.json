@@ -1,0 +1,63 @@
+[
+  {
+    "processor_type": "minecraft:rule",
+    "rules": [
+      {
+        "position_predicate": {
+          "predicate_type": "minecraft:axis_aligned_linear_pos",
+          "axis": "y",
+          "min_dist": 0,
+          "max_dist": 10,
+          "min_chance": 0.5,
+          "max_chance": 0
+        },
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:block_match",
+          "block": "minecraft:deepslate_bricks"
+        },
+        "output_state": {
+          "Name": "biomancy:flesh"
+        }
+      },
+      {
+        "position_predicate": {
+          "predicate_type": "minecraft:axis_aligned_linear_pos",
+          "axis": "y",
+          "min_dist": 0,
+          "max_dist": 10,
+          "min_chance": 0.5,
+          "max_chance": 0
+        },
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:block_match",
+          "block": "minecraft:deepslate_brick_slab"
+        },
+        "output_state": {
+          "Name": "biomancy:flesh_slab",
+          "Properties": {
+            "type": "half_up"
+          }
+        }
+      },
+      {
+        "location_predicate": {
+          "predicate_type": "minecraft:always_true"
+        },
+        "input_predicate": {
+          "predicate_type": "minecraft:random_block_match",
+          "block": "minecraft:dark_oak_planks",
+          "probability": 0.3
+        },
+        "output_state": {
+          "Name": "minecraft:cobbled_deepslate"
+        }
+      }
+    ]
+  }
+]

@@ -82,14 +82,48 @@
           "functions": [
             {
               "function": "minecraft:exploration_map",
-              "destination": "biomancy:cradle",
+              "destination": "biomancy:giant_worm",
+              "decoration": "monument",
+              "zoom": 1,
+              "skip_existing_chunks": false
+            },
+            {
+              "function": "minecraft:set_name",
+              "name": {
+                "translate": "filled_map.biomancy.giant_worm"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": {
+        "type": "minecraft:constant",
+        "value": 1
+      },
+      "entries": [
+        {
+          "type": "minecraft:empty",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:map",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:exploration_map",
+              "destination": "biomancy:vault",
               "decoration": "red_x",
               "zoom": 1,
               "skip_existing_chunks": false
             },
             {
               "function": "minecraft:set_name",
-              "name": "Buried Cradle Map"
+              "name": {
+                "translate": "filled_map.biomancy.vault"
+              }
             }
           ]
         }

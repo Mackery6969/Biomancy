@@ -1,0 +1,33 @@
+{
+  "name": "biomancy:vault/housing",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "biomancy:vault/housing1",
+        "processors": "biomancy:vault_corruption"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "biomancy:vault/housing2",
+        "processors": "biomancy:vault_corruption"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "biomancy:vault/housing3",
+        "processors": "biomancy:vault_corruption"
+      }
+    }
+  ]
+}

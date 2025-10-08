@@ -1,0 +1,17 @@
+{
+  "structures": [
+    {
+      "structure": "biomancy:vault",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 120,
+    "separation": 80,
+    "spread_type": "triangular",
+    "salt": 0,
+    "frequency_reduction_method": "default",
+    "frequency": 0.5
+  }
+}
