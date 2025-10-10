@@ -85,17 +85,17 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		simpleVariantBlockWithItem(ModBlocks.FLESH, fleshVariants);
 		directionalSlabBlockWithItemAndVariants(ModBlocks.FLESH_SLAB, ModBlocks.FLESH, fleshVariants);
 		stairsBlockWithItem(ModBlocks.FLESH_STAIRS, ModBlocks.FLESH);
-		wallBlock(ModBlocks.FLESH_WALL, ModBlocks.FLESH);
+		wallBlockWithItem(ModBlocks.FLESH_WALL, ModBlocks.FLESH);
 
 		simpleBlockWithItem(ModBlocks.PACKED_FLESH);
 		directionalSlabBlockWithItem(ModBlocks.PACKED_FLESH_SLAB, ModBlocks.PACKED_FLESH);
 		stairsBlockWithItem(ModBlocks.PACKED_FLESH_STAIRS, ModBlocks.PACKED_FLESH);
-		wallBlock(ModBlocks.PACKED_FLESH_WALL, ModBlocks.PACKED_FLESH);
+		wallBlockWithItem(ModBlocks.PACKED_FLESH_WALL, ModBlocks.PACKED_FLESH);
 
 		simpleBlockWithItem(ModBlocks.FIBROUS_FLESH);
 		directionalSlabBlockWithItem(ModBlocks.FIBROUS_FLESH_SLAB, ModBlocks.FIBROUS_FLESH);
 		stairsBlockWithItem(ModBlocks.FIBROUS_FLESH_STAIRS, ModBlocks.FIBROUS_FLESH);
-		wallBlock(ModBlocks.FIBROUS_FLESH_WALL, ModBlocks.FIBROUS_FLESH);
+		wallBlockWithItem(ModBlocks.FIBROUS_FLESH_WALL, ModBlocks.FIBROUS_FLESH);
 
 		axisBlockWithItem(ModBlocks.FLESH_PILLAR);
 		existingBlockWithItem(ModBlocks.CHISELED_FLESH);
@@ -106,27 +106,27 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		simpleBlockWithItem(ModBlocks.PRIMAL_FLESH);
 		directionalSlabBlockWithItem(ModBlocks.PRIMAL_FLESH_SLAB, ModBlocks.PRIMAL_FLESH);
 		stairsBlockWithItem(ModBlocks.PRIMAL_FLESH_STAIRS, ModBlocks.PRIMAL_FLESH);
-		wallBlock(ModBlocks.PRIMAL_FLESH_WALL, ModBlocks.PRIMAL_FLESH);
+		wallBlockWithItem(ModBlocks.PRIMAL_FLESH_WALL, ModBlocks.PRIMAL_FLESH);
 
 		simpleBlockWithItem(ModBlocks.SMOOTH_PRIMAL_FLESH);
 		directionalSlabBlockWithItem(ModBlocks.SMOOTH_PRIMAL_FLESH_SLAB, ModBlocks.SMOOTH_PRIMAL_FLESH);
 		stairsBlockWithItem(ModBlocks.SMOOTH_PRIMAL_FLESH_STAIRS, ModBlocks.SMOOTH_PRIMAL_FLESH);
-		wallBlock(ModBlocks.SMOOTH_PRIMAL_FLESH_WALL, ModBlocks.SMOOTH_PRIMAL_FLESH);
+		wallBlockWithItem(ModBlocks.SMOOTH_PRIMAL_FLESH_WALL, ModBlocks.SMOOTH_PRIMAL_FLESH);
 
 		simpleBlockWithItem(ModBlocks.FIBROUS_PRIMAL_FLESH);
 		directionalSlabBlockWithItem(ModBlocks.FIBROUS_PRIMAL_FLESH_SLAB, ModBlocks.FIBROUS_PRIMAL_FLESH);
 		stairsBlockWithItem(ModBlocks.FIBROUS_PRIMAL_FLESH_STAIRS, ModBlocks.FIBROUS_PRIMAL_FLESH);
-		wallBlock(ModBlocks.FIBROUS_PRIMAL_FLESH_WALL, ModBlocks.FIBROUS_PRIMAL_FLESH);
+		wallBlockWithItem(ModBlocks.FIBROUS_PRIMAL_FLESH_WALL, ModBlocks.FIBROUS_PRIMAL_FLESH);
 
 		simpleBlockWithItem(ModBlocks.POROUS_PRIMAL_FLESH);
 		directionalSlabBlockWithItem(ModBlocks.POROUS_PRIMAL_FLESH_SLAB, ModBlocks.POROUS_PRIMAL_FLESH);
 		stairsBlockWithItem(ModBlocks.POROUS_PRIMAL_FLESH_STAIRS, ModBlocks.POROUS_PRIMAL_FLESH);
-		wallBlock(ModBlocks.POROUS_PRIMAL_FLESH_WALL, ModBlocks.POROUS_PRIMAL_FLESH);
+		wallBlockWithItem(ModBlocks.POROUS_PRIMAL_FLESH_WALL, ModBlocks.POROUS_PRIMAL_FLESH);
 
 		simpleBlockWithItem(ModBlocks.MALIGNANT_FLESH);
 		directionalSlabBlockWithItem(ModBlocks.MALIGNANT_FLESH_SLAB, ModBlocks.MALIGNANT_FLESH);
 		stairsBlockWithItem(ModBlocks.MALIGNANT_FLESH_STAIRS, ModBlocks.MALIGNANT_FLESH);
-		wallBlock(ModBlocks.MALIGNANT_FLESH_WALL, ModBlocks.MALIGNANT_FLESH);
+		wallBlockWithItem(ModBlocks.MALIGNANT_FLESH_WALL, ModBlocks.MALIGNANT_FLESH);
 		veinsBlock(ModBlocks.MALIGNANT_FLESH_VEINS);
 		malignantBloom(ModBlocks.PRIMAL_BLOOM);
 		orifice(ModBlocks.PRIMAL_ORIFICE);
@@ -312,6 +312,23 @@ public class ModBlockStateProvider extends BlockStateProvider {
 	public void simpleBlockItem(Block block) {
 		String path = path(block);
 		itemModels().getBuilder(path).parent(models().getBuilder(path));
+	}
+
+	public <W extends WallBlock, B extends Block> void wallBlockWithItem(RegistryObject<W> wallBlock, RegistryObject<B> textureBlock) {
+		wallBlockWithItem(wallBlock.get(), textureBlock.get());
+	}
+
+	public void wallBlockWithItem(WallBlock block, Block textureBlock) {
+		ResourceLocation texture = blockAsset(textureBlock);
+		wallBlock(block, texture);
+		wallBlockItem(block, texture);
+	}
+
+	public void wallBlockItem(WallBlock block, ResourceLocation texture) {
+		String path = path(block);
+		itemModels().getBuilder(path)
+				.parent(new ModelFile.UncheckedModelFile(ModelProvider.BLOCK_FOLDER + "/wall_inventory"))
+				.texture("wall", texture);
 	}
 
 	public <W extends WallBlock, B extends Block> void wallBlock(RegistryObject<W> wallBlock, RegistryObject<B> textureBlock) {

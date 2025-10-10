@@ -108,13 +108,6 @@ public class ModItemModelProvider extends ItemModelProvider {
 
 		basicItem(ModItems.FLESH_DOOR);
 		basicItem(ModItems.FULL_FLESH_DOOR);
-		wallBlockItem(ModItems.FLESH_WALL);
-		wallBlockItem(ModItems.PACKED_FLESH_WALL);
-		wallBlockItem(ModItems.FIBROUS_FLESH_WALL);
-		wallBlockItem(ModItems.MALIGNANT_FLESH_WALL);
-		wallBlockItem(ModItems.PRIMAL_FLESH_WALL);
-		wallBlockItem(ModItems.SMOOTH_PRIMAL_FLESH_WALL);
-		wallBlockItem(ModItems.POROUS_PRIMAL_FLESH_WALL);
 		flatBlockItem(ModItems.FLESH_LADDER);
 		flatBlockItem(ModItems.MALIGNANT_FLESH_VEINS);
 
@@ -288,20 +281,6 @@ public class ModItemModelProvider extends ItemModelProvider {
 		return getBuilder(registryKey.toString())
 				.parent(new ModelFile.UncheckedModelFile("item/generated"))
 				.texture(LAYER_0_TEXTURE, new ResourceLocation(registryKey.getNamespace(), BLOCK_FOLDER + "/" + registryKey.getPath() + suffix));
-	}
-
-	public <T extends BlockItem> ItemModelBuilder wallBlockItem(RegistryObject<T> registryObject) {
-		return wallBlockItem(registryObject.getId());
-	}
-
-	public ItemModelBuilder wallBlockItem(BlockItem blockItem) {
-		return wallBlockItem(registryKey(blockItem));
-	}
-
-	public ItemModelBuilder wallBlockItem(ResourceLocation registryKey) {
-		return getBuilder(registryKey.toString())
-				.parent(new ModelFile.UncheckedModelFile(BLOCK_FOLDER + "/wall_inventory"))
-				.texture("wall", new ResourceLocation(registryKey.getNamespace(), BLOCK_FOLDER + "/" + registryKey.getPath().replace("_wall", "")));
 	}
 
 	public ItemModelBuilder dynamicBucket(BucketItem item) {
