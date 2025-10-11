@@ -1,3 +1,16 @@
+## [8.36.0-snapshot.0](https://github.com/Elenterius/Biomancy/compare/1.20.1-v2.8.35.0-snapshot.0...1.20.1-v2.8.36.0-snapshot.0) (2025-10-11)
+
+
+### Features
+
+* update translations [skip ci] ([a44da93](https://github.com/Elenterius/Biomancy/commit/a44da9365c4621e2cff4a1933834531fce378c62))
+* update vault structure ([88a21b8](https://github.com/Elenterius/Biomancy/commit/88a21b84038fe84288e7ba3f386a73837873866f))
+
+
+### Bug Fixes
+
+* add missing wallblock item model for fibrous primal flesh ([2d9ce94](https://github.com/Elenterius/Biomancy/commit/2d9ce94c665d9168416b5e0e2f49d2066d641dd9))
+
 ## [8.35.0-snapshot.0](https://github.com/Elenterius/Biomancy/compare/1.20.1-v2.8.34.0-snapshot.0...1.20.1-v2.8.35.0-snapshot.0) (2025-10-08)
 
 
@@ -19,17 +32,4 @@
 
 * add corrosive effect to is_acid forge tag ([03a9c07](https://github.com/Elenterius/Biomancy/commit/03a9c07b76e14d1698e6cb9123dd038e4c066a4a))
 * fix missing tail of giant worm structures ([739b644](https://github.com/Elenterius/Biomancy/commit/739b6444c88f1b2b946aa37a2585b6c08f6f20ca))
-
-## [8.34.0-snapshot.0](https://github.com/Elenterius/Biomancy/compare/1.20.1-v2.8.33.0-snapshot.0...1.20.1-v2.8.34.0-snapshot.0) (2025-09-24)
-
-
-### Features
-
-* add big worm structure ([68cff9c](https://github.com/Elenterius/Biomancy/commit/68cff9cc58fe480477bd96f9811d069298e80da9))
-
-
-### Bug Fixes
-
-* add alex caves forsaken mob to the invalid capture target list of the chrysalis ([b4cc46b](https://github.com/Elenterius/Biomancy/commit/b4cc46b94d52850f236f0693abff5c3910f1ed20))
-* fix surface placement of globule structures ([76dca2d](https://github.com/Elenterius/Biomancy/commit/76dca2dc9299c423d123c8471e511ab146ac939d))
 
