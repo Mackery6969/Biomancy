@@ -31,7 +31,8 @@ jobs:
 
       - name: Generate Conventional Changelog
         id: changelog
-        uses: TriPSs/conventional-changelog-action@v6.1.0
+        uses: Elenterius/conventional-changelog-action@e291986df89d31b4088e31d407e34e8787da70c9
+        # forked gh-action: uses custom pre-release bump strategy
         with:
           preset: 'conventionalcommits'
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -42,7 +43,7 @@ jobs:
           skip-commit: true # do not commit version bump
           skip-tag: true # do not commit version tag
           pre-release: true
-          pre-release-identifier: 'snapshot'
+          pre-release-identifier: 'alpha'
 
 
   setup_oxipng:
@@ -110,7 +111,8 @@ jobs:
 
       - name: Generate Conventional Changelog
         id: changelog
-        uses: TriPSs/conventional-changelog-action@v6.1.0
+        uses: Elenterius/conventional-changelog-action@e291986df89d31b4088e31d407e34e8787da70c9
+        # forked gh-action: uses custom pre-release bump strategy
         with:
           preset: 'conventionalcommits'
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -120,7 +122,7 @@ jobs:
           tag-prefix: '${{ steps.gradle_properties.outputs.minecraft_version }}-v2.'
           release-count: 2 # limit changelog to the current and previous snapshot
           pre-release: true
-          pre-release-identifier: 'snapshot'
+          pre-release-identifier: 'alpha'
 
       - name: Setup JDK 17
         uses: actions/setup-java@v5.0.0
@@ -180,3 +182,4 @@ jobs:
           description: |
             ## Version: `${{ steps.changelog.outputs.tag }}`
             ## [View changelog and download on GitHub](${{ steps.create_release.outputs.url }})
+            Don't forget to give us feedback :pray:

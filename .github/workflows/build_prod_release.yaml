@@ -41,8 +41,6 @@ jobs:
           release-count: 1 # limit changelog to the current snapshot
           skip-commit: true # do not commit version bump
           skip-tag: true # do not commit version tag
-          pre-release: true
-          pre-release-identifier: 'snapshot'
 
 
   setup_oxipng:
