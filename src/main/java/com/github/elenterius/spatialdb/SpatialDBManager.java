@@ -9,8 +9,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
@@ -29,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 public class SpatialDBManager {
 
 	public static final Logger LOGGER = LogManager.getLogger("SpatialDB");
-	public static final Marker LOG_MARKER = MarkerManager.getMarker("DBManager");
+	public static final Marker LOG_MARKER = MarkerManager.getMarker("Biomancy");
 
 	public static final int STORE_VERSION = 0;
 	public static final MVStoreFactory MAIN_DB_FACTORY = path -> new MVStore.Builder().fileName(path.toString()).cacheSize(8).open();
@@ -42,7 +44,12 @@ public class SpatialDBManager {
 
 	static {
 		EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
-		Runtime.getRuntime().addShutdownHook(new Thread(SpatialDBManager::shutdownAll, "SpatialDB JVMShutdownHook"));
+
+		if (FMLEnvironment.dist.isClient()) {
+			LOGGER.info(LOG_MARKER, "Registering shutdown hook...");
+			//this gets called too late on a dedicated server due to forge/mojang
+			Runtime.getRuntime().addShutdownHook(new Thread(SpatialDBManager::shutdownAll, "SpatialDB/ShutdownHook"));
+		}
 	}
 
 	private SpatialDBManager() {}
@@ -110,17 +117,17 @@ public class SpatialDBManager {
 		EXECUTOR_SERVICE.shutdown();
 		try {
 			if (!EXECUTOR_SERVICE.awaitTermination(5, TimeUnit.SECONDS)) {
-				LOGGER.warn(LOG_MARKER, "Executor Service failed to terminate cleanly, forcing shutdownNow");
+				LOGGER.warn(LOG_MARKER, "Executor Service failed to terminate cleanly, forcing shutdown!");
 				EXECUTOR_SERVICE.shutdownNow();
 			}
 		}
 		catch (InterruptedException e) {
-			LOGGER.warn(LOG_MARKER, "Shutdown was interrupted while waiting for Executor Service to terminate, forcing shutdownNow");
+			LOGGER.warn(LOG_MARKER, "Shutdown was interrupted while waiting for Executor Service to terminate, forcing shutdown!");
 			EXECUTOR_SERVICE.shutdownNow();
 		}
 
 		DATABASES.forEach((world, sdbi) -> {
-			LOGGER.info(LOG_MARKER, "Shutting down database for world {}...", world);
+			LOGGER.info(LOG_MARKER, "Shutting down database for [World/{}]...", world);
 			SpatialDB db = sdbi.getSpatialDB();
 			db.backup();
 			db.shutdown();
@@ -149,11 +156,11 @@ public class SpatialDBManager {
 		}
 	}
 
-	//	@SubscribeEvent
-	//	public static void onServerStop(final ServerStoppingEvent event) {
-	//		if (event.getServer().isDedicatedServer()) {
-	//			shutdownAll();
-	//		}
-	//	}
+	@SubscribeEvent
+	public static void onServerStop(final ServerStoppingEvent event) {
+		if (FMLEnvironment.dist.isDedicatedServer()) {
+			shutdownAll(); //explicitly force a shutdown because forge/mojang shutdowns the server in an incompatible way with JVM shutdown hooks
+		}
+	}
 
 }

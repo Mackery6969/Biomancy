@@ -30,11 +30,17 @@ public final class BackupUtil {
 		return Files.isDirectory(dir) && Files.isWritable(dir);
 	}
 
+	/**
+	 * This will do an online backup when the database is open and a offline backup when it is already closed.
+	 */
 	public static void backupNow(MVStore store) throws IOException {
 		String backupFilePath = getBackupFilePath(store);
 		backupNow(store, backupFilePath);
 	}
 
+	/**
+	 * This will do an online backup when the database is open and a offline backup when it is already closed.
+	 */
 	public static void backupNow(MVStore store, String backupFilePath) throws IOException {
 		String temporaryBackupFilePath = backupFilePath + SUFFIX_TEMP_FILE;
 		FileUtils.delete(temporaryBackupFilePath);

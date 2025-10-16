@@ -28,14 +28,20 @@ public class SpatialDB {
 		this.store = store;
 	}
 
+	/**
+	 * This will do an online backup when the database is open and a offline backup when it is already closed.
+	 */
 	public void backup() {
 		if (!needsBackup() && FileUtils.exists(BackupUtil.getBackupFilePath(store))) {
-			SpatialDBManager.LOGGER.info(LOG_MARKER, "Skipping backup because the backup is already on the latest version");
+			SpatialDBManager.LOGGER.debug(LOG_MARKER, "Skipping backup because the backup is already on the latest version");
 			return;
 		}
 		backupNow();
 	}
 
+	/**
+	 * This will do an online backup when the database is open and a offline backup when it is already closed.
+	 */
 	public void backupNow() {
 		SpatialDBManager.LOGGER.info(LOG_MARKER, "Starting backup of database to {}...", BackupUtil.getBackupFilePath(store));
 		try {
