@@ -1,0 +1,59 @@
+---
+history:
+  - 2.3.2.0: Disabled Bio-Forge progression by default because of incompatibility issues with NERB and other mods that remove recipe book syncing
+  - 2.2.3.0: Added server configs
+  -   2.9.0.0: Added configs for enlargement and shrinking serum
+  -   2.9.3.0: Added configs for absorption serum
+---
+
+# Configs
+
+## Server Config
+
+```toml
+# biomancy-server.toml
+
+[recipes]
+	#Determines if the BioForge recipes need to be unlocked to be able to craft them
+	doBioForgeRecipeProgression = false
+
+[trades]
+	#Determines if villagers will sell biomancy items
+	addTradesToVillagers = true
+	#Determines if wandering traders will sell biomancy items
+	addTradesToWanderingTrader = true
+
+[flesh-growth]
+	#Determines how much primal energy the Cradle can supply to nearby malignant flesh veins
+	#Allowed Values: NONE, LIMITED, UNLIMITED
+	primalEnergySupplyOfCradle = "LIMITED"
+
+[pehkui-integration]
+
+	[pehkui-integration.enlargement-serum]
+	#Maximum scale a mob/player can reach. A value of 2.0 doubles the size of the mob/player.
+	#Range: 0.01 ~ 100.0
+	maxScale = 2.0
+	#How much to add to the scale on each injection.
+	#Range: 0.01 ~ 100.0
+	scaleStep = 0.25
+	
+	[pehkui-integration.shrinking-serum]
+	#Minimum scale a mob/player can reach. A value of 0.5 half's the size of the mob/player.
+	#Range: 0.01 ~ 100.0
+	minScale = 0.25
+	#How much to subtract from the scale on each injection.
+	#Range: 0.01 ~ 100.0
+	scaleStep = 0.25
+
+[absorption-serum]
+#Maximum number of absorption hearts.
+#Range: 0.5 ~ 1000.0
+maxHearts = 10.0
+#How many absorption hearts to add on each injection.
+#Range: 0.5 ~ 100.0
+heartsIncrement = 2.0
+```
+
+Please note that server configs are world specific (and synced from server to client). To apply the same config to each newly created world (in singleplayer) add a
+`biomancy-server.toml` config into the global `defaultconfigs` folder.

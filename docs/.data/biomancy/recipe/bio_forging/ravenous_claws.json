@@ -1,0 +1,30 @@
+{
+  "type": "biomancy:bio_forging",
+  "input": {
+    "0": {
+      "id": "biomancy:living_flesh"
+    },
+    "1": {
+      "id": "biomancy:mob_claw",
+      "count": 3
+    },
+    "2": {
+      "id": "biomancy:flesh_bits",
+      "count": 16
+    },
+    "3": {
+      "id": "biomancy:tough_fibers",
+      "count": 18
+    },
+    "4": {
+      "id": "biomancy:mineral_fragment",
+      "count": 15
+    }
+  },
+  "output": {
+    "0": {
+      "id": "biomancy:ravenous_claws"
+    }
+  }
+}
+//TODO: write code to export & convert recipes to simplified format for the wiki

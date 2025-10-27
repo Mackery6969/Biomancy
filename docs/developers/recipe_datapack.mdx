@@ -1,0 +1,315 @@
+# Recipe Datapack Support
+
+All recipes are fully datapack driven.
+
+<Callout variant="info">
+    All Biomancy Recipes can be found on the GitHub repository in [Biomancy/src/generated/resources/data/biomancy/recipes](https://github.com/Elenterius/Biomancy/tree/mc1.20.1/prod/src/generated/resources/data/biomancy/recipes).
+</Callout>
+
+## Ingredient Object
+
+### Vanilla Item-Ingredient
+
+```json
+{
+    "item": <string (item registry-key)>
+}
+```
+
+### Vanilla Tag-Ingredient
+
+```json
+{
+  "tag": <string (tag registry-key)>
+}
+```
+
+### Extended Item-Ingredient
+
+```json
+{
+  "count": <int>,
+  "item": <string (item registry-key)>
+}
+```
+
+### Extended Tag-Ingredient
+
+```json
+{
+  "count": <int>,
+  "tag": <string (tag registry-key)>
+}
+```
+
+### Examples
+
+```json
+//vanilla
+{
+  "item": "minecraft:golden_carrot"
+}
+
+//extended
+{
+  "count": 42,
+  "item": "minecraft:golden_carrot"
+}
+```
+
+```json
+//vanilla
+{
+  "tag": "forge:eggs"
+}
+
+//extended
+{
+  "count": 42,
+  "tag": "forge:eggs"
+}
+```
+
+## Digester Recipe
+
+### Schema
+
+```json
+{
+  "type": "biomancy:digesting",
+  "ingredient": <object (vanilla ingredient)>,
+  "result": {
+    "count": <int>,
+    "item": <string (registry-key)>
+  },
+  "nutrientsCost": <int (nutrients)>,
+  "processingTime": <int (ticks)>
+}
+```
+
+> [!note]
+> the `count` field is optional
+
+### Example
+
+```json
+{
+  "type": "biomancy:digesting",
+  "ingredient": {
+    "tag": "forge:seeds"
+  },
+  "result": {
+    "item": "biomancy:nutrient_paste"
+  },
+  "nutrientsCost": 1,
+  "processingTime": 220,
+}
+```
+
+## Decomposer Recipe
+
+### Schema
+
+```json
+{
+  "type": "biomancy:decomposing",
+  "ingredient": <object (extended ingredient)>,
+  "nutrientsCost": <int (nutrients)>,
+  "processingTime": <int (ticks)>,
+  "results": [
+    {
+      "countRange": <object (count range)>,
+      "item": <string (registry-key)>
+    }
+  ]
+}
+```
+
+> [!important]
+> - **The results array can only have 6 entries at maximum**
+> - **Combining the max possible count of all result entries shouldn't exceed 384 (6*64)**
+	>
+- This does mean you can have entries that return a count higher than 64 (
+  see [Dragon Egg recipe](https://github.com/Elenterius/Biomancy/blob/mc1.20.1/prod/src/generated/resources/data/biomancy/recipes/decomposing/dragon_egg_decomposing.json))
+
+### Count Range Types
+
+#### Constant
+
+```json
+"type": "constant",
+"value": <int>
+```
+
+#### Uniform Distribution
+
+```json
+"type": "uniform",
+"min": <int>,
+"max": <int>
+```
+
+> [!note]
+> min and max values are inclusive
+
+#### Binomial Distribution
+
+```json
+"type": "binomial",
+"n": <int>,
+"p": <float>
+```
+
+### Example
+
+```json
+{
+  "type": "biomancy:decomposing",
+  "ingredient": {
+    "count": 1,
+    "item": "minecraft:chicken"
+  },
+  "nutrientsCost": 1,
+  "processingTime": 202,
+  "results": [
+    {
+      "countRange": {
+        "type": "constant",
+        "value": 4
+      },
+      "item": "biomancy:flesh_bits"
+    },
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 4,
+        "min": 2
+      },
+      "item": "biomancy:bone_fragments"
+    },
+    {
+      "countRange": {
+        "type": "binomial",
+        "n": 5,
+        "p": 0.75
+      },
+      "item": "biomancy:elastic_fibers"
+    }
+  ]
+}
+```
+
+## Bio-Forge Recipe
+
+### Schema
+
+```json
+{
+  "type": "biomancy:bio_forging",
+  "bio_forge_tab": <string (registry-key)>,
+  "ingredients": [
+    <object (extended ingredient)>
+  ],
+  "nutrientsCost": <int (nutrients)>,
+  "result": {
+    "item": <string (registry-key)>
+  }
+}
+```
+
+> [!important]
+> - **The ingredients array can only have 5 entries at maximum**
+> - The count for a ingredient entry shouldn't exceed the maxmium amount a vanilla player inventory can hold (2304 = 4 * 9 * 64), otherwise it's not craftable by the player
+
+> [!note]
+> The following requirement has been temporarily removed since v2.4.4
+>
+> ~~Recipes have to be unlocked by the Player to show up in the Bio-Forge (e.g. add a recipe reward advancement that rewards the recipe on having any of the ingredients in the
+inventory)~~
+
+### Bio-Froge Tabs
+
+- `biomancy:misc`
+- `biomancy:blocks`
+- `biomancy:machines`
+- `biomancy:weapons` **deprecated since v2.4.1.0**
+- `biomancy:tools` available since v2.4.1.0  (replacement for `biomancy:weapons`)
+- `biomancy:components` available since v2.4.1.0
+
+### Example
+
+```json
+{
+  "type": "biomancy:bio_forging",
+  "bio_forge_tab": "biomancy:misc",
+  "ingredients": [
+    {
+      "count": 20,
+      "item": "biomancy:flesh_bits"
+    },
+    {
+      "count": 10,
+      "item": "biomancy:mineral_fragment"
+    },
+    {
+      "count": 3,
+      "item": "biomancy:elastic_fibers"
+    },
+    {
+      "count": 5,
+      "item": "biomancy:tough_fibers"
+    }
+  ],
+  "nutrientsCost": 1,
+  "result": {
+    "item": "biomancy:injector"
+  }
+}
+```
+
+## Bio-Lab Recipe
+
+### Schema
+
+```json
+{
+  "type": "biomancy:bio_brewing",
+  "ingredients": [
+    <object (vanilla ingredient)>
+  ],
+  "reactant": <object (vanilla ingredient)>,
+  "nutrientsCost": <int (nutrients)>,
+  "processingTime": <int (ticks)>,
+  "result": {
+    "item": <string (registry-key)>
+  }
+}
+```
+
+> [!important]
+> - **The ingredients array can only have 4 entries at maximum**
+> - The reactant is something akin to a catalyst but is consumed instead
+
+### Example
+
+```json
+{
+  "type": "biomancy:bio_brewing",
+  "ingredients": [
+    {
+      "item": "biomancy:corrosive_additive"
+    },
+    {
+      "item": "biomancy:healing_additive"
+    }
+  ],
+  "nutrientsCost": 2,
+  "processingTime": 160,
+  "reactant": {
+    "item": "biomancy:exotic_compound"
+  },
+  "result": {
+    "item": "biomancy:cleansing_serum"
+  }
+}
+```

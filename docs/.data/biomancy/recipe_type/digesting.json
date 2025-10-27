@@ -1,0 +1,9 @@
+{
+  "background": "biomancy:gui/digesting_recipe",
+  "inputSlots": {
+    "in": { "x": 1, "y": 4 }
+  },
+  "outputSlots": {
+    "out": { "x": 59, "y": 5 }
+  }
+}

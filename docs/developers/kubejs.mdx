@@ -1,0 +1,83 @@
+---
+history:
+  - 2.9.0.0: Added KubeJs integration
+---
+
+# KubeJS
+
+## Startup Scripts
+
+```js
+StartupEvents.registry('biomancy:serum', event => {
+
+  event.create('foobar:test_serum')
+    .canAffectEntity((level, serumNBT, sourceLivingEntity, targetLivingEntity) => {
+      return targetLivingEntity.maxHealth < 40;
+    })
+    .affectEntity((serverLevel, serumNBT, sourceLivingEntity, targetLivingEntity) => {
+      const maxHealth = targetLivingEntity.maxHealth;
+      targetLivingEntity.maxHealth = maxHealth + (40 - maxHealth);
+    })
+    .canAffectPlayerSelf((level, serumNBT, playerSelf) => {
+      return playerSelf.maxHealth < 40;
+    })
+    .affectPlayerSelf((serverLevel, serumNBT, playerSelf) => {
+      const maxHealth = playerSelf.maxHealth;
+      playerSelf.maxHealth = maxHealth + (40 - maxHealth);
+    })
+    
+})
+
+StartupEvents.registry('item', event => {
+
+  event.create('foobar:test_serum_item', 'biomancy:basic_serum').serum('foobar:test_serum')
+
+  event.create('foobar:test_fuel_item')
+
+})
+
+StartupEvents.registry('biomancy:bio_forge_tab', event => {
+
+  event.create('foobar:test_tab').iconItem('minecraft:diamond')
+
+})
+
+StartupEvents.postInit(event => {
+  Biomancy$Nutrients.registerFuel('foobar:test_fuel_item', 128)
+  Biomancy$Nutrients.registerRepairMaterial('foobar:test_fuel_item', 128 * 2)
+
+  Biomancy$Tributes.register('foobar:test_fuel_item', Biomancy$SimpleTribute.builder().lifeEnergy(1000).build())
+})
+```
+
+## Server Scripts
+
+```js
+ServerEvents.recipes(event => {
+	event.recipes.biomancy.digesting('minecraft:coal_block', 'minecraft:diamond').processingTime(20 * 2).nutrientsCost(42)
+	event.recipes.biomancy.bio_brewing(['minecraft:coal_block', 'minecraft:stick'], 'biomancy:vial', 'minecraft:diamond').processingTime(20 * 2).nutrientsCost(42)
+
+	event.recipes.biomancy.bio_forging([Item.of('minecraft:coal', 9), 'minecraft:stick'], 'minecraft:diamond', 'biomancy:misc').nutrientsCost(42)
+
+	const ingredient = Biomancy$EssenceIngredient.from('minecraft:pig')
+	const itemStack = Biomancy$EssenceItem.fromTier('minecraft:turtle', 2)
+	event.recipes.biomancy.bio_forging([ingredient, 'minecraft:stick'], itemStack, 'foobar:test_tab').nutrientsCost(42)
+
+	event.recipes.biomancy.decomposing('minecraft:coal_block', [OutputItem.of('minecraft:diamond').withRolls(-4, 128), Item.of('minecraft:stick', 64)]).processingTime(20 * 2).nutrientsCost(42)
+})
+
+BiomancyEvents.canCradleSpawnMob(event => {
+	event.setSuccessChance(1.0)
+})
+
+BiomancyEvents.onCradleSpawnMob(event => {
+	//modify to be spawned mob
+	//const originalMob = event.getOriginalMob();
+	//manipulate the mob...
+
+	//or override what mob to spawn
+	const entityId = event.getAnomalyChance() > 0.5 ? 'biomancy:flesh_pig' : (event.getHostileChance() > 0.6 ? 'minecraft:hoglin' : 'minecraft:pig');
+	const mob = event.level.createEntity(entityId)
+	event.setMobOverride(mob)
+})
+```

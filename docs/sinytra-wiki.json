@@ -1,0 +1,9 @@
+{
+  "id": "biomancy",
+  "platforms": {
+    "curseforge": "biomancy",
+    "modrinth": "biomancy"
+  },
+  "modid": "biomancy",
+  "owners": [ "elenterius" ]
+}
