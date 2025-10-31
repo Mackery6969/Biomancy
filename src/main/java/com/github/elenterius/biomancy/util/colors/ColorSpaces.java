@@ -2,6 +2,9 @@ package com.github.elenterius.biomancy.util.colors;
 
 import net.minecraft.util.FastColor;
 
+/// Implemented based on:
+/// - [Oklab](https://bottosson.github.io/posts/oklab) by Björn Ottosson
+/// - [W3C Color Module 4 - OKLab](https://www.w3.org/TR/css-color-4/#ok-lab)
 public final class ColorSpaces {
 
 	private static double cube(double x) {
@@ -25,9 +28,7 @@ public final class ColorSpaces {
 		return value < (double) i ? i - 1 : i;
 	}
 
-	/**
-	 * constrains angle in degrees to [0..360]
-	 */
+	/// constrains angle in degrees to \[0.0, 360.0\]
 	public static double constrainAngleDeg(double angleDegrees) {
 		return ((angleDegrees % 360.0) + 360.0) % 360.0;
 	}
@@ -36,9 +37,7 @@ public final class ColorSpaces {
 		private HSL() {
 		}
 
-		/**
-		 * @return s and l in the range of [0.0, 1.0]
-		 */
+		/// @return s and l in the range of \[0.0, 1.0\]
 		public static double[] fromARGB32(int rgb) {
 			double r = FastColor.ARGB32.red(rgb) / 255.0;
 			double g = FastColor.ARGB32.green(rgb) / 255.0;
@@ -67,16 +66,12 @@ public final class ColorSpaces {
 			return new double[]{hue, saturation, luminance};
 		}
 
-		/**
-		 * expects s and l in the range of [0.0, 1.0]
-		 */
+		/// expects s and l in the range of \[0.0, 1.0\]
 		public static int toARGB32(double[] hsl) {
 			return toARGB32(hsl[0], hsl[1], hsl[2]);
 		}
 
-		/**
-		 * expects s and l in the range of [0.0, 1.0]
-		 */
+		/// expects s and l in the range of \[0.0, 1.0\]
 		public static int toARGB32(double h, double s, double l) {
 			h = (h % 360.0) / 360.0;
 
@@ -124,9 +119,7 @@ public final class ColorSpaces {
 		private sRGB() {
 		}
 
-		/**
-		 * Test if sRGB values are in range [0.0, 1.0]
-		 */
+		/// Test if sRGB values are in range \[0.0, 1.0\]
 		public static boolean isInGamut(double[] linearRGB) {
 			double r = linearRGB[0];
 			double g = linearRGB[1];
@@ -137,11 +130,9 @@ public final class ColorSpaces {
 					&& b >= 0.0 && b <= 1.0;
 		}
 
-		/**
-		 * Convert in-gamut sRGB values in range [0.0, 1.0] to linear light form
-		 *
-		 * @return linear light sRGB
-		 */
+		/// Convert in-gamut sRGB values in range \[0.0, 1.0\] to linear light form
+		///
+		/// @return linear light sRGB
 		public static double toLinearLight(double colorValue) {
 			double sign = colorValue < 0.0 ? -1.0 : 1.0;
 			double abs = Math.abs(colorValue);
@@ -153,9 +144,7 @@ public final class ColorSpaces {
 			return sign * Math.pow((abs + 0.055) / 1.055, 2.4);
 		}
 
-		/**
-		 * @return linear light sRGB
-		 */
+		/// @return linear light sRGB
 		public static double[] toLinearLight(double[] rgb) {
 			return new double[]{
 					toLinearLight(rgb[0]),
@@ -164,12 +153,10 @@ public final class ColorSpaces {
 			};
 		}
 
-		/**
-		 * Convert linear light sRGB in the range [0.0, 1.0] to gamma corrected form
-		 *
-		 * @return gamma corrected sRGB
-		 * @see <a href="https://en.wikipedia.org/wiki/SRGB">SRGB</a>
-		 */
+		/// Convert linear light sRGB in the range \[0.0, 1.0\] to gamma corrected form
+		///
+		/// @return gamma corrected sRGB
+		/// @see <a href="https://en.wikipedia.org/wiki/SRGB">SRGB</a>
 		public static double gammaFromLinear(double colorValue) {
 			double sign = colorValue < 0.0 ? -1.0 : 1.0;
 			double abs = Math.abs(colorValue);
@@ -181,9 +168,7 @@ public final class ColorSpaces {
 			return 12.92 * colorValue;
 		}
 
-		/**
-		 * @return gamma corrected sRGB
-		 */
+		/// @return gamma corrected sRGB
 		public static double[] gammaFromLinear(double[] linearRGB) {
 			return new double[]{
 					gammaFromLinear(linearRGB[0]),
@@ -192,9 +177,7 @@ public final class ColorSpaces {
 			};
 		}
 
-		/**
-		 * @return sRGB
-		 */
+		/// @return sRGB
 		public static double[] fromARGB32(int argb) {
 			return new double[]{
 					FastColor.ARGB32.red(argb) / 255.0,
@@ -203,9 +186,7 @@ public final class ColorSpaces {
 			};
 		}
 
-		/**
-		 * @return ARGB 32
-		 */
+		/// @return ARGB
 		public static int toARGB32(double[] rgb) {
 			return FastColor.ARGB32.color(
 					255,
@@ -216,19 +197,15 @@ public final class ColorSpaces {
 		}
 	}
 
-	/**
-	 * @see <a href="https://bottosson.github.io/posts/oklab">Oklab</a>
-	 * @see <a href="https://www.w3.org/TR/css-color-4/#color-conversion-code">W3C Color Module 4 - Color Conversion</a>
-	 */
+	/// @see <a href="https://bottosson.github.io/posts/oklab">Oklab</a>
+	/// @see <a href="https://www.w3.org/TR/css-color-4/#color-conversion-code">W3C Color Module 4 - Color Conversion</a>
 	public static final class OkLab {
 		private OkLab() {
 		}
 
-		/**
-		 * Convert linear light sRGB [0..1] to OKLab
-		 *
-		 * @return Lab (Lightness, a, b)
-		 */
+		/// Convert linear light sRGB \[0.0, 1.0\] to OKLab
+		///
+		/// @return Lab (Lightness, a, b)
 		public static double[] fromLinearSRGB(double rLinear, double gLinear, double bLinear) {
 			double cubeRootL = cubeRoot(0.4122214708 * rLinear + 0.5363325363 * gLinear + 0.0514459929 * bLinear);
 			double cubeRootM = cubeRoot(0.2119034982 * rLinear + 0.6806995451 * gLinear + 0.1073969566 * bLinear);
@@ -241,40 +218,30 @@ public final class ColorSpaces {
 			return new double[]{L, a, b};
 		}
 
-		/**
-		 * @return Lab (Lightness, a, b)
-		 */
+		/// @return Lab (Lightness, a, b)
 		public static double[] fromSRGB(double r, double g, double b) {
 			return fromLinearSRGB(sRGB.toLinearLight(r), sRGB.toLinearLight(g), sRGB.toLinearLight(b));
 		}
 
-		/**
-		 * @return Lab (Lightness, a, b)
-		 */
+		/// @return Lab (Lightness, a, b)
 		public static double[] fromSRGB(double[] rgb) {
 			return fromSRGB(rgb[0], rgb[1], rgb[2]);
 		}
 
-		/**
-		 * @return Lab (Lightness, a, b)
-		 */
+		/// @return Lab (Lightness, a, b)
 		public static double[] fromARGB32(int rgb) {
 			return fromSRGB(sRGB.fromARGB32(rgb));
 		}
 
-		/**
-		 * @return linear sRGB (r, g, b)
-		 */
+		/// @return linear sRGB (r, g, b)
 		public static double[] toLinearSRGB(double[] Lab) {
 			return toLinearSRGB(Lab[0], Lab[1], Lab[2]);
 		}
 
-		/**
-		 * @param L Lightness from 0.0 to 1.0
-		 * @param a from -1.0 to 1.0
-		 * @param b from -1.0 to 1.0
-		 * @return linear-light sRGB (r, g, b)
-		 */
+		/// @param L Lightness from 0.0 to 1.0
+		/// @param a from -1.0 to 1.0
+		/// @param b from -1.0 to 1.0
+		/// @return linear-light sRGB (r, g, b)
 		public static double[] toLinearSRGB(double L, double a, double b) {
 			double l = cube(L + 0.3963377773761749 * a + 0.2158037573099136 * b);
 			double m = cube(L - 0.1055613458156586 * a - 0.0638541728258133 * b);
@@ -287,24 +254,18 @@ public final class ColorSpaces {
 			};
 		}
 
-		/**
-		 * @return sRGB (r, g, b)
-		 */
+		/// @return sRGB (r, g, b)
 		public static double[] toSRGB(double[] Lab) {
 			double[] linearRGB = toLinearSRGB(Lab);
 			return sRGB.gammaFromLinear(linearRGB);
 		}
 
-		/**
-		 * @return ARGB (alpha, r, g, b)
-		 */
+		/// @return ARGB (alpha, r, g, b)
 		public static int toARGB32(double[] Lab) {
 			return sRGB.toARGB32(toSRGB(Lab));
 		}
 
-		/**
-		 * @return LCh (Lightness, Chroma, hue)
-		 */
+		/// @return LCh (Lightness, Chroma, hue)
 		public static double[] toOkLCh(double[] Lab) {
 			double Lightness = Lab[0]; // 0.0 - 1.0
 			double a = Lab[1]; // -1.0 - 1.0
@@ -316,13 +277,10 @@ public final class ColorSpaces {
 			return new double[]{Lightness, Chroma, hue};
 		}
 
-		/**
-		 * Calculate difference (i.e. Euclidean distance) between color sample and reference
-		 *
-		 * @param reference reference OKLab color
-		 * @param sample    sample  OKLab color
-		 * @return deltaE OK
-		 */
+		/// Calculate difference (i.e. Euclidean distance) between color sample and reference
+		/// @param reference reference OKLab color
+		/// @param sample    sample  OKLab color
+		/// @return deltaE OK
 		public static double deltaEOK(double[] reference, double[] sample) {
 			double dL = reference[0] - sample[0];
 			double da = reference[1] - sample[1];
@@ -330,11 +288,8 @@ public final class ColorSpaces {
 			return Math.sqrt(dL * dL + da * da + db * db);
 		}
 
-		/**
-		 * Clip OKLab color to the sRGB gamut.
-		 *
-		 * @return clipped OKLab color
-		 */
+		/// Clip OKLab color to the sRGB gamut.
+		/// @return clipped OKLab color
 		public static double[] clipToSRGBGamut(double[] Lab) {
 			double[] linearRGB = toLinearSRGB(Lab);
 			return fromLinearSRGB(
@@ -346,9 +301,7 @@ public final class ColorSpaces {
 
 	}
 
-	/**
-	 * Oklch is the cylindrical representation of Oklab
-	 */
+	/// Oklch is the cylindrical representation of Oklab
 	public static final class OkLCh {
 		private OkLCh() {
 		}
