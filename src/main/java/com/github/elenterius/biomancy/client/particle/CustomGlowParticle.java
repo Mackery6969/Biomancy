@@ -1,7 +1,7 @@
 package com.github.elenterius.biomancy.client.particle;
 
 import com.github.elenterius.biomancy.util.colors.ColorHarmony;
-import com.github.elenterius.biomancy.util.colors.ColorSpace;
+import com.github.elenterius.biomancy.util.colors.ColorSpaces;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -75,8 +75,8 @@ public class CustomGlowParticle extends TextureSheetParticle {
 			CustomGlowParticle particle = new CustomGlowParticle(level, x, y, z, 0.5d - RANDOM.nextDouble(), ySpeed, 0.5d - RANDOM.nextDouble(), sprite);
 
 			if (level.random.nextFloat() < 0.4f) {
-				double[][] colors = ColorHarmony.analogousOkLCh(ColorSpace.OkLCh.fromARGB32(color));
-				double[] rgb = ColorSpace.OkLCh.toSRGB(colors[1]);
+				double[][] colors = ColorHarmony.analogousOkLCh(ColorSpaces.OkLCh.fromARGB32(color));
+				double[] rgb = ColorSpaces.OkLCh.toSRGB(colors[1]);
 				particle.setColor((float) rgb[0], (float) rgb[1], (float) rgb[2]);
 			}
 			else {

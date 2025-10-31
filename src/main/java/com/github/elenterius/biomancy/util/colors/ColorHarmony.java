@@ -4,7 +4,7 @@ public final class ColorHarmony {
 	private ColorHarmony() {}
 
 	private static double adjustHue(double hue, double angleDegrees) {
-		return hue + angleDegrees;
+		return ColorSpaces.constrainAngleDeg(hue + angleDegrees);
 	}
 
 	public static double[][] analogousOkLCh(double[] okLCh) {
@@ -74,4 +74,5 @@ public final class ColorHarmony {
 
 		return colors;
 	}
+
 }
