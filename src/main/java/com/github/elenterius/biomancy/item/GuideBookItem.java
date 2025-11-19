@@ -73,8 +73,7 @@ public class GuideBookItem extends SimpleItem implements GeoItem {
 
 	@OnlyIn(Dist.CLIENT)
 	private void tryToOpenClientScreen(Player player) {
-		boolean canOpenBook = ModsCompatHandler.getModonomiconHelper().openBook(GUIDE_BOOK_ID);
-		if (!canOpenBook && player instanceof LocalPlayer localPlayer) {
+		if (player instanceof LocalPlayer localPlayer) {
 			Minecraft.getInstance().setScreen(new AdvancementsScreen(localPlayer.connection.getAdvancements())); //fallback
 		}
 	}

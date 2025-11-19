@@ -4,8 +4,6 @@ import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.integration.alexscaves.AlexsCavesCompat;
 import com.github.elenterius.biomancy.integration.farmersdelight.FarmersDelightCompat;
 import com.github.elenterius.biomancy.integration.iceandfire.IceAndFireCompat;
-import com.github.elenterius.biomancy.integration.modonomicon.ModonomiconHelper;
-import com.github.elenterius.biomancy.integration.modonomicon.ModonomiconIntegration;
 import com.github.elenterius.biomancy.integration.overweightfarming.OverweightFarmingHelper;
 import com.github.elenterius.biomancy.integration.overweightfarming.OverweightFarmingIntegration;
 import com.github.elenterius.biomancy.integration.pehkui.PehkuiHelper;
@@ -23,7 +21,6 @@ public final class ModsCompatHandler {
 
 	static final Marker LOG_MARKER = MarkerManager.getMarker(ModsCompatHandler.class.getSimpleName());
 	static PehkuiHelper PEHKUI_HELPER = PehkuiHelper.EMPTY;
-	static ModonomiconHelper MODONOMICON_HELPER = ModonomiconHelper.EMPTY;
 	static TetraHelper TETRA_HELPER = TetraHelper.EMPTY;
 	static OverweightFarmingHelper OVERWEIGHT_FARMING_HELPER = OverweightFarmingHelper.createEmpty();
 
@@ -33,11 +30,6 @@ public final class ModsCompatHandler {
 		if (ModList.get().isLoaded("pehkui")) {
 			BiomancyMod.LOGGER.info(LOG_MARKER, "Initializing Pehkui Integration...");
 			PehkuiIntegration.init(helper -> PEHKUI_HELPER = helper);
-		}
-
-		if (ModList.get().isLoaded("modonomicon")) {
-			BiomancyMod.LOGGER.info(LOG_MARKER, "Initializing Modonomicon integration...");
-			ModonomiconIntegration.init(helper -> MODONOMICON_HELPER = helper);
 		}
 
 		if (ModList.get().isLoaded("tetra")) {
@@ -91,10 +83,6 @@ public final class ModsCompatHandler {
 
 	public static PehkuiHelper getPehkuiHelper() {
 		return PEHKUI_HELPER;
-	}
-
-	public static ModonomiconHelper getModonomiconHelper() {
-		return MODONOMICON_HELPER;
 	}
 
 	public static TetraHelper getTetraHelper() {

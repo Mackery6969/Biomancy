@@ -72,9 +72,6 @@ public final class DataGenerators {
 		//advancements
 		generator.addProvider(includeServer, new ModAdvancementProvider(packOutput, lookupProvider, existingFileHelper, enLanguage));
 
-		//guide book
-		//generator.addProvider(includeServer, new GuideBookProvider(packOutput, enLanguage));
-
 		generator.addProvider(includeServer, enLanguage);
 	}
 
