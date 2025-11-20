@@ -67,7 +67,8 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 	protected boolean tryLoadLootTable(CompoundTag tag) {
 		if (!tag.contains(LOOT_TABLE_KEY, Tag.TAG_STRING)) return false;
 
-		lootTableId = ResourceLocation.parse(tag.getString(LOOT_TABLE_KEY));
+		String id = tag.getString(LOOT_TABLE_KEY);
+		lootTableId = id.isBlank() ? null : ResourceLocation.tryParse(id);
 		lootTableSeed = tag.getLong(LOOT_TABLE_SEED_TAG);
 		return true;
 	}
