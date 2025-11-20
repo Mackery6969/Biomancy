@@ -290,7 +290,7 @@ public class BioLabBlockEntity extends MachineBlockEntity<BioBrewingRecipe, BioL
 	}
 
 	private <T extends BioLabBlockEntity> PlayState handleAnimationState(AnimationState<T> event) {
-		boolean isCrafting = Boolean.TRUE.equals(getBlockState().getValue(MachineBlock.CRAFTING));
+		boolean isCrafting = getBlockState().getValue(MachineBlock.CRAFTING);
 
 		if (isCrafting) {
 			event.getController().setAnimation(WORKING_ANIM);

@@ -2,9 +2,13 @@ package com.github.elenterius.biomancy.block.biolab;
 
 import com.github.elenterius.biomancy.api.nutrients.FuelHandler;
 import com.github.elenterius.biomancy.crafting.recipe.BioBrewingRecipe;
+import com.github.elenterius.biomancy.crafting.recipe.PotionSerumRecipes;
 import com.github.elenterius.biomancy.crafting.state.FuelConsumingRecipeCraftingStateData;
 import com.github.elenterius.biomancy.inventory.BehavioralItemHandler;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.Level;
+
+import java.util.Optional;
 
 public class BioLabStateData extends FuelConsumingRecipeCraftingStateData<BioBrewingRecipe> {
 
@@ -20,6 +24,11 @@ public class BioLabStateData extends FuelConsumingRecipeCraftingStateData<BioBre
 	@Override
 	protected boolean isRecipeOfInstance(Recipe<?> recipe) {
 		return recipe instanceof BioBrewingRecipe;
+	}
+
+	@Override
+	public Optional<BioBrewingRecipe> getCraftingGoalRecipe(Level level) {
+		return super.getCraftingGoalRecipe(level).or(() -> PotionSerumRecipes.byId(recipeId));
 	}
 
 	public boolean isFilterLocked() {

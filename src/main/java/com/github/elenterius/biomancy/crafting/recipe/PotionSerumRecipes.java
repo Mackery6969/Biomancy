@@ -24,15 +24,19 @@ import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public final class PotionSerumRecipes {
 
 	public static final List<BioBrewingRecipe> RECIPES;
+	public static final Map<ResourceLocation, BioBrewingRecipe> RECIPES_BY_ID;
 	public static final Set<Potion> POTIONS;
+
+	public static final String NAME_PREFIX = "potion_serum_";
 
 	static {
 		Set<Potion> bestPotions = getBestPotions();
@@ -74,7 +78,7 @@ public final class PotionSerumRecipes {
 
 			if (resolvedRecipes.size() <= 2) {
 				for (ResolvedRecipe resolvedRecipe : resolvedRecipes) {
-					recipes.add(createRecipe("potion_serum_" + index++, resolvedRecipe.ingredients, resolvedRecipe.reactant.getDefaultInstance(), bestPotionRecipe.result));
+					recipes.add(createRecipe(NAME_PREFIX + index++, resolvedRecipe.ingredients, resolvedRecipe.reactant.getDefaultInstance(), bestPotionRecipe.result));
 					potions.add(bestPotionRecipe.result);
 				}
 				continue;
@@ -91,15 +95,20 @@ public final class PotionSerumRecipes {
 
 			List<Ingredient> ingredients = itemCounter.getItemsSorted(4, false).stream().map(Ingredient::of).toList();
 
-			recipes.add(createRecipe("potion_serum_" + index++, ingredients, ModItems.UNSTABLE_COMPOUND.get().getDefaultInstance(), bestPotionRecipe.result));
+			recipes.add(createRecipe(NAME_PREFIX + index++, ingredients, ModItems.UNSTABLE_COMPOUND.get().getDefaultInstance(), bestPotionRecipe.result));
 			potions.add(bestPotionRecipe.result);
 		}
 
 		RECIPES = Collections.unmodifiableList(recipes);
+		RECIPES_BY_ID = recipes.stream().collect(Collectors.toUnmodifiableMap(BioBrewingRecipe::getId, recipe -> recipe, (a, b) -> b));
 		POTIONS = Collections.unmodifiableSet(potions);
 	}
 
 	private PotionSerumRecipes() {}
+
+	public static Optional<BioBrewingRecipe> byId(@Nullable ResourceLocation recipeId) {
+		return recipeId == null ? Optional.empty() : Optional.ofNullable(PotionSerumRecipes.RECIPES_BY_ID.get(recipeId));
+	}
 
 	public static @Nullable BioBrewingRecipe getRecipeFor(Level level, Container inputInventory) {
 		BioBrewingRecipe topRecipe = null;

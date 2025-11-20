@@ -8,6 +8,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -27,7 +28,7 @@ public abstract class RecipeCraftingStateData<T extends ProcessingRecipe> implem
 	public int nutrientsCost;
 
 	private CraftingState craftingState = CraftingState.NONE;
-	private ResourceLocation recipeId;
+	protected @Nullable ResourceLocation recipeId;
 
 	public CraftingState getCraftingState() {
 		return craftingState;
