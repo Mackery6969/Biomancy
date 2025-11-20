@@ -1,12 +1,90 @@
 pluginManagement {
 	repositories {
 		gradlePluginPortal()
-		maven { url = 'https://maven.minecraftforge.net/' }
-		maven { url = 'https://maven.parchmentmc.org' }
-		maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+		maven {
+			name = "NeoForged"
+			url = uri("https://maven.neoforged.net/releases")
+			content {
+				includeGroup("net.neoforged")
+			}
+		}
+	}
+
+	plugins {
+		id 'net.neoforged.moddev.legacyforge' version '2.0.116'
+		id 'net.neoforged.moddev.legacyforge.repositories' version '2.0.116'
 	}
 }
 
 plugins {
-	id 'org.gradle.toolchains.foojay-resolver-convention' version '0.7.0'
+	id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+	id 'net.neoforged.moddev.legacyforge.repositories'
+}
+
+dependencyResolutionManagement {
+//	repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
+//	rulesMode = RulesMode.FAIL_ON_PROJECT_RULES
+
+	repositories {
+		mavenCentral()
+
+		maven {
+			name = "Curse Maven"
+			url = uri("https://cursemaven.com")
+			content {
+				includeGroup("curse.maven")
+			}
+		}
+
+		maven {
+			name = "Modrinth Maven"
+			url = uri("https://api.modrinth.com/maven")
+			content {
+				includeGroup("maven.modrinth")
+			}
+		}
+
+		maven { url = "https://dvs1.progwml6.com/files/maven/" }  // JEI
+		maven { url = "https://modmaven.k-4u.nl" }  // JEI backup
+		maven {
+			name = 'Geckolib'
+			url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+			content {
+				includeGroupByRegex("software\\.bernie.*")
+				includeGroup("com.eliotlash.mclib")
+			}
+		}
+		maven { url = 'https://maven.blamejared.com' }
+		maven {
+			url "https://dl.cloudsmith.io/public/klikli-dev/mods/maven/"
+			content {
+				includeGroup "com.klikli_dev"
+			}
+		}
+		maven {
+			name = 'tterrag maven'
+			url = 'https://maven.tterrag.com/'
+		}
+		maven {
+			name = 'KubeJS'
+			url "https://maven.latvian.dev/releases"
+			content {
+				includeGroup "dev.latvian.mods"
+				includeGroup "dev.latvian.apps"
+			}
+		}
+		maven {
+			url = "https://jitpack.io"
+			content {
+				includeGroup "com.github.rtyley"
+			}
+		}
+		maven {
+			name = "Shedaniel's maven"
+			url = "https://maven.architectury.dev"
+			content {
+				includeGroup "dev.architectury"
+			}
+		}
+	}
 }

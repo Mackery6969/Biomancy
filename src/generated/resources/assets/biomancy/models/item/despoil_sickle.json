@@ -9,8 +9,8 @@
     }
   },
   "loader": "forge:item_layers",
-  "render_types": { },
-  "render_types_fast": { },
+  "render_types": {},
+  "render_types_fast": {},
   "textures": {
     "layer0": "biomancy:item/weapon/despoil_sickle",
     "layer1": "biomancy:item/weapon/despoil_sickle_emissive"

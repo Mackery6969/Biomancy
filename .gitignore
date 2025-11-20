@@ -1,4 +1,15 @@
+# enviroment variables
+.env
+
+# intellij idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
+
 # eclipse
+eclipse
 bin
 *.launch
 .settings
@@ -6,33 +17,14 @@ bin
 .classpath
 .project
 
-# idea
-out
-*.ipr
-*.iws
-*.iml
-.idea
-
 # gradle
 build
 .gradle
 
-# other
-eclipse
-run
-
-# Files from Forge MDK
-forge*changelog.txt
-
+# generated data
 /src/generated/resources/.cache/
-## exclude generated resources except the language files from version control
-#/src/generated/resources/*
-#!/src/generated/resources/assets
-#/src/generated/resources/assets/*/*
-#!/src/generated/resources/assets/*/lang
 
-# custom
+# other
+run
+runs
 logs
-/run-data/
-/run-server/
-
