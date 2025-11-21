@@ -9,8 +9,8 @@ import com.github.elenterius.biomancy.client.gui.tooltip.HrTooltipClientComponen
 import com.github.elenterius.biomancy.client.gui.tooltip.StorageSacTooltipClientComponent;
 import com.github.elenterius.biomancy.client.particle.BloodDripParticle;
 import com.github.elenterius.biomancy.client.particle.CustomGlowParticle;
-import com.github.elenterius.biomancy.client.particle.GasExplosionParticleEmitter;
 import com.github.elenterius.biomancy.client.particle.ParticleProviders;
+import com.github.elenterius.biomancy.client.particle.SimpleExplosionParticleEmitter;
 import com.github.elenterius.biomancy.client.render.block.bioforge.BioForgeRenderer;
 import com.github.elenterius.biomancy.client.render.block.biolab.BioLabRenderer;
 import com.github.elenterius.biomancy.client.render.block.cradle.PrimordialCradleRenderer;
@@ -49,6 +49,7 @@ import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
 import net.minecraftforge.api.distmarker.Dist;
@@ -58,6 +59,8 @@ import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = BiomancyMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class ClientSetupHandler {
@@ -150,8 +153,15 @@ public final class ClientSetupHandler {
 		event.registerSpriteSet(ModParticleTypes.BIOHAZARD.get(), sprites -> new CustomGlowParticle.TwoColorProvider(sprites, 0xab274f, 0x7e2a43));
 		event.registerSpriteSet(ModParticleTypes.ACID_BUBBLE.get(), ParticleProviders.AcidBubbleProvider::new);
 		event.registerSpriteSet(ModParticleTypes.TOXIN_GAS.get(), PlayerCloudParticle.Provider::new);
-		event.registerSpriteSet(ModParticleTypes.TOXIN_GAS_EXPLOSION.get(), HugeExplosionParticle.Provider::new);
-		event.registerSpecial(ModParticleTypes.TOXIN_GAS_EXPLOSION_EMITTER.get(), new GasExplosionParticleEmitter.Provider());
+		registerSimpleExplosionEmitter(event, ModParticleTypes.TOXIN_GAS_EXPLOSION_EMITTER, ModParticleTypes.TOXIN_GAS_EXPLOSION);
+		registerSimpleExplosionEmitter(event, ModParticleTypes.DECAY_EXPLOSION_EMITTER, ModParticleTypes.DECAY_EXPLOSION);
+		registerSimpleExplosionEmitter(event, ModParticleTypes.ACID_EXPLOSION_EMITTER, ModParticleTypes.ACID_EXPLOSION);
+		registerSimpleExplosionEmitter(event, ModParticleTypes.VOLATILE_EXPLOSION_EMITTER, ModParticleTypes.VOLATILE_EXPLOSION);
+	}
+
+	private static <T extends SimpleParticleType> void registerSimpleExplosionEmitter(RegisterParticleProvidersEvent event, Supplier<T> emitter, Supplier<T> particle) {
+		event.registerSpriteSet(particle.get(), HugeExplosionParticle.Provider::new);
+		event.registerSpecial(emitter.get(), new SimpleExplosionParticleEmitter.Provider(particle.get()));
 	}
 
 	@SubscribeEvent

@@ -25,6 +25,12 @@ public final class ModParticleTypes {
 	public static final RegistryObject<SimpleParticleType> TOXIN_GAS = register("toxin_gas", false);
 	public static final RegistryObject<SimpleParticleType> TOXIN_GAS_EXPLOSION = register("toxin_gas_explosion", false);
 	public static final RegistryObject<SimpleParticleType> TOXIN_GAS_EXPLOSION_EMITTER = register("toxin_gas_explosion_emitter", false);
+	public static final RegistryObject<SimpleParticleType> DECAY_EXPLOSION = register("decay_explosion", false);
+	public static final RegistryObject<SimpleParticleType> DECAY_EXPLOSION_EMITTER = register("decay_explosion_emitter", false);
+	public static final RegistryObject<SimpleParticleType> ACID_EXPLOSION = register("acid_explosion", false);
+	public static final RegistryObject<SimpleParticleType> ACID_EXPLOSION_EMITTER = register("acid_explosion_emitter", false);
+	public static final RegistryObject<SimpleParticleType> VOLATILE_EXPLOSION = register("volatile_explosion", false);
+	public static final RegistryObject<SimpleParticleType> VOLATILE_EXPLOSION_EMITTER = register("volatile_explosion_emitter", false);
 
 	private ModParticleTypes() {}
 

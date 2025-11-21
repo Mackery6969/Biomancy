@@ -1,13 +1,13 @@
 package com.github.elenterius.biomancy.util;
 
 import com.github.elenterius.biomancy.init.ModDamageSources;
+import com.github.elenterius.biomancy.init.ModParticleTypes;
 import com.github.elenterius.biomancy.init.tags.ModBlockTags;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundExplodePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,7 +29,7 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -80,7 +80,7 @@ public class ExplosionUtil {
 	};
 
 	public static void explodeDecay(Level level, @Nullable Entity source, double x, double y, double z, float radius, Level.ExplosionInteraction explosionInteraction) {
-		explode(level, source, ModDamageSources.decay(level, source, getIndirectSourceEntity(source)), DECAY_DAMAGE_CALCULATOR, x, y, z, radius, false, explosionInteraction, true, Explosion::new);
+		explode(level, source, ModDamageSources.decay(level, source, getIndirectSourceEntity(source)), DECAY_DAMAGE_CALCULATOR, x, y, z, radius, false, explosionInteraction, true, DecayExplosion::new);
 	}
 
 	public static void explodeIncendiary(Level level, Entity source, float radius, Level.ExplosionInteraction explosionInteraction) {
@@ -163,10 +163,10 @@ public class ExplosionUtil {
 
 			if (spawnParticles) {
 				if (!(radius < 2f) && interactsWithBlocks) {
-					level.addParticle(ParticleTypes.EXPLOSION_EMITTER, x, y, z, 1d, 0d, 0d);
+					level.addParticle(ModParticleTypes.VOLATILE_EXPLOSION_EMITTER.get(), x, y, z, 1d, 0d, 0d);
 				}
 				else {
-					level.addParticle(ParticleTypes.EXPLOSION, x, y, z, 1d, 0d, 0d);
+					level.addParticle(ModParticleTypes.VOLATILE_EXPLOSION.get(), x, y, z, 1d, 0d, 0d);
 				}
 			}
 
@@ -232,6 +232,75 @@ public class ExplosionUtil {
 						}
 					}
 				}
+			}
+		}
+
+	}
+
+	public static class DecayExplosion extends Explosion {
+
+		public DecayExplosion(Level level, @Nullable Entity source, @Nullable DamageSource damageSource, @Nullable ExplosionDamageCalculator damageCalculator, double x, double y, double z, float radius, boolean ignoredFire, BlockInteraction interaction) {
+			super(level, source, damageSource, damageCalculator, x, y, z, radius, false, interaction); //fire is always false
+		}
+
+		@Override
+		public void finalizeExplosion(boolean spawnParticles) {
+			if (level.isClientSide) {
+				level.playLocalSound(x, y, z, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4f, (1f + (level.random.nextFloat() - level.random.nextFloat()) * 0.2f) * 0.7f, false);
+			}
+
+			boolean interactsWithBlocks = interactsWithBlocks();
+
+			if (spawnParticles) {
+				if (!(radius < 2f) && interactsWithBlocks) {
+					level.addParticle(ModParticleTypes.DECAY_EXPLOSION_EMITTER.get(), x, y, z, 1d, 0d, 0d);
+				}
+				else {
+					level.addParticle(ModParticleTypes.DECAY_EXPLOSION.get(), x, y, z, 1d, 0d, 0d);
+				}
+			}
+
+			if (interactsWithBlocks) {
+				destroyBlocks();
+			}
+		}
+
+		protected void destroyBlocks() {
+			ObjectArrayList<Pair<ItemStack, BlockPos>> drops = new ObjectArrayList<>();
+			boolean isPlayerSource = getIndirectSourceEntity() instanceof Player;
+
+			Util.shuffle(toBlow, level.random);
+
+			for (BlockPos pos : toBlow) {
+				BlockState blockstate = level.getBlockState(pos);
+
+				if (!blockstate.isAir()) {
+					level.getProfiler().push("explosion_blocks");
+
+					if (blockstate.canDropFromExplosion(level, pos, this)) {
+						if (level instanceof ServerLevel serverlevel) {
+							LootParams.Builder lootParams = new LootParams.Builder(serverlevel)
+									.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
+									.withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
+									.withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockstate.hasBlockEntity() ? level.getBlockEntity(pos) : null)
+									.withOptionalParameter(LootContextParams.THIS_ENTITY, source);
+
+							if (blockInteraction == BlockInteraction.DESTROY_WITH_DECAY) {
+								lootParams.withParameter(LootContextParams.EXPLOSION_RADIUS, radius);
+							}
+
+							blockstate.spawnAfterBreak(serverlevel, pos, ItemStack.EMPTY, isPlayerSource);
+							blockstate.getDrops(lootParams).forEach(stack -> addBlockDrops(drops, stack, pos.immutable()));
+						}
+					}
+
+					blockstate.onBlockExploded(level, pos, this);
+					level.getProfiler().pop();
+				}
+			}
+
+			for (Pair<ItemStack, BlockPos> pair : drops) {
+				Block.popResource(level, pair.getSecond(), pair.getFirst());
 			}
 		}
 

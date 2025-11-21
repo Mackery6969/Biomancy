@@ -88,7 +88,7 @@ public class GrenadeProjectile extends ThrowableItemProjectile {
 				serverLevel.addFreshEntity(cloud);
 			}
 			else if (item == ModItems.ACID_GRENADE.get()) {
-				serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER, getX(), getY(), getZ(), 1, 0d, 0d, 0d, 1d);
+				serverLevel.sendParticles(ModParticleTypes.ACID_EXPLOSION_EMITTER.get(), getX(), getY(), getZ(), 1, 0d, 0d, 0d, 2d);
 				ModBlocks.ACID_SPLATTER.get().propagateAcidSplatters(serverLevel, getImpactPos(hitResult), 4, random);
 			}
 			else if (item == ModItems.DECAY_GRENADE.get()) {
