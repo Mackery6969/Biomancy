@@ -20,6 +20,7 @@ import org.apache.logging.log4j.MarkerManager;
 public final class ModsCompatHandler {
 
 	static final Marker LOG_MARKER = MarkerManager.getMarker(ModsCompatHandler.class.getSimpleName());
+
 	static PehkuiHelper PEHKUI_HELPER = PehkuiHelper.EMPTY;
 	static TetraHelper TETRA_HELPER = TetraHelper.EMPTY;
 	static OverweightFarmingHelper OVERWEIGHT_FARMING_HELPER = OverweightFarmingHelper.createEmpty();
@@ -33,13 +34,17 @@ public final class ModsCompatHandler {
 		}
 
 		if (ModList.get().isLoaded("tetra")) {
-			BiomancyMod.LOGGER.info(LOG_MARKER, "Initializing Modonomicon integration...");
+			BiomancyMod.LOGGER.info(LOG_MARKER, "Initializing Tetra integration...");
 			TetraCompat.init(helper -> TETRA_HELPER = helper);
 		}
 
 		if (ModList.get().isLoaded("overweight_farming")) {
 			BiomancyMod.LOGGER.info(LOG_MARKER, "Initializing Overweight Farming integration...");
 			OverweightFarmingIntegration.init(helper -> OVERWEIGHT_FARMING_HELPER = helper);
+		}
+
+		if (ModList.get().isLoaded("nerb")) {
+			BiomancyMod.LOGGER.fatal(LOG_MARKER, "Detected incompatible mods: Biomancy is not compatible with 'Not Enough Recipe Book (NERB)'. Please remove/replace NERB with ORB.");
 		}
 	}
 

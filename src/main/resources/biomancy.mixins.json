@@ -21,8 +21,8 @@
   ],
   "client": [
     "accessor.PlayerRendererAccessor", "accessor.RecipeCollectionAccessor", "client.AbstractSignEditScreenMixin", "client.AnvilScreenMixin",
-    "client.ClientPackListenerMixin", "client.ClientRecipeBookMixin", "client.EntityRenderDispatcherMixin", "client.FontMixin", "client.ForgeGuiMixin",
-    "client.GuiGraphicsMixin", "client.HeartTypeMixin", "client.LiquidBlockRendererMixin", "client.PlayerRendererMixin", "geckolibextras.GeoItemRendererMixin",
+    "client.ClientPackListenerMixin", "client.EntityRenderDispatcherMixin", "client.FontMixin", "client.ForgeGuiMixin", "client.GuiGraphicsMixin",
+    "client.HeartTypeMixin", "client.LiquidBlockRendererMixin", "client.PlayerRendererMixin", "geckolibextras.GeoItemRendererMixin",
     "geckolibextras.ItemDisplayRendererMixin", "geckolibextras.ItemEntityRendererMixin", "geckolibextras.ItemFrameRendererMixin",
     "geckolibextras.ItemRendererMixin", "geckolibextras.ThrownItemRendererMixin"
   ],
