@@ -21,12 +21,12 @@ public class DespoilingSwordItem extends SimpleSwordItem {
 		super(tier, attackDamageModifier, attackSpeedModifier, properties);
 	}
 
-	public static boolean isBroken(ItemStack stack) {
+	public boolean isBroken(ItemStack stack) {
 		return !isNotBroken(stack);
 	}
 
-	public static boolean isNotBroken(ItemStack stack) {
-		return stack.getDamageValue() < stack.getMaxDamage() - 1;
+	public boolean isNotBroken(ItemStack stack) {
+		return getDamage(stack) < getMaxDamage(stack) - 1;
 	}
 
 	@Override
