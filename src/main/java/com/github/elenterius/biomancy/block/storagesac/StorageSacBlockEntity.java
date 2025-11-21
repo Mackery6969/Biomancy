@@ -37,8 +37,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -236,7 +235,7 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 	}
 
 	@Override
-	public <T> @NotNull LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
 		if (!remove && cap == ModCapabilities.ITEM_HANDLER) {
 			unpackLootTable(null);
 			return inventory.getLazyOptional().cast();

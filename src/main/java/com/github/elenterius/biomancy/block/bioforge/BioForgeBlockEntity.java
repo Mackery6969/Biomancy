@@ -30,7 +30,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -40,7 +40,6 @@ import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
 
 public class BioForgeBlockEntity extends BlockEntity implements MenuProvider, PlayerInteractionPredicate, Nameable, GeoBlockEntity {
@@ -210,7 +209,6 @@ public class BioForgeBlockEntity extends BlockEntity implements MenuProvider, Pl
 		ItemHandlerUtil.dropContents(level, pos, fuelInventory);
 	}
 
-	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
 		if (remove) return super.getCapability(cap, side);

@@ -5,7 +5,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
-import org.jetbrains.annotations.NotNull;
+
 
 public final class InventoryHandler<T extends SerializableItemHandler> implements SerializableItemHandler {
 
@@ -65,7 +65,7 @@ public final class InventoryHandler<T extends SerializableItemHandler> implement
 	}
 
 	@Override
-	public void setStackInSlot(int slot, @NotNull ItemStack stack) {
+	public void setStackInSlot(int slot, ItemStack stack) {
 		itemHandler.setStackInSlot(slot, stack);
 	}
 
@@ -75,17 +75,17 @@ public final class InventoryHandler<T extends SerializableItemHandler> implement
 	}
 
 	@Override
-	public @NotNull ItemStack getStackInSlot(int slot) {
+	public ItemStack getStackInSlot(int slot) {
 		return itemHandler.getStackInSlot(slot);
 	}
 
 	@Override
-	public @NotNull ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
 		return itemHandler.insertItem(slot, stack, simulate);
 	}
 
 	@Override
-	public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+	public ItemStack extractItem(int slot, int amount, boolean simulate) {
 		return itemHandler.extractItem(slot, amount, simulate);
 	}
 

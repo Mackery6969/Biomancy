@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public abstract class MachineBlockEntity<R extends ProcessingRecipe, S extends RecipeCraftingStateData<R>> extends BlockEntity implements Nameable, PlayerInteractionPredicate {
 

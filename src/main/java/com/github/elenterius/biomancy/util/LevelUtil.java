@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Predicate;
 
@@ -91,8 +91,7 @@ public final class LevelUtil {
 	/**
 	 * performance: vroom vroom
 	 */
-	@Nullable
-	public static <T extends BlockEntity> T findNearestBlockEntity(ServerLevel level, BlockPos pos, int searchDist, Class<T> clazz) {
+	public static <T extends BlockEntity> @Nullable T findNearestBlockEntity(ServerLevel level, BlockPos pos, int searchDist, Class<T> clazz) {
 		if (searchDist <= 0) return null;
 
 		final int chunkX = SectionPos.blockToSectionCoord(pos.getX());
@@ -101,7 +100,7 @@ public final class LevelUtil {
 		final int searchDistSqr = searchDist * searchDist;
 		final int chunkSearchDist = Mth.ceil(searchDist / 16f);
 
-		@Nullable T nearestBlockEntity = null;
+		T nearestBlockEntity = null;
 		double nearestDistSqr = searchDistSqr + 0.1d;
 
 		for (int chunkDist = 0; chunkDist <= chunkSearchDist; chunkDist++) {

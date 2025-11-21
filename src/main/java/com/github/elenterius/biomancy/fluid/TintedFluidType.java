@@ -13,7 +13,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -75,7 +74,7 @@ public class TintedFluidType extends FluidType {
 			}
 
 			@Override
-			public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
+			public Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
 				float red = (FastColor.ARGB32.red(colorARGB) / 255f) * fluidFogColor.x();
 				float green = (FastColor.ARGB32.green(colorARGB) / 255f) * fluidFogColor.y();
 				float blue = (FastColor.ARGB32.blue(colorARGB) / 255f) * fluidFogColor.z();

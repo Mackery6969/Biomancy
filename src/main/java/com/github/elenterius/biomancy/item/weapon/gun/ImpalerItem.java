@@ -40,7 +40,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -201,7 +201,7 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 		super.initializeClient(consumer);
 		consumer.accept(new IClientItemExtensions() {
-			private ImpalerRenderer renderer = null;
+			private @Nullable ImpalerRenderer renderer = null;
 
 			/// workaround for forge not providing the interaction hand to the method
 			private static boolean isHandPartOfArm(LocalPlayer player, HumanoidArm arm, InteractionHand hand) {
@@ -227,7 +227,7 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 			}
 
 			@Override
-			public @Nullable HumanoidModel.ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
+			public HumanoidModel.ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
 				//	getUseAnimation(ItemStack stack) needs to return NONE or CUSTOM for this method to be called
 				return ModArmPoses.HOLD_AND_AIM_GUN_TWO_HANDED;
 			}

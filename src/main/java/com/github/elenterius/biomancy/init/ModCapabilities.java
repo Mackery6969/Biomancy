@@ -11,9 +11,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.IItemHandler;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @Mod.EventBusSubscriber(modid = BiomancyMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ModCapabilities {
@@ -61,9 +59,8 @@ public final class ModCapabilities {
 			LazyOptional<FlagCapImpl> optionalCap = LazyOptional.of(() -> backing);
 
 			ICapabilityProvider volatileCapProvider = new ICapabilityProvider() {
-				@Nonnull
 				@Override
-				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
+				public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
 					return NO_KNOCKBACK_FLAG_CAP.orEmpty(capability, optionalCap);
 				}
 			};

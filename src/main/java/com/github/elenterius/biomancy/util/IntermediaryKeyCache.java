@@ -1,6 +1,6 @@
 package com.github.elenterius.biomancy.util;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;

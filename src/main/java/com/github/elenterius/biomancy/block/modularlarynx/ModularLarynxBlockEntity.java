@@ -20,10 +20,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -48,7 +46,7 @@ public class ModularLarynxBlockEntity extends BlockEntity {
 			}
 
 			@Override
-			public boolean isItemValid(@NotNull ItemStack stack) {
+			public boolean isItemValid(ItemStack stack) {
 				return VALID_ITEM.test(stack);
 			}
 
@@ -145,9 +143,8 @@ public class ModularLarynxBlockEntity extends BlockEntity {
 		optionalItemHandler = LazyOptional.of(() -> inventory);
 	}
 
-	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
 		if (!remove) {
 			return ModCapabilities.ITEM_HANDLER.orEmpty(cap, optionalItemHandler);
 		}

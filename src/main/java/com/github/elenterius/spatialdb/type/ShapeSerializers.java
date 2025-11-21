@@ -7,7 +7,7 @@ import com.github.elenterius.spatialdb.geometry.CuboidShape;
 import com.github.elenterius.spatialdb.geometry.OctantEllipsoidShape;
 import com.github.elenterius.spatialdb.geometry.Shape;
 import com.github.elenterius.spatialdb.geometry.SphereShape;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -10,8 +10,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public enum MobSoundType implements StringRepresentable {
 	AMBIENT("ambient"), HURT("hurt"), DEATH("death");

@@ -1,6 +1,6 @@
 package com.github.elenterius.spatialdb.mvstore;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class SpatialDBException extends Exception {
 

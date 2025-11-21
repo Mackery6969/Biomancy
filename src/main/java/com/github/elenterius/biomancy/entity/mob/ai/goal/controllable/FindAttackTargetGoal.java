@@ -4,8 +4,8 @@ import com.github.elenterius.biomancy.entity.mob.ControllableMob;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
 public class FindAttackTargetGoal<T extends Mob & ControllableMob, M extends LivingEntity> extends NearestAttackableTargetGoal<M> {

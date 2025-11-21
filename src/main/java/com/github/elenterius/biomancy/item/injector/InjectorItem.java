@@ -57,8 +57,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -523,9 +522,8 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 			itemHandler = InjectorItemInventory.create(MAX_SLOT_SIZE, stack);
 		}
 
-		@NotNull
 		@Override
-		public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction facing) {
+		public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
 			return ModCapabilities.ITEM_HANDLER.orEmpty(capability, itemHandler.getLazyOptional());
 		}
 

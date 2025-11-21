@@ -8,9 +8,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 @Deprecated
 public class BlockEntityDelegator extends SimpleSyncedBlockEntity implements IBlockEntityDelegator {
@@ -31,8 +29,7 @@ public class BlockEntityDelegator extends SimpleSyncedBlockEntity implements IBl
 	}
 
 	@Override
-	@Nullable
-	public BlockEntity getDelegate() {
+	public @Nullable BlockEntity getDelegate() {
 		if (level != null && isValid && !remove) {
 			BlockEntity blockEntity = level.getBlockEntity(delegatePos);
 			if (blockEntity != null && (blockEntity == this || blockEntity.isRemoved())) { //catch self reference
@@ -87,9 +84,8 @@ public class BlockEntityDelegator extends SimpleSyncedBlockEntity implements IBl
 		super.invalidateCaps();
 	}
 
-	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
 		if (!remove) {
 			BlockEntity delegate = getDelegate();
 			if (delegate != null && !delegate.isRemoved()) {

@@ -17,8 +17,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class StaticDigestingRecipe extends StaticProcessingRecipe implements DigestingRecipe {
 

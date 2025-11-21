@@ -15,8 +15,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.entity.player.Player;
-
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class ShrinkingSerum extends BasicSerum {
 

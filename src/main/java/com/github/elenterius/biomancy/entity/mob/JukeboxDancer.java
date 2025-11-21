@@ -1,7 +1,7 @@
 package com.github.elenterius.biomancy.entity.mob;
 
 import net.minecraft.core.BlockPos;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface JukeboxDancer {
 

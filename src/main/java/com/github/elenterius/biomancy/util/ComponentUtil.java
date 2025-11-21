@@ -13,7 +13,7 @@ import net.minecraft.network.chat.contents.DataSource;
 import net.minecraft.network.chat.contents.SelectorContents;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraftforge.client.ForgeHooksClient;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.text.BreakIterator;
 import java.util.ArrayList;

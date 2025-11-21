@@ -6,10 +6,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -72,13 +70,12 @@ public interface BehavioralItemHandler extends IItemHandler {
 		}
 
 		@Override
-		public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+		public boolean isItemValid(int slot, ItemStack stack) {
 			return false;
 		}
 
 		@Override
-		@Nonnull
-		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
 			return stack;
 		}
 
@@ -93,7 +90,7 @@ public interface BehavioralItemHandler extends IItemHandler {
 		}
 
 		@Override
-		public void setStackInSlot(int slot, @NotNull ItemStack stack) {
+		public void setStackInSlot(int slot, ItemStack stack) {
 			itemHandler.setStackInSlot(slot, stack);
 		}
 	}
@@ -116,14 +113,13 @@ public interface BehavioralItemHandler extends IItemHandler {
 		}
 
 		@Override
-		public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+		public boolean isItemValid(int slot, ItemStack stack) {
 			if (isInvalidSlot(slot)) return false;
 			return filters.get(slot).test(stack) && itemHandler.isItemValid(slot, stack);
 		}
 
 		@Override
-		@Nonnull
-		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
 			if (isInvalidSlot(slot)) return stack;
 			if (!filters.get(slot).test(stack)) return stack;
 			return itemHandler.insertItem(slot, stack, simulate);
@@ -140,7 +136,7 @@ public interface BehavioralItemHandler extends IItemHandler {
 		}
 
 		@Override
-		public void setStackInSlot(int slot, @NotNull ItemStack stack) {
+		public void setStackInSlot(int slot, ItemStack stack) {
 			itemHandler.setStackInSlot(slot, stack);
 		}
 	}

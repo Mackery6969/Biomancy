@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
+
 
 public class VialHolderBlockEntity extends SimpleSyncedBlockEntity {
 
@@ -32,7 +32,7 @@ public class VialHolderBlockEntity extends SimpleSyncedBlockEntity {
 			}
 
 			@Override
-			public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+			public boolean isItemValid(int slot, ItemStack stack) {
 				return stack.getItem() instanceof SerumContainer;
 			}
 

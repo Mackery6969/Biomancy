@@ -4,8 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class AbsorptionSerum extends BasicSerum {
 
