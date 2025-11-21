@@ -25,7 +25,6 @@ public final class ModMobEffects {
 	);
 	public static final RegistryObject<DespoilEffect> DESPOIL = EFFECTS.register("despoil", () -> new DespoilEffect(MobEffectCategory.BENEFICIAL, 0xdd77ff));
 	public static final RegistryObject<LibidoEffect> LIBIDO = EFFECTS.register("libido", () -> new LibidoEffect(MobEffectCategory.NEUTRAL, 0xe06a78));
-	public static final RegistryObject<DrowsyEffect> DROWSY = EFFECTS.register("drowsy", () -> new DrowsyEffect(MobEffectCategory.NEUTRAL, 0x9b70b2));
 
 	public static final RegistryObject<AttackDamageEffect> FRENZY = EFFECTS.register("frenzy", () -> new FrenzyEffect(MobEffectCategory.BENEFICIAL, 0xd1001c)
 			.addAttackDamageModifier("1f1fb00f-d6bc-4b42-8533-422054cea63d", 6f, 0, AttributeModifier.Operation.ADDITION) // Strength ~II

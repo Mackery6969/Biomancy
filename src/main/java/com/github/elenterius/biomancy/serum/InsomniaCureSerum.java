@@ -1,6 +1,6 @@
 package com.github.elenterius.biomancy.serum;
 
-import com.github.elenterius.biomancy.init.ModMobEffects;
+import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +18,8 @@ import javax.annotation.Nullable;
 
 public class InsomniaCureSerum extends BasicSerum {
 
+	public static final String DATA_KEY = BiomancyMod.rlStr("insomnia_cure");
+	public static final int PROTECTION_TICKS = 2 * 60 * 20;
 	protected static final int PHANTOM_SPAWN_THRESHOLD = 72_000;
 
 	public InsomniaCureSerum(int color) {
@@ -52,16 +54,14 @@ public class InsomniaCureSerum extends BasicSerum {
 	@Override
 	public void affectPlayerSelf(ServerLevel level, CompoundTag tag, ServerPlayer targetSelf) {
 		targetSelf.resetStat(Stats.CUSTOM.get(Stats.TIME_SINCE_REST)); //reset insomnia
-		applyDrowsyEffect(targetSelf);
+
+		targetSelf.getPersistentData().putLong(DATA_KEY, level.getGameTime());
+
+		targetSelf.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 10 * 20, 0, false, false, false));
+		targetSelf.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 20 * 20, 0, false, false, false));
 	}
 
-	private static void applyDrowsyEffect(LivingEntity livingEntity) {
-		livingEntity.addEffect(new MobEffectInstance(ModMobEffects.DROWSY.get(), 4 * 60 * 20, 0, false, false, true));
-		livingEntity.addEffect(new MobEffectInstance(MobEffects.DARKNESS, 10 * 20, 0, false, false, false));
-		livingEntity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 20 * 20, 0, false, false, false));
-	}
-
-	private int getTimeSinceRest(Player player) {
+	private static int getTimeSinceRest(Player player) {
 		StatsCounter statsCounter = player.level().isClientSide ? ((LocalPlayer) player).getStats() : ((ServerPlayer) player).getStats();
 		return Mth.clamp(statsCounter.getValue(Stats.CUSTOM.get(Stats.TIME_SINCE_REST)), 1, Integer.MAX_VALUE);
 	}
