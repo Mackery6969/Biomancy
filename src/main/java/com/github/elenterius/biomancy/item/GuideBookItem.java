@@ -1,20 +1,18 @@
 package com.github.elenterius.biomancy.item;
 
-import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.client.render.item.guidebook.GuideBookRenderer;
-import com.github.elenterius.biomancy.integration.ModsCompatHandler;
+import com.github.elenterius.geckolibextras.GLibExtras;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.advancements.AdvancementsScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -25,22 +23,13 @@ import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.function.Consumer;
 
 public class GuideBookItem extends SimpleItem implements GeoItem {
 
-	public static final String MAIN_ANIM_CONTROLLER = "main";
-	public static final RawAnimation CLOSED_IDLE_ANIM = RawAnimation.begin().thenLoop("closed_idle");
-	public static final RawAnimation OPEN_THEN_IDLE_ANIM = RawAnimation.begin().thenPlay("opening").thenLoop("open_idle");
-	public static final RawAnimation CLOSE_THEN_IDLE_ANIM = RawAnimation.begin().thenPlay("closing").thenLoop("closed_idle");
-
-	public static final ResourceLocation GUIDE_BOOK_ID = BiomancyMod.rl("guide_book");
-	protected static final String BOOK_OPEN_KEY = "IsBookOpen";
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public GuideBookItem(Properties properties) {
@@ -48,16 +37,10 @@ public class GuideBookItem extends SimpleItem implements GeoItem {
 	}
 
 	@Override
-	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-		super.initializeClient(consumer);
-		consumer.accept(new IClientItemExtensions() {
-			private final GuideBookRenderer renderer = new GuideBookRenderer();
-
-			@Override
-			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-				return renderer;
-			}
-		});
+	public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+		if (level instanceof ServerLevel serverLevel) {
+			GeoItem.getOrAssignId(stack, serverLevel); //hack to always ensure we have a unique id for the animation
+		}
 	}
 
 	@Override
@@ -79,66 +62,52 @@ public class GuideBookItem extends SimpleItem implements GeoItem {
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-		if (level.isClientSide) return;
+	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+		super.initializeClient(consumer);
+		consumer.accept(new IClientItemExtensions() {
+			private final GuideBookRenderer renderer = new GuideBookRenderer();
 
-		CompoundTag tag = stack.getOrCreateTag();
-		boolean isBookOpen = tag.getBoolean(BOOK_OPEN_KEY);
-
-		if (isSelected) {
-			if (!isBookOpen) {
-				GeoItem.getOrAssignId(stack, (ServerLevel) level);
-				tag.putBoolean(BOOK_OPEN_KEY, true);
+			@Override
+			public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+				return renderer;
 			}
-		}
-		else {
-			if (isBookOpen) {
-				GeoItem.getOrAssignId(stack, (ServerLevel) level);
-				tag.putBoolean(BOOK_OPEN_KEY, false);
-			}
-		}
-	}
-
-	@Override
-	public boolean onEntityItemUpdate(ItemStack stack, ItemEntity itemEntity) {
-		if (itemEntity.level().isClientSide) return super.onEntityItemUpdate(stack, itemEntity);
-
-		CompoundTag tag = stack.getOrCreateTag();
-		if (tag.getBoolean(BOOK_OPEN_KEY)) {
-			GeoItem.getOrAssignId(stack, (ServerLevel) itemEntity.level());
-			tag.putBoolean(BOOK_OPEN_KEY, false);
-
-			itemEntity.setItem(stack.copy()); //we need to update ItemEntity with a new ItemStack instance to force the sync to the client
-		}
-
-		return super.onEntityItemUpdate(stack, itemEntity);
-	}
-
-	private PlayState handleAnimation(AnimationState<GuideBookItem> state) {
-		AnimationController<GuideBookItem> controller = state.getController();
-		ItemStack stack = state.getData(DataTickets.ITEMSTACK);
-		boolean isBookOpen = stack.getOrCreateTag().getBoolean(BOOK_OPEN_KEY);
-
-		if (isBookOpen) {
-			controller.setAnimation(OPEN_THEN_IDLE_ANIM);
-		}
-		else {
-			controller.setAnimation(CLOSE_THEN_IDLE_ANIM);
-		}
-
-		return PlayState.CONTINUE;
+		});
 	}
 
 	@Override
 	public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-		AnimationController<GuideBookItem> controller = new AnimationController<>(this, MAIN_ANIM_CONTROLLER, 10, this::handleAnimation);
-		controller.setAnimation(CLOSED_IDLE_ANIM);
+		AnimationController<GuideBookItem> controller = new AnimationController<>(this, "main", state -> {
+
+			Object data = state.getData(DataTickets.ITEM_RENDER_PERSPECTIVE) == ItemDisplayContext.GUI ? Minecraft.getInstance().player : state.getData(GLibExtras.ITEM_HOST_TICKET);
+
+			if (data instanceof LivingEntity livingEntity) {
+				ItemStack stack = state.getData(DataTickets.ITEMSTACK);
+				if (stack == livingEntity.getMainHandItem() || stack == livingEntity.getOffhandItem()) {
+					return state.setAndContinue(Animations.OPEN_THEN_IDLE_ANIM);
+				}
+
+				if (state.getController().getCurrentAnimation() != null && !state.isCurrentAnimationStage("closed_idle")) {
+					return state.setAndContinue(Animations.CLOSE_THEN_IDLE_ANIM);
+				}
+			}
+
+			return state.setAndContinue(Animations.CLOSED_IDLE_ANIM);
+		});
+
 		controllers.add(controller);
 	}
 
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
 		return cache;
+	}
+
+	protected static final class Animations {
+		public static final RawAnimation CLOSED_IDLE_ANIM = RawAnimation.begin().thenLoop("closed_idle");
+		public static final RawAnimation OPEN_THEN_IDLE_ANIM = RawAnimation.begin().thenPlay("opening").thenLoop("open_idle");
+		public static final RawAnimation CLOSE_THEN_IDLE_ANIM = RawAnimation.begin().thenPlay("closing").thenLoop("closed_idle");
+
+		private Animations() {}
 	}
 
 }
