@@ -140,12 +140,8 @@ public enum DirectedConnection implements StringRepresentable {
 		return quaternion;
 	}
 
-	public Quaternionf getQuaternion() {
-		return new Quaternionf(quaternion);
-	}
-
 	public DirectedConnection rotate(Rotation rotation) {
-		return from(rotation.rotate(ingoing), outgoing);
+		return from(rotation.rotate(ingoing), rotation.rotate(outgoing));
 	}
 
 	private DirectedConnection inverse() {

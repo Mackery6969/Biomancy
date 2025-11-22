@@ -53,7 +53,7 @@ public class MawHopperBlock extends BaseEntityBlock implements SimpleWaterlogged
 	}
 
 	private static boolean isWaterlogged(BlockState blockState) {
-		return Boolean.TRUE.equals(blockState.getValue(WATERLOGGED));
+		return blockState.getValue(WATERLOGGED);
 	}
 
 	private static boolean isOutgoingConnected(LevelAccessor level, BlockPos pos, DirectedConnection connection) {
