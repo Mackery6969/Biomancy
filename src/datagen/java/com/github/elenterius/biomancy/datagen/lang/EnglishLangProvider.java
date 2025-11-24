@@ -15,10 +15,7 @@ import com.github.elenterius.biomancy.menu.BioForgeTab;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
@@ -27,6 +24,7 @@ import org.slf4j.MarkerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -112,6 +110,10 @@ public class EnglishLangProvider extends AbstractLangProvider {
 
 	private void addAbility(String id, String text) {
 		add("ability.biomancy." + id, text);
+	}
+
+	private void addRarity(Rarity rarity, String translation) {
+		add("rarity." + rarity.name().toLowerCase(Locale.ENGLISH).replace(":", "."), translation);
 	}
 
 	private <T extends Item> void addItem(Supplier<T> supplier, String name, String tooltip) {
@@ -303,6 +305,12 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		add(BiomancyMod.translationKey("filled_map", ModStructureTags.GIANT_WORM.location().getPath()), "Map to Elder Maw remains");
 		add(BiomancyMod.translationKey("filled_map", ModStructureTags.VAULT.location().getPath()), "Map to Nautilus Vault");
 		add(BiomancyMod.translationKey("filled_map", ModStructureTags.LAB.location().getPath()), "Map to Abandoned Lab");
+
+		addRarity(ModRarities.COMMON, "Common");
+		addRarity(ModRarities.UNCOMMON, "Uncommon");
+		addRarity(ModRarities.RARE, "Rare");
+		addRarity(ModRarities.VERY_RARE, "Very Rare");
+		addRarity(ModRarities.ULTRA_RARE, "Ultra Rare");
 	}
 
 	private void addSoundTranslations() {

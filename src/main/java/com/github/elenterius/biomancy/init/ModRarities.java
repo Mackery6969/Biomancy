@@ -17,7 +17,7 @@ public final class ModRarities {
 	private ModRarities() {}
 
 	private static Rarity createRarity(String name, int rgbColor) {
-		return Rarity.create(BiomancyMod.MOD_ID + "_" + name, style -> style.withColor(rgbColor));
+		return Rarity.create(BiomancyMod.MOD_ID + ":" + name, style -> style.withColor(rgbColor));
 	}
 
 	public static int getRGBColor(ItemStack stack) {
