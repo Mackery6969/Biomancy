@@ -1,8 +1,6 @@
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
-import java.util.concurrent.TimeUnit
-
 plugins {
 	id 'net.neoforged.moddev.legacyforge'
 	id 'java-library'
@@ -237,22 +235,6 @@ dependencies {
 //	implementation sourceSets.spatialdb.output
 }
 
-jar {
-	manifest.attributes([
-			'Specification-Title'     : mod_name,
-			'Specification-Vendor'    : mod_vendor,
-			'Specification-Version'   : mod_major_version,
-			'Implementation-Title'    : project.name,
-			'Implementation-Version'  : project.jar.archiveVersion,
-			'Implementation-Vendor'   : mod_vendor,
-			'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-
-			"MixinConfigs"            : "${mod_id}.mixins.json"
-	])
-
-	from { ["CREDITS.md", "LICENSE.txt", "3RD_PARTY_LICENSE.txt"] } //copy files from the repository root into the jar
-}
-
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
 	var replaceProperties = [
 			minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
@@ -277,35 +259,41 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
 	expand replaceProperties
 	from "src/main/templates"
 	into "build/generated/sources/modMetadata"
+}
 
-	exclude '**/*.psd'
-	exclude '**/*.bbmodel'
-	exclude '**/*.pdn'
+var minifyJsonResources = tasks.register("minifyJsonResources") {
+	inputs.files(processResources.outputs.files)
 
-	doLast {
-		minifyJsons(outputs.files.asPath)
+	doLast { task ->
+		inputs.files.files.each { root ->
+			if (!root.exists()) return
+
+			root.eachFileRecurse { file ->
+				if (file.name.endsWith(".json")) {
+					file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
+					logger.info("Minified: {}", file)
+				}
+			}
+		}
 	}
 }
 
-private void minifyJsons(String fdir) {
-	for (final def taskName in getGradle().getStartParameter().getTaskNames()) {
-		if (taskName.toLowerCase().contains("rundata")) {
-			return //skip minimization of jsons during any RunData tasks because they will be (re-)generated during this task and should only be minimized for builds anyways
-		}
-	}
+jar {
+	dependsOn(minifyJsonResources)
 
-	print "minmizing jsons..."
-	long startTime = System.nanoTime()
-	for (File file in fileTree(dir: fdir, include: "**/*.json")) {
-		try {
-			file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
-		}
-		catch (Exception e) {
-			throw new Exception("Failed to minimize " + file, e)
-		}
-	}
-	long ms = TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
-	printf "%7s sec, %s ms \n", (int) (ms / 1000), ms % 1000
+	manifest.attributes([
+			'Specification-Title'     : mod_name,
+			'Specification-Vendor'    : mod_vendor,
+			'Specification-Version'   : mod_major_version,
+			'Implementation-Title'    : project.name,
+			'Implementation-Version'  : project.jar.archiveVersion,
+			'Implementation-Vendor'   : mod_vendor,
+			'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+
+			"MixinConfigs"            : "${mod_id}.mixins.json"
+	])
+
+	from { ["CREDITS.md", "LICENSE.txt", "3RD_PARTY_LICENSE.txt"] } //copy files from the repository root into the jar
 }
 
 // Include the output of "generateModMetadata" as an input directory for the build
