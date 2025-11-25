@@ -25,6 +25,7 @@ public class ModParticleSpriteProvider extends ParticleSpriteProvider {
 		addParticle(ModParticleTypes.HOSTILE, "biomancy:hostile");
 		addParticle(ModParticleTypes.BIOHAZARD, "biomancy:biohazard");
 		addParticle(ModParticleTypes.ACID_BUBBLE, "biomancy:acid_bubble");
+		addParticle(ModParticleTypes.ACID_BUBBLE_POP, 5);
 		addParticle(ModParticleTypes.TOXIN_GAS, 8, 1);
 		addParticle(ModParticleTypes.TOXIN_GAS_EXPLOSION, 9, 1);
 		addParticle(ModParticleTypes.DECAY_EXPLOSION, 6, 1);

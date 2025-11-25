@@ -198,16 +198,24 @@ public final class AcidInteractions {
 			int digestionTimer = digestionData.getInt(TIMER_KEY);
 
 			if (level.isClientSide && digestionTimer > 0) {
-				Vec3 pos = itemEntity.position();
 				RandomSource random = level.getRandom();
-				level.addParticle(ModParticleTypes.ACID_BUBBLE.get(), pos.x, pos.y, pos.z, random.nextGaussian() / 100, Math.abs(random.nextGaussian() / 50), random.nextGaussian() / 100);
-				level.addParticle(ParticleTypes.SMOKE, pos.x, pos.y, pos.z, random.nextGaussian() / 100, Math.abs(random.nextGaussian() / 100), random.nextGaussian() / 100);
-				if (random.nextFloat() < 0.4f)
+				Vec3 pos = itemEntity.position();
+				double y = itemEntity.getY(1d) + 0.1d;
+
+				level.addParticle(ModParticleTypes.ACID_BUBBLE.get(), pos.x, y, pos.z, random.nextGaussian() / 100, Math.abs(random.nextGaussian() / 25), random.nextGaussian() / 100);
+
+				if (!itemEntity.isEyeInFluidType(ModFluids.ACID_TYPE.get())) {
+					level.addParticle(ParticleTypes.SMOKE, pos.x, y, pos.z, random.nextGaussian() / 100, Math.abs(random.nextGaussian() / 100), random.nextGaussian() / 100);
+				}
+
+				if (random.nextFloat() < 0.4f) {
 					level.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5f, 2.6f + (random.nextFloat() - random.nextFloat()) * 0.8f, false);
+				}
+
 				return;
 			}
 
-			@Nullable ResourceLocation lastRecipeId = ResourceLocation.tryParse(digestionData.getString(RECIPE_KEY));
+			ResourceLocation lastRecipeId = ResourceLocation.tryParse(digestionData.getString(RECIPE_KEY));
 			Optional<Pair<ResourceLocation, DigestingRecipe>> optionalRecipe = DigesterBlockEntity.RECIPE_TYPE.get().getBestRecipeForIngredient(level, itemStack, lastRecipeId);
 
 			if (optionalRecipe.isEmpty()) return;

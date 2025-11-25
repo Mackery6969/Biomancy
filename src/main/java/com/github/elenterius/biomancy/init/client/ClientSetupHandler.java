@@ -41,6 +41,7 @@ import com.github.elenterius.biomancy.tooltip.HrTooltipComponent;
 import com.github.elenterius.biomancy.tooltip.StorageSacTooltipComponent;
 import com.github.elenterius.biomancy.util.TransliterationUtil;
 import net.minecraft.client.particle.AttackSweepParticle;
+import net.minecraft.client.particle.BubblePopParticle;
 import net.minecraft.client.particle.HugeExplosionParticle;
 import net.minecraft.client.particle.PlayerCloudParticle;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -152,6 +153,7 @@ public final class ClientSetupHandler {
 		event.registerSpriteSet(ModParticleTypes.HOSTILE.get(), CustomGlowParticle.GenericProvider::new);
 		event.registerSpriteSet(ModParticleTypes.BIOHAZARD.get(), sprites -> new CustomGlowParticle.TwoColorProvider(sprites, 0xab274f, 0x7e2a43));
 		event.registerSpriteSet(ModParticleTypes.ACID_BUBBLE.get(), ParticleProviders.AcidBubbleProvider::new);
+		event.registerSpriteSet(ModParticleTypes.ACID_BUBBLE_POP.get(), BubblePopParticle.Provider::new);
 		event.registerSpriteSet(ModParticleTypes.TOXIN_GAS.get(), PlayerCloudParticle.Provider::new);
 		registerSimpleExplosionEmitter(event, ModParticleTypes.TOXIN_GAS_EXPLOSION_EMITTER, ModParticleTypes.TOXIN_GAS_EXPLOSION);
 		registerSimpleExplosionEmitter(event, ModParticleTypes.DECAY_EXPLOSION_EMITTER, ModParticleTypes.DECAY_EXPLOSION);

@@ -2,11 +2,14 @@ package com.github.elenterius.biomancy.block;
 
 import com.github.elenterius.biomancy.init.AcidInteractions;
 import com.github.elenterius.biomancy.init.ModBlocks;
+import com.github.elenterius.biomancy.init.ModParticleTypes;
 import com.github.elenterius.biomancy.util.EnhancedIntegerProperty;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -28,9 +31,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class AcidSplatterBlock extends MultifaceBlock {
 
@@ -245,5 +246,50 @@ public class AcidSplatterBlock extends MultifaceBlock {
 		}
 	}
 
+	@Override
+	public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+		if (random.nextInt(5) != 0) return;
+
+		List<Direction> availableFaces = new ArrayList<>();
+		for (Direction direction : Direction.values()) {
+			if (direction != Direction.UP && hasFace(state, direction)) {
+				availableFaces.add(direction);
+			}
+		}
+
+		if (!availableFaces.isEmpty()) {
+			int index = availableFaces.size() == 1 ? 0 : random.nextIntBetweenInclusive(0, availableFaces.size() - 1);
+			Direction face = availableFaces.get(index);
+			Vec3i normal = face.getNormal();
+
+			double x = pos.getX() + 0.5d;
+			double y = pos.getY() + 0.5d;
+			double z = pos.getZ() + 0.5d;
+
+			double u = (random.nextDouble() - random.nextDouble()) * ((normal.getX() * normal.getX() - 1d) * -1d);
+			double v = (random.nextDouble() - random.nextDouble()) * ((normal.getY() * normal.getY() - 1d) * -1d);
+			double w = (random.nextDouble() - random.nextDouble()) * ((normal.getZ() * normal.getZ() - 1d) * -1d);
+
+			if (random.nextBoolean()) {
+				level.addParticle(
+						ParticleTypes.SMOKE,
+						x + normal.getX() * 0.45d + u * 0.5d,
+						y + normal.getY() * 0.45d + v * 0.5d,
+						z + normal.getZ() * 0.45d + w * 0.5d,
+						0d, 0d, 0d
+				);
+				if (random.nextFloat() < 0.4f) {
+					level.playLocalSound(x, y, z, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5f, 2.6f + (random.nextFloat() - random.nextFloat()) * 0.8f, false);
+				}
+			}
+			else level.addParticle(
+					ModParticleTypes.ACID_BUBBLE.get(),
+					x + normal.getX() * 0.45d + u * 0.5d,
+					y + normal.getY() * 0.45d + v * 0.5d,
+					z + normal.getZ() * 0.45d + w * 0.5d,
+					0d, 0.025d, 0d
+			);
+		}
+	}
 
 }
