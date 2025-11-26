@@ -1,3 +1,10 @@
+## [9.2.1-alpha.0](https://github.com/Elenterius/Biomancy/compare/1.20.1-v2.9.2.0-alpha.0...1.20.1-v2.9.2.1-alpha.0) (2025-11-26)
+
+
+### Bug Fixes
+
+* **gradle:** fix mod jar name causing forge to crash on startup ([693e9dc](https://github.com/Elenterius/Biomancy/commit/693e9dcb9a0ac5b929b63b5c390a38deb6bab883))
+
 ## [9.2.0-alpha.0](https://github.com/Elenterius/Biomancy/compare/1.20.1-v2.9.1.0-alpha.0...1.20.1-v2.9.2.0-alpha.0) (2025-11-26)
 
 
@@ -25,11 +32,4 @@
 * fix max hopper failing to properly rotating when placed via structures/schematics with suppressed block updates ([ef3d79d](https://github.com/Elenterius/Biomancy/commit/ef3d79dfa70a160dc0140a544736a3bc9daecc7e)), closes [#187](https://github.com/Elenterius/Biomancy/issues/187)
 * fix stackoverflow issue that occurs with flesh plunderer when Overgeard or IguanaTweaks mod is present ([7b8e940](https://github.com/Elenterius/Biomancy/commit/7b8e94072a67fec362bcdfc232998a5200133cea)), closes [#189](https://github.com/Elenterius/Biomancy/issues/189) [#182](https://github.com/Elenterius/Biomancy/issues/182)
 * prevent error when the storage sac has an invalid lootable id ([db45e14](https://github.com/Elenterius/Biomancy/commit/db45e14998db581a0760e006a66ddac7541cc4ff))
-
-## [9.1.0-alpha.0](https://github.com/Elenterius/Biomancy/compare/1.20.1-v2.9.0.1-alpha.0...1.20.1-v2.9.1.0-alpha.0) (2025-10-31)
-
-
-### Features
-
-* update Chinese Simplified translation ([9c25045](https://github.com/Elenterius/Biomancy/commit/9c250452d5cd68f27be6d40367973cdf75e5e8c1))
 
