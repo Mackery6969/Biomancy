@@ -3,14 +3,13 @@ package com.github.elenterius.biomancy.util;
 import com.github.elenterius.biomancy.init.ModDamageSources;
 import com.github.elenterius.biomancy.init.ModParticleTypes;
 import com.github.elenterius.biomancy.init.tags.ModBlockTags;
+import com.github.elenterius.biomancy.network.ModNetworkHandler;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.protocol.game.ClientboundExplodePacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -31,6 +30,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 import org.jspecify.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
 public class ExplosionUtil {
@@ -80,18 +80,18 @@ public class ExplosionUtil {
 	};
 
 	public static void explodeDecay(Level level, @Nullable Entity source, double x, double y, double z, float radius, Level.ExplosionInteraction explosionInteraction) {
-		explode(level, source, ModDamageSources.decay(level, source, getIndirectSourceEntity(source)), DECAY_DAMAGE_CALCULATOR, x, y, z, radius, false, explosionInteraction, true, DecayExplosion::new);
+		explode(ExplosionType.DECAY, level, source, ModDamageSources.decay(level, source, getIndirectSourceEntity(source)), DECAY_DAMAGE_CALCULATOR, x, y, z, radius, false, explosionInteraction, true);
 	}
 
 	public static void explodeIncendiary(Level level, Entity source, float radius, Level.ExplosionInteraction explosionInteraction) {
-		explode(level, source, ModDamageSources.incendiary(level, source, getIndirectSourceEntity(source)), INCENDIARY_DAMAGE_CALCULATOR, source.getX(), source.getY(), source.getZ(), radius, true, explosionInteraction, true, IncendiaryExplosion::new);
+		explode(ExplosionType.VOLATILE, level, source, ModDamageSources.incendiary(level, source, getIndirectSourceEntity(source)), INCENDIARY_DAMAGE_CALCULATOR, source.getX(), source.getY(), source.getZ(), radius, true, explosionInteraction, true);
 	}
 
 	public static void explodeIncendiary(Level level, @Nullable Entity source, double x, double y, double z, float radius, Level.ExplosionInteraction explosionInteraction) {
-		explode(level, source, ModDamageSources.incendiary(level, source, getIndirectSourceEntity(source)), INCENDIARY_DAMAGE_CALCULATOR, x, y, z, radius, true, explosionInteraction, true, IncendiaryExplosion::new);
+		explode(ExplosionType.VOLATILE, level, source, ModDamageSources.incendiary(level, source, getIndirectSourceEntity(source)), INCENDIARY_DAMAGE_CALCULATOR, x, y, z, radius, true, explosionInteraction, true);
 	}
 
-	public static <T extends Explosion> void explode(Level level, @Nullable Entity source, @Nullable DamageSource damageSource, @Nullable ExplosionDamageCalculator damageCalculator, double x, double y, double z, float radius, boolean fire, Level.ExplosionInteraction explosionInteraction, boolean spawnParticles, ExplosionFactory<T> factory) {
+	public static void explode(ExplosionType explosionType, Level level, @Nullable Entity source, @Nullable DamageSource damageSource, @Nullable ExplosionDamageCalculator damageCalculator, double x, double y, double z, float radius, boolean fire, Level.ExplosionInteraction explosionInteraction, boolean spawnParticles) {
 		Explosion.BlockInteraction blockInteraction = switch (explosionInteraction) {
 			case NONE -> Explosion.BlockInteraction.KEEP;
 			case BLOCK -> getDestroyType(level, GameRules.RULE_BLOCK_EXPLOSION_DROP_DECAY);
@@ -99,7 +99,7 @@ public class ExplosionUtil {
 			case TNT -> getDestroyType(level, GameRules.RULE_TNT_EXPLOSION_DROP_DECAY);
 		};
 
-		T explosion = factory.create(level, source, damageSource, damageCalculator, x, y, z, radius, fire, blockInteraction);
+		Explosion explosion = explosionType.serverFactory.create(level, source, damageSource, damageCalculator, x, y, z, radius, fire, blockInteraction);
 
 		if (ForgeEventFactory.onExplosionStart(level, explosion)) return;
 
@@ -107,19 +107,7 @@ public class ExplosionUtil {
 		explosion.finalizeExplosion(spawnParticles);
 
 		if (level instanceof ServerLevel serverLevel) {
-			sendToClients(serverLevel, x, y, z, radius, explosion);
-		}
-	}
-
-	private static void sendToClients(ServerLevel level, double x, double y, double z, float radius, Explosion explosion) {
-		if (!explosion.interactsWithBlocks()) {
-			explosion.clearToBlow();
-		}
-
-		for (ServerPlayer player : level.players()) {
-			if (player.distanceToSqr(x, y, z) < 64d * 64d) {
-				player.connection.send(new ClientboundExplodePacket(x, y, z, radius, explosion.getToBlow(), explosion.getHitPlayers().get(player)));
-			}
+			ModNetworkHandler.sendCustomExplosionToClients(serverLevel, explosionType, explosion);
 		}
 	}
 
@@ -143,11 +131,12 @@ public class ExplosionUtil {
 		return null;
 	}
 
-	public interface ExplosionFactory<T extends Explosion> {
-		T create(Level level, @Nullable Entity source, @Nullable DamageSource damageSource, @Nullable ExplosionDamageCalculator damageCalculator, double x, double y, double z, float radius, boolean fire, Explosion.BlockInteraction interaction);
-	}
-
 	public static class IncendiaryExplosion extends Explosion {
+
+		public IncendiaryExplosion(Level level, @Nullable Entity source, double x, double y, double z, float radius, List<BlockPos> positions) {
+			this(level, source, null, null, x, y, z, radius, false, Explosion.BlockInteraction.DESTROY_WITH_DECAY);
+			toBlow.addAll(positions);
+		}
 
 		public IncendiaryExplosion(Level level, @Nullable Entity source, @Nullable DamageSource damageSource, @Nullable ExplosionDamageCalculator damageCalculator, double x, double y, double z, float radius, boolean ignoredFire, BlockInteraction interaction) {
 			super(level, source, damageSource, damageCalculator, x, y, z, radius, true, interaction); //fire is always true
@@ -184,32 +173,30 @@ public class ExplosionUtil {
 			Util.shuffle(toBlow, level.random);
 
 			for (BlockPos pos : toBlow) {
-				BlockState blockstate = level.getBlockState(pos);
+				BlockState state = level.getBlockState(pos);
 
-				if (blockstate.is(Blocks.MAGMA_BLOCK)) {
+				if (state.is(Blocks.MAGMA_BLOCK)) {
 					level.setBlock(pos, Blocks.LAVA.defaultBlockState(), Block.UPDATE_ALL);
 				}
-				else if (!blockstate.isAir()) {
+				else if (!state.isAir()) {
 					level.getProfiler().push("explosion_blocks");
 
-					if (blockstate.canDropFromExplosion(level, pos, this)) {
-						if (level instanceof ServerLevel serverlevel) {
-							LootParams.Builder lootParams = new LootParams.Builder(serverlevel)
-									.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
-									.withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
-									.withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockstate.hasBlockEntity() ? level.getBlockEntity(pos) : null)
-									.withOptionalParameter(LootContextParams.THIS_ENTITY, source);
+					if (level instanceof ServerLevel serverlevel && state.canDropFromExplosion(level, pos, this)) {
+						LootParams.Builder lootParams = new LootParams.Builder(serverlevel)
+								.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
+								.withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
+								.withOptionalParameter(LootContextParams.BLOCK_ENTITY, state.hasBlockEntity() ? level.getBlockEntity(pos) : null)
+								.withOptionalParameter(LootContextParams.THIS_ENTITY, source);
 
-							if (blockInteraction == BlockInteraction.DESTROY_WITH_DECAY) {
-								lootParams.withParameter(LootContextParams.EXPLOSION_RADIUS, radius);
-							}
-
-							blockstate.spawnAfterBreak(serverlevel, pos, ItemStack.EMPTY, isPlayerSource);
-							blockstate.getDrops(lootParams).forEach(stack -> addBlockDrops(drops, stack, pos.immutable()));
+						if (blockInteraction == BlockInteraction.DESTROY_WITH_DECAY) {
+							lootParams.withParameter(LootContextParams.EXPLOSION_RADIUS, radius);
 						}
+
+						state.spawnAfterBreak(serverlevel, pos, ItemStack.EMPTY, isPlayerSource);
+						state.getDrops(lootParams).forEach(stack -> addBlockDrops(drops, stack, pos.immutable()));
 					}
 
-					blockstate.onBlockExploded(level, pos, this);
+					state.onBlockExploded(level, pos, this);
 					level.getProfiler().pop();
 				}
 			}
@@ -238,6 +225,11 @@ public class ExplosionUtil {
 	}
 
 	public static class DecayExplosion extends Explosion {
+
+		public DecayExplosion(Level level, @Nullable Entity source, double x, double y, double z, float radius, List<BlockPos> positions) {
+			this(level, source, null, null, x, y, z, radius, false, Explosion.BlockInteraction.DESTROY_WITH_DECAY);
+			toBlow.addAll(positions);
+		}
 
 		public DecayExplosion(Level level, @Nullable Entity source, @Nullable DamageSource damageSource, @Nullable ExplosionDamageCalculator damageCalculator, double x, double y, double z, float radius, boolean ignoredFire, BlockInteraction interaction) {
 			super(level, source, damageSource, damageCalculator, x, y, z, radius, false, interaction); //fire is always false
@@ -272,29 +264,27 @@ public class ExplosionUtil {
 			Util.shuffle(toBlow, level.random);
 
 			for (BlockPos pos : toBlow) {
-				BlockState blockstate = level.getBlockState(pos);
+				BlockState state = level.getBlockState(pos);
 
-				if (!blockstate.isAir()) {
+				if (!state.isAir()) {
 					level.getProfiler().push("explosion_blocks");
 
-					if (blockstate.canDropFromExplosion(level, pos, this)) {
-						if (level instanceof ServerLevel serverlevel) {
-							LootParams.Builder lootParams = new LootParams.Builder(serverlevel)
-									.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
-									.withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
-									.withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockstate.hasBlockEntity() ? level.getBlockEntity(pos) : null)
-									.withOptionalParameter(LootContextParams.THIS_ENTITY, source);
+					if (level instanceof ServerLevel serverlevel && state.canDropFromExplosion(level, pos, this)) {
+						LootParams.Builder lootParams = new LootParams.Builder(serverlevel)
+								.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
+								.withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
+								.withOptionalParameter(LootContextParams.BLOCK_ENTITY, state.hasBlockEntity() ? level.getBlockEntity(pos) : null)
+								.withOptionalParameter(LootContextParams.THIS_ENTITY, source);
 
-							if (blockInteraction == BlockInteraction.DESTROY_WITH_DECAY) {
-								lootParams.withParameter(LootContextParams.EXPLOSION_RADIUS, radius);
-							}
-
-							blockstate.spawnAfterBreak(serverlevel, pos, ItemStack.EMPTY, isPlayerSource);
-							blockstate.getDrops(lootParams).forEach(stack -> addBlockDrops(drops, stack, pos.immutable()));
+						if (blockInteraction == BlockInteraction.DESTROY_WITH_DECAY) {
+							lootParams.withParameter(LootContextParams.EXPLOSION_RADIUS, radius);
 						}
+
+						state.spawnAfterBreak(serverlevel, pos, ItemStack.EMPTY, isPlayerSource);
+						state.getDrops(lootParams).forEach(stack -> addBlockDrops(drops, stack, pos.immutable()));
 					}
 
-					blockstate.onBlockExploded(level, pos, this);
+					state.onBlockExploded(level, pos, this);
 					level.getProfiler().pop();
 				}
 			}
@@ -304,6 +294,37 @@ public class ExplosionUtil {
 			}
 		}
 
+	}
+
+	public enum ExplosionType {
+		VANILLA(Explosion::new, Explosion::new),
+		DECAY(DecayExplosion::new, DecayExplosion::new),
+		VOLATILE(IncendiaryExplosion::new, IncendiaryExplosion::new);
+
+		public final ServerExplosionFactory<? extends Explosion> serverFactory;
+		public final ClientExplosionFactory<? extends Explosion> clientFactory;
+
+		<T extends Explosion> ExplosionType(ServerExplosionFactory<T> serverFactory, ClientExplosionFactory<T> clientFactory) {
+			this.clientFactory = clientFactory;
+			this.serverFactory = serverFactory;
+		}
+
+		public byte id() {
+			return (byte) ordinal();
+		}
+
+		public static ExplosionType fromId(byte id) {
+			if (id < 0 || id >= values().length) return VANILLA;
+			return values()[id];
+		}
+	}
+
+	public interface ServerExplosionFactory<T extends Explosion> {
+		T create(Level level, @Nullable Entity source, @Nullable DamageSource damageSource, @Nullable ExplosionDamageCalculator damageCalculator, double x, double y, double z, float radius, boolean fire, Explosion.BlockInteraction interaction);
+	}
+
+	public interface ClientExplosionFactory<T extends Explosion> {
+		T create(Level level, @Nullable Entity source, double toBlowX, double toBlowY, double toBlowZ, float radius, List<BlockPos> positions);
 	}
 
 }

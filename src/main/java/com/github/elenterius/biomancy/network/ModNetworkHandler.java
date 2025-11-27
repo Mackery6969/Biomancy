@@ -2,10 +2,14 @@ package com.github.elenterius.biomancy.network;
 
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.crafting.recipe.BioForgingRecipe;
+import com.github.elenterius.biomancy.mixin.accessor.ExplosionAccessor;
+import com.github.elenterius.biomancy.util.ExplosionUtil;
 import com.github.elenterius.biomancy.util.ItemStackFilterList;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.level.Explosion;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
@@ -41,11 +45,27 @@ public final class ModNetworkHandler {
 		SIMPLE_NETWORK_CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new BioLabFilterMessage(containerId, filters));
 	}
 
+	public static void sendCustomExplosionToClients(ServerLevel level, ExplosionUtil.ExplosionType explosionType, Explosion explosion) {
+		if (!explosion.interactsWithBlocks()) {
+			explosion.clearToBlow();
+		}
+
+		double radius = Math.min(((ExplosionAccessor) explosion).getRadius() + 64d, 64d + 32d);
+		double radiusSqr = radius * radius;
+
+		for (ServerPlayer player : level.players()) {
+			if (player.distanceToSqr(explosion.getPosition()) < radiusSqr) {
+				SIMPLE_NETWORK_CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new CustomExplosionMessage(explosionType, explosion, player));
+			}
+		}
+	}
+
 	public static void register() {
 		int id = -1;
 		SIMPLE_NETWORK_CHANNEL.registerMessage(++id, KeyPressMessage.class, KeyPressMessage::encode, KeyPressMessage::decode, KeyPressMessage::handle);
 		SIMPLE_NETWORK_CHANNEL.registerMessage(++id, BioForgeRecipeMessage.class, BioForgeRecipeMessage::encode, BioForgeRecipeMessage::decode, BioForgeRecipeMessage::handle);
 		SIMPLE_NETWORK_CHANNEL.registerMessage(++id, BioLabFilterMessage.class, BioLabFilterMessage::encode, BioLabFilterMessage::decode, BioLabFilterMessage::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+		SIMPLE_NETWORK_CHANNEL.registerMessage(++id, CustomExplosionMessage.class, CustomExplosionMessage::encode, CustomExplosionMessage::decode, CustomExplosionMessage::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 	}
 
 }
