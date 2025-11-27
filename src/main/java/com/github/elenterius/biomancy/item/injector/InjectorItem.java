@@ -470,7 +470,9 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 				CompoundTag serumData = getSerumData(stack);
 				short amount = tag.getCompound(INVENTORY_TAG).getShort(LargeSingleItemStackHandler.ITEM_AMOUNT_TAG);
 				tooltip.add(ComponentUtil.literal(String.format("%dx ", amount)).append(serum.getDisplayName(serumData)).withStyle(ChatFormatting.GRAY));
-				serum.appendTooltip(serumData, level, tooltip, isAdvanced);
+				if (ClientTextUtil.showExtraInfo(tooltip)) {
+					serum.appendTooltip(serumData, level, tooltip, isAdvanced);
+				}
 				tooltip.add(ComponentUtil.EMPTY_LINE);
 			}
 		}

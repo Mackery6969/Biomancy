@@ -13,7 +13,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
@@ -67,9 +66,8 @@ public class PotionSerumItem extends Item implements SerumContainer, ItemTooltip
 
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-		//		tooltip.addAll(ClientTextUtil.getItemInfoTooltip(stack));
-		//		getSerum(stack).appendTooltip(getSerumData(stack), level, tooltip, flag);
-		PotionUtils.addPotionTooltip(PotionSerum.getAllEffects(getSerumData(stack)), tooltip, 1f);
+		//tooltip.addAll(ClientTextUtil.getItemInfoTooltip(stack));
+		getSerum(stack).appendTooltip(getSerumData(stack), level, tooltip, flag);
 	}
 
 	@Override

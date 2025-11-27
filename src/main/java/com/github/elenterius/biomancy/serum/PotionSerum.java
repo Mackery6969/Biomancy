@@ -1,7 +1,6 @@
 package com.github.elenterius.biomancy.serum;
 
 import com.github.elenterius.biomancy.api.serum.Serum;
-import com.github.elenterius.biomancy.client.util.ClientTextUtil;
 import com.github.elenterius.biomancy.init.ModSerums;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -102,9 +101,7 @@ public class PotionSerum implements Serum {
 	}
 
 	public void appendTooltip(CompoundTag tag, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-		if (ClientTextUtil.showExtraInfo(tooltip)) {
-			PotionUtils.addPotionTooltip(getAllEffects(tag), tooltip, 1f);
-		}
+		PotionUtils.addPotionTooltip(getAllEffects(tag), tooltip, 1f);
 	}
 
 	@Override

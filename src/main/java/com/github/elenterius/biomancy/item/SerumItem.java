@@ -34,7 +34,9 @@ public class SerumItem extends Item implements SerumContainer, ItemTooltipStyleP
 
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
-		tooltip.addAll(ClientTextUtil.getItemInfoTooltip(stack));
+		if (ClientTextUtil.showItemInfo(tooltip)) {
+			getSerum(stack).appendTooltip(Serum.getDataTag(stack), level, tooltip, isAdvanced);
+		}
 	}
 
 	@Override

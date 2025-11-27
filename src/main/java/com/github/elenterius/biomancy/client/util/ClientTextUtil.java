@@ -48,6 +48,12 @@ public final class ClientTextUtil {
 		return List.of(holdButtonTo(CTRL_KEY_TEXT.plainCopy(), SHOW_INFO).withStyle(TextStyles.LORE));
 	}
 
+	public static boolean showItemInfo(List<Component> tooltip) {
+		boolean flag = Screen.hasControlDown();
+		if (!flag) tooltip.add(holdButtonTo(CTRL_KEY_TEXT.plainCopy(), SHOW_INFO).withStyle(TextStyles.LORE));
+		return flag;
+	}
+
 	public static boolean showExtraInfo(List<Component> tooltip) {
 		boolean flag = Screen.hasAltDown();
 		if (!flag) tooltip.add(holdButtonTo(ALT_KEY_TEXT.plainCopy(), SHOW_INFO).withStyle(TextStyles.LORE));

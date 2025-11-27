@@ -1,6 +1,5 @@
 package com.github.elenterius.biomancy.serum;
 
-import com.github.elenterius.biomancy.client.util.ClientTextUtil;
 import com.github.elenterius.biomancy.entity.mob.ai.goal.FrenzyAttackableTargetGoal;
 import com.github.elenterius.biomancy.entity.mob.ai.goal.FrenzyMeleeAttackGoal;
 import com.github.elenterius.biomancy.init.ModMobEffects;
@@ -64,22 +63,20 @@ public class FrenzySerum extends BasicSerum {
 
 	@Override
 	public void appendTooltip(CompoundTag tag, @Nullable Level level, List<Component> tooltip, TooltipFlag flagIn) {
-		if (ClientTextUtil.showExtraInfo(tooltip)) {
-			tooltip.add(ComponentUtil.translatable(getDescriptionTranslationKey()).withStyle(TextStyles.LORE));
-		}
-
+		tooltip.add(ComponentUtil.translatable(getDescriptionTranslationKey()).withStyle(TextStyles.LORE));
+		tooltip.add(ComponentUtil.EMPTY_LINE);
 		addEffectToClientTooltip(tooltip, ModMobEffects.FRENZY.get(), 0, DEFAULT_DURATION_TICKS);
 	}
 
-	public void addEffectToClientTooltip(List<Component> tooltips, MobEffect effect, int amplifier, int duration) {
+	public void addEffectToClientTooltip(List<Component> tooltip, MobEffect effect, int amplifier, int duration) {
 		MutableComponent effectText = ComponentUtil.translatable(effect.getDescriptionId());
 		if (amplifier > 0) effectText = ComponentUtil.translatable("potion.withAmplifier", effectText, ComponentUtil.translatable("potion.potency." + amplifier));
 		if (duration > 20) effectText = ComponentUtil.translatable("potion.withDuration", effectText, StringUtil.formatTickDuration(duration));
-		tooltips.add(effectText.withStyle(effect.getCategory().getTooltipFormatting()));
+		tooltip.add(effectText.withStyle(effect.getCategory().getTooltipFormatting()));
 
 		Map<Attribute, AttributeModifier> effectModifiers = effect.getAttributeModifiers();
 		if (!effectModifiers.isEmpty()) {
-			tooltips.add(ComponentUtil.EMPTY_LINE);
+			tooltip.add(ComponentUtil.EMPTY_LINE);
 
 			for (Map.Entry<Attribute, AttributeModifier> entry : effectModifiers.entrySet()) {
 				AttributeModifier modifier = entry.getValue();
@@ -89,11 +86,11 @@ public class FrenzySerum extends BasicSerum {
 
 				MutableComponent attributeText = ComponentUtil.translatable(entry.getKey().getDescriptionId());
 				if (value > 0) {
-					tooltips.add((ComponentUtil.translatable("attribute.modifier.plus." + operation.toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(amount), attributeText)).withStyle(ChatFormatting.BLUE));
+					tooltip.add((ComponentUtil.translatable("attribute.modifier.plus." + operation.toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(amount), attributeText)).withStyle(ChatFormatting.BLUE));
 				}
 				else if (value < 0) {
 					amount = amount * -1d;
-					tooltips.add((ComponentUtil.translatable("attribute.modifier.take." + operation.toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(amount), attributeText)).withStyle(ChatFormatting.RED));
+					tooltip.add((ComponentUtil.translatable("attribute.modifier.take." + operation.toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(amount), attributeText)).withStyle(ChatFormatting.RED));
 				}
 			}
 		}

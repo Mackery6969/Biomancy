@@ -1,7 +1,6 @@
 package com.github.elenterius.biomancy.serum;
 
 import com.github.elenterius.biomancy.BiomancyConfig;
-import com.github.elenterius.biomancy.client.util.ClientTextUtil;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import net.minecraft.nbt.CompoundTag;
@@ -41,9 +40,7 @@ public class AbsorptionSerum extends BasicSerum {
 
 	@Override
 	public void appendTooltip(CompoundTag tag, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-		if (ClientTextUtil.showExtraInfo(tooltip)) {
-			tooltip.add(ComponentUtil.translatable(getDescriptionTranslationKey(), getHearts(), getMaxHearts()).withStyle(TextStyles.LORE));
-		}
+		tooltip.add(ComponentUtil.translatable(getDescriptionTranslationKey(), getHearts(), getMaxHearts()).withStyle(TextStyles.LORE));
 	}
 
 	protected float getHearts() {
