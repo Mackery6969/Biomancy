@@ -9,6 +9,9 @@ public class ServerConfig {
 	public final ForgeConfigSpec.BooleanValue addTradesToWanderingTrader;
 	public final ForgeConfigSpec.EnumValue<PrimalEnergySettings.SupplyAmount> primalEnergySupplyOfCradle;
 
+	public final ForgeConfigSpec.DoubleValue absorptionMaxHearts;
+	public final ForgeConfigSpec.DoubleValue absorptionHearts;
+
 	public final ForgeConfigSpec.DoubleValue pehkuiMaxScale;
 	public final ForgeConfigSpec.DoubleValue pehkuiMinScale;
 	public final ForgeConfigSpec.DoubleValue pehkuiScaleIncrement;
@@ -35,6 +38,15 @@ public class ServerConfig {
 		primalEnergySupplyOfCradle = builder
 				.comment("Determines how much primal energy the Cradle can supply to nearby malignant flesh veins")
 				.defineEnum("primalEnergySupplyOfCradle", PrimalEnergySettings.SupplyAmount.LIMITED);
+		builder.pop();
+
+		builder.push("absorption-serum");
+		absorptionMaxHearts = builder
+				.comment("Maximum number of absorption hearts.")
+				.defineInRange("maxHearts", 10d, 0.5d, 1000d);
+		absorptionHearts = builder
+				.comment("How many absorption hearts to add on each injection.")
+				.defineInRange("heartsIncrement", 2d, 0.5d, 100d);
 		builder.pop();
 
 		builder.push("pehkui-integration");
