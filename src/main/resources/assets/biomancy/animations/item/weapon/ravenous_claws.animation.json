@@ -75,89 +75,6 @@
 				}
 			}
 		},
-		"ravenous_claws.broken": {
-			"loop": true,
-			"bones": {
-				"right_claw": {
-					"rotation": {
-            "vector": [ 0, 22.5, 0 ]
-					},
-					"position": {
-            "vector": [ 1, -0.25, 0.5 ]
-					},
-					"scale": {
-            "vector": [ 0, 0, 0 ]
-					}
-				},
-				"claw_middle": {
-					"position": {
-            "vector": [ 1, 0, 0 ]
-					},
-					"scale": {
-            "vector": [ 0, 0, 0 ]
-					}
-				},
-				"left_side_spike": {
-					"scale": {
-            "vector": [ 0, 0, 0 ]
-					}
-				},
-				"left_angled_spike": {
-					"scale": {
-            "vector": [ 0, 0, 0 ]
-					}
-				},
-				"spike_top": {
-					"scale": {
-            "vector": [ 0, 0, 0 ]
-					}
-				},
-				"right_angled_spike": {
-					"scale": {
-            "vector": [ 0, 0, 0 ]
-					}
-				},
-				"left_claw": {
-					"rotation": {
-            "vector": [ 0, -22.5, 0 ]
-					},
-					"position": {
-            "vector": [ 1, -0.25, -0.5 ]
-					},
-					"scale": {
-            "vector": [ 0, 0, 0 ]
-					}
-				},
-				"right_side_spike": {
-					"scale": {
-            "vector": [ 0, 0, 0 ]
-					}
-				},
-				"eye_closed": {
-					"rotation": {
-            "vector": [ 0, 0, 0 ]
-					},
-					"scale": {
-            "vector": [ 1, 1, 1 ]
-					}
-				},
-				"eye_open": {
-					"scale": {
-            "vector": [ 0, 0, 0 ]
-					}
-				},
-				"right_pad": {
-					"position": {
-            "vector": [ 0.25, 0.25, -1.5 ]
-					}
-				},
-				"left_pad": {
-					"position": {
-            "vector": [ 0.25, 0.25, 1.5 ]
-					}
-				}
-			}
-		},
 		"ravenous_claws.wakeup": {
 			"loop": "hold_on_last_frame",
       "animation_length": 0.4167,
@@ -446,8 +363,13 @@
 						"0.0": {
               "vector": [ 1, 1, 1 ]
 						},
-						"0.0833": {
-              "vector": [ 0.9, 0.9, 1 ]
+            "0.125": {
+              "vector": [ 0.8, 1, 1 ],
+              "easing": "easeInSine"
+            },
+            "0.2083": {
+              "vector": [ 0.9, 1, 1 ],
+              "easing": "easeInSine"
 						}
 					}
 				},
@@ -540,21 +462,6 @@
 						}
 					}
 				},
-				"claw_dormant": {
-					"scale": {
-						"0.0": {
-              "vector": [ 1, 1, 1 ]
-            },
-            "0.125": {
-              "vector": [ 0.8, 1, 1 ],
-              "easing": "easeInSine"
-            },
-            "0.2083": {
-              "vector": [ 0.9, 1, 1 ],
-              "easing": "easeInSine"
-						}
-					}
-				},
 				"eye_closed": {
 					"scale": {
 						"0.0417": {
@@ -619,6 +526,89 @@
 					}
 				}
 			}
+    },
+    "ravenous_claws.broken": {
+      "loop": true,
+      "bones": {
+        "right_claw": {
+          "rotation": {
+            "vector": [ 0, 22.5, 0 ]
+          },
+          "position": {
+            "vector": [ 1, -0.25, 0.5 ]
+          },
+          "scale": {
+            "vector": [ 0, 0, 0 ]
+          }
+        },
+        "claw_middle": {
+          "position": {
+            "vector": [ 1, 0, 0 ]
+          },
+          "scale": {
+            "vector": [ 0, 0, 0 ]
+          }
+        },
+        "left_side_spike": {
+          "scale": {
+            "vector": [ 0, 0, 0 ]
+          }
+        },
+        "left_angled_spike": {
+          "scale": {
+            "vector": [ 0, 0, 0 ]
+          }
+        },
+        "spike_top": {
+          "scale": {
+            "vector": [ 0, 0, 0 ]
+          }
+        },
+        "right_angled_spike": {
+          "scale": {
+            "vector": [ 0, 0, 0 ]
+          }
+        },
+        "left_claw": {
+          "rotation": {
+            "vector": [ 0, -22.5, 0 ]
+          },
+          "position": {
+            "vector": [ 1, -0.25, -0.5 ]
+          },
+          "scale": {
+            "vector": [ 0, 0, 0 ]
+          }
+        },
+        "right_side_spike": {
+          "scale": {
+            "vector": [ 0, 0, 0 ]
+          }
+        },
+        "eye_closed": {
+          "rotation": {
+            "vector": [ 0, 0, 0 ]
+          },
+          "scale": {
+            "vector": [ 1, 1, 1 ]
+          }
+        },
+        "eye_open": {
+          "scale": {
+            "vector": [ 0, 0, 0 ]
+          }
+        },
+        "right_pad": {
+          "position": {
+            "vector": [ 0.25, 0.25, -1.5 ]
+          }
+        },
+        "left_pad": {
+          "position": {
+            "vector": [ 0.25, 0.25, 1.5 ]
+          }
+        }
+      }
 		}
 	},
 	"geckolib_format_version": 2
