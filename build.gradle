@@ -3,6 +3,7 @@ import groovy.json.JsonSlurper
 
 plugins {
 	id 'net.neoforged.moddev.legacyforge'
+	id 'org.moddedmc.wiki.toolkit'
 	id 'java-library'
 	id 'maven-publish'
 	id 'idea'
@@ -325,3 +326,12 @@ idea {
 		downloadJavadoc = true
 	}
 }
+
+wiki {
+	docs {
+		biomancy {
+			root = file('docs')
+		}
+	}
+}
+//TODO: install https://github.com/Sinytra/WikiDataExporter when on minecraft 1.21.1
