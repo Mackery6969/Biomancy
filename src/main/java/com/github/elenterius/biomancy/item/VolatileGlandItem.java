@@ -1,6 +1,8 @@
 package com.github.elenterius.biomancy.item;
 
 import com.github.elenterius.biomancy.init.ModItems;
+import com.github.elenterius.biomancy.init.ModMobEffects;
+import com.github.elenterius.biomancy.util.ExplosionUtil;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
@@ -35,10 +37,16 @@ public class VolatileGlandItem extends SimpleItem {
 	private void explode(Level level, LivingEntity livingEntity) {
 		if (level.isClientSide) return;
 
-		float explosionRadius = 3 - livingEntity.getArmorCoverPercentage() * 1.5f;
-
 		DamageSource damageSource = level.damageSources().explosion(livingEntity, livingEntity);
-		level.explode(null, damageSource, null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), explosionRadius, false, Level.ExplosionInteraction.MOB);
+
+		if (livingEntity.getRandom().nextFloat() < 0.4f) {
+			float explosionRadius = 3f - livingEntity.getArmorCoverPercentage() * 1.5f;
+			//level.explode(null, damageSource, null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), explosionRadius, false, Level.ExplosionInteraction.MOB);
+			ExplosionUtil.explodeIncendiary(level, livingEntity, explosionRadius, Level.ExplosionInteraction.MOB);
+		}
+		else {
+			livingEntity.addEffect(new MobEffectInstance(ModMobEffects.VOLATILE.get(), (60 + 30) * 20));
+		}
 
 		if (!livingEntity.isDeadOrDying()) {
 			livingEntity.hurt(damageSource, 0.5f + livingEntity.getArmorCoverPercentage() * 2.5f); //this might kill the entity

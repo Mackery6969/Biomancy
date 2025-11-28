@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.statuseffect;
 
+import com.github.elenterius.biomancy.util.OneShotTaskWorker;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -21,13 +22,13 @@ public class WithdrawalEffect extends AttackDamageEffect {
 				if (amplifier < 1) {
 					if (livingEntity.getRandom().nextFloat() < 0.7f) {
 						MobEffectInstance effectInstance = new MobEffectInstance(MobEffects.CONFUSION, 20 * livingEntity.getRandom().nextIntBetweenInclusive(3, 5), 0);
-						StatusEffectHandler.modifyOnNextWorldTick(livingEntity, living -> living.addEffect(effectInstance));
+						OneShotTaskWorker.onNextTick(livingEntity, living -> living.addEffect(effectInstance));
 					}
 					player.causeFoodExhaustion(1.5F);
 				}
 				else if (amplifier < 2 || livingEntity.getRandom().nextFloat() < 0.4f) {
 					MobEffectInstance effectInstance = new MobEffectInstance(MobEffects.CONFUSION, 20 * livingEntity.getRandom().nextIntBetweenInclusive(3, 4 + amplifier * 2), 1);
-					StatusEffectHandler.modifyOnNextWorldTick(livingEntity, living -> living.addEffect(effectInstance));
+					OneShotTaskWorker.onNextTick(livingEntity, living -> living.addEffect(effectInstance));
 					player.causeFoodExhaustion(2F * (amplifier + 1f));
 				}
 				else {

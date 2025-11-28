@@ -7,6 +7,7 @@ import com.github.elenterius.biomancy.init.tags.ModMobEffectTags;
 import com.github.elenterius.biomancy.item.armor.AcolyteArmorItem;
 import com.github.elenterius.biomancy.item.armor.LivingArmorItem;
 import com.github.elenterius.biomancy.serum.FrenzySerum;
+import com.github.elenterius.biomancy.util.OneShotTaskWorker;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -15,7 +16,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.WorldWorkerManager;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -23,7 +23,6 @@ import net.minecraftforge.fml.common.Mod;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 @Mod.EventBusSubscriber(modid = BiomancyMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class StatusEffectHandler {
@@ -40,7 +39,7 @@ public final class StatusEffectHandler {
 			}
 
 			if (event.getEntity().hasEffect(ModMobEffects.WITHDRAWAL.get())) {
-				modifyOnNextWorldTick(event.getEntity(), livingEntity -> livingEntity.removeEffect(ModMobEffects.WITHDRAWAL.get()));
+				OneShotTaskWorker.onNextTick(event.getEntity(), livingEntity -> livingEntity.removeEffect(ModMobEffects.WITHDRAWAL.get()));
 			}
 		}
 	}
@@ -151,17 +150,6 @@ public final class StatusEffectHandler {
 		return acidResistProbability <= 0 || target.getRandom().nextInt(100) > acidResistProbability;
 	}
 
-	public static void modifyOnNextWorldTick(LivingEntity livingEntity, Consumer<LivingEntity> modify) {
-		WorldWorkerManager.addWorker(new OneShotTaskWorker() {
-			@Override
-			public void doTask() {
-				if (livingEntity.isAlive()) {
-					modify.accept(livingEntity);
-				}
-			}
-		});
-	}
-
 	public static boolean hasAcidEffect(LivingEntity livingEntity) {
 		for (MobEffect effect : livingEntity.getActiveEffectsMap().keySet()) {
 			if (ModMobEffectTags.forgeIsAcid(effect)) return true;
@@ -179,22 +167,6 @@ public final class StatusEffectHandler {
 
 		livingEntity.addEffect(acidEffect);
 		livingEntity.addEffect(new MobEffectInstance(ModMobEffects.ARMOR_SHRED.get(), (seconds + 3) * 20, 0));
-	}
-
-	private abstract static class OneShotTaskWorker implements WorldWorkerManager.IWorker {
-
-		@Override
-		public boolean hasWork() {
-			return false;
-		}
-
-		@Override
-		public boolean doWork() {
-			doTask();
-			return false;
-		}
-
-		public abstract void doTask();
 	}
 
 }
