@@ -1,46 +1,46 @@
-package com.github.elenterius.biomancy.block;
+package com.github.elenterius.biomancy.block.splatter;
 
-import com.github.elenterius.biomancy.init.AcidInteractions;
-import com.github.elenterius.biomancy.init.ModBlocks;
-import com.github.elenterius.biomancy.init.ModParticleTypes;
 import com.github.elenterius.biomancy.util.EnhancedIntegerProperty;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.DirectionalPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.MultifaceBlock;
+import net.minecraft.world.level.block.MultifaceSpreader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
-public class AcidSplatterBlock extends MultifaceBlock {
+public abstract class SplatterBlock extends MultifaceBlock {
 
 	public static final EnhancedIntegerProperty AGE = EnhancedIntegerProperty.wrap(BlockStateProperties.AGE_3);
 
-	private final MultifaceSpreader spreader = new MultifaceSpreader(this);
+	protected final MultifaceSpreader spreader = new MultifaceSpreader(this);
 
-	public AcidSplatterBlock(Properties properties) {
-		super(properties.randomTicks());
+	protected SplatterBlock(Properties properties) {
+		super(properties.randomTicks().noOcclusion().noCollission().instabreak().replaceable().pushReaction(PushReaction.DESTROY));
 		registerDefaultState(defaultBlockState().setValue(AGE.get(), AGE.getMin()));
 	}
 
@@ -77,65 +77,27 @@ public class AcidSplatterBlock extends MultifaceBlock {
 
 		if (age < AGE.getMax()) {
 			level.setBlock(pos, AGE.setValue(state, age + 1), Block.UPDATE_CLIENTS);
-			affectNeighborBlock(state, level, pos, random);
-
 			return true;
 		}
 
 		level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
-		affectNeighborBlock(state, level, pos, random);
-
 		return false;
-	}
-
-	private void affectNeighborBlock(BlockState state, Level level, BlockPos pos, RandomSource random) {
-		if (random.nextInt(10) != 0) return;
-
-		for (Direction direction : Direction.allShuffled(random)) {
-			if (hasFace(state, direction)) {
-				BlockPos neighborPos = pos.relative(direction);
-				BlockState neighborState = level.getBlockState(neighborPos);
-				Block neighborBlock = neighborState.getBlock();
-				if (corrodeCopper(level, neighborPos, neighborBlock, neighborState) || erodeBlock(level, neighborPos, neighborBlock, neighborState)) {
-					break;
-				}
-			}
-		}
-	}
-
-	protected boolean corrodeCopper(Level level, BlockPos pos, Block block, BlockState blockState) {
-		if (block instanceof WeatheringCopper weatheringCopper && WeatheringCopper.getNext(block).isPresent()) {
-			weatheringCopper.getNext(blockState).ifPresent(state -> level.setBlockAndUpdate(pos, state));
-			level.levelEvent(LevelEvent.LAVA_FIZZ, pos, 0);
-			return true;
-		}
-
-		return false;
-	}
-
-	protected boolean erodeBlock(Level level, BlockPos pos, Block block, BlockState blockState) {
-		if (!AcidInteractions.NORMAL_TO_ERODED_BLOCK_CONVERSION.containsKey(block)) return false;
-
-		SoundType soundType = block.getSoundType(blockState, level, pos, null);
-		level.setBlockAndUpdate(pos, AcidInteractions.NORMAL_TO_ERODED_BLOCK_CONVERSION.get(block));
-		level.playSound(null, pos, soundType.getBreakSound(), SoundSource.BLOCKS, soundType.volume, soundType.pitch);
-		level.levelEvent(LevelEvent.LAVA_FIZZ, pos, 0);
-		return true;
 	}
 
 	@Override
 	public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-		if (entity instanceof LivingEntity livingEntity && livingEntity.tickCount % 5 == 0) {
-			if (!isEntityInsideDamageArea(level, pos, state, entity)) return;
-			AcidInteractions.handleEntityInsideAcid(livingEntity);
+		if (entity.tickCount % 5 == 0 && isEntityInsideBoundingBox(level, pos, state, entity)) {
+			entityInsideBoundingBox(level, pos, state, entity);
 		}
 	}
 
-	protected boolean isEntityInsideDamageArea(Level level, BlockPos pos, BlockState state, Entity entity) {
+	protected boolean isEntityInsideBoundingBox(Level level, BlockPos pos, BlockState state, Entity entity) {
 		VoxelShape blockShape = getShape(state, level, pos, CollisionContext.of(entity)).move(pos.getX(), pos.getY(), pos.getZ());
 		VoxelShape entityShape = Shapes.create(entity.getBoundingBox());
 		return Shapes.joinIsNotEmpty(blockShape, entityShape, BooleanOp.AND);
 	}
+
+	abstract void entityInsideBoundingBox(Level level, BlockPos pos, BlockState state, Entity entity);
 
 	@Override
 	public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
@@ -207,7 +169,7 @@ public class AcidSplatterBlock extends MultifaceBlock {
 		public static Comparator<Voxel> INCREASING_COST_COMPARATOR = Comparator.comparingInt(Voxel::cost);
 	}
 
-	public void propagateAcidSplatters(ServerLevel level, BlockPos startPos, int maxDepth, RandomSource random) {
+	public void propagateSplatters(ServerLevel level, BlockPos startPos, int maxDepth, RandomSource random) {
 		LongSet visited = new LongOpenHashSet();
 		PriorityQueue<Voxel> queue = new PriorityQueue<>(Voxel.INCREASING_COST_COMPARATOR);
 
@@ -233,7 +195,7 @@ public class AcidSplatterBlock extends MultifaceBlock {
 				visited.add(key);
 
 				BlockState state = level.getBlockState(neighborPos);
-				if (state.isAir() || (state.canBeReplaced() && state.getFluidState().isEmpty()) || state.getBlock() == ModBlocks.ACID_SPLATTER.get()) {
+				if (state.isAir() || (state.canBeReplaced() && state.getFluidState().isEmpty()) || state.getBlock() == this) {
 					int cost = depth + voxel.directionCost[direction.get3DDataValue()];
 					queue.add(new Voxel(neighborPos, new Direction[]{direction}, cost, depth, directionCost));
 				}
@@ -243,52 +205,6 @@ public class AcidSplatterBlock extends MultifaceBlock {
 					directionCost[dataValue] *= 2;
 				}
 			}
-		}
-	}
-
-	@Override
-	public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-		if (random.nextInt(5) != 0) return;
-
-		List<Direction> availableFaces = new ArrayList<>();
-		for (Direction direction : Direction.values()) {
-			if (direction != Direction.UP && hasFace(state, direction)) {
-				availableFaces.add(direction);
-			}
-		}
-
-		if (!availableFaces.isEmpty()) {
-			int index = availableFaces.size() == 1 ? 0 : random.nextIntBetweenInclusive(0, availableFaces.size() - 1);
-			Direction face = availableFaces.get(index);
-			Vec3i normal = face.getNormal();
-
-			double x = pos.getX() + 0.5d;
-			double y = pos.getY() + 0.5d;
-			double z = pos.getZ() + 0.5d;
-
-			double u = (random.nextDouble() - random.nextDouble()) * ((normal.getX() * normal.getX() - 1d) * -1d);
-			double v = (random.nextDouble() - random.nextDouble()) * ((normal.getY() * normal.getY() - 1d) * -1d);
-			double w = (random.nextDouble() - random.nextDouble()) * ((normal.getZ() * normal.getZ() - 1d) * -1d);
-
-			if (random.nextBoolean()) {
-				level.addParticle(
-						ParticleTypes.SMOKE,
-						x + normal.getX() * 0.45d + u * 0.5d,
-						y + normal.getY() * 0.45d + v * 0.5d,
-						z + normal.getZ() * 0.45d + w * 0.5d,
-						0d, 0d, 0d
-				);
-				if (random.nextFloat() < 0.4f) {
-					level.playLocalSound(x, y, z, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5f, 2.6f + (random.nextFloat() - random.nextFloat()) * 0.8f, false);
-				}
-			}
-			else level.addParticle(
-					ModParticleTypes.ACID_BUBBLE.get(),
-					x + normal.getX() * 0.45d + u * 0.5d,
-					y + normal.getY() * 0.45d + v * 0.5d,
-					z + normal.getZ() * 0.45d + w * 0.5d,
-					0d, 0.025d, 0d
-			);
 		}
 	}
 

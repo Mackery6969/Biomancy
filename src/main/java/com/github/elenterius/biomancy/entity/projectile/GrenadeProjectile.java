@@ -89,7 +89,7 @@ public class GrenadeProjectile extends ThrowableItemProjectile {
 			}
 			else if (item == ModItems.ACID_GRENADE.get()) {
 				serverLevel.sendParticles(ModParticleTypes.ACID_EXPLOSION_EMITTER.get(), getX(), getY(), getZ(), 1, 0d, 0d, 0d, 2d);
-				ModBlocks.ACID_SPLATTER.get().propagateAcidSplatters(serverLevel, getImpactPos(hitResult), 4, random);
+				ModBlocks.ACID_SPLATTER.get().propagateSplatters(serverLevel, getImpactPos(hitResult), 4, random);
 			}
 			else if (item == ModItems.DECAY_GRENADE.get()) {
 				ExplosionUtil.explodeDecay(serverLevel, this, getX(), getY(), getZ(), 4.5f, Level.ExplosionInteraction.TNT);

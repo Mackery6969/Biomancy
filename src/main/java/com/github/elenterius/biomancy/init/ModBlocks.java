@@ -19,6 +19,7 @@ import com.github.elenterius.biomancy.block.membrane.*;
 import com.github.elenterius.biomancy.block.modularlarynx.ModularLarynxBlock;
 import com.github.elenterius.biomancy.block.orifice.OrificeBlock;
 import com.github.elenterius.biomancy.block.ownable.OwnablePressurePlateBlock;
+import com.github.elenterius.biomancy.block.splatter.AcidSplatterBlock;
 import com.github.elenterius.biomancy.block.storagesac.StorageSacBlock;
 import com.github.elenterius.biomancy.block.tongue.TongueBlock;
 import com.github.elenterius.biomancy.block.veins.FleshVeinsBlock;
@@ -143,6 +144,7 @@ public final class ModBlocks {
 	public static final RegistryObject<LiquidBlock> ACID_FLUID_BLOCK = register("acid_fluid_block", () -> new LiquidBlock(ModFluids.ACID, copyProperties(Blocks.WATER)));
 	public static final RegistryObject<AcidCauldron> ACID_CAULDRON = register("acid_cauldron", () -> new AcidCauldron(copyProperties(Blocks.CAULDRON)));
 	public static final RegistryObject<AcidSplatterBlock> ACID_SPLATTER = register("acid_splatter", () -> new AcidSplatterBlock(createProperties().mapColor(MapColor.COLOR_LIGHT_GREEN).noOcclusion().noCollission().instabreak().replaceable().pushReaction(PushReaction.DESTROY).sound(SoundType.FROGSPAWN)));
+	public static final RegistryObject<AcidSplatterBlock> ACID_SPLATTER = register("acid_splatter", () -> new AcidSplatterBlock(createProperties().mapColor(MapColor.COLOR_LIGHT_GREEN).sound(SoundType.FROGSPAWN)));
 	public static final RegistryObject<WaterGelBlock> WATER_GEL_BLOCK = register("water_gel_block", properties -> new WaterGelBlock(properties.mapColor(MapColor.WATER).strength(0.5f, 100f).speedFactor(0.8f).jumpFactor(1.2f).noOcclusion().sound(ModSoundTypes.GEL_BLOCK).isRedstoneConductor(ModBlocks::neverValid)));
 
 	//## Misc

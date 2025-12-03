@@ -65,7 +65,7 @@ public class ThrownAcidicEgg extends ThrowableItemProjectile {
 	protected void onHitBlock(BlockHitResult hitResult) {
 		super.onHitBlock(hitResult);
 		if (level() instanceof ServerLevel serverLevel && random.nextFloat() < 0.4) {
-			ModBlocks.ACID_SPLATTER.get().propagateAcidSplatters(serverLevel, getImpactPos(hitResult), 0, random);
+			ModBlocks.ACID_SPLATTER.get().propagateSplatters(serverLevel, getImpactPos(hitResult), 0, random);
 		}
 	}
 
