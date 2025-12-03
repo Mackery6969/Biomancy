@@ -161,6 +161,7 @@ public final class ModItems {
 	public static final RegistryObject<SimpleBlockItem> FLESHKIN_PRESSURE_PLATE = registerSimpleBlockItem(ModBlocks.FLESHKIN_PRESSURE_PLATE);
 	public static final RegistryObject<SimpleBlockItem> WATER_GEL_BLOCK = registerSimpleBlockItem(ModBlocks.WATER_GEL_BLOCK);
 	public static final RegistryObject<SimpleBlockItem> ACID_SPLATTER = registerSimpleBlockItem(ModBlocks.ACID_SPLATTER);
+	public static final RegistryObject<SimpleBlockItem> VOLATILE_SPLATTER = registerSimpleBlockItem(ModBlocks.VOLATILE_SPLATTER);
 
 	//public static final RegistryObject<SimpleBlockItem> NEURAL_INTERCEPTOR = registerSimpleBlockItem(ModBlocks.NEURAL_INTERCEPTOR, ModRarities.VERY_RARE);
 	//	public static final RegistryObject<SimpleBlockItem> FLESHKIN_DOOR = registerSimpleBlockItem(ModBlocks.FLESHKIN_DOOR);

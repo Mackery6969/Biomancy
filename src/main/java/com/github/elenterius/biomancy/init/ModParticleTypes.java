@@ -23,6 +23,8 @@ public final class ModParticleTypes {
 	public static final RegistryObject<SimpleParticleType> BIOHAZARD = register("biohazard", false);
 	public static final RegistryObject<SimpleParticleType> ACID_BUBBLE = register("acid_bubble", false);
 	public static final RegistryObject<SimpleParticleType> ACID_BUBBLE_POP = register("acid_bubble_pop", false);
+	public static final RegistryObject<SimpleParticleType> VOLATILE_BUBBLE = register("volatile_bubble", false);
+	public static final RegistryObject<SimpleParticleType> VOLATILE_BUBBLE_POP = register("volatile_bubble_pop", false);
 	public static final RegistryObject<SimpleParticleType> TOXIN_GAS = register("toxin_gas", false);
 	public static final RegistryObject<SimpleParticleType> TOXIN_GAS_EXPLOSION = register("toxin_gas_explosion", false);
 	public static final RegistryObject<SimpleParticleType> TOXIN_GAS_EXPLOSION_EMITTER = register("toxin_gas_explosion_emitter", false);

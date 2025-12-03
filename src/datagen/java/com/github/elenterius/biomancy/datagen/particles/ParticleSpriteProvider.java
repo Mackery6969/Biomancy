@@ -79,6 +79,11 @@ public abstract class ParticleSpriteProvider implements DataProvider {
 
 	public abstract void registerParticles();
 
+	protected <O extends ParticleOptions, T extends ParticleType<O>> void addParticle(final RegistryObject<T> registryObject) {
+		ResourceLocation id = registryObject.getId();
+		addParticle(id, ParticleSprite.create(id));
+	}
+
 	protected <O extends ParticleOptions, T extends ParticleType<O>> void addParticle(final RegistryObject<T> registryObject, String texture) {
 		ResourceLocation id = registryObject.getId();
 		addParticle(id, ParticleSprite.create(texture));

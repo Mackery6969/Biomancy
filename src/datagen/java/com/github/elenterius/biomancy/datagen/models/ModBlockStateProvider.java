@@ -13,6 +13,7 @@ import com.github.elenterius.biomancy.block.ownable.OwnablePressurePlateBlock;
 import com.github.elenterius.biomancy.block.property.DirectionalSlabType;
 import com.github.elenterius.biomancy.block.property.Orientation;
 import com.github.elenterius.biomancy.block.property.UserSensitivity;
+import com.github.elenterius.biomancy.block.splatter.SplatterBlock;
 import com.github.elenterius.biomancy.block.veins.FleshVeinsBlock;
 import com.github.elenterius.biomancy.block.vialholder.VialHolderBlock;
 import com.github.elenterius.biomancy.init.ModBlockProperties;
@@ -177,7 +178,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
 		particleOnly(ModBlocks.ACID_FLUID_BLOCK, BiomancyMod.rl("block/acid_flat"));
 		layeredCauldron(ModBlocks.ACID_CAULDRON);
-		multifaceBlockWithPropertyVariants(ModBlocks.ACID_SPLATTER.get(), AcidSplatterBlock.AGE.get(), String::valueOf);
+		multifaceBlockWithPropertyVariants(ModBlocks.ACID_SPLATTER.get(), SplatterBlock.AGE.get(), String::valueOf);
+		multifaceBlockWithPropertyVariants(ModBlocks.VOLATILE_SPLATTER.get(), SplatterBlock.AGE.get(), String::valueOf);
 
 		existingBlockWithItem(ModBlocks.WATER_GEL_BLOCK);
 	}

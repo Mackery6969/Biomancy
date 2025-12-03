@@ -113,6 +113,7 @@ public class ModItemModelProvider extends ItemModelProvider {
 
 		dynamicBucket(ModItems.ACID_BUCKET.get());
 		flatBlockItem(ModItems.ACID_SPLATTER, "_0");
+		flatBlockItem(ModItems.VOLATILE_SPLATTER, "_0");
 
 		basicItem(ModItems.GELLING_AGENT);
 

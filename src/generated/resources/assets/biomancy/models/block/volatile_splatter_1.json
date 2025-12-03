@@ -1,0 +1,7 @@
+{
+  "parent": "biomancy:block/template/face_plane",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "texture": "biomancy:block/volatile_splatter_1"
+  }
+}

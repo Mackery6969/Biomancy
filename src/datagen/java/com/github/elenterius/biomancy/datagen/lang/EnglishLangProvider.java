@@ -773,6 +773,7 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		addBlock(ModBlocks.ACID_FLUID_BLOCK, "Gastric Acid");
 		addBlock(ModBlocks.ACID_CAULDRON, "Gastric Acid Cauldron");
 		addBlock(ModBlocks.ACID_SPLATTER, "Gastric Acid Splatter");
+		addBlock(ModBlocks.VOLATILE_SPLATTER, "Volatile Splatter");
 		addBlock(ModBlocks.WATER_GEL_BLOCK, "Water Gel", "A hydrating water gel that supplies moisture to mobs and farmland without spilling liquids everywhere.");
 	}
 

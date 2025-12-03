@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.util;
 
+import com.github.elenterius.biomancy.init.ModBlocks;
 import com.github.elenterius.biomancy.init.ModDamageSources;
 import com.github.elenterius.biomancy.init.ModParticleTypes;
 import com.github.elenterius.biomancy.init.tags.ModBlockTags;
@@ -19,7 +20,6 @@ import net.minecraft.world.entity.TraceableEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.*;
-import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -131,14 +131,14 @@ public class ExplosionUtil {
 		return null;
 	}
 
-	public static class IncendiaryExplosion extends Explosion {
+	public static class VolatileExplosion extends Explosion {
 
-		public IncendiaryExplosion(Level level, @Nullable Entity source, double x, double y, double z, float radius, List<BlockPos> positions) {
+		public VolatileExplosion(Level level, @Nullable Entity source, double x, double y, double z, float radius, List<BlockPos> positions) {
 			this(level, source, null, null, x, y, z, radius, false, Explosion.BlockInteraction.DESTROY_WITH_DECAY);
 			toBlow.addAll(positions);
 		}
 
-		public IncendiaryExplosion(Level level, @Nullable Entity source, @Nullable DamageSource damageSource, @Nullable ExplosionDamageCalculator damageCalculator, double x, double y, double z, float radius, boolean ignoredFire, BlockInteraction interaction) {
+		public VolatileExplosion(Level level, @Nullable Entity source, @Nullable DamageSource damageSource, @Nullable ExplosionDamageCalculator damageCalculator, double x, double y, double z, float radius, boolean ignoredFire, BlockInteraction interaction) {
 			super(level, source, damageSource, damageCalculator, x, y, z, radius, true, interaction); //fire is always true
 		}
 
@@ -163,7 +163,7 @@ public class ExplosionUtil {
 				destroyBlocks();
 			}
 
-			placeFire();
+			placeSplatters();
 		}
 
 		protected void destroyBlocks() {
@@ -206,16 +206,19 @@ public class ExplosionUtil {
 			}
 		}
 
-		protected void placeFire() {
-			for (BlockPos pos : toBlow) {
-				if (random.nextInt(3) == 0 && level.getBlockState(pos).isAir()) {
-					for (Direction direction : Direction.values()) {
-						BlockPos neighborPos = pos.relative(direction);
-						BlockState neighborState = level.getBlockState(neighborPos);
-						if (neighborState.isFaceSturdy(level, neighborPos, direction.getOpposite())) {
-							//isFlammable(level, neighborPos, direction.getOpposite())
-							level.setBlockAndUpdate(pos, BaseFireBlock.getState(level, pos));
-							break;
+		protected void placeSplatters() {
+			if (level instanceof ServerLevel serverLevel) {
+				for (BlockPos pos : toBlow) {
+					if (random.nextInt(3) == 0 && level.getBlockState(pos).isAir()) {
+						for (Direction direction : Direction.values()) {
+							BlockPos neighborPos = pos.relative(direction);
+							BlockState neighborState = level.getBlockState(neighborPos);
+							if (neighborState.isFaceSturdy(level, neighborPos, direction.getOpposite())) {
+								//isFlammable(level, neighborPos, direction.getOpposite())
+								//level.setBlockAndUpdate(pos, BaseFireBlock.getState(level, pos));
+								ModBlocks.VOLATILE_SPLATTER.get().spreadSplatter(serverLevel, pos, direction.getOpposite(), random);
+								break;
+							}
 						}
 					}
 				}
@@ -299,7 +302,7 @@ public class ExplosionUtil {
 	public enum ExplosionType {
 		VANILLA(Explosion::new, Explosion::new),
 		DECAY(DecayExplosion::new, DecayExplosion::new),
-		VOLATILE(IncendiaryExplosion::new, IncendiaryExplosion::new);
+		VOLATILE(VolatileExplosion::new, VolatileExplosion::new);
 
 		public final ServerExplosionFactory<? extends Explosion> serverFactory;
 		public final ClientExplosionFactory<? extends Explosion> clientFactory;
