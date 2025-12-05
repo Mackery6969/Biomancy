@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.client.render.item.injector;
 
+import com.github.elenterius.biomancy.client.render.item.GeoItemWithArmRenderer;
 import com.github.elenterius.biomancy.item.injector.InjectorItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -10,11 +11,9 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.renderer.GeoItemRenderer;
 
-public class InjectorRenderer extends GeoItemRenderer<InjectorItem> {
+public class InjectorRenderer extends GeoItemWithArmRenderer<InjectorItem> {
 
-	private ItemDisplayContext currentTransformType;
 	private int serumColor = -1;
 
 	public InjectorRenderer() {
@@ -23,7 +22,6 @@ public class InjectorRenderer extends GeoItemRenderer<InjectorItem> {
 
 	@Override
 	public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-		currentTransformType = displayContext;
 		super.renderByItem(stack, displayContext, poseStack, buffer, packedLight, packedOverlay);
 	}
 
@@ -49,17 +47,6 @@ public class InjectorRenderer extends GeoItemRenderer<InjectorItem> {
 		float g = FastColor.ARGB32.green(serumColor) / 255f;
 		float b = FastColor.ARGB32.blue(serumColor) / 255f;
 		super.renderRecursively(poseStack, item, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, r, g, b, alpha);
-	}
-
-	//	@Override
-	//	protected void renderInGui(ItemDisplayContext transformType, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-	//		//don't render in GUI
-	//	}
-
-	@Override
-	public long getInstanceId(InjectorItem item) {
-		if (currentTransformType == ItemDisplayContext.GUI) return -1L; //don't render animation in GUI
-		return super.getInstanceId(animatable);
 	}
 
 }
