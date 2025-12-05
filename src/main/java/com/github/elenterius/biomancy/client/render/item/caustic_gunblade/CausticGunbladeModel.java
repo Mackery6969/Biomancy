@@ -10,9 +10,4 @@ public class CausticGunbladeModel extends DefaultedItemGeoModel<CausticGunbladeI
 		super(BiomancyMod.rl("weapon/caustic_gunblade"));
 	}
 
-	//	@Override
-	//	public RenderType getRenderType(CausticGunbladeItem animatable, ResourceLocation texture) {
-	//		return RenderType.entityCutout(texture);
-	//	}
-
 }
