@@ -150,7 +150,7 @@ public abstract class BaseProjectile extends Projectile implements IEntityAdditi
 	}
 
 	protected void spawnParticle(double x, double y, double z) {
-		level().addParticle(getParticle(), x, y + 0.5d, z, 0, 0, 0);
+		level().addParticle(getParticle(), x, y + getBbHeight() * 0.5f, z, 0, 0, 0);
 	}
 
 	protected ParticleOptions getParticle() {

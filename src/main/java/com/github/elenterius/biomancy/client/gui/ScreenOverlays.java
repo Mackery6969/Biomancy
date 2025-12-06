@@ -13,7 +13,6 @@ import com.github.elenterius.biomancy.item.ItemCharge;
 import com.github.elenterius.biomancy.item.KnowledgeReader;
 import com.github.elenterius.biomancy.item.injector.InjectorItem;
 import com.github.elenterius.biomancy.item.weapon.gun.Gun;
-import com.github.elenterius.biomancy.item.weapon.gun.GunProperties;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -290,14 +289,25 @@ public final class ScreenOverlays {
 		else {
 			long elapsedTimeFromShot = player.clientLevel.getGameTime() - gun.getShootTimestamp(stack);
 
-			if (gun.getShootBehavior() != GunProperties.ShootBehavior.INSTANT) {
-				int delayBetweenShots = Math.max(gun.getDelayBetweenShots(stack), 1);
-				int ticksUsingItem = player.getTicksUsingItem();
-				if (ticksUsingItem >= 0) {
-					float pct = ticksUsingItem / (float) delayBetweenShots;
-					float chargeProgress = Mth.clamp(pct - Mth.floor(pct), 0f, 1f);
-					GuiRenderUtil.drawSquareProgressBar(guiGraphics, screenWidth / 2, screenHeight / 2, zDepth, 10, chargeProgress);
+			switch (gun.getShootBehavior()) {
+				case ON_FULL_CHARGE -> {
+					int delayBetweenShots = Math.max(gun.getDelayBetweenShots(stack), 1);
+					int ticksUsingItem = player.getTicksUsingItem();
+					if (ticksUsingItem >= 0) {
+						float pct = ticksUsingItem / (float) delayBetweenShots;
+						float chargeProgress = Mth.clamp(pct - Mth.floor(pct), 0f, 1f);
+						GuiRenderUtil.drawSquareProgressBar(guiGraphics, screenWidth / 2, screenHeight / 2, zDepth, 10, chargeProgress);
+					}
 				}
+				case ON_RELEASE_INSTANT, ON_RELEASE_WITH_FULL_CHARGE -> {
+					if (player.isUsingItem()) {
+						int delayBetweenShots = Math.max(gun.getDelayBetweenShots(stack), 1);
+						float elapsedDuration = (float) stack.getUseDuration() - ((float) player.getUseItemRemainingTicks());
+						float chargePercentage = Mth.clamp(elapsedDuration / delayBetweenShots, 0f, 1f);
+						GuiRenderUtil.drawSquareProgressBar(guiGraphics, screenWidth / 2, screenHeight / 2, zDepth, 10, chargePercentage);
+					}
+				}
+				default -> {}
 			}
 
 			renderAttackIndicator(guiGraphics, screenWidth, screenHeight, zDepth, player, elapsedTimeFromShot, gun.getDelayBetweenShots(stack));

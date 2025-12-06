@@ -159,7 +159,8 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 
 	@Override
 	public float getGravity() {
-		return Math.max(getDeltaMovement().length() <= 0.25d ? 0.05f : 0.001f, getPassengers().size() * 0.02f);
+		double speed = getDeltaMovement().length();
+		return Math.max(speed < 1d ? 0.05f : 0.001f, getPassengers().size() * 0.02f);
 	}
 
 	@Override
@@ -243,8 +244,6 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 		//		}
 
 		/////////////
-
-		System.out.println(level().isClientSide);
 
 		if (!tryToDestroyBlock(blockState, blockPos)) {
 			blockState.onProjectileHit(level(), blockState, result, this);

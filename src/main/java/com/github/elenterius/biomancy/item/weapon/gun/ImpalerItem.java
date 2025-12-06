@@ -24,7 +24,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
@@ -57,6 +56,8 @@ import java.util.function.Consumer;
 
 public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvider, GeoItem {
 
+	public static final float CHARGE_DURATION = 1.79f + 0.17f; //based on animation length of "charging_shot" + "holding_shot"
+
 	protected static final UUID BASE_MOVEMENT_SPEED_UUID = UUID.fromString("efc325ad-c747-4c0e-80c2-f3f0f4261e91");
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
@@ -66,15 +67,15 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 	public ImpalerItem(int maxNutrients, Properties properties) {
 		super(maxNutrients, properties,
 				GunProperties.builder()
-						.shootBehavior(GunProperties.ShootBehavior.ON_FULL_CHARGE)
-						.timeBetweenShots(2 * 20)
-						.maxAmmo(1).reloadDuration(10 * 20).autoReload()
+						.shootBehavior(GunProperties.ShootBehavior.ON_RELEASE_INSTANT)
+						.timeBetweenShots(Mth.ceil(CHARGE_DURATION * 20f))
+						.maxAmmo(1).reloadDuration(3 * 20).autoReload()
 						.build(),
 				ModProjectiles.IMPALER_PROJECTILE);
 
 		ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
 		builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -3.5f, AttributeModifier.Operation.ADDITION));
-		builder.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(BASE_MOVEMENT_SPEED_UUID, "Weapon modifier", -0.25f, AttributeModifier.Operation.MULTIPLY_BASE));
+		builder.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(BASE_MOVEMENT_SPEED_UUID, "Weapon modifier", -0.125f, AttributeModifier.Operation.MULTIPLY_BASE));
 		defaultModifiers = builder.build();
 
 		GeoItem.registerSyncedAnimatable(this);
@@ -126,8 +127,12 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 
 	@Override
 	public void shoot(ServerLevel level, LivingEntity shooter, InteractionHand usedHand, ItemStack projectileWeapon) {
+		float elapsedDuration = (float) projectileWeapon.getUseDuration() - ((float) shooter.getUseItemRemainingTicks());
+		float maxChargeDuration = getDelayBetweenShots(projectileWeapon);
+		float chargePercentage = Mth.clamp(elapsedDuration / maxChargeDuration, 0.1f, 1f);
+
 		boolean success = configuredProjectile.shoot(level, shooter,
-				baseVelocity -> modifyProjectileVelocity(baseVelocity, projectileWeapon),
+				baseVelocity -> modifyProjectileVelocity(baseVelocity * chargePercentage, projectileWeapon),
 				baseDamage -> modifyProjectileDamage(baseDamage, projectileWeapon),
 				baseKnockBack -> modifyProjectileKnockBack(baseKnockBack, projectileWeapon),
 				baseInaccuracy -> modifyProjectileInaccuracy(baseInaccuracy, projectileWeapon),
@@ -149,14 +154,15 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 		boolean isAnchored = shooter.onGround() && shooter.isCrouching();
 		double reduction = isAnchored ? 0.25d : 0.5d;
 
-		float velocity = configuredProjectile.velocity(); //TODO: get final velocity e.g. velocity * chargePercentage
+		float velocity = modifyProjectileVelocity(configuredProjectile.velocity() * chargePercentage, projectileWeapon);
 
 		Vec3 recoil = shooter.getLookAngle().normalize().scale(-1d).scale(velocity * reduction);
 		shooter.push(recoil.x, recoil.y, recoil.z); //sets hasImpulse to true
 		shooter.fallDistance = 0f;
 
-		DamageSource damageSource = level.damageSources().explosion(shooter, shooter);
-		shooter.hurt(damageSource, velocity * 0.5f);
+		// "self" damage
+		//DamageSource damageSource = level.damageSources().explosion(shooter, shooter);
+		//shooter.hurt(damageSource, velocity * 0.5f);
 
 		if (!shooter.hurtMarked && shooter instanceof ServerPlayer serverPlayer) {
 			// Important:
@@ -212,7 +218,7 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 			private static void applyArmTransform(PoseStack poseStack, HumanoidArm arm, float progress, float ticks) {
 				float direction = arm == HumanoidArm.RIGHT ? 1f : -1f;
 				float invProgress = 1f - progress;
-				//				float yOffset = 0.1f * -0.6f;
+				//float yOffset = 0.1f * -0.6f;
 				poseStack.mulPose(Axis.YP.rotationDegrees(10f * invProgress + direction * Mth.cos(ticks * 0.09f) * 1f));
 				poseStack.mulPose(Axis.XP.rotationDegrees(-15f * invProgress + direction * Mth.sin(ticks * 0.067f) * 1f));
 				poseStack.translate(0.56f * direction, -0.52f, -0.72f); //align item to "item holding position of hand" on screen
@@ -236,7 +242,8 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 			public boolean applyForgeHandTransform(PoseStack poseStack, LocalPlayer player, HumanoidArm arm, ItemStack itemInHand, float partialTick, float equipProcess, float swingProcess) {
 				if (player.isUsingItem() && player.getUseItemRemainingTicks() > 0 && isHandPartOfArm(player, arm, player.getUsedItemHand())) {
 					float elapsedDuration = (float) itemInHand.getUseDuration() - ((float) player.getUseItemRemainingTicks() - partialTick + 1f);
-					float aimProgress = elapsedDuration / 2.5f;
+					float maxChargeDuration = getDelayBetweenShots(itemInHand);
+					float aimProgress = elapsedDuration / maxChargeDuration;
 					if (aimProgress > 1f) {
 						aimProgress = 1f;
 					}
@@ -275,9 +282,8 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 		private static final List<TriggerableAnimation> TRIGGERABLE_ANIMATIONS = new ArrayList<>();
 
 		static final TriggerableAnimation SHOOT = register(MAIN_CONTROLLER, "shoot", RawAnimation.begin().thenPlay("barrel_recoil"));
-		static final RawAnimation CHARGE_UP_SHOT = RawAnimation.begin().thenPlay("charging_shot");
-		static final RawAnimation NO_PROJECTILE = RawAnimation.begin().thenPlay("no_projectile");
-		static final RawAnimation GROW_PROJECTILE = RawAnimation.begin().thenPlay("grow_projectile");
+		static final RawAnimation CHARGE_UP_SHOT = RawAnimation.begin().thenPlay("charging_shot").thenPlay("holding_shot");
+		static final RawAnimation DEFAULT_STATE = RawAnimation.begin().thenPlay("default_state");
 
 		private Animations() {}
 
@@ -286,7 +292,7 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 			registerTriggerableAnimations(mainController);
 			controllers.add(mainController);
 
-			controllers.add(new AnimationController<>(animatable, "charge_up", state -> {
+			controllers.add(new AnimationController<>(animatable, "charging", state -> {
 				ImpalerItem impalerItem = state.getAnimatable();
 				ItemStack stack = state.getData(DataTickets.ITEMSTACK);
 
@@ -294,22 +300,7 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 					return state.setAndContinue(CHARGE_UP_SHOT);
 				}
 
-				return PlayState.STOP;
-			}));
-
-			controllers.add(new AnimationController<>(animatable, "projectile", state -> {
-				ImpalerItem impalerItem = state.getAnimatable();
-				ItemStack stack = state.getData(DataTickets.ITEMSTACK);
-
-				if (impalerItem.getGunState(stack) == GunState.RELOADING) {
-					return state.setAndContinue(GROW_PROJECTILE);
-				}
-
-				if (!impalerItem.hasAmmo(stack)) {
-					return state.setAndContinue(NO_PROJECTILE);
-				}
-
-				return PlayState.STOP; //show projectile
+				return state.setAndContinue(DEFAULT_STATE);
 			}));
 		}
 

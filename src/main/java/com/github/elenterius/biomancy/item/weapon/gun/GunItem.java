@@ -179,19 +179,23 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 
 	@Override
 	public void releaseUsing(ItemStack stack, Level level, LivingEntity shooter, int remainingUseDuration) {
+
 		if (level instanceof ServerLevel serverLevel && gunProperties.shootBehavior().isOnRelease()) {
 			int elapsedTime = getUseDuration(stack) - remainingUseDuration;
 			int delayBetweenShots = getDelayBetweenShots(stack);
 
-			boolean mayShoot = switch (gunProperties.shootBehavior()) {
-				case ON_RELEASE_INSTANT -> true;
-				case ON_RELEASE_WITH_FULL_CHARGE -> elapsedTime >= delayBetweenShots;
-				default -> false;
-			};
-
-			if (mayShoot && serverLevel.getGameTime() - getShootTimestamp(stack) < delayBetweenShots) {
-				shoot(serverLevel, shooter, shooter.getUsedItemHand(), stack);
-				stack.getOrCreateTag().putLong(SHOOT_TIMESTAMP_KEY, serverLevel.getGameTime());
+			switch (gunProperties.shootBehavior()) {
+				case ON_RELEASE_INSTANT -> {
+					shoot(serverLevel, shooter, shooter.getUsedItemHand(), stack);
+					stack.getOrCreateTag().putLong(SHOOT_TIMESTAMP_KEY, serverLevel.getGameTime());
+				}
+				case ON_RELEASE_WITH_FULL_CHARGE -> {
+					if (elapsedTime >= delayBetweenShots && serverLevel.getGameTime() - getShootTimestamp(stack) < delayBetweenShots) {
+						shoot(serverLevel, shooter, shooter.getUsedItemHand(), stack);
+						stack.getOrCreateTag().putLong(SHOOT_TIMESTAMP_KEY, serverLevel.getGameTime());
+					}
+				}
+				default -> {}
 			}
 		}
 
