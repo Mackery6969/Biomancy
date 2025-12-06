@@ -1,0 +1,30 @@
+---
+history:
+  - 2.3.2.0: Disabled Bio-Forge progression by default because of incompatibility issues with NERB and other mods that remove recipe book syncing
+  - 2.8.30.0: Added automatic backups of biomancy.spatial.db
+  - 2.9.7.0: Re-enable Bio-Forge progression by default because there is a replacement mod for NERB called ORB which is compatible
+---
+
+# Common Issues
+
+## Unable to make world backups with a backup mod because of `biomancy.spatial.db`
+
+`biomancy.spatial.db` is database file that is exclusively locked when the world it
+belongs to is loaded.
+
+You need to configure your backup mod to ignore this file. Or delay the backup of it
+until the world is shutdown.
+
+<Callout variant="info">
+As of v2.8.30.0 the mod will make safe backups of the database by itself. The generated backup zip file can be backed up by these mods.
+</Callout>
+
+## The Bio-Forge isn't showing any recipes
+
+The Bio-Forge utilizes the vanilla progression system and unlocks recipes similar to Vanilla's [doLimitedCrafting](https://minecraft.wiki/w/Recipe_book#Unlocking) game rule.
+
+- There's a chance that you haven't unlocked any recipes yet. Pickup items produced by the Decomposer.
+- Remove [NERB](https://modrinth.com/mod/nerb) mod, as it causes issues with Biomancy (and other mods) due to the nature of entirely removing the vanilla recipe book. If you're on
+  a server, you can ask your server admin to either replace NERB with the [ORB](https://www.curseforge.com/minecraft/mc-mods/optimized-recipe-book) mod, or to edit the Biomancy
+  config.
+- Disable recipe progression in [[Biomancy's config|Biomancy-2-Configs]] if there are other issues with other mods

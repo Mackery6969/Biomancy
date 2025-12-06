@@ -4,6 +4,7 @@ history:
   - 2.2.3.0: Added server configs
   -   2.9.0.0: Added configs for enlargement and shrinking serum
   -   2.9.3.0: Added configs for absorption serum
+  -   2.9.7.0: Re-enable Bio-Forge progression by default because there is a replacement mod for NERB called ORB which is compatible
 ---
 
 # Configs
@@ -15,7 +16,7 @@ history:
 
 [recipes]
 	#Determines if the BioForge recipes need to be unlocked to be able to craft them
-	doBioForgeRecipeProgression = false
+doBioForgeRecipeProgression = true
 
 [trades]
 	#Determines if villagers will sell biomancy items
@@ -29,7 +30,6 @@ history:
 	primalEnergySupplyOfCradle = "LIMITED"
 
 [pehkui-integration]
-
 	[pehkui-integration.enlargement-serum]
 	#Maximum scale a mob/player can reach. A value of 2.0 doubles the size of the mob/player.
 	#Range: 0.01 ~ 100.0
@@ -55,5 +55,7 @@ maxHearts = 10.0
 heartsIncrement = 2.0
 ```
 
+<Callout variant="info">
 Please note that server configs are world specific (and synced from server to client). To apply the same config to each newly created world (in singleplayer) add a
 `biomancy-server.toml` config into the global `defaultconfigs` folder.
+</Callout>
