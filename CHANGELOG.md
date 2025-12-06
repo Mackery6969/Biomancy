@@ -1,3 +1,11 @@
+## [9.6.0-alpha.0](https://github.com/Elenterius/Biomancy/compare/1.20.1-v2.9.5.0-alpha.0...1.20.1-v2.9.6.0-alpha.0) (2025-12-06)
+
+
+### Features
+
+* **crowdin:** update translations ([113c7ee](https://github.com/Elenterius/Biomancy/commit/113c7eea6791f269d58b9650156a06c04b1dee21))
+* rework impaler by removing shooter self damage, reducing move penalty, reducing reload time, decreasing max velocity and allowing the projectile to launch without full charge ([8364ff2](https://github.com/Elenterius/Biomancy/commit/8364ff2c29d6adbc7e91fe9b5653dd134e16c06f))
+
 ## [9.5.0-alpha.0](https://github.com/Elenterius/Biomancy/compare/1.20.1-v2.9.4.0-alpha.0...1.20.1-v2.9.5.0-alpha.0) (2025-12-05)
 
 
@@ -13,13 +21,4 @@
 ### Bug Fixes
 
 * fix ravenous claws third person display settings ([3471275](https://github.com/Elenterius/Biomancy/commit/347127584af47ae4fbe78381182b1531cd36dca3))
-
-## [9.4.0-alpha.0](https://github.com/Elenterius/Biomancy/compare/1.20.1-v2.9.3.0-alpha.0...1.20.1-v2.9.4.0-alpha.0) (2025-11-28)
-
-
-### Features
-
-* add volatile status effect (Volatile Gland, Incendiary Grenade) that causes the affected mob/player to explode when receiving >= 6 damage ([18aecb1](https://github.com/Elenterius/Biomancy/commit/18aecb117d2edf713cd578eef9c334d31c5a7729))
-* render the ravenous claws with player arms ([e527a74](https://github.com/Elenterius/Biomancy/commit/e527a74defee951c4d33a415c8349ed35644a44d))
-* revert removal of sinew from despoil loot ([15a18db](https://github.com/Elenterius/Biomancy/commit/15a18dbf5c5285ca854686029e4bb0edbe584eb2))
 
