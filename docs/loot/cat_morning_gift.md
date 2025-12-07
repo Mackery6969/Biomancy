@@ -1,0 +1,12 @@
+# Cat Morning Gift
+
+Tamed Cats have a 70% chance to give players after they wake up a gift.[^1]
+
+## Loot Modification
+
+- For each gift
+	- Cats have a 10% chance to gift [](@biomancy:mob_fang) or [](@biomancy:mob_claw) instead
+	- **Black** Cats have a 25% chance to gift 1-2 [](@biomancy:mob_fang) or [](@biomancy:mob_claw) instead
+- Cats have a 20% chance to additionally give [](@biomancy:organic_matter) ("vomit" /jk)
+
+[^1]: <https://minecraft.fandom.com/wiki/Cat#Gifts>

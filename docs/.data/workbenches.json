@@ -1,0 +1,14 @@
+{
+  "biomancy:bio_forging": [
+    "biomancy:bio_forge"
+  ],
+  "biomancy:digesting": [
+    "biomancy:digester"
+  ],
+  "biomancy:decomposing": [
+    "biomancy:decomposer"
+  ],
+  "biomancy:bio_brewing": [
+    "biomancy:bio_lab"
+  ]
+}

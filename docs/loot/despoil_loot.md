@@ -1,0 +1,46 @@
+# Despoil Loot
+
+When a **player kills a mob** with a Item enchanted with [](@biomancy:despoil) or while holding the [](@biomancy:despoil_sickle) in any hand the looting is triggered.
+
+[](@biomancy:mob_fang)
+
+- drops from Cat, Ocelot, Wolf, Fox, Dolphin, Polar Bear, Panda, Bat, Hoglin, Zoglin, Ender Dragon
+
+[](@biomancy:mob_claw)
+
+- drops from Cat, Ocelot, Wolf, Fox, Polar Bear, Panda, Ender Dragon, Bat
+
+[](@biomancy:sinew)
+
+- does not drop from Skeletons, Wither type mobs or ghosts/spirits
+- does not drop from very small mobs
+
+[](@biomancy:mob_gland)
+
+- can only drop once
+- does not drop from mobs having a special gland
+- does not drop from Skeletons, Wither type mobs or ghosts/spirits
+
+[](@biomancy:toxin_gland)
+
+- can only drop once
+- drops from Cave Spider, Bee, Pufferfish
+
+[](@biomancy:volatile_gland)
+
+- can only drop once
+- drops from Creeper, Ghast, Blaze, Wither, Ender Dragon
+
+[](@biomancy:mob_marrow)
+
+- drops from Skeleton type mobs such as Stray, Skeleton Horse
+- does not drop from Wither Skeletons
+
+[](@biomancy:withered_mob_marrow)
+
+- can drop twice per roll
+- Wither Skeleton, Wither Boss
+
+[](@minecraft:echo_shard)
+
+- Warden

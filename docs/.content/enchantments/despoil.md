@@ -1,0 +1,14 @@
+---
+id: biomancy:despoil
+type: enchantment
+---
+
+# Despoil Enchantment
+
+- When killing a mob the enchantment triggers the []($despoil_loot) event
+
+## Properties
+
+- Applicable to: Weapons (Swords, [](@biomancy:ravenous_claws)), Axes and Knives
+- Max Level: 3
+- compatible with: [looting enchantment](@minecraft:looting)
