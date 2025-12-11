@@ -3,6 +3,7 @@ id: biomancy:caustic_gunblade
 type: item
 custom:
   Category: Living
+  Max Ammo: 10
 ---
 
 # Ravenous Claws
@@ -12,17 +13,27 @@ This weapon is a living tool which runs on nutrients instead of durability.
 It can alternate between melee and ranged mode and utilizes acid to damage its targets.
 The acidic ammunition regenerates by itself after 5s of no usage.
 
+You have to hold the gunblade in your hand for the whole reload duration, as early switching may reset the reload time.
+
 <PrefabObtaining />
 
 ## Operation
 
 - press the action key to toggle between melee and gun mode
 
+### Gun Mode
+The Caustic Gunblade has an internal acid chamber of 10 shots.
+When firing, it will consume *one* ammo.
+
+Quick Charge (Enchantment) shortens the reload time by 0.25 seconds per level, 
+Quick Charge three brings the reload time down to 9.25 Seconds from 10.
+And Power (Enchantment) causes the projectile to do more damage.
+
 ## Abilities
 
 ### Acid Coat
 
-On Right-Click coats the blade in Acid for the next two attacks.
+On Right-Click consumes 3 ammo and coats the blade in Acid for the next two attacks.
 Full-Strength Attacks inflict one stack of Armor Shred for 4s and one stack of Corrosion for 3s.
 Critical Hits inflicts level 2 effects.
 
