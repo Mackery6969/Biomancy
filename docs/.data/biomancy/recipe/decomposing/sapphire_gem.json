@@ -1,0 +1,18 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "iceandfire:sapphire_gem"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 5,
+        "min": 3
+      },
+      "item": "biomancy:gem_fragments"
+    }
+  }
+}

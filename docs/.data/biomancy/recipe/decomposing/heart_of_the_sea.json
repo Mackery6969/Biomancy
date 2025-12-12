@@ -1,0 +1,31 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "minecraft:heart_of_the_sea"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "constant",
+        "value": 8
+      },
+      "item": "biomancy:gem_fragments"
+    },
+    "1": {
+      "countRange": {
+        "type": "constant",
+        "value": 15
+      },
+      "item": "biomancy:exotic_dust"
+    },
+    "2": {
+      "countRange": {
+        "type": "constant",
+        "value": 5
+      },
+      "item": "biomancy:mineral_fragment"
+    }
+  }
+}

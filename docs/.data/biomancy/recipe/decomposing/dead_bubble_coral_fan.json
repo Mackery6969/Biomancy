@@ -1,0 +1,17 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "minecraft:dead_bubble_coral_fan"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "constant",
+        "value": 1
+      },
+      "item": "biomancy:stone_powder"
+    }
+  }
+}

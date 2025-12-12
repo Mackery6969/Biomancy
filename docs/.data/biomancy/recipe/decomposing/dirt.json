@@ -1,0 +1,26 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "minecraft:dirt"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 1,
+        "min": 0
+      },
+      "item": "biomancy:organic_matter"
+    },
+    "1": {
+      "countRange": {
+        "type": "uniform",
+        "max": 1,
+        "min": 0
+      },
+      "item": "biomancy:stone_powder"
+    }
+  }
+}

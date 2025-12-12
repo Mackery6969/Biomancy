@@ -1,0 +1,17 @@
+{
+  "type": "biomancy:bio_forging",
+  "input": {
+    "0": {
+      "item": "biomancy:impermeable_membrane"
+    },
+    "1": {
+      "count": 4,
+      "item": "biomancy:regenerative_fluid"
+    }
+  },
+  "output": {
+    "0": {
+      "item": "biomancy:baby_permeable_membrane"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "minecraft:sugar_cane"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 2,
+        "min": 1
+      },
+      "item": "biomancy:organic_matter"
+    },
+    "1": {
+      "countRange": {
+        "type": "uniform",
+        "max": 2,
+        "min": 1
+      },
+      "item": "minecraft:sugar"
+    }
+  }
+}

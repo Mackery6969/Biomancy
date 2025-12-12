@@ -1,0 +1,18 @@
+{
+  "type": "biomancy:bio_forging",
+  "input": {
+    "0": {
+      "item": "biomancy:impermeable_membrane"
+    },
+    "1": {
+      "count": 4,
+      "item": "biomancy:hormone_secretion"
+    }
+  },
+  "output": {
+    "0": {
+      "count": 2,
+      "item": "biomancy:adult_permeable_membrane_pane"
+    }
+  }
+}

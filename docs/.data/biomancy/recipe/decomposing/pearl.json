@@ -1,0 +1,31 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "alexscaves:pearl"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "constant",
+        "value": 4
+      },
+      "item": "biomancy:gem_fragments"
+    },
+    "1": {
+      "countRange": {
+        "type": "constant",
+        "value": 7
+      },
+      "item": "biomancy:exotic_dust"
+    },
+    "2": {
+      "countRange": {
+        "type": "constant",
+        "value": 5
+      },
+      "item": "biomancy:mineral_fragment"
+    }
+  }
+}

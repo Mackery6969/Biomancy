@@ -1,0 +1,26 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "iceandfire:deathworm_tounge"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 12,
+        "min": 7
+      },
+      "item": "biomancy:elastic_fibers"
+    },
+    "1": {
+      "countRange": {
+        "type": "uniform",
+        "max": 4,
+        "min": 2
+      },
+      "item": "biomancy:flesh_bits"
+    }
+  }
+}

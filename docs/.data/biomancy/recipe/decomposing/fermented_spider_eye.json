@@ -1,0 +1,25 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "minecraft:fermented_spider_eye"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "constant",
+        "value": 1
+      },
+      "item": "biomancy:flesh_bits"
+    },
+    "1": {
+      "countRange": {
+        "type": "uniform",
+        "max": 2,
+        "min": 1
+      },
+      "item": "biomancy:elastic_fibers"
+    }
+  }
+}

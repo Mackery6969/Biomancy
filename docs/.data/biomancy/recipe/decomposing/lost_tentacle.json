@@ -1,0 +1,26 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "alexsmobs:lost_tentacle"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 15,
+        "min": 8
+      },
+      "item": "biomancy:elastic_fibers"
+    },
+    "1": {
+      "countRange": {
+        "type": "uniform",
+        "max": 5,
+        "min": 3
+      },
+      "item": "biomancy:flesh_bits"
+    }
+  }
+}

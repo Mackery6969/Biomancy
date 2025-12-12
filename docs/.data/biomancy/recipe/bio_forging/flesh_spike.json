@@ -1,0 +1,20 @@
+{
+  "type": "biomancy:bio_forging",
+  "input": {
+    "0": {
+      "item": "biomancy:mob_fang"
+    },
+    "1": {
+      "count": 2,
+      "item": "biomancy:tough_fibers"
+    },
+    "2": {
+      "item": "biomancy:flesh_bits"
+    }
+  },
+  "output": {
+    "0": {
+      "item": "biomancy:flesh_spike"
+    }
+  }
+}

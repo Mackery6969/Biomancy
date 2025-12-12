@@ -1,0 +1,18 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 9,
+        "min": 5
+      },
+      "item": "biomancy:mineral_fragment"
+    }
+  }
+}

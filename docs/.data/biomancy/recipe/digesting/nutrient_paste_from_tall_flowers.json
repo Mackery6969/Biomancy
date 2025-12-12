@@ -1,0 +1,14 @@
+{
+  "type": "biomancy:digesting",
+  "input": {
+    "0": {
+      "tag": "minecraft:tall_flowers"
+    }
+  },
+  "output": {
+    "0": {
+      "count": 2,
+      "item": "biomancy:nutrient_paste"
+    }
+  }
+}

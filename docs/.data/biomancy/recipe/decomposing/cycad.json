@@ -1,0 +1,18 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "alexscaves:cycad"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 4,
+        "min": 2
+      },
+      "item": "biomancy:organic_matter"
+    }
+  }
+}

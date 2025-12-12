@@ -17,7 +17,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-public sealed interface RecipeBuilder<T extends RecipeBuilder<?>> permits BioBrewingRecipeBuilder, BioForgingRecipeBuilder, DecomposingRecipeBuilder, DigesterRecipeBuilder, WorkbenchRecipeBuilder.ShapedBuilder, WorkbenchRecipeBuilder.ShapelessBuilder {
+public sealed interface RecipeBuilder<T extends RecipeBuilder<?>> permits BioBrewingRecipeBuilder, BioForgingRecipeBuilder, DecomposingRecipeBuilder, DigestingRecipeBuilder, WorkbenchRecipeBuilder.ShapedBuilder, WorkbenchRecipeBuilder.ShapelessBuilder {
 
 	static String getRecipeFolderName(@Nullable RecipeCategory category, String modId) {
 		return category != null ? category.getFolderName() : modId;

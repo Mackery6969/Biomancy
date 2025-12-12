@@ -1,0 +1,26 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "alexscaves:curly_fern"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 4,
+        "min": 2
+      },
+      "item": "biomancy:organic_matter"
+    },
+    "1": {
+      "countRange": {
+        "type": "uniform",
+        "max": 2,
+        "min": 1
+      },
+      "item": "minecraft:lime_dye"
+    }
+  }
+}

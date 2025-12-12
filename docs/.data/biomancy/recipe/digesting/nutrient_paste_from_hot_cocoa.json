@@ -1,0 +1,14 @@
+{
+  "type": "biomancy:digesting",
+  "input": {
+    "0": {
+      "item": "farmersdelight:hot_cocoa"
+    }
+  },
+  "output": {
+    "0": {
+      "count": 10,
+      "item": "biomancy:nutrient_paste"
+    }
+  }
+}

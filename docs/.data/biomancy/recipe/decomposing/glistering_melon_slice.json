@@ -1,0 +1,25 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "minecraft:glistering_melon_slice"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 6,
+        "min": 3
+      },
+      "item": "biomancy:mineral_fragment"
+    },
+    "1": {
+      "countRange": {
+        "type": "constant",
+        "value": 2
+      },
+      "item": "biomancy:organic_matter"
+    }
+  }
+}

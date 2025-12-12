@@ -1,0 +1,14 @@
+{
+  "type": "biomancy:digesting",
+  "input": {
+    "0": {
+      "item": "farmersdelight:red_mushroom_colony"
+    }
+  },
+  "output": {
+    "0": {
+      "count": 15,
+      "item": "biomancy:nutrient_paste"
+    }
+  }
+}

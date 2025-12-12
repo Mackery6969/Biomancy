@@ -1,0 +1,22 @@
+{
+  "type": "biomancy:bio_forging",
+  "input": {
+    "0": {
+      "count": 11,
+      "item": "biomancy:mineral_fragment"
+    },
+    "1": {
+      "count": 8,
+      "item": "biomancy:tough_fibers"
+    },
+    "2": {
+      "count": 4,
+      "item": "biomancy:stone_powder"
+    }
+  },
+  "output": {
+    "0": {
+      "item": "minecraft:nautilus_shell"
+    }
+  }
+}

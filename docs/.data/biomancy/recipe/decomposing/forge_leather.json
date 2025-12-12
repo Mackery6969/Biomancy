@@ -1,0 +1,18 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "tag": "forge:leather"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 4,
+        "min": 1
+      },
+      "item": "biomancy:tough_fibers"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "biomancy:digesting",
+  "input": {
+    "0": {
+      "item": "alexscaves:cooked_dinosaur_chop"
+    }
+  },
+  "output": {
+    "0": {
+      "count": 24,
+      "item": "biomancy:nutrient_paste"
+    }
+  }
+}

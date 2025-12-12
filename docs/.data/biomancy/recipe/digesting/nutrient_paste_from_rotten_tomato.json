@@ -1,0 +1,13 @@
+{
+  "type": "biomancy:digesting",
+  "input": {
+    "0": {
+      "item": "farmersdelight:rotten_tomato"
+    }
+  },
+  "output": {
+    "0": {
+      "item": "biomancy:nutrient_paste"
+    }
+  }
+}

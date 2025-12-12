@@ -1,0 +1,31 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "minecraft:totem_of_undying"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "constant",
+        "value": 25
+      },
+      "item": "biomancy:exotic_dust"
+    },
+    "1": {
+      "countRange": {
+        "type": "constant",
+        "value": 15
+      },
+      "item": "biomancy:gem_fragments"
+    },
+    "2": {
+      "countRange": {
+        "type": "constant",
+        "value": 10
+      },
+      "item": "biomancy:mineral_fragment"
+    }
+  }
+}

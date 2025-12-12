@@ -1,0 +1,13 @@
+{
+  "background": "biomancy:gui/bio_brewing_recipe",
+  "inputSlots": {
+    "0": { "x": 110, "y": 20 },
+    "1": { "x": 2, "y": 2 },
+    "2": { "x": 38, "y": 2 },
+    "3": { "x": 2, "y": 38 },
+    "4": { "x": 38, "y": 38 }
+  },
+  "outputSlots": {
+    "0": { "x": 226, "y": 20 }
+  }
+}

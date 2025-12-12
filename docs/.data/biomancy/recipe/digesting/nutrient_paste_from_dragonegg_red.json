@@ -1,0 +1,14 @@
+{
+  "type": "biomancy:digesting",
+  "input": {
+    "0": {
+      "item": "iceandfire:dragonegg_red"
+    }
+  },
+  "output": {
+    "0": {
+      "count": 5,
+      "item": "biomancy:nutrient_paste"
+    }
+  }
+}

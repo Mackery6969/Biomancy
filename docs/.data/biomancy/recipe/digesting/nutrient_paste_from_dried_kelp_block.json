@@ -1,0 +1,14 @@
+{
+  "type": "biomancy:digesting",
+  "input": {
+    "0": {
+      "item": "minecraft:dried_kelp_block"
+    }
+  },
+  "output": {
+    "0": {
+      "count": 9,
+      "item": "biomancy:nutrient_paste"
+    }
+  }
+}

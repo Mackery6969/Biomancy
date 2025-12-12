@@ -1,0 +1,17 @@
+{
+  "type": "biomancy:bio_forging",
+  "input": {
+    "0": {
+      "count": 8,
+      "item": "biomancy:tough_fibers"
+    },
+    "1": {
+      "item": "biomancy:elastic_fibers"
+    }
+  },
+  "output": {
+    "0": {
+      "item": "minecraft:leather"
+    }
+  }
+}

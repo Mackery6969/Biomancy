@@ -1,0 +1,42 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "minecraft:dragon_egg"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 128,
+        "min": 97
+      },
+      "item": "biomancy:exotic_dust"
+    },
+    "1": {
+      "countRange": {
+        "type": "uniform",
+        "max": 10,
+        "min": 6
+      },
+      "item": "biomancy:bio_lumens"
+    },
+    "2": {
+      "countRange": {
+        "type": "uniform",
+        "max": 23,
+        "min": 17
+      },
+      "item": "biomancy:hormone_secretion"
+    },
+    "3": {
+      "countRange": {
+        "type": "uniform",
+        "max": 4,
+        "min": 1
+      },
+      "item": "biomancy:organic_matter"
+    }
+  }
+}

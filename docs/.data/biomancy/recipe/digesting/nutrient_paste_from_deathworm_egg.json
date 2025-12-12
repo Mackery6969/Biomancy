@@ -1,0 +1,14 @@
+{
+  "type": "biomancy:digesting",
+  "input": {
+    "0": {
+      "item": "iceandfire:deathworm_egg"
+    }
+  },
+  "output": {
+    "0": {
+      "count": 4,
+      "item": "biomancy:nutrient_paste"
+    }
+  }
+}

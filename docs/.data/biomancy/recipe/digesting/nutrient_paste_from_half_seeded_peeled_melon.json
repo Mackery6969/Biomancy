@@ -1,0 +1,14 @@
+{
+  "type": "biomancy:digesting",
+  "input": {
+    "0": {
+      "item": "overweight_farming:half_seeded_peeled_melon"
+    }
+  },
+  "output": {
+    "0": {
+      "count": 12,
+      "item": "biomancy:nutrient_paste"
+    }
+  }
+}

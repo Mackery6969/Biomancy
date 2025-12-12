@@ -1,0 +1,34 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "biomancy:volatile_gland"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 5,
+        "min": 2
+      },
+      "item": "biomancy:volatile_fluid"
+    },
+    "1": {
+      "countRange": {
+        "type": "uniform",
+        "max": 3,
+        "min": 2
+      },
+      "item": "biomancy:flesh_bits"
+    },
+    "2": {
+      "countRange": {
+        "type": "uniform",
+        "max": 3,
+        "min": 1
+      },
+      "item": "biomancy:elastic_fibers"
+    }
+  }
+}

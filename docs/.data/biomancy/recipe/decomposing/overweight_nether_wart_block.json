@@ -1,0 +1,26 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "overweight_farming:overweight_nether_wart_block"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 20,
+        "min": 10
+      },
+      "item": "biomancy:organic_matter"
+    },
+    "1": {
+      "countRange": {
+        "type": "uniform",
+        "max": 10,
+        "min": 4
+      },
+      "item": "biomancy:exotic_dust"
+    }
+  }
+}

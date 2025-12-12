@@ -1,0 +1,22 @@
+{
+  "type": "biomancy:bio_brewing",
+  "input": {
+    "0": {
+      "item": "biomancy:exotic_compound"
+    },
+    "1": {
+      "item": "biomancy:unstable_compound"
+    },
+    "2": {
+      "item": "biomancy:genetic_compound"
+    },
+    "3": {
+      "item": "biomancy:acid_extract"
+    }
+  },
+  "output": {
+    "0": {
+      "item": "biomancy:frenzy_serum"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "type": "biomancy:bio_forging",
+  "input": {
+    "0": {
+      "item": "biomancy:living_flesh"
+    },
+    "1": {
+      "count": 10,
+      "item": "biomancy:flesh_bits"
+    },
+    "2": {
+      "count": 3,
+      "item": "biomancy:bone_fragments"
+    },
+    "3": {
+      "count": 8,
+      "item": "biomancy:elastic_fibers"
+    },
+    "4": {
+      "count": 4,
+      "item": "biomancy:bile"
+    }
+  },
+  "output": {
+    "0": {
+      "item": "biomancy:digester"
+    }
+  }
+}

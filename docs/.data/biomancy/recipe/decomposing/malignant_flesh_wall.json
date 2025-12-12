@@ -1,0 +1,18 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "biomancy:malignant_flesh_wall"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 1,
+        "min": -3
+      },
+      "item": "biomancy:flesh_bits"
+    }
+  }
+}

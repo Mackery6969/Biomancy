@@ -1,0 +1,30 @@
+{
+  "type": "biomancy:bio_forging",
+  "input": {
+    "0": {
+      "item": "biomancy:living_flesh"
+    },
+    "1": {
+      "count": 8,
+      "item": "biomancy:flesh_bits"
+    },
+    "2": {
+      "count": 30,
+      "item": "biomancy:tough_fibers"
+    },
+    "3": {
+      "count": 22,
+      "item": "biomancy:mineral_fragment"
+    },
+    "4": {
+      "count": 6,
+      "item": "biomancy:bone_fragments"
+    }
+  },
+  "output": {
+    "0": {
+      "item": "biomancy:acolyte_armor_helmet",
+      "nbt": "{\"biomancy:nutrients\":200}"
+    }
+  }
+}

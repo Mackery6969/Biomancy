@@ -1,0 +1,14 @@
+{
+  "type": "biomancy:digesting",
+  "input": {
+    "0": {
+      "item": "minecraft:sniffer_egg"
+    }
+  },
+  "output": {
+    "0": {
+      "count": 6,
+      "item": "biomancy:nutrient_paste"
+    }
+  }
+}

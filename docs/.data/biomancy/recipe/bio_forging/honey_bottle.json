@@ -1,0 +1,27 @@
+{
+  "type": "biomancy:bio_forging",
+  "input": {
+    "0": {
+      "item": "minecraft:yellow_dye"
+    },
+    "1": {
+      "count": 4,
+      "item": "minecraft:sugar"
+    },
+    "2": {
+      "count": 4,
+      "item": "biomancy:bile"
+    },
+    "3": {
+      "item": "biomancy:gelling_agent"
+    },
+    "4": {
+      "item": "minecraft:glass_bottle"
+    }
+  },
+  "output": {
+    "0": {
+      "item": "minecraft:honey_bottle"
+    }
+  }
+}

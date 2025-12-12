@@ -9,6 +9,7 @@ import com.github.elenterius.biomancy.datagen.models.ModBlockStateProvider;
 import com.github.elenterius.biomancy.datagen.models.ModItemModelProvider;
 import com.github.elenterius.biomancy.datagen.particles.ModParticleSpriteProvider;
 import com.github.elenterius.biomancy.datagen.recipes.ModRecipeProvider;
+import com.github.elenterius.biomancy.datagen.recipes.WikiRecipesProvider;
 import com.github.elenterius.biomancy.datagen.tags.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -50,7 +51,9 @@ public final class DataGenerators {
 		generator.addProvider(includeServer, new ModPaintingTagsProvider(packOutput, lookupProvider, existingFileHelper));
 
 		//recipes
-		generator.addProvider(includeServer, new ModRecipeProvider(packOutput));
+		ModRecipeProvider recipeProvider = new ModRecipeProvider(packOutput);
+		generator.addProvider(includeServer, recipeProvider);
+		generator.addProvider(includeServer, new WikiRecipesProvider(packOutput, recipeProvider));
 
 		//loot
 		generator.addProvider(includeServer, new ModLootTableProvider(packOutput));

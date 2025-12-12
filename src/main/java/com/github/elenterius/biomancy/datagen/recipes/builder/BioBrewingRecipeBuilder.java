@@ -7,6 +7,7 @@ import com.github.elenterius.biomancy.crafting.recipe.RecipeUtil;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.ModRecipes;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
@@ -188,7 +189,7 @@ public final class BioBrewingRecipeBuilder implements RecipeBuilder<BioBrewingRe
 		}
 	}
 
-	public static class Result implements FinishedRecipe {
+	public static class Result implements FinishedRecipe, WikiRecipe {
 		private final ResourceLocation id;
 		private final List<IngredientStack> ingredients;
 		private final Ingredient reactant;
@@ -236,6 +237,17 @@ public final class BioBrewingRecipeBuilder implements RecipeBuilder<BioBrewingRe
 				conditions.forEach(c -> array.add(CraftingHelper.serialize(c)));
 				json.add(RecipeUtil.JsonKeys.CONDITIONS, array);
 			}
+		}
+
+		@Override
+		public void serializeWikiRecipeData(Consumer<JsonElement> input, Consumer<JsonElement> output) {
+			input.accept(reactant.toJson());
+
+			for (IngredientStack ingredient : ingredients) {
+				input.accept(ingredient.toJson());
+			}
+
+			output.accept(result.toJson());
 		}
 
 		@Override

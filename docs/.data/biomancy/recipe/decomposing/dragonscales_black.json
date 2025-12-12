@@ -1,0 +1,26 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "iceandfire:dragonscales_black"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 25,
+        "min": 15
+      },
+      "item": "biomancy:tough_fibers"
+    },
+    "1": {
+      "countRange": {
+        "type": "uniform",
+        "max": 15,
+        "min": 5
+      },
+      "item": "biomancy:mineral_fragment"
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "minecraft:dragon_head"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "constant",
+        "value": 50
+      },
+      "item": "biomancy:flesh_bits"
+    },
+    "1": {
+      "countRange": {
+        "type": "constant",
+        "value": 50
+      },
+      "item": "biomancy:exotic_dust"
+    },
+    "2": {
+      "countRange": {
+        "type": "constant",
+        "value": 25
+      },
+      "item": "biomancy:tough_fibers"
+    },
+    "3": {
+      "countRange": {
+        "type": "constant",
+        "value": 20
+      },
+      "item": "biomancy:mineral_fragment"
+    },
+    "4": {
+      "countRange": {
+        "type": "constant",
+        "value": 50
+      },
+      "item": "biomancy:bone_fragments"
+    }
+  }
+}

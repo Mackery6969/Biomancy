@@ -5,6 +5,7 @@ import com.github.elenterius.biomancy.crafting.recipe.RecipeUtil;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.ModRecipes;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public final class DigesterRecipeBuilder implements RecipeBuilder<DigesterRecipeBuilder> {
+public final class DigestingRecipeBuilder implements RecipeBuilder<DigestingRecipeBuilder> {
 
 	public static final String RECIPE_SUB_FOLDER = ModRecipes.DIGESTING_RECIPE_TYPE.getId().getPath();
 
@@ -50,110 +51,110 @@ public final class DigesterRecipeBuilder implements RecipeBuilder<DigesterRecipe
 	@Nullable
 	private String group;
 
-	private DigesterRecipeBuilder(ResourceLocation recipeId, ItemData result) {
+	private DigestingRecipeBuilder(ResourceLocation recipeId, ItemData result) {
 		this.recipeId = new ResourceLocation(recipeId.getNamespace(), RECIPE_SUB_FOLDER + "/" + recipeId.getPath());
 		recipeResult = result;
 	}
 
-	public static DigesterRecipeBuilder create(ResourceLocation recipeId, ItemData result) {
-		return new DigesterRecipeBuilder(recipeId, result);
+	public static DigestingRecipeBuilder create(ResourceLocation recipeId, ItemData result) {
+		return new DigestingRecipeBuilder(recipeId, result);
 	}
 
-	public static DigesterRecipeBuilder create(String modId, String outputName, ItemData result) {
+	public static DigestingRecipeBuilder create(String modId, String outputName, ItemData result) {
 		ResourceLocation rl = new ResourceLocation(modId, outputName + "_from_" + result.getItemPath());
-		return new DigesterRecipeBuilder(rl, result);
+		return new DigestingRecipeBuilder(rl, result);
 	}
 
-	public static DigesterRecipeBuilder create(String outputName, ItemData result) {
+	public static DigestingRecipeBuilder create(String outputName, ItemData result) {
 		ResourceLocation rl = BiomancyMod.rl(outputName + "_from_" + result.getItemPath());
-		return new DigesterRecipeBuilder(rl, result);
+		return new DigestingRecipeBuilder(rl, result);
 	}
 
-	public static DigesterRecipeBuilder create(ItemData result) {
+	public static DigestingRecipeBuilder create(ItemData result) {
 		ResourceLocation rl = BiomancyMod.rl(result.getItemPath());
-		return new DigesterRecipeBuilder(rl, result);
+		return new DigestingRecipeBuilder(rl, result);
 	}
 
-	public static DigesterRecipeBuilder create(ItemData result, String postSuffix) {
+	public static DigestingRecipeBuilder create(ItemData result, String postSuffix) {
 		ResourceLocation rl = BiomancyMod.rl(result.getItemPath() + "_from_" + postSuffix);
-		return new DigesterRecipeBuilder(rl, result);
+		return new DigestingRecipeBuilder(rl, result);
 	}
 
-	public static DigesterRecipeBuilder create(ItemStack stack) {
+	public static DigestingRecipeBuilder create(ItemStack stack) {
 		return create(new ItemData(stack));
 	}
 
-	public static DigesterRecipeBuilder create(ItemLike item) {
+	public static DigestingRecipeBuilder create(ItemLike item) {
 		return create(new ItemData(item));
 	}
 
-	public static DigesterRecipeBuilder create(ItemLike item, int count) {
+	public static DigestingRecipeBuilder create(ItemLike item, int count) {
 		return create(new ItemData(item, count));
 	}
 
-	public static DigesterRecipeBuilder create(ItemLike item, int count, String suffix) {
+	public static DigestingRecipeBuilder create(ItemLike item, int count, String suffix) {
 		return create(new ItemData(item, count), suffix);
 	}
 
-	public DigesterRecipeBuilder ifModLoaded(String modId) {
+	public DigestingRecipeBuilder ifModLoaded(String modId) {
 		return withCondition(new ModLoadedCondition(modId));
 	}
 
-	public DigesterRecipeBuilder ifModMissing(String modId) {
+	public DigestingRecipeBuilder ifModMissing(String modId) {
 		return withCondition(new NotCondition(new ModLoadedCondition(modId)));
 	}
 
-	public DigesterRecipeBuilder withCondition(ICondition condition) {
+	public DigestingRecipeBuilder withCondition(ICondition condition) {
 		conditions.add(condition);
 		return this;
 	}
 
-	public DigesterRecipeBuilder setIngredient(ItemLike item) {
+	public DigestingRecipeBuilder setIngredient(ItemLike item) {
 		return setIngredient(Ingredient.of(item));
 	}
 
-	public DigesterRecipeBuilder setIngredient(TagKey<Item> tag) {
+	public DigestingRecipeBuilder setIngredient(TagKey<Item> tag) {
 		return setIngredient(Ingredient.of(tag));
 	}
 
-	public DigesterRecipeBuilder setIngredient(ItemStack stack) {
+	public DigestingRecipeBuilder setIngredient(ItemStack stack) {
 		return setIngredient(Ingredient.of(stack));
 	}
 
-	public DigesterRecipeBuilder setIngredient(Ingredient ingredient) {
+	public DigestingRecipeBuilder setIngredient(Ingredient ingredient) {
 		this.recipeIngredient = ingredient;
 		return this;
 	}
 
 	@Override
-	public DigesterRecipeBuilder unlockedBy(String name, CriterionTriggerInstance criterionTrigger) {
+	public DigestingRecipeBuilder unlockedBy(String name, CriterionTriggerInstance criterionTrigger) {
 		advancement.addCriterion(name, criterionTrigger);
 		return this;
 	}
 
-	public DigesterRecipeBuilder setGroup(@Nullable String name) {
+	public DigestingRecipeBuilder setGroup(@Nullable String name) {
 		this.group = name;
 		return this;
 	}
 
-	public DigesterRecipeBuilder setCraftingTime(int time) {
+	public DigestingRecipeBuilder setCraftingTime(int time) {
 		if (time < 0) throw new IllegalArgumentException("Invalid crafting time: " + time);
 		craftingTimeTicks = time;
 		return this;
 	}
 
-	public DigesterRecipeBuilder addCraftingTimeModifier(int modifier) {
+	public DigestingRecipeBuilder addCraftingTimeModifier(int modifier) {
 		craftingTimeModifier = modifier;
 		return this;
 	}
 
-	public DigesterRecipeBuilder setCraftingCost(int costNutrients) {
+	public DigestingRecipeBuilder setCraftingCost(int costNutrients) {
 		if (costNutrients < 0) throw new IllegalArgumentException("Invalid crafting cost: " + costNutrients);
 		craftingCostNutrients = costNutrients;
 		return this;
 	}
 
-	public DigesterRecipeBuilder addCraftingCostModifier(int modifier) {
+	public DigestingRecipeBuilder addCraftingCostModifier(int modifier) {
 		craftingCostModifier = modifier;
 		return this;
 	}
@@ -195,7 +196,7 @@ public final class DigesterRecipeBuilder implements RecipeBuilder<DigesterRecipe
 		}
 	}
 
-	public static class Result implements FinishedRecipe {
+	public static class Result implements FinishedRecipe, WikiRecipe {
 
 		private final ResourceLocation id;
 		private final String group;
@@ -207,7 +208,7 @@ public final class DigesterRecipeBuilder implements RecipeBuilder<DigesterRecipe
 		private final Advancement.Builder advancementBuilder;
 		private final ResourceLocation advancementId;
 
-		public Result(DigesterRecipeBuilder builder, ResourceLocation advancementId) {
+		public Result(DigestingRecipeBuilder builder, ResourceLocation advancementId) {
 			id = builder.recipeId;
 			group = builder.group == null ? "" : builder.group;
 			ingredient = builder.recipeIngredient;
@@ -241,6 +242,12 @@ public final class DigesterRecipeBuilder implements RecipeBuilder<DigesterRecipe
 			}
 		}
 
+		@Override
+		public void serializeWikiRecipeData(Consumer<JsonElement> input, Consumer<JsonElement> output) {
+			input.accept(ingredient.toJson());
+			output.accept(recipeResult.toJson());
+		}
+
 		public RecipeSerializer<?> getType() {
 			return ModRecipes.DIGESTING_SERIALIZER.get();
 		}
@@ -263,6 +270,7 @@ public final class DigesterRecipeBuilder implements RecipeBuilder<DigesterRecipe
 		public ResourceLocation getAdvancementId() {
 			return advancementId;
 		}
+
 	}
 
 }

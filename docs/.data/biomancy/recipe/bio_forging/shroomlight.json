@@ -1,0 +1,22 @@
+{
+  "type": "biomancy:bio_forging",
+  "input": {
+    "0": {
+      "count": 10,
+      "item": "biomancy:bio_lumens"
+    },
+    "1": {
+      "count": 2,
+      "item": "minecraft:yellow_dye"
+    },
+    "2": {
+      "count": 4,
+      "item": "biomancy:organic_matter"
+    }
+  },
+  "output": {
+    "0": {
+      "item": "minecraft:shroomlight"
+    }
+  }
+}

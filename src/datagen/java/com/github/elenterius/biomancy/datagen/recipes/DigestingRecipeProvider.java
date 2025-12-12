@@ -7,7 +7,7 @@ import com.github.alexthe666.alexsmobs.block.AMBlockRegistry;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import com.github.elenterius.biomancy.crafting.recipe.FoodDigestingRecipe;
-import com.github.elenterius.biomancy.datagen.recipes.builder.DigesterRecipeBuilder;
+import com.github.elenterius.biomancy.datagen.recipes.builder.DigestingRecipeBuilder;
 import com.github.elenterius.biomancy.init.ModItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -46,20 +46,20 @@ public class DigestingRecipeProvider extends RecipeProvider {
 		return tag.location().getPath();
 	}
 
-	protected DigesterRecipeBuilder nutrientPasteRecipe(int count, TagKey<Item> ingredient) {
+	protected DigestingRecipeBuilder nutrientPasteRecipe(int count, TagKey<Item> ingredient) {
 		return simpleRecipe(ModItems.NUTRIENT_PASTE.get(), count, ingredient);
 	}
 
-	protected DigesterRecipeBuilder nutrientPasteRecipe(int count, ItemLike ingredient) {
+	protected DigestingRecipeBuilder nutrientPasteRecipe(int count, ItemLike ingredient) {
 		return simpleRecipe(ModItems.NUTRIENT_PASTE.get(), count, ingredient);
 	}
 
-	protected DigesterRecipeBuilder simpleRecipe(ItemLike result, int count, TagKey<Item> ingredient) {
-		return DigesterRecipeBuilder.create(result, count, getTagName(ingredient)).setIngredient(ingredient).unlockedBy(ingredient);
+	protected DigestingRecipeBuilder simpleRecipe(ItemLike result, int count, TagKey<Item> ingredient) {
+		return DigestingRecipeBuilder.create(result, count, getTagName(ingredient)).setIngredient(ingredient).unlockedBy(ingredient);
 	}
 
-	protected DigesterRecipeBuilder simpleRecipe(ItemLike result, int count, ItemLike ingredient) {
-		return DigesterRecipeBuilder.create(result, count, getItemName(ingredient)).setIngredient(ingredient).unlockedBy(ingredient);
+	protected DigestingRecipeBuilder simpleRecipe(ItemLike result, int count, ItemLike ingredient) {
+		return DigestingRecipeBuilder.create(result, count, getItemName(ingredient)).setIngredient(ingredient).unlockedBy(ingredient);
 	}
 
 	@Override
@@ -157,23 +157,23 @@ public class DigestingRecipeProvider extends RecipeProvider {
 		nutrientPasteRecipe(pumpkinNutrition - 4 * seedNutrition, Items.CARVED_PUMPKIN).addCraftingTimeModifier(-100).save(consumer);
 	}
 
-	private DigesterRecipeBuilder farmersDelightRecipe(int count, ItemLike ingredient) {
+	private DigestingRecipeBuilder farmersDelightRecipe(int count, ItemLike ingredient) {
 		return nutrientPasteRecipe(count, ingredient).ifModLoaded(FarmersDelight.MODID);
 	}
 
-	private DigesterRecipeBuilder overweightFarmingRecipe(int count, ItemLike ingredient) {
+	private DigestingRecipeBuilder overweightFarmingRecipe(int count, ItemLike ingredient) {
 		return nutrientPasteRecipe(count, ingredient).ifModLoaded(OverweightFarming.MODID);
 	}
 
-	private DigesterRecipeBuilder alexsMobsRecipe(int count, ItemLike ingredient) {
+	private DigestingRecipeBuilder alexsMobsRecipe(int count, ItemLike ingredient) {
 		return nutrientPasteRecipe(count, ingredient).ifModLoaded(AlexsMobs.MODID);
 	}
 
-	private DigesterRecipeBuilder alexsCavesRecipe(int count, ItemLike ingredient) {
+	private DigestingRecipeBuilder alexsCavesRecipe(int count, ItemLike ingredient) {
 		return nutrientPasteRecipe(count, ingredient).ifModLoaded(AlexsCaves.MODID);
 	}
 
-	private DigesterRecipeBuilder iceAndFireRecipe(int count, ItemLike ingredient) {
+	private DigestingRecipeBuilder iceAndFireRecipe(int count, ItemLike ingredient) {
 		return nutrientPasteRecipe(count, ingredient).ifModLoaded(IceAndFire.MODID);
 	}
 

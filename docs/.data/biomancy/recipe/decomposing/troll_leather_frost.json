@@ -1,0 +1,18 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "iceandfire:troll_leather_frost"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 20,
+        "min": 10
+      },
+      "item": "biomancy:tough_fibers"
+    }
+  }
+}

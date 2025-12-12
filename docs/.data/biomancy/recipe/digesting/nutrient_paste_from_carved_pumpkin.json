@@ -1,0 +1,14 @@
+{
+  "type": "biomancy:digesting",
+  "input": {
+    "0": {
+      "item": "minecraft:carved_pumpkin"
+    }
+  },
+  "output": {
+    "0": {
+      "count": 2,
+      "item": "biomancy:nutrient_paste"
+    }
+  }
+}

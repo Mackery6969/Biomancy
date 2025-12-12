@@ -2,28 +2,29 @@
   "type": "biomancy:bio_forging",
   "input": {
     "0": {
-      "id": "biomancy:living_flesh"
+      "item": "biomancy:living_flesh"
     },
     "1": {
-      "id": "biomancy:mob_claw",
-      "count": 3
+      "count": 3,
+      "item": "biomancy:mob_claw"
     },
     "2": {
-      "id": "biomancy:flesh_bits",
-      "count": 16
+      "count": 16,
+      "item": "biomancy:flesh_bits"
     },
     "3": {
-      "id": "biomancy:tough_fibers",
-      "count": 18
+      "count": 18,
+      "item": "biomancy:tough_fibers"
     },
     "4": {
-      "id": "biomancy:mineral_fragment",
-      "count": 15
+      "count": 15,
+      "item": "biomancy:mineral_fragment"
     }
   },
   "output": {
     "0": {
-      "id": "biomancy:ravenous_claws"
+      "item": "biomancy:ravenous_claws",
+      "nbt": "{LivingToolState:1b,\"biomancy:nutrients\":250}"
     }
   }
 }

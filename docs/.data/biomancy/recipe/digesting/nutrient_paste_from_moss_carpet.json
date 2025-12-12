@@ -1,0 +1,13 @@
+{
+  "type": "biomancy:digesting",
+  "input": {
+    "0": {
+      "item": "minecraft:moss_carpet"
+    }
+  },
+  "output": {
+    "0": {
+      "item": "biomancy:nutrient_paste"
+    }
+  }
+}

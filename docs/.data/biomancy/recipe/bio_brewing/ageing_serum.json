@@ -1,0 +1,22 @@
+{
+  "type": "biomancy:bio_brewing",
+  "input": {
+    "0": {
+      "item": "biomancy:genetic_compound"
+    },
+    "1": {
+      "item": "biomancy:nutrient_paste"
+    },
+    "2": {
+      "item": "biomancy:mineral_fragment"
+    },
+    "3": {
+      "item": "biomancy:decaying_additive"
+    }
+  },
+  "output": {
+    "0": {
+      "item": "biomancy:ageing_serum"
+    }
+  }
+}

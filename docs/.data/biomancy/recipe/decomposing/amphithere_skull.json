@@ -1,0 +1,18 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "iceandfire:amphithere_skull"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 12,
+        "min": 6
+      },
+      "item": "biomancy:bone_fragments"
+    }
+  }
+}

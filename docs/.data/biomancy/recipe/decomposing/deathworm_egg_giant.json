@@ -1,0 +1,42 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "iceandfire:deathworm_egg_giant"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 16,
+        "min": 8
+      },
+      "item": "biomancy:stone_powder"
+    },
+    "1": {
+      "countRange": {
+        "type": "uniform",
+        "max": 24,
+        "min": 8
+      },
+      "item": "biomancy:hormone_secretion"
+    },
+    "2": {
+      "countRange": {
+        "type": "uniform",
+        "max": 16,
+        "min": 8
+      },
+      "item": "biomancy:organic_matter"
+    },
+    "3": {
+      "countRange": {
+        "type": "uniform",
+        "max": 12,
+        "min": 4
+      },
+      "item": "biomancy:exotic_dust"
+    }
+  }
+}

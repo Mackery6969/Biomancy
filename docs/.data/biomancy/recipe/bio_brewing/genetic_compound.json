@@ -1,0 +1,19 @@
+{
+  "type": "biomancy:bio_brewing",
+  "input": {
+    "0": {
+      "item": "biomancy:organic_compound"
+    },
+    "1": {
+      "item": "biomancy:hormone_secretion"
+    },
+    "2": {
+      "item": "biomancy:nutrient_paste"
+    }
+  },
+  "output": {
+    "0": {
+      "item": "biomancy:genetic_compound"
+    }
+  }
+}

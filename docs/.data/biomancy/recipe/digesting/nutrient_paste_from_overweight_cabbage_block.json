@@ -1,0 +1,14 @@
+{
+  "type": "biomancy:digesting",
+  "input": {
+    "0": {
+      "item": "overweight_farming:overweight_cabbage_block"
+    }
+  },
+  "output": {
+    "0": {
+      "count": 20,
+      "item": "biomancy:nutrient_paste"
+    }
+  }
+}

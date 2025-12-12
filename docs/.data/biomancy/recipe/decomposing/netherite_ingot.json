@@ -1,0 +1,18 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "minecraft:netherite_ingot"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 72,
+        "min": 43
+      },
+      "item": "biomancy:mineral_fragment"
+    }
+  }
+}

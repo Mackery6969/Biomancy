@@ -1,0 +1,22 @@
+{
+  "type": "biomancy:bio_brewing",
+  "input": {
+    "0": {
+      "item": "biomancy:organic_compound"
+    },
+    "1": {
+      "item": "biomancy:exotic_dust"
+    },
+    "2": {
+      "item": "biomancy:exotic_dust"
+    },
+    "3": {
+      "item": "biomancy:mineral_fragment"
+    }
+  },
+  "output": {
+    "0": {
+      "item": "biomancy:exotic_compound"
+    }
+  }
+}

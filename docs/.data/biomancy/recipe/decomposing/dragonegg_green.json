@@ -1,0 +1,42 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "iceandfire:dragonegg_green"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 40,
+        "min": 10
+      },
+      "item": "biomancy:hormone_secretion"
+    },
+    "1": {
+      "countRange": {
+        "type": "uniform",
+        "max": 8,
+        "min": 4
+      },
+      "item": "biomancy:organic_matter"
+    },
+    "2": {
+      "countRange": {
+        "type": "uniform",
+        "max": 60,
+        "min": 20
+      },
+      "item": "biomancy:exotic_dust"
+    },
+    "3": {
+      "countRange": {
+        "type": "uniform",
+        "max": 12,
+        "min": 6
+      },
+      "item": "biomancy:volatile_fluid"
+    }
+  }
+}

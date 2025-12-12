@@ -1,0 +1,18 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "farmersdelight:red_mushroom_colony"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 10,
+        "min": 5
+      },
+      "item": "biomancy:organic_matter"
+    }
+  }
+}

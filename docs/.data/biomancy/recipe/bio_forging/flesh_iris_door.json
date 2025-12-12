@@ -1,0 +1,25 @@
+{
+  "type": "biomancy:bio_forging",
+  "input": {
+    "0": {
+      "count": 4,
+      "item": "biomancy:flesh_bits"
+    },
+    "1": {
+      "count": 4,
+      "item": "biomancy:bone_fragments"
+    },
+    "2": {
+      "count": 2,
+      "item": "biomancy:elastic_fibers"
+    },
+    "3": {
+      "item": "biomancy:tough_fibers"
+    }
+  },
+  "output": {
+    "0": {
+      "item": "biomancy:flesh_iris_door"
+    }
+  }
+}

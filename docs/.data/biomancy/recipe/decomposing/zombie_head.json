@@ -1,0 +1,33 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "minecraft:zombie_head"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 24,
+        "min": 14
+      },
+      "item": "biomancy:flesh_bits"
+    },
+    "1": {
+      "countRange": {
+        "type": "uniform",
+        "max": 9,
+        "min": 5
+      },
+      "item": "biomancy:elastic_fibers"
+    },
+    "2": {
+      "countRange": {
+        "type": "constant",
+        "value": 1
+      },
+      "item": "minecraft:skeleton_skull"
+    }
+  }
+}

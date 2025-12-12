@@ -1,0 +1,19 @@
+{
+  "type": "biomancy:bio_brewing",
+  "input": {
+    "0": {
+      "item": "biomancy:organic_compound"
+    },
+    "1": {
+      "item": "biomancy:withering_ooze"
+    },
+    "2": {
+      "item": "biomancy:withering_ooze"
+    }
+  },
+  "output": {
+    "0": {
+      "item": "biomancy:decaying_additive"
+    }
+  }
+}

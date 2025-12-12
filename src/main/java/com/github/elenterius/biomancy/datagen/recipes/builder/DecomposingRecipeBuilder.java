@@ -9,6 +9,7 @@ import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.ModRecipes;
 import com.github.elenterius.biomancy.util.ItemStackCounter;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
@@ -244,7 +245,7 @@ public final class DecomposingRecipeBuilder implements RecipeBuilder<Decomposing
 		return counter.getItemCounts().stream().mapToInt(countedItem -> Mth.ceil(countedItem.amount() / 64f)).sum();
 	}
 
-	public static class RecipeResult implements FinishedRecipe {
+	public static class RecipeResult implements FinishedRecipe, WikiRecipe {
 
 		private final ResourceLocation id;
 		private final String group;
@@ -290,6 +291,15 @@ public final class DecomposingRecipeBuilder implements RecipeBuilder<Decomposing
 				JsonArray array = new JsonArray();
 				conditions.forEach(c -> array.add(CraftingHelper.serialize(c)));
 				json.add(RecipeUtil.JsonKeys.CONDITIONS, array);
+			}
+		}
+
+		@Override
+		public void serializeWikiRecipeData(Consumer<JsonElement> input, Consumer<JsonElement> output) {
+			input.accept(ingredientStack.toJson());
+
+			for (VariableOutput result : outputs) {
+				output.accept(result.serialize());
 			}
 		}
 

@@ -1,0 +1,17 @@
+{
+  "type": "biomancy:bio_forging",
+  "input": {
+    "0": {
+      "item": "biomancy:grenade_casing"
+    },
+    "1": {
+      "count": 12,
+      "item": "biomancy:toxin_extract"
+    }
+  },
+  "output": {
+    "0": {
+      "item": "biomancy:toxin_grenade"
+    }
+  }
+}

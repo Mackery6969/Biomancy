@@ -1,0 +1,18 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "biomancy:smooth_primal_flesh_wall"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 2,
+        "min": 0
+      },
+      "item": "biomancy:flesh_bits"
+    }
+  }
+}

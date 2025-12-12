@@ -1,0 +1,26 @@
+{
+  "type": "biomancy:decomposing",
+  "input": {
+    "0": {
+      "item": "alexsmobs:tarantula_hawk_wing"
+    }
+  },
+  "output": {
+    "0": {
+      "countRange": {
+        "type": "uniform",
+        "max": 18,
+        "min": 9
+      },
+      "item": "biomancy:tough_fibers"
+    },
+    "1": {
+      "countRange": {
+        "type": "uniform",
+        "max": 10,
+        "min": 8
+      },
+      "item": "biomancy:mineral_fragment"
+    }
+  }
+}

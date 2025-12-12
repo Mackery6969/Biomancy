@@ -1,0 +1,14 @@
+{
+  "type": "biomancy:digesting",
+  "input": {
+    "0": {
+      "item": "iceandfire:lightning_dragon_heart"
+    }
+  },
+  "output": {
+    "0": {
+      "count": 8,
+      "item": "biomancy:nutrient_paste"
+    }
+  }
+}

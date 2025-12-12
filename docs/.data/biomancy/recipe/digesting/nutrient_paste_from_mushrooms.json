@@ -1,0 +1,14 @@
+{
+  "type": "biomancy:digesting",
+  "input": {
+    "0": {
+      "tag": "forge:mushrooms"
+    }
+  },
+  "output": {
+    "0": {
+      "count": 3,
+      "item": "biomancy:nutrient_paste"
+    }
+  }
+}
