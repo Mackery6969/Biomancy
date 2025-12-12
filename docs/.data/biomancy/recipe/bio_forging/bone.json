@@ -3,12 +3,12 @@
   "input": {
     "0": {
       "count": 12,
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     }
   },
   "output": {
     "0": {
-      "item": "minecraft:bone"
+      "id": "minecraft:bone"
     }
   }
 }

@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:pointed_dripstone"
+      "id": "minecraft:pointed_dripstone"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 2,
         "min": 1
       },
-      "item": "biomancy:stone_powder"
+      "id": "biomancy:stone_powder"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 2,
         "min": 1
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     }
   }
 }

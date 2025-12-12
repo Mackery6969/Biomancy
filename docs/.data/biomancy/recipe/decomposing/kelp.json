@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:kelp"
+      "id": "minecraft:kelp"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 1,
         "min": -1
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     }
   }
 }

@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "iceandfire:ectoplasm"
+      "id": "iceandfire:ectoplasm"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 2,
         "min": 1
       },
-      "item": "biomancy:bile"
+      "id": "biomancy:bile"
     }
   }
 }

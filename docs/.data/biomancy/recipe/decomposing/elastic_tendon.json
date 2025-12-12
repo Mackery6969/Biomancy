@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexsmobs:elastic_tendon"
+      "id": "alexsmobs:elastic_tendon"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 8,
         "min": 4
       },
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 8,
         "min": 4
       },
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     }
   }
 }

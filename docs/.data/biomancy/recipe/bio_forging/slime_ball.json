@@ -3,19 +3,19 @@
   "input": {
     "0": {
       "count": 4,
-      "item": "biomancy:regenerative_fluid"
+      "id": "biomancy:regenerative_fluid"
     },
     "1": {
       "count": 4,
-      "item": "biomancy:bile"
+      "id": "biomancy:bile"
     },
     "2": {
-      "item": "biomancy:gelling_agent"
+      "id": "biomancy:gelling_agent"
     }
   },
   "output": {
     "0": {
-      "item": "minecraft:slime_ball"
+      "id": "minecraft:slime_ball"
     }
   }
 }

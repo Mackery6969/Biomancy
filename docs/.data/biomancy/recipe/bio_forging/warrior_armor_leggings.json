@@ -2,28 +2,28 @@
   "type": "biomancy:bio_forging",
   "input": {
     "0": {
-      "item": "biomancy:living_flesh"
+      "id": "biomancy:living_flesh"
     },
     "1": {
       "count": 10,
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     },
     "2": {
       "count": 32,
-      "item": "biomancy:tough_fibers"
+      "id": "biomancy:tough_fibers"
     },
     "3": {
       "count": 34,
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     },
     "4": {
       "count": 28,
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     }
   },
   "output": {
     "0": {
-      "item": "biomancy:warrior_armor_leggings",
+      "id": "biomancy:warrior_armor_leggings",
       "nbt": "{\"biomancy:nutrients\":500}"
     }
   }

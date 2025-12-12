@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexsmobs:straddlite"
+      "id": "alexsmobs:straddlite"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 3,
         "min": 2
       },
-      "item": "biomancy:stone_powder"
+      "id": "biomancy:stone_powder"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 8,
         "min": 4
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     }
   }
 }

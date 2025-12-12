@@ -2,13 +2,13 @@
   "type": "biomancy:digesting",
   "input": {
     "0": {
-      "item": "farmersdelight:apple_cider"
+      "id": "farmersdelight:apple_cider"
     }
   },
   "output": {
     "0": {
       "count": 9,
-      "item": "biomancy:nutrient_paste"
+      "id": "biomancy:nutrient_paste"
     }
   }
 }

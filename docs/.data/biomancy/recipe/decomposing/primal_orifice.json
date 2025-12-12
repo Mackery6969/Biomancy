@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "biomancy:primal_orifice"
+      "id": "biomancy:primal_orifice"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 2,
         "min": 0
       },
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 4,
         "min": 1
       },
-      "item": "biomancy:bile"
+      "id": "biomancy:bile"
     }
   }
 }

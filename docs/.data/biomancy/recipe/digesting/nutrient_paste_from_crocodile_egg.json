@@ -2,12 +2,12 @@
   "type": "biomancy:digesting",
   "input": {
     "0": {
-      "item": "alexsmobs:crocodile_egg"
+      "id": "alexsmobs:crocodile_egg"
     }
   },
   "output": {
     "0": {
-      "item": "biomancy:nutrient_paste"
+      "id": "biomancy:nutrient_paste"
     }
   }
 }

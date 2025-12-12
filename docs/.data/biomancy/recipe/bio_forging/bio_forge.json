@@ -2,28 +2,28 @@
   "type": "biomancy:bio_forging",
   "input": {
     "0": {
-      "item": "biomancy:living_flesh"
+      "id": "biomancy:living_flesh"
     },
     "1": {
       "count": 5,
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     },
     "2": {
       "count": 8,
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     },
     "3": {
       "count": 6,
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     },
     "4": {
       "count": 2,
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     }
   },
   "output": {
     "0": {
-      "item": "biomancy:bio_forge"
+      "id": "biomancy:bio_forge"
     }
   }
 }

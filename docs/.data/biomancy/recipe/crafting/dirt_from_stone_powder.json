@@ -15,7 +15,7 @@
     "LPL"
   ],
   "result": {
-    "item": "minecraft:dirt"
+    "id": "minecraft:dirt"
   },
   "show_notification": true
 }

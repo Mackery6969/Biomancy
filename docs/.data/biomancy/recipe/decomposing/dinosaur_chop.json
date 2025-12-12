@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexscaves:dinosaur_chop"
+      "id": "alexscaves:dinosaur_chop"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 72,
         "min": 36
       },
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 24,
         "min": 12
       },
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     },
     "2": {
       "countRange": {
@@ -28,7 +28,7 @@
         "max": 18,
         "min": 12
       },
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     },
     "3": {
       "countRange": {
@@ -36,7 +36,7 @@
         "max": 6,
         "min": 3
       },
-      "item": "biomancy:hormone_secretion"
+      "id": "biomancy:hormone_secretion"
     }
   }
 }

@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "sons_of_sins:crystallized_ether"
+      "id": "sons_of_sins:crystallized_ether"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 3,
         "min": 1
       },
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     }
   }
 }

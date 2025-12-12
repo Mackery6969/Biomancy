@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:diamond"
+      "id": "minecraft:diamond"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 8,
         "min": 4
       },
-      "item": "biomancy:gem_fragments"
+      "id": "biomancy:gem_fragments"
     }
   }
 }

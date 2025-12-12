@@ -2,13 +2,13 @@
   "type": "biomancy:digesting",
   "input": {
     "0": {
-      "item": "minecraft:twisting_vines"
+      "id": "minecraft:twisting_vines"
     }
   },
   "output": {
     "0": {
       "count": 2,
-      "item": "biomancy:nutrient_paste"
+      "id": "biomancy:nutrient_paste"
     }
   }
 }

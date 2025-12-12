@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:slime_block"
+      "id": "minecraft:slime_block"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 27,
         "min": 18
       },
-      "item": "biomancy:regenerative_fluid"
+      "id": "biomancy:regenerative_fluid"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 18,
         "min": 10
       },
-      "item": "biomancy:bile"
+      "id": "biomancy:bile"
     }
   }
 }

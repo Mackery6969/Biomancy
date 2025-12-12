@@ -3,16 +3,16 @@
   "input": {
     "0": {
       "count": 2,
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     },
     "1": {
       "count": 4,
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     }
   },
   "output": {
     "0": {
-      "item": "biomancy:fibrous_flesh_wall"
+      "id": "biomancy:fibrous_flesh_wall"
     }
   }
 }

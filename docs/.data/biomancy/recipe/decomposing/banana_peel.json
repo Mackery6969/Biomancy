@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexsmobs:banana_peel"
+      "id": "alexsmobs:banana_peel"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 2,
         "min": 1
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     }
   }
 }

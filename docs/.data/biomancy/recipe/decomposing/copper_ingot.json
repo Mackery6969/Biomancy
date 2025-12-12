@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:copper_ingot"
+      "id": "minecraft:copper_ingot"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 9,
         "min": 5
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     }
   }
 }

@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "sons_of_sins:ice_heart"
+      "id": "sons_of_sins:ice_heart"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 8,
         "min": 4
       },
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     },
     "1": {
       "countRange": {
@@ -20,14 +20,14 @@
         "max": 2,
         "min": 1
       },
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     },
     "2": {
       "countRange": {
         "type": "constant",
         "value": 6
       },
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     }
   }
 }

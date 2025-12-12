@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "farmersdelight:red_mushroom_colony"
+      "id": "farmersdelight:red_mushroom_colony"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 10,
         "min": 5
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     }
   }
 }

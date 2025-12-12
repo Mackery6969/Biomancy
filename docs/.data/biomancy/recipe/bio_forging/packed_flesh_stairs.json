@@ -3,16 +3,16 @@
   "input": {
     "0": {
       "count": 6,
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     },
     "1": {
       "count": 3,
-      "item": "biomancy:tough_fibers"
+      "id": "biomancy:tough_fibers"
     }
   },
   "output": {
     "0": {
-      "item": "biomancy:packed_flesh_stairs"
+      "id": "biomancy:packed_flesh_stairs"
     }
   }
 }

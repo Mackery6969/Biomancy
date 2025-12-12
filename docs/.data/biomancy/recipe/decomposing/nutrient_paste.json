@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "biomancy:nutrient_paste"
+      "id": "biomancy:nutrient_paste"
     }
   },
   "output": {
@@ -11,7 +11,7 @@
         "type": "constant",
         "value": 5
       },
-      "item": "biomancy:nutrients"
+      "id": "biomancy:nutrients"
     },
     "1": {
       "countRange": {
@@ -19,7 +19,7 @@
         "max": 1,
         "min": 0
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     }
   }
 }

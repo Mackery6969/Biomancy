@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "iceandfire:hydra_heart"
+      "id": "iceandfire:hydra_heart"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 64,
         "min": 32
       },
-      "item": "biomancy:regenerative_fluid"
+      "id": "biomancy:regenerative_fluid"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 3,
         "min": 2
       },
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     },
     "2": {
       "countRange": {
@@ -28,7 +28,7 @@
         "max": 3,
         "min": 1
       },
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     },
     "3": {
       "countRange": {
@@ -36,7 +36,7 @@
         "max": 16,
         "min": 8
       },
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     }
   }
 }

@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:frogspawn"
+      "id": "minecraft:frogspawn"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 1,
         "min": 0
       },
-      "item": "biomancy:bile"
+      "id": "biomancy:bile"
     }
   }
 }

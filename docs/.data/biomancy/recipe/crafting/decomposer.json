@@ -21,7 +21,7 @@
     "MEM"
   ],
   "result": {
-    "item": "biomancy:decomposer"
+    "id": "biomancy:decomposer"
   },
   "show_notification": true
 }

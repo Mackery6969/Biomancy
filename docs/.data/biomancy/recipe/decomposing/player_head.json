@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:player_head"
+      "id": "minecraft:player_head"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 32,
         "min": 19
       },
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     },
     "1": {
       "countRange": {
@@ -20,14 +20,14 @@
         "max": 9,
         "min": 5
       },
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     },
     "2": {
       "countRange": {
         "type": "constant",
         "value": 1
       },
-      "item": "minecraft:skeleton_skull"
+      "id": "minecraft:skeleton_skull"
     }
   }
 }

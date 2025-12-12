@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "iceandfire:myrmex_desert_resin"
+      "id": "iceandfire:myrmex_desert_resin"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 7,
         "min": 4
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 7,
         "min": 5
       },
-      "item": "biomancy:bile"
+      "id": "biomancy:bile"
     },
     "2": {
       "countRange": {
@@ -28,7 +28,7 @@
         "max": 10,
         "min": 5
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     }
   }
 }

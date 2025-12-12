@@ -384,7 +384,3 @@ tasks.register("copyDataToWiki", Copy) {
 tasks.named("runData") {
 	finalizedBy("copyDataToWiki")
 }
-
-legacyForge {
-	ideSyncTask tasks.named("copyDataToWiki")
-}

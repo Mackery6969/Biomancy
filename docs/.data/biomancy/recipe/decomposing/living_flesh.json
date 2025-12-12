@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "biomancy:living_flesh"
+      "id": "biomancy:living_flesh"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 6,
         "min": 3
       },
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 2,
         "min": 0
       },
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     }
   }
 }

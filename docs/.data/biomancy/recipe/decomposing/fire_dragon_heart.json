@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "iceandfire:fire_dragon_heart"
+      "id": "iceandfire:fire_dragon_heart"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 30,
         "min": 10
       },
-      "item": "biomancy:gem_fragments"
+      "id": "biomancy:gem_fragments"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 25,
         "min": 15
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     },
     "2": {
       "countRange": {
@@ -28,7 +28,7 @@
         "max": 34,
         "min": 14
       },
-      "item": "biomancy:regenerative_fluid"
+      "id": "biomancy:regenerative_fluid"
     },
     "3": {
       "countRange": {
@@ -36,7 +36,7 @@
         "max": 75,
         "min": 60
       },
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     },
     "4": {
       "countRange": {
@@ -44,7 +44,7 @@
         "max": 12,
         "min": 6
       },
-      "item": "biomancy:volatile_fluid"
+      "id": "biomancy:volatile_fluid"
     }
   }
 }

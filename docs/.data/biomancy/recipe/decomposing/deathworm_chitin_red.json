@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "iceandfire:deathworm_chitin_red"
+      "id": "iceandfire:deathworm_chitin_red"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 12,
         "min": 7
       },
-      "item": "biomancy:tough_fibers"
+      "id": "biomancy:tough_fibers"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 7,
         "min": 4
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     }
   }
 }

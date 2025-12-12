@@ -4,5 +4,7 @@
   "ingredient": {
     "item": "biomancy:primal_flesh"
   },
-  "result": "biomancy:primal_flesh_slab"
+  "result": {
+    "id": "biomancy:primal_flesh_slab"
+  }
 }

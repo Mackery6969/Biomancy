@@ -3,16 +3,16 @@
   "input": {
     "0": {
       "count": 8,
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     },
     "1": {
       "count": 2,
-      "item": "biomancy:tough_fibers"
+      "id": "biomancy:tough_fibers"
     }
   },
   "output": {
     "0": {
-      "item": "biomancy:active_muscle"
+      "id": "biomancy:active_muscle"
     }
   }
 }

@@ -3,16 +3,16 @@
   "input": {
     "0": {
       "count": 2,
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     },
     "1": {
       "count": 2,
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     }
   },
   "output": {
     "0": {
-      "item": "minecraft:string"
+      "id": "minecraft:string"
     }
   }
 }

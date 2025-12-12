@@ -2,12 +2,12 @@
   "type": "biomancy:digesting",
   "input": {
     "0": {
-      "item": "alexsmobs:banana_peel"
+      "id": "alexsmobs:banana_peel"
     }
   },
   "output": {
     "0": {
-      "item": "biomancy:nutrient_paste"
+      "id": "biomancy:nutrient_paste"
     }
   }
 }

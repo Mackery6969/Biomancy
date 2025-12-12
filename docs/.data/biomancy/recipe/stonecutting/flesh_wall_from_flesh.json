@@ -4,5 +4,7 @@
   "ingredient": {
     "item": "biomancy:flesh"
   },
-  "result": "biomancy:flesh_wall"
+  "result": {
+    "id": "biomancy:flesh_wall"
+  }
 }

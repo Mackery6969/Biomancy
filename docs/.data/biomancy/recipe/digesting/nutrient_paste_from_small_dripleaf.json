@@ -2,13 +2,13 @@
   "type": "biomancy:digesting",
   "input": {
     "0": {
-      "item": "minecraft:small_dripleaf"
+      "id": "minecraft:small_dripleaf"
     }
   },
   "output": {
     "0": {
       "count": 2,
-      "item": "biomancy:nutrient_paste"
+      "id": "biomancy:nutrient_paste"
     }
   }
 }

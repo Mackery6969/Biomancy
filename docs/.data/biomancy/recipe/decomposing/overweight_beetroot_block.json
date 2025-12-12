@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "overweight_farming:overweight_beetroot_block"
+      "id": "overweight_farming:overweight_beetroot_block"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 40,
         "min": 20
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     }
   }
 }

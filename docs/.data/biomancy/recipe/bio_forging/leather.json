@@ -3,15 +3,15 @@
   "input": {
     "0": {
       "count": 8,
-      "item": "biomancy:tough_fibers"
+      "id": "biomancy:tough_fibers"
     },
     "1": {
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     }
   },
   "output": {
     "0": {
-      "item": "minecraft:leather"
+      "id": "minecraft:leather"
     }
   }
 }

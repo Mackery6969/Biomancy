@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexscaves:pine_nuts"
+      "id": "alexscaves:pine_nuts"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 3,
         "min": 2
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     }
   }
 }

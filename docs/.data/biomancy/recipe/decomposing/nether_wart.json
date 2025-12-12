@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:nether_wart"
+      "id": "minecraft:nether_wart"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 2,
         "min": 1
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 1,
         "min": 0
       },
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     }
   }
 }

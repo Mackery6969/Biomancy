@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexsmobs:lost_tentacle"
+      "id": "alexsmobs:lost_tentacle"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 15,
         "min": 8
       },
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 5,
         "min": 3
       },
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     }
   }
 }

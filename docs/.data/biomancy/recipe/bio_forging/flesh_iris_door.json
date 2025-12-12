@@ -3,23 +3,23 @@
   "input": {
     "0": {
       "count": 4,
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     },
     "1": {
       "count": 4,
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     },
     "2": {
       "count": 2,
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     },
     "3": {
-      "item": "biomancy:tough_fibers"
+      "id": "biomancy:tough_fibers"
     }
   },
   "output": {
     "0": {
-      "item": "biomancy:flesh_iris_door"
+      "id": "biomancy:flesh_iris_door"
     }
   }
 }

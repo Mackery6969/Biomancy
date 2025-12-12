@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "sons_of_sins:block_of_slime_rear"
+      "id": "sons_of_sins:block_of_slime_rear"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 27,
         "min": 18
       },
-      "item": "biomancy:regenerative_fluid"
+      "id": "biomancy:regenerative_fluid"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 18,
         "min": 10
       },
-      "item": "biomancy:bile"
+      "id": "biomancy:bile"
     }
   }
 }

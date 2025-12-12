@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:netherite_ingot"
+      "id": "minecraft:netherite_ingot"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 72,
         "min": 43
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     }
   }
 }

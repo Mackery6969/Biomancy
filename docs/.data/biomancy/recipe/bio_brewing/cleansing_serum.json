@@ -2,18 +2,18 @@
   "type": "biomancy:bio_brewing",
   "input": {
     "0": {
-      "item": "biomancy:exotic_compound"
+      "id": "biomancy:exotic_compound"
     },
     "1": {
-      "item": "biomancy:decaying_additive"
+      "id": "biomancy:decaying_additive"
     },
     "2": {
-      "item": "biomancy:healing_additive"
+      "id": "biomancy:healing_additive"
     }
   },
   "output": {
     "0": {
-      "item": "biomancy:cleansing_serum"
+      "id": "biomancy:cleansing_serum"
     }
   }
 }

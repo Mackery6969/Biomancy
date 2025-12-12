@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:prismarine_crystals"
+      "id": "minecraft:prismarine_crystals"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 3,
         "min": 1
       },
-      "item": "biomancy:gem_fragments"
+      "id": "biomancy:gem_fragments"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 1,
         "min": 0
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     },
     "2": {
       "countRange": {
@@ -28,7 +28,7 @@
         "max": 1,
         "min": 0
       },
-      "item": "biomancy:bio_lumens"
+      "id": "biomancy:bio_lumens"
     }
   }
 }

@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexscaves:sea_pig"
+      "id": "alexscaves:sea_pig"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 1,
         "min": 0
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 3,
         "min": 2
       },
-      "item": "biomancy:toxin_extract"
+      "id": "biomancy:toxin_extract"
     },
     "2": {
       "countRange": {
@@ -28,7 +28,7 @@
         "max": 4,
         "min": 2
       },
-      "item": "biomancy:bile"
+      "id": "biomancy:bile"
     }
   }
 }

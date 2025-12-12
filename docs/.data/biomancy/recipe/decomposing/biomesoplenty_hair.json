@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "biomesoplenty:hair"
+      "id": "biomesoplenty:hair"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 1,
         "min": -1
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     }
   }
 }

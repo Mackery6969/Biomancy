@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "iceandfire:hippocampus_fin"
+      "id": "iceandfire:hippocampus_fin"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 12,
         "min": 7
       },
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 4,
         "min": 2
       },
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     }
   }
 }

@@ -15,7 +15,7 @@
     " L "
   ],
   "result": {
-    "item": "minecraft:glow_item_frame"
+    "id": "minecraft:glow_item_frame"
   },
   "show_notification": true
 }

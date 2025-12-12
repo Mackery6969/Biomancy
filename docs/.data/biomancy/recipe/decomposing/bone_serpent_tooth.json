@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexsmobs:bone_serpent_tooth"
+      "id": "alexsmobs:bone_serpent_tooth"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 4,
         "min": 2
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 6,
         "min": 4
       },
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     }
   }
 }

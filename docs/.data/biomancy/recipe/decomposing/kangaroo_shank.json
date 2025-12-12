@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexsdelight:kangaroo_shank"
+      "id": "alexsdelight:kangaroo_shank"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 2,
         "min": 1
       },
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 1,
         "min": 0
       },
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     },
     "2": {
       "countRange": {
@@ -28,7 +28,7 @@
         "max": 1,
         "min": -1
       },
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     }
   }
 }

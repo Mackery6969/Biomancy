@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "iceandfire:pixie_dust"
+      "id": "iceandfire:pixie_dust"
     }
   },
   "output": {
@@ -11,7 +11,7 @@
         "type": "constant",
         "value": 1
       },
-      "item": "biomancy:bile"
+      "id": "biomancy:bile"
     },
     "1": {
       "countRange": {
@@ -19,7 +19,7 @@
         "max": 2,
         "min": 1
       },
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     }
   }
 }

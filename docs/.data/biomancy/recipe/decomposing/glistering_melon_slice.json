@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:glistering_melon_slice"
+      "id": "minecraft:glistering_melon_slice"
     }
   },
   "output": {
@@ -12,14 +12,14 @@
         "max": 6,
         "min": 3
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     },
     "1": {
       "countRange": {
         "type": "constant",
         "value": 2
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     }
   }
 }

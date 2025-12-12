@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexscaves:raw_scarlet_neodymium"
+      "id": "alexscaves:raw_scarlet_neodymium"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 9,
         "min": 5
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 2,
         "min": 1
       },
-      "item": "biomancy:stone_powder"
+      "id": "biomancy:stone_powder"
     },
     "2": {
       "countRange": {
@@ -28,7 +28,7 @@
         "max": 2,
         "min": 1
       },
-      "item": "minecraft:red_dye"
+      "id": "minecraft:red_dye"
     }
   }
 }

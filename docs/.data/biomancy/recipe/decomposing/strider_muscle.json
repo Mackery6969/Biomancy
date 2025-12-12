@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "sons_of_sins:strider_muscle"
+      "id": "sons_of_sins:strider_muscle"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 8,
         "min": 4
       },
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 3,
         "min": 2
       },
-      "item": "biomancy:tough_fibers"
+      "id": "biomancy:tough_fibers"
     },
     "2": {
       "countRange": {
@@ -28,7 +28,7 @@
         "max": 4,
         "min": 2
       },
-      "item": "biomancy:stone_powder"
+      "id": "biomancy:stone_powder"
     },
     "3": {
       "countRange": {
@@ -36,7 +36,7 @@
         "max": 1,
         "min": 0
       },
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     }
   }
 }

@@ -21,7 +21,7 @@
     "MEM"
   ],
   "result": {
-    "item": "biomancy:bio_forge"
+    "id": "biomancy:bio_forge"
   },
   "show_notification": true
 }

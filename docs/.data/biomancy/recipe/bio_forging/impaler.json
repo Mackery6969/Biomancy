@@ -3,28 +3,28 @@
   "input": {
     "0": {
       "count": 4,
-      "item": "biomancy:living_flesh"
+      "id": "biomancy:living_flesh"
     },
     "1": {
       "count": 32,
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     },
     "2": {
       "count": 32,
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     },
     "3": {
       "count": 16,
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     },
     "4": {
       "count": 4,
-      "item": "biomancy:volatile_gland"
+      "id": "biomancy:volatile_gland"
     }
   },
   "output": {
     "0": {
-      "item": "biomancy:impaler",
+      "id": "biomancy:impaler",
       "nbt": "{\"biomancy:nutrients\":200}"
     }
   }

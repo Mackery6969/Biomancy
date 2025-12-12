@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexscaves:vesper_wing"
+      "id": "alexscaves:vesper_wing"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 18,
         "min": 9
       },
-      "item": "biomancy:tough_fibers"
+      "id": "biomancy:tough_fibers"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 10,
         "min": 8
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     }
   }
 }

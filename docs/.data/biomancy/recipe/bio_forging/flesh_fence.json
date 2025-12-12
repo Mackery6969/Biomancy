@@ -3,21 +3,21 @@
   "input": {
     "0": {
       "count": 16,
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     },
     "1": {
       "count": 2,
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     },
     "2": {
       "count": 2,
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     }
   },
   "output": {
     "0": {
       "count": 4,
-      "item": "biomancy:flesh_fence"
+      "id": "biomancy:flesh_fence"
     }
   }
 }

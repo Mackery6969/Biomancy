@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "tag": "forge:bones"
+      "id": "#forge:bones"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 6,
         "min": 3
       },
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     }
   }
 }

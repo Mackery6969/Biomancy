@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:echo_shard"
+      "id": "minecraft:echo_shard"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 12,
         "min": 8
       },
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     }
   }
 }

@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "biomesoplenty:pus_bubble"
+      "id": "biomesoplenty:pus_bubble"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 6,
         "min": 4
       },
-      "item": "biomancy:bile"
+      "id": "biomancy:bile"
     }
   }
 }

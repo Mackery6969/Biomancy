@@ -2,29 +2,25 @@
   "type": "biomancy:bio_forging",
   "input": {
     "0": {
-      "type": "biomancy:essence",
-      "item": {
-        "id": "biomancy:essence",
-        "tag": "{colors:[I;4411786,8978176],essence_data:{entity_type:\"minecraft:phantom\",name:\"entity.minecraft.phantom\"}}"
-      },
-      "predicate_tag": "{essence_data:{entity_type:\"minecraft:phantom\"}}"
+      "id": "biomancy:essence",
+      "nbt": "{essence_data:{entity_type:\"minecraft:phantom\"}}"
     },
     "1": {
       "count": 14,
-      "item": "biomancy:tough_fibers"
+      "id": "biomancy:tough_fibers"
     },
     "2": {
       "count": 4,
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     },
     "3": {
       "count": 6,
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     }
   },
   "output": {
     "0": {
-      "item": "minecraft:phantom_membrane"
+      "id": "minecraft:phantom_membrane"
     }
   }
 }

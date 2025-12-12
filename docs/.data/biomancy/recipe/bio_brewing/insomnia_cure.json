@@ -2,18 +2,18 @@
   "type": "biomancy:bio_brewing",
   "input": {
     "0": {
-      "item": "biomancy:exotic_compound"
+      "id": "biomancy:exotic_compound"
     },
     "1": {
-      "item": "minecraft:sugar"
+      "id": "minecraft:sugar"
     },
     "2": {
-      "item": "biomancy:bile"
+      "id": "biomancy:bile"
     }
   },
   "output": {
     "0": {
-      "item": "biomancy:insomnia_cure"
+      "id": "biomancy:insomnia_cure"
     }
   }
 }

@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexsmobs:crocodile_scute"
+      "id": "alexsmobs:crocodile_scute"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 5,
         "min": 3
       },
-      "item": "biomancy:tough_fibers"
+      "id": "biomancy:tough_fibers"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 3,
         "min": 1
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     }
   }
 }

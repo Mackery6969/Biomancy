@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "overweight_farming:overweight_poisonous_potato_block"
+      "id": "overweight_farming:overweight_poisonous_potato_block"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 40,
         "min": 20
       },
-      "item": "biomancy:toxin_extract"
+      "id": "biomancy:toxin_extract"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 30,
         "min": 10
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     }
   }
 }

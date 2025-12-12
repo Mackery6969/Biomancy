@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "iceandfire:dragonbone"
+      "id": "iceandfire:dragonbone"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 8,
         "min": 5
       },
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     }
   }
 }

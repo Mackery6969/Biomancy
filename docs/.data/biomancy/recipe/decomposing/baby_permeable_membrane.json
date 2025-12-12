@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "biomancy:baby_permeable_membrane"
+      "id": "biomancy:baby_permeable_membrane"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 2,
         "min": 0
       },
-      "item": "biomancy:bile"
+      "id": "biomancy:bile"
     }
   }
 }

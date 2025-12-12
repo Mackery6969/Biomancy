@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "iceandfire:sapphire_gem"
+      "id": "iceandfire:sapphire_gem"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 5,
         "min": 3
       },
-      "item": "biomancy:gem_fragments"
+      "id": "biomancy:gem_fragments"
     }
   }
 }

@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "sons_of_sins:ether_ashes"
+      "id": "sons_of_sins:ether_ashes"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 2,
         "min": 0
       },
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     }
   }
 }

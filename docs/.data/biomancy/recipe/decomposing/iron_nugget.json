@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:iron_nugget"
+      "id": "minecraft:iron_nugget"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 1,
         "min": 0
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     }
   }
 }

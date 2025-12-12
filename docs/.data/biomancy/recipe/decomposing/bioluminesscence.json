@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexscaves:bioluminesscence"
+      "id": "alexscaves:bioluminesscence"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 3,
         "min": 2
       },
-      "item": "biomancy:bile"
+      "id": "biomancy:bile"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 7,
         "min": 4
       },
-      "item": "biomancy:bio_lumens"
+      "id": "biomancy:bio_lumens"
     }
   }
 }

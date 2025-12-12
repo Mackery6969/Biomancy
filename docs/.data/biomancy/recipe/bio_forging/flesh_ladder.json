@@ -3,17 +3,17 @@
   "input": {
     "0": {
       "count": 2,
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     },
     "1": {
       "count": 10,
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     }
   },
   "output": {
     "0": {
       "count": 4,
-      "item": "biomancy:flesh_ladder"
+      "id": "biomancy:flesh_ladder"
     }
   }
 }

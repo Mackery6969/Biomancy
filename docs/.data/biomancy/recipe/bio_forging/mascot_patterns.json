@@ -3,19 +3,19 @@
   "input": {
     "0": {
       "count": 8,
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     },
     "1": {
-      "item": "minecraft:spider_eye"
+      "id": "minecraft:spider_eye"
     },
     "2": {
       "count": 4,
-      "item": "biomancy:bile"
+      "id": "biomancy:bile"
     }
   },
   "output": {
     "0": {
-      "item": "biomancy:mascot_patterns"
+      "id": "biomancy:mascot_patterns"
     }
   }
 }

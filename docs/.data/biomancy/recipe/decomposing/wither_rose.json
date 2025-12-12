@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:wither_rose"
+      "id": "minecraft:wither_rose"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 2,
         "min": 1
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 1,
         "min": 0
       },
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     },
     "2": {
       "countRange": {
@@ -28,7 +28,7 @@
         "max": 5,
         "min": 3
       },
-      "item": "biomancy:withering_ooze"
+      "id": "biomancy:withering_ooze"
     }
   }
 }

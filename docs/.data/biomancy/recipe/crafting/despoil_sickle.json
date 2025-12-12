@@ -15,7 +15,7 @@
     " BM"
   ],
   "result": {
-    "item": "biomancy:despoil_sickle"
+    "id": "biomancy:despoil_sickle"
   },
   "show_notification": true
 }

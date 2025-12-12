@@ -3,24 +3,24 @@
   "input": {
     "0": {
       "count": 4,
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     },
     "1": {
       "count": 6,
-      "item": "biomancy:tough_fibers"
+      "id": "biomancy:tough_fibers"
     },
     "2": {
       "count": 12,
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     },
     "3": {
       "count": 4,
-      "item": "biomancy:gem_fragments"
+      "id": "biomancy:gem_fragments"
     }
   },
   "output": {
     "0": {
-      "item": "biomancy:storage_sac"
+      "id": "biomancy:storage_sac"
     }
   }
 }

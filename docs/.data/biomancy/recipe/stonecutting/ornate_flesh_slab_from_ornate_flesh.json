@@ -4,5 +4,7 @@
   "ingredient": {
     "item": "biomancy:ornate_flesh"
   },
-  "result": "biomancy:ornate_flesh_slab"
+  "result": {
+    "id": "biomancy:ornate_flesh_slab"
+  }
 }

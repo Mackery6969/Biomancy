@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexscaves:cycad"
+      "id": "alexscaves:cycad"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 4,
         "min": 2
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     }
   }
 }

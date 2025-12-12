@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "tag": "c:bones/wither"
+      "id": "#c:bones/wither"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 6,
         "min": 3
       },
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 5,
         "min": 3
       },
-      "item": "biomancy:withering_ooze"
+      "id": "biomancy:withering_ooze"
     }
   }
 }

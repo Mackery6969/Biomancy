@@ -3,20 +3,20 @@
   "input": {
     "0": {
       "count": 8,
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     },
     "1": {
       "count": 12,
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     },
     "2": {
       "count": 2,
-      "item": "biomancy:stone_powder"
+      "id": "biomancy:stone_powder"
     }
   },
   "output": {
     "0": {
-      "item": "biomancy:mob_fang"
+      "id": "biomancy:mob_fang"
     }
   }
 }

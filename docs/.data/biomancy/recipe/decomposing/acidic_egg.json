@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "biomancy:acidic_egg"
+      "id": "biomancy:acidic_egg"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 1,
         "min": -2
       },
-      "item": "biomancy:acid_extract"
+      "id": "biomancy:acid_extract"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 4,
         "min": 2
       },
-      "item": "biomancy:bile"
+      "id": "biomancy:bile"
     }
   }
 }

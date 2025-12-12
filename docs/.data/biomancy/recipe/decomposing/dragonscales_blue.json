@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "iceandfire:dragonscales_blue"
+      "id": "iceandfire:dragonscales_blue"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 25,
         "min": 15
       },
-      "item": "biomancy:tough_fibers"
+      "id": "biomancy:tough_fibers"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 15,
         "min": 5
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     }
   }
 }

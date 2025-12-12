@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "biomancy:malignant_flesh_stairs"
+      "id": "biomancy:malignant_flesh_stairs"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 1,
         "min": -4
       },
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     }
   }
 }

@@ -3,12 +3,12 @@
   "input": {
     "0": {
       "count": 8,
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     }
   },
   "output": {
     "0": {
-      "item": "biomancy:vial_holder"
+      "id": "biomancy:vial_holder"
     }
   }
 }

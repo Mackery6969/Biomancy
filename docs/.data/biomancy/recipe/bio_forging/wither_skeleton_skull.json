@@ -3,20 +3,20 @@
   "input": {
     "0": {
       "count": 54,
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     },
     "1": {
       "count": 13,
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     },
     "2": {
       "count": 20,
-      "item": "biomancy:withering_ooze"
+      "id": "biomancy:withering_ooze"
     }
   },
   "output": {
     "0": {
-      "item": "minecraft:wither_skeleton_skull"
+      "id": "minecraft:wither_skeleton_skull"
     }
   }
 }

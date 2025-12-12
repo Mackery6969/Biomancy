@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:enchanted_golden_apple"
+      "id": "minecraft:enchanted_golden_apple"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 72,
         "min": 43
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 20,
         "min": 12
       },
-      "item": "biomancy:regenerative_fluid"
+      "id": "biomancy:regenerative_fluid"
     },
     "2": {
       "countRange": {
@@ -28,7 +28,7 @@
         "max": 10,
         "min": 6
       },
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     }
   }
 }

@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "sons_of_sins:bloody_bone"
+      "id": "sons_of_sins:bloody_bone"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 6,
         "min": 3
       },
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     }
   }
 }

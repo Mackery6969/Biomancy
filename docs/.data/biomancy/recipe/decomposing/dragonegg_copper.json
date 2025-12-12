@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "iceandfire:dragonegg_copper"
+      "id": "iceandfire:dragonegg_copper"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 12,
         "min": 6
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 40,
         "min": 10
       },
-      "item": "biomancy:hormone_secretion"
+      "id": "biomancy:hormone_secretion"
     },
     "2": {
       "countRange": {
@@ -28,7 +28,7 @@
         "max": 8,
         "min": 4
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     },
     "3": {
       "countRange": {
@@ -36,7 +36,7 @@
         "max": 85,
         "min": 45
       },
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     }
   }
 }

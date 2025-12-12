@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:fire_coral_fan"
+      "id": "minecraft:fire_coral_fan"
     }
   },
   "output": {
@@ -11,7 +11,7 @@
         "type": "constant",
         "value": 1
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     },
     "1": {
       "countRange": {
@@ -19,7 +19,7 @@
         "max": 1,
         "min": 0
       },
-      "item": "biomancy:regenerative_fluid"
+      "id": "biomancy:regenerative_fluid"
     }
   }
 }

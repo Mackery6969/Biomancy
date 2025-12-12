@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "biomesoplenty:porous_flesh"
+      "id": "biomesoplenty:porous_flesh"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 2,
         "min": 1
       },
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     }
   }
 }

@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexsmobs:triops_eggs"
+      "id": "alexsmobs:triops_eggs"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 1,
         "min": -1
       },
-      "item": "biomancy:hormone_secretion"
+      "id": "biomancy:hormone_secretion"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 1,
         "min": 0
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     }
   }
 }

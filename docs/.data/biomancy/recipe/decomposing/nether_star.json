@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:nether_star"
+      "id": "minecraft:nether_star"
     }
   },
   "output": {
@@ -11,21 +11,21 @@
         "type": "constant",
         "value": 50
       },
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     },
     "1": {
       "countRange": {
         "type": "constant",
         "value": 25
       },
-      "item": "biomancy:bio_lumens"
+      "id": "biomancy:bio_lumens"
     },
     "2": {
       "countRange": {
         "type": "constant",
         "value": 20
       },
-      "item": "biomancy:gem_fragments"
+      "id": "biomancy:gem_fragments"
     }
   }
 }

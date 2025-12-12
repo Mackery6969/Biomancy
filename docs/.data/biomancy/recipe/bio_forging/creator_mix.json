@@ -3,24 +3,24 @@
   "input": {
     "0": {
       "count": 4,
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     },
     "1": {
       "count": 3,
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     },
     "2": {
       "count": 2,
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     },
     "3": {
       "count": 15,
-      "item": "biomancy:nutrients"
+      "id": "biomancy:nutrients"
     }
   },
   "output": {
     "0": {
-      "item": "biomancy:creator_mix"
+      "id": "biomancy:creator_mix"
     }
   }
 }

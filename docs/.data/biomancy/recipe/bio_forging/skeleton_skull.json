@@ -3,16 +3,16 @@
   "input": {
     "0": {
       "count": 54,
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     },
     "1": {
       "count": 13,
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     }
   },
   "output": {
     "0": {
-      "item": "minecraft:skeleton_skull"
+      "id": "minecraft:skeleton_skull"
     }
   }
 }

@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:popped_chorus_fruit"
+      "id": "minecraft:popped_chorus_fruit"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 2,
         "min": 1
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 2,
         "min": 1
       },
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     },
     "2": {
       "countRange": {
@@ -28,14 +28,14 @@
         "max": 1,
         "min": 0
       },
-      "item": "biomancy:bile"
+      "id": "biomancy:bile"
     },
     "3": {
       "countRange": {
         "type": "constant",
         "value": 1
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     }
   }
 }

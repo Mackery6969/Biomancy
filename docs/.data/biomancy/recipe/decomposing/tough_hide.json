@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexscaves:tough_hide"
+      "id": "alexscaves:tough_hide"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 5,
         "min": 3
       },
-      "item": "biomancy:tough_fibers"
+      "id": "biomancy:tough_fibers"
     }
   }
 }

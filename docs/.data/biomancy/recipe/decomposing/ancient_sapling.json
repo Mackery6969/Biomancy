@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexscaves:ancient_sapling"
+      "id": "alexscaves:ancient_sapling"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 3,
         "min": 1
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 3,
         "min": 0
       },
-      "item": "biomancy:stone_powder"
+      "id": "biomancy:stone_powder"
     },
     "2": {
       "countRange": {
@@ -28,7 +28,7 @@
         "max": 1,
         "min": 0
       },
-      "item": "biomancy:exotic_dust"
+      "id": "biomancy:exotic_dust"
     }
   }
 }

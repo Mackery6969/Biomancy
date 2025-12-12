@@ -15,7 +15,7 @@
     "LLL"
   ],
   "result": {
-    "item": "minecraft:sand"
+    "id": "minecraft:sand"
   },
   "show_notification": true
 }

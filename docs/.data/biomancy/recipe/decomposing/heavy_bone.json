@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexscaves:heavy_bone"
+      "id": "alexscaves:heavy_bone"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 12,
         "min": 6
       },
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 2,
         "min": 1
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     },
     "2": {
       "countRange": {
@@ -28,7 +28,7 @@
         "max": 4,
         "min": 1
       },
-      "item": "biomancy:hormone_secretion"
+      "id": "biomancy:hormone_secretion"
     }
   }
 }

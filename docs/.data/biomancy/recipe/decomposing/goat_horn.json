@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:goat_horn"
+      "id": "minecraft:goat_horn"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 7,
         "min": 5
       },
-      "item": "biomancy:mineral_fragment"
+      "id": "biomancy:mineral_fragment"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 8,
         "min": 6
       },
-      "item": "biomancy:tough_fibers"
+      "id": "biomancy:tough_fibers"
     }
   }
 }

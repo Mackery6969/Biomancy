@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexsmobs:shed_snake_skin"
+      "id": "alexsmobs:shed_snake_skin"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 2,
         "min": 0
       },
-      "item": "biomancy:tough_fibers"
+      "id": "biomancy:tough_fibers"
     }
   }
 }

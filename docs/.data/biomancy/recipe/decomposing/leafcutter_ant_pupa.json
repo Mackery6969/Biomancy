@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "alexsmobs:leafcutter_ant_pupa"
+      "id": "alexsmobs:leafcutter_ant_pupa"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 1,
         "min": 0
       },
-      "item": "biomancy:bile"
+      "id": "biomancy:bile"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 1,
         "min": 0
       },
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     }
   }
 }

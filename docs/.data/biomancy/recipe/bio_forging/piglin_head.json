@@ -2,28 +2,24 @@
   "type": "biomancy:bio_forging",
   "input": {
     "0": {
-      "item": "minecraft:skeleton_skull"
+      "id": "minecraft:skeleton_skull"
     },
     "1": {
-      "type": "biomancy:essence",
-      "item": {
-        "id": "biomancy:essence",
-        "tag": "{colors:[I;10051392,16380836],essence_data:{entity_type:\"minecraft:piglin\",name:\"entity.minecraft.piglin\"}}"
-      },
-      "predicate_tag": "{essence_data:{entity_type:\"minecraft:piglin\"}}"
+      "id": "biomancy:essence",
+      "nbt": "{essence_data:{entity_type:\"minecraft:piglin\"}}"
     },
     "2": {
       "count": 42,
-      "item": "biomancy:flesh_bits"
+      "id": "biomancy:flesh_bits"
     },
     "3": {
       "count": 18,
-      "item": "biomancy:elastic_fibers"
+      "id": "biomancy:elastic_fibers"
     }
   },
   "output": {
     "0": {
-      "item": "minecraft:piglin_head"
+      "id": "minecraft:piglin_head"
     }
   }
 }

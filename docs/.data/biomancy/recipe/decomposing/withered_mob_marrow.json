@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "biomancy:withered_mob_marrow"
+      "id": "biomancy:withered_mob_marrow"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 5,
         "min": 3
       },
-      "item": "biomancy:withering_ooze"
+      "id": "biomancy:withering_ooze"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 4,
         "min": 2
       },
-      "item": "biomancy:bone_fragments"
+      "id": "biomancy:bone_fragments"
     }
   }
 }

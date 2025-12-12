@@ -2,13 +2,13 @@
   "type": "biomancy:digesting",
   "input": {
     "0": {
-      "item": "minecraft:nether_wart"
+      "id": "minecraft:nether_wart"
     }
   },
   "output": {
     "0": {
       "count": 2,
-      "item": "biomancy:nutrient_paste"
+      "id": "biomancy:nutrient_paste"
     }
   }
 }

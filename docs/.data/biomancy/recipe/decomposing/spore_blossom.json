@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:spore_blossom"
+      "id": "minecraft:spore_blossom"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 2,
         "min": 1
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     },
     "1": {
       "countRange": {
@@ -20,7 +20,7 @@
         "max": 5,
         "min": 3
       },
-      "item": "biomancy:bio_lumens"
+      "id": "biomancy:bio_lumens"
     }
   }
 }

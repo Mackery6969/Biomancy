@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:coarse_dirt"
+      "id": "minecraft:coarse_dirt"
     }
   },
   "output": {
@@ -12,14 +12,14 @@
         "max": 1,
         "min": 0
       },
-      "item": "biomancy:organic_matter"
+      "id": "biomancy:organic_matter"
     },
     "1": {
       "countRange": {
         "type": "constant",
         "value": 1
       },
-      "item": "biomancy:stone_powder"
+      "id": "biomancy:stone_powder"
     }
   }
 }

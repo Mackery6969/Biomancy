@@ -2,7 +2,7 @@
   "type": "biomancy:decomposing",
   "input": {
     "0": {
-      "item": "minecraft:rabbit_hide"
+      "id": "minecraft:rabbit_hide"
     }
   },
   "output": {
@@ -12,7 +12,7 @@
         "max": 1,
         "min": 0
       },
-      "item": "biomancy:tough_fibers"
+      "id": "biomancy:tough_fibers"
     }
   }
 }
