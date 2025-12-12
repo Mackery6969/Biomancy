@@ -61,7 +61,7 @@ public final class WorkbenchRecipeBuilder {
 	}
 
 	public static ShapedBuilder stairs(RecipeCategory category, ItemLike result, ItemLike ingredient) {
-		return polished(category, result, Ingredient.of(ingredient)).unlockedBy(ingredient);
+		return stairs(category, result, Ingredient.of(ingredient)).unlockedBy(ingredient);
 	}
 
 	public static ShapedBuilder stairs(RecipeCategory category, ItemLike result, Ingredient ingredient) {
