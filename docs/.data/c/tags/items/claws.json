@@ -1,0 +1,16 @@
+{
+  "values": [
+    {
+      "id": "#forge:claws",
+      "required": false
+    },
+    {
+      "id": "alexsmobs:dropbear_claw",
+      "required": false
+    },
+    {
+      "id": "iceandfire:hippogryph_talon",
+      "required": false
+    }
+  ]
+}

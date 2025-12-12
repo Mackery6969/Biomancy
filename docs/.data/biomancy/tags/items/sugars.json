@@ -1,0 +1,69 @@
+{
+  "values": [
+    {
+      "id": "#c:foods/cookie",
+      "required": false
+    },
+    {
+      "id": "#c:foods/candy",
+      "required": false
+    },
+    "minecraft:sugar",
+    "minecraft:cake",
+    "minecraft:honeycomb",
+    "minecraft:honey_block",
+    "minecraft:honeycomb_block",
+    "minecraft:honey_bottle",
+    "minecraft:sweet_berries",
+    "minecraft:cocoa_beans",
+    "minecraft:apple",
+    {
+      "id": "farmersdelight:hot_cocoa",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:glow_berry_custard",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:melon_juice",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:cake_slice",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:apple_pie_slice",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:chocolate_pie_slice",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:sweet_berry_cheesecake_slice",
+      "required": false
+    },
+    {
+      "id": "create:sweet_roll",
+      "required": false
+    },
+    {
+      "id": "create:chocolate_glazed_berries",
+      "required": false
+    },
+    {
+      "id": "create:honeyed_apple",
+      "required": false
+    },
+    {
+      "id": "create:bar_of_chocolate",
+      "required": false
+    },
+    {
+      "id": "createaddition:chocolate_cake",
+      "required": false
+    }
+  ]
+}

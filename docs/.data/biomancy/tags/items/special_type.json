@@ -1,0 +1,26 @@
+{
+  "values": [
+    "biomancy:bio_forge",
+    "biomancy:bio_lab",
+    "biomancy:biometric_membrane",
+    "biomancy:decomposer",
+    "biomancy:digester",
+    "biomancy:fleshkin_chest",
+    "biomancy:fleshkin_pressure_plate",
+    "biomancy:acolyte_armor_boots",
+    "biomancy:acolyte_armor_chestplate",
+    "biomancy:acolyte_armor_helmet",
+    "biomancy:acolyte_armor_leggings",
+    "biomancy:caustic_gunblade",
+    "biomancy:dev_arm_cannon",
+    "biomancy:guide_book",
+    "biomancy:impaler",
+    "biomancy:ravenous_claws",
+    "biomancy:tab_icon",
+    "biomancy:thorn_shield",
+    "biomancy:warrior_armor_boots",
+    "biomancy:warrior_armor_chestplate",
+    "biomancy:warrior_armor_helmet",
+    "biomancy:warrior_armor_leggings"
+  ]
+}

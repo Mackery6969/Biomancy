@@ -335,3 +335,45 @@ wiki {
 	}
 }
 //TODO: install https://github.com/Sinytra/WikiDataExporter when on minecraft 1.21.1
+
+tasks.register("cleanWikiData") {
+	def root = file("docs/.data")
+
+	doLast {
+		root.listFiles()?.each { namespaceFolder ->
+			if (namespaceFolder.isDirectory()) {
+				def tagsFolder = new File(namespaceFolder, "tags")
+				if (tagsFolder.exists()) {
+					if (!tagsFolder.deleteDir()) {
+						throw new GradleException("Failed to delete folder: $tagsFolder")
+					}
+				}
+				if (namespaceFolder.listFiles()?.length == 0) {
+					if (!namespaceFolder.delete()) {
+						throw new GradleException("Failed to delete folder: $namespaceFolder")
+					}
+				}
+			}
+		}
+	}
+}
+
+tasks.register("copyDataToWiki", Copy) {
+	dependsOn("cleanWikiData")
+
+	def outputFolder = file("docs/.data")
+	includeEmptyDirs = false
+
+	from("build/resources/main/data") {
+		include("**/tags/**/*.json")
+	}
+	into(outputFolder)
+}
+
+tasks.named("runData") {
+	finalizedBy("copyDataToWiki")
+}
+
+legacyForge {
+	ideSyncTask tasks.named("copyDataToWiki")
+}

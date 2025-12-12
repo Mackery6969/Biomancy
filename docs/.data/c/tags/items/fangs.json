@@ -1,0 +1,20 @@
+{
+  "values": [
+    {
+      "id": "#forge:fangs",
+      "required": false
+    },
+    {
+      "id": "alexsmobs:bone_serpent_tooth",
+      "required": false
+    },
+    {
+      "id": "iceandfire:sea_serpent_fang",
+      "required": false
+    },
+    {
+      "id": "iceandfire:hydra_fang",
+      "required": false
+    }
+  ]
+}

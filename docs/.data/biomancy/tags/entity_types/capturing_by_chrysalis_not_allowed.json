@@ -1,0 +1,31 @@
+{
+  "values": [
+    {
+      "id": "#c:bosses",
+      "required": false
+    },
+    "minecraft:warden",
+    "minecraft:elder_guardian",
+    "minecraft:giant",
+    {
+      "id": "alexscaves:gum_worm",
+      "required": false
+    },
+    {
+      "id": "alexscaves:tremorzilla",
+      "required": false
+    },
+    {
+      "id": "alexscaves:hullbreaker",
+      "required": false
+    },
+    {
+      "id": "alexscaves:forsaken",
+      "required": false
+    },
+    {
+      "id": "alexsmobs:void_worm",
+      "required": false
+    }
+  ]
+}

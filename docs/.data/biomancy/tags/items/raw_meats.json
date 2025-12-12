@@ -1,0 +1,11 @@
+{
+  "remove": [
+    "minecraft:rotten_flesh"
+  ],
+  "values": [
+    {
+      "id": "#c:foods/raw_meat",
+      "required": false
+    }
+  ]
+}

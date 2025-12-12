@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "#c:bosses",
+      "required": false
+    },
+    {
+      "id": "#c:golems",
+      "required": false
+    }
+  ]
+}
