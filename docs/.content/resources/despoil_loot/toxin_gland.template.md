@@ -12,3 +12,7 @@ An organ full of toxins, maybe you should drink it...
 Decomposing component.
 
 <PrefabUsage />
+
+## Obtaining
+
+{{MOBS}}

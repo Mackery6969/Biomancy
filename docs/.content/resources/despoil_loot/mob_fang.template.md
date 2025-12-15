@@ -12,3 +12,7 @@ Cutting tooth made of tissue rich in minerals.
 Decomposing component.
 
 <PrefabUsage />
+
+## Obtaining
+
+{{MOBS}}

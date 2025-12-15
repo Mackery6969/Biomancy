@@ -17,6 +17,7 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -28,9 +29,7 @@ import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -228,6 +227,8 @@ public class ModDespoilLoot extends DespoilLootProvider {
 							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
 			);
 
+			despoilDropSources.computeIfAbsent(ModItems.MOB_FANG.get(), k -> new HashSet<>()).add(entityType);
+
 			hasLoot = true;
 		}
 
@@ -245,6 +246,9 @@ public class ModDespoilLoot extends DespoilLootProvider {
 							.apply(SetItemCountFunction.setCount(countProvider))
 							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
 			);
+
+			despoilDropSources.computeIfAbsent(ModItems.MOB_CLAW.get(), k -> new HashSet<>()).add(entityType);
+
 			hasLoot = true;
 		}
 
@@ -257,6 +261,9 @@ public class ModDespoilLoot extends DespoilLootProvider {
 							.apply(SetItemCountFunction.setCount(countProvider))
 							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
 			);
+
+			despoilDropSources.computeIfAbsent(ModItems.MOB_SINEW.get(), k -> new HashSet<>()).add(entityType);
+
 			hasLoot = true;
 		}
 
@@ -275,6 +282,9 @@ public class ModDespoilLoot extends DespoilLootProvider {
 							.apply(SetItemCountFunction.setCount(countProvider))
 //							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
 			);
+
+			despoilDropSources.computeIfAbsent(ModItems.GENERIC_MOB_GLAND.get(), k -> new HashSet<>()).add(entityType);
+
 			hasLoot = true;
 		}
 
@@ -287,6 +297,9 @@ public class ModDespoilLoot extends DespoilLootProvider {
 							.apply(SetItemCountFunction.setCount(countProvider))
 							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
 			);
+
+			despoilDropSources.computeIfAbsent(ModItems.MOB_MARROW.get(), k -> new HashSet<>()).add(entityType);
+
 			hasLoot = true;
 		}
 
@@ -315,6 +328,9 @@ public class ModDespoilLoot extends DespoilLootProvider {
 							.apply(SetItemCountFunction.setCount(countProvider))
 //							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
 			);
+
+			despoilDropSources.computeIfAbsent(ModItems.TOXIN_GLAND.get(), k -> new HashSet<>()).add(entityType);
+
 			hasLoot = true;
 		}
 
@@ -327,6 +343,9 @@ public class ModDespoilLoot extends DespoilLootProvider {
 							.apply(SetItemCountFunction.setCount(countProvider))
 //							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
 			);
+
+			despoilDropSources.computeIfAbsent(ModItems.VOLATILE_GLAND.get(), k -> new HashSet<>()).add(entityType);
+
 			hasLoot = true;
 		}
 
@@ -339,6 +358,9 @@ public class ModDespoilLoot extends DespoilLootProvider {
 							.apply(SetItemCountFunction.setCount(countProvider))
 							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
 			);
+
+			despoilDropSources.computeIfAbsent(ModItems.WITHERED_MOB_MARROW.get(), k -> new HashSet<>()).add(entityType);
+
 			hasLoot = true;
 		}
 
@@ -346,5 +368,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 
 		return Optional.of(builder);
 	}
+
+	protected Map<Item, Set<EntityType<?>>> despoilDropSources = new HashMap<>();
 
 }

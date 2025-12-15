@@ -7,8 +7,11 @@ custom:
 
 # Sinew
 
-Drops from Mobs that have flesh on their body (**not skeletons**)
-
 Decomposing component.
 
 <PrefabUsage />
+
+## Obtaining
+Drops from Mobs that have flesh on their body (**not skeletons**)
+
+{{MOBS}}

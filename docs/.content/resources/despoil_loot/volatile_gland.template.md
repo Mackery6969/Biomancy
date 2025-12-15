@@ -15,3 +15,7 @@ When consumed causes an explosion below the player/mob that ate it.
 Decomposing component.
 
 <PrefabUsage />
+
+## Obtaining
+
+{{MOBS}}

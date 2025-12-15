@@ -12,3 +12,7 @@ A sac filled to the brim with bile.
 Decomposing component.
 
 <PrefabUsage />
+
+## Obtaining
+
+{{MOBS}}

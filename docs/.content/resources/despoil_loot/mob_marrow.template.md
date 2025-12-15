@@ -14,3 +14,7 @@ Can be slurped to gain saturation and remove the hunger effect.
 Decomposing component.
 
 <PrefabUsage />
+
+## Obtaining
+
+{{MOBS}}

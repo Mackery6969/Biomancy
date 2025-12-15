@@ -1,0 +1,147 @@
+package com.github.elenterius.biomancy.datagen.loot;
+
+import net.minecraft.Util;
+import net.minecraft.data.CachedOutput;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class WikiDespoilLootProvider implements DataProvider {
+
+	private final ModDespoilLoot despoilLootProvider;
+	private final Path baseInputPath;
+	private final Path baseOutputPath;
+
+	public WikiDespoilLootProvider(PackOutput output, ModDespoilLoot despoilLootProvider) {
+		this.despoilLootProvider = despoilLootProvider;
+		baseInputPath = Paths.get(System.getProperty("wiki.docs")).resolve(".content");
+		baseOutputPath = Paths.get(System.getProperty("wiki.docs")).resolve(".content");
+//		baseOutputPath = output.getOutputFolder().resolve(".wiki_content");
+	}
+
+	@Override
+	public CompletableFuture<?> run(CachedOutput output) {
+		despoilLootProvider.generate();
+		Map<String, String> mobTokens = new HashMap<>();
+
+		Set<String> fileNames = despoilLootProvider.despoilDropSources.entrySet().stream()
+				.map(entry -> {
+					String baseName = baseFileName(entry.getKey());
+					mobTokens.put(baseName, entry.getValue().stream().map(this::contentLink).collect(Collectors.joining(" • ")));
+					return baseName;
+				})
+				.collect(Collectors.toSet());
+
+		List<CompletableFuture<?>> futures = saveTemplate(
+				fileNames,
+				baseInputPath,
+				baseOutputPath,
+				baseName -> {
+					Map<String, String> tokens = new HashMap<>();
+					tokens.put("{{MOBS}}", mobTokens.get(baseName));
+					return tokens;
+				}
+		);
+
+		return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
+	}
+
+	protected String baseFileName(ItemLike itemLike) {
+		ResourceLocation key = ForgeRegistries.ITEMS.getKey(itemLike.asItem());
+		if (key != null) return key.getPath();
+		throw new RuntimeException("Item key is missing for: " + itemLike);
+	}
+
+	protected String contentLink(EntityType<?> entityType) {
+		return "[](@" + Objects.requireNonNull(ForgeRegistries.ENTITY_TYPES.getKey(entityType)) + ")";
+	}
+
+	protected List<CompletableFuture<?>> saveTemplate(Set<String> baseNames, Path sourceRoot, Path targetRoot, Function<String, Map<String, String>> tokenResolver) {
+		final String templateSuffix = ".template.md";
+
+		try (Stream<Path> paths = Files.walk(sourceRoot)) {
+			return paths
+					.filter(Files::isRegularFile)
+					.filter(p -> p.getFileName().toString().endsWith(templateSuffix))
+					.filter(p -> {
+						String filename = p.getFileName().toString();
+						String baseName = filename.substring(0, filename.length() - templateSuffix.length());
+						return baseNames.contains(baseName);
+					})
+					.map(sourceFile ->
+							CompletableFuture.supplyAsync(() -> {
+								try {
+									String fileName = sourceFile.getFileName().toString();
+									String baseName = fileName.substring(0, fileName.length() - templateSuffix.length());
+
+									// Resolve tokens using BASE NAME
+									Map<String, String> tokens = tokenResolver.apply(baseName);
+
+									// Preserve relative directory structure
+									Path relativePath = sourceRoot.relativize(sourceFile);
+
+									// Rename output file
+									String targetFileName = baseName + ".mdx";
+
+									Path targetFile = targetRoot
+											.resolve(relativePath)
+											.getParent()
+											.resolve(targetFileName);
+
+									// Read template
+									String content = Files.readString(sourceFile, StandardCharsets.UTF_8);
+
+									// Apply per-basename replacements
+									for (var entry : tokens.entrySet()) {
+										content = content.replace(entry.getKey(), entry.getValue());
+									}
+
+									Files.createDirectories(targetFile.getParent());
+
+									// (over-)write file
+									Files.writeString(
+											targetFile,
+											content,
+											StandardCharsets.UTF_8,
+											StandardOpenOption.CREATE,
+											StandardOpenOption.TRUNCATE_EXISTING
+									);
+
+									return targetFile;
+								}
+								catch (IOException e) {
+									LOGGER.error("Failed process template file: {}", sourceFile, e);
+									throw new CompletionException(e);
+								}
+							}, Util.backgroundExecutor())
+					)
+					.collect(Collectors.toList());
+		}
+		catch (IOException e) {
+			LOGGER.error("Failed walk template root: {}", sourceRoot, e);
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public String getName() {
+		return "Wiki Despoil Loot Provider";
+	}
+
+}

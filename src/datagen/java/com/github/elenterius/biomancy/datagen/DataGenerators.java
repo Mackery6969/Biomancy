@@ -3,8 +3,10 @@ package com.github.elenterius.biomancy.datagen;
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.datagen.advancements.ModAdvancementProvider;
 import com.github.elenterius.biomancy.datagen.lang.EnglishLangProvider;
+import com.github.elenterius.biomancy.datagen.loot.ModDespoilLoot;
 import com.github.elenterius.biomancy.datagen.loot.ModGlobalLootModifierProvider;
 import com.github.elenterius.biomancy.datagen.loot.ModLootTableProvider;
+import com.github.elenterius.biomancy.datagen.loot.WikiDespoilLootProvider;
 import com.github.elenterius.biomancy.datagen.models.ModBlockStateProvider;
 import com.github.elenterius.biomancy.datagen.models.ModItemModelProvider;
 import com.github.elenterius.biomancy.datagen.particles.ModParticleSpriteProvider;
@@ -58,6 +60,7 @@ public final class DataGenerators {
 		//loot
 		generator.addProvider(includeServer, new ModLootTableProvider(packOutput));
 		generator.addProvider(includeServer, new ModGlobalLootModifierProvider(packOutput));
+		generator.addProvider(includeServer, new WikiDespoilLootProvider(packOutput, new ModDespoilLoot()));
 
 		//models & block states
 		generator.addProvider(includeServer, new ModBlockStateProvider(packOutput, existingFileHelper));

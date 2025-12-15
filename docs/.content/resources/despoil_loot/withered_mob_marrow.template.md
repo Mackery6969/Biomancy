@@ -15,3 +15,7 @@ Can be slurped to get afflicted with the [wither effect](https://minecraft.wiki/
 Decomposing component.
 
 <PrefabUsage />
+
+## Obtaining
+
+{{MOBS}}
