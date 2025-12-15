@@ -12,6 +12,6 @@ Decomposing component.
 <PrefabUsage />
 
 ## Obtaining
-Drops from Mobs that have flesh on their body (**not skeletons**)
+Can be obtained by killing the following mobs with []($loot/despoil_loot):
 
 {{MOBS}}

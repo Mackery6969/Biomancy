@@ -43,7 +43,7 @@ public class WikiDespoilLootProvider implements DataProvider {
 		Set<String> fileNames = despoilLootProvider.despoilDropSources.entrySet().stream()
 				.map(entry -> {
 					String baseName = baseFileName(entry.getKey());
-					mobTokens.put(baseName, entry.getValue().stream().map(this::contentLink).collect(Collectors.joining(" • ")));
+					mobTokens.put(baseName, entry.getValue().stream().map(this::contentLink).sorted().collect(Collectors.joining(" • ")));
 					return baseName;
 				})
 				.collect(Collectors.toSet());
@@ -84,19 +84,15 @@ public class WikiDespoilLootProvider implements DataProvider {
 						String baseName = filename.substring(0, filename.length() - templateSuffix.length());
 						return baseNames.contains(baseName);
 					})
-					.map(sourceFile ->
+					.map(templateFile ->
 							CompletableFuture.supplyAsync(() -> {
 								try {
-									String fileName = sourceFile.getFileName().toString();
+									String fileName = templateFile.getFileName().toString();
 									String baseName = fileName.substring(0, fileName.length() - templateSuffix.length());
 
-									// Resolve tokens using BASE NAME
 									Map<String, String> tokens = tokenResolver.apply(baseName);
 
-									// Preserve relative directory structure
-									Path relativePath = sourceRoot.relativize(sourceFile);
-
-									// Rename output file
+									Path relativePath = sourceRoot.relativize(templateFile);
 									String targetFileName = baseName + ".mdx";
 
 									Path targetFile = targetRoot
@@ -104,17 +100,13 @@ public class WikiDespoilLootProvider implements DataProvider {
 											.getParent()
 											.resolve(targetFileName);
 
-									// Read template
-									String content = Files.readString(sourceFile, StandardCharsets.UTF_8);
+									String content = Files.readString(templateFile, StandardCharsets.UTF_8);
 
-									// Apply per-basename replacements
 									for (var entry : tokens.entrySet()) {
 										content = content.replace(entry.getKey(), entry.getValue());
 									}
 
 									Files.createDirectories(targetFile.getParent());
-
-									// (over-)write file
 									Files.writeString(
 											targetFile,
 											content,
@@ -126,7 +118,7 @@ public class WikiDespoilLootProvider implements DataProvider {
 									return targetFile;
 								}
 								catch (IOException e) {
-									LOGGER.error("Failed process template file: {}", sourceFile, e);
+									LOGGER.error("Failed process template file: {}", templateFile, e);
 									throw new CompletionException(e);
 								}
 							}, Util.backgroundExecutor())
