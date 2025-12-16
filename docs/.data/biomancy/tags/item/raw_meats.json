@@ -1,9 +1,11 @@
 {
+  "remove": [
+    "minecraft:rotten_flesh"
+  ],
   "values": [
-    "minecraft:beef",
-    "minecraft:porkchop",
-    "minecraft:chicken",
-    "minecraft:rabbit",
-    "minecraft:mutton"
+    {
+      "id": "#c:foods/raw_meat",
+      "required": false
+    }
   ]
 }

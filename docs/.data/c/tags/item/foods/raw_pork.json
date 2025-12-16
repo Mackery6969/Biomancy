@@ -1,6 +1,12 @@
 {
   "values": [
-    "#forge:raw_pork",
-    "farmersdelight:ham"
+    {
+      "id": "#forge:raw_pork",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:ham",
+      "required": false
+    }
   ]
 }
