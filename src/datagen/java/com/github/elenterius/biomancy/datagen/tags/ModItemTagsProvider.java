@@ -65,7 +65,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 		class FarmersDelightItems extends vectorwing.farmersdelight.common.registry.ModItems {} //alias workaround
 
 		createTag(ModItemTags.SUGARS)
-				.addOptionalTag("c:foods/cookie", "c:foods/candy")
+				.addTag(conventionalTag("foods/cookie"), conventionalTag("foods/candy"))
 				.add(SUGAR, CAKE, HONEYCOMB, HONEY_BLOCK, HONEYCOMB_BLOCK, HONEY_BOTTLE, SWEET_BERRIES, COCOA_BEANS, APPLE)
 				.add(
 						FarmersDelightItems.HOT_COCOA.get(),
@@ -80,7 +80,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 				.remove(ROTTEN_FLESH);
 
 		createTag(ModItemTags.COOKED_MEATS)
-				.addOptional("c:foods/cooked_meat");
+				.addTag(conventionalTag("foods/cooked_meat"));
 
 		createTag(ModItemTags.CANNOT_BE_EATEN_BY_CRADLE)
 				.add(DRAGON_EGG, SPAWNER, HEART_OF_THE_SEA)

@@ -1,13 +1,7 @@
 {
   "values": [
-    {
-      "id": "#c:foods/cookie",
-      "required": false
-    },
-    {
-      "id": "#c:foods/candy",
-      "required": false
-    },
+    "#c:foods/cookie",
+    "#c:foods/candy",
     "minecraft:sugar",
     "minecraft:cake",
     "minecraft:honeycomb",

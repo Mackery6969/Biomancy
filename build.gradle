@@ -379,10 +379,13 @@ tasks.register("copyDataToWiki", Copy) {
 	def outputFolder = file("docs/.data")
 	includeEmptyDirs = false
 
-	from("build/resources/main/data") {
+	from("src/generated/resources/data") {
 		include("**/tags/**/*.json")
 	}
 	from("src/generated/resources/.wiki_data")
+	from("src/main/resources/data") {
+		include("**/tags/**/*.json")
+	}
 	into(outputFolder)
 
 	//transform tags folder structure to 1.21 format

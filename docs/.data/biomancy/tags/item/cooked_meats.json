@@ -1,8 +1,5 @@
 {
   "values": [
-    {
-      "id": "c:foods/cooked_meat",
-      "required": false
-    }
+    "#c:foods/cooked_meat"
   ]
 }
