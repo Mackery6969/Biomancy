@@ -2,6 +2,25 @@
 id: biomancy:hungry_flesh_blob
 type: mob
 icon: biomancy:mob/hungry_flesh_blob
+custom:
+  Min Size: 1.0 (1x1x1)
+  Max Size: 10.0 (3x3x3)
+  Base Health: 10.0
+  Max Health: Size * Base Health
+  Base Armor: 1.25
+  Max Armor: Size * Base Armor
+  Movement Speed: 0.2 + 0.01 * Size
+  Base Attack Damage: 2.0
+  Max Attack Damage: (size * 0.5) * Base Attack Damage
 ---
 
 # Hungry Flesh Blob
+- hostile version of the [](@biomancy:flesh_blob)
+- hostile towards primordial flesh blobs, players, animals and villagers
+- avoids golems
+- seeks out food items on the ground and eats them to grow up in size
+- panics when burning or freezing
+- attracted to active jukeboxes
+
+## Usage
+- when killed drops x amount of [](@biomancy:living_flesh) based on the size of the blob

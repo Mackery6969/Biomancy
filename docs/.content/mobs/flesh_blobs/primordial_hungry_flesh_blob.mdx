@@ -2,6 +2,29 @@
 id: biomancy:primordial_hungry_flesh_blob
 type: mob
 icon: biomancy:mob/primordial_hungry_flesh_blob
+custom:
+  Min Size: 1.0 (1x1x1)
+  Max Size: 10.0 (3x3x3)
+  Base Health: 20.0
+  Max Health: Size * Base Health
+  Base Armor: 2.0
+  Max Armor: Size * Base Armor
+  Movement Speed: 0.2 + 0.01 * Size
+  Base Attack Damage: 4.0
+  Max Attack Damage: (size * 0.5) * Base Attack Damage
 ---
 
 # Primordial Hungry Flesh Blob
+- hostile version of the [](@biomancy:primordial_flesh_blob)
+- hostile towards normal flesh blobs, players any non-primordial mobs
+- avoids golems
+- seeks out food items on the ground and eats them to grow up in size
+- seeks out [](@biomancy:living_flesh), [](@biomancy:creator_mix), [](@minecraft:rotten_flesh), [](@minecraft:spider_eye) items on the ground
+- provides collected items as sacrifices to the cradle (max distance: 1.5)
+- panics when burning or freezing
+- attracted to active jukeboxes
+- on death (not caused by fire/freezing) spreads malignant flesh veins
+- immune to [](@biomancy:primordial_infestation) and []($getting_started/gastric_acid)
+
+## Usage
+- when killed drops x amount of [](@biomancy:living_flesh) based on the size of the blob
