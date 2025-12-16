@@ -1,16 +1,7 @@
 {
   "values": [
-    {
-      "id": "#forge:claws",
-      "required": false
-    },
-    {
-      "id": "alexsmobs:dropbear_claw",
-      "required": false
-    },
-    {
-      "id": "iceandfire:hippogryph_talon",
-      "required": false
-    }
+    "biomancy:mob_claw",
+    "alexsmobs:dropbear_claw",
+    "iceandfire:hippogryph_talon"
   ]
 }
