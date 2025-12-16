@@ -385,8 +385,22 @@ tasks.register("copyDataToWiki", Copy) {
 	from("src/generated/resources/.wiki_data")
 	into(outputFolder)
 
-//	from("src/generated/resources/.wiki_content")
-//	into(file("docs/.content"))
+	//transform tags folder structure to 1.21 format
+	def renameMap = [
+			'tags/items/'       : 'tags/item/',
+			'tags/blocks/'      : 'tags/block/',
+			'tags/entity_types/': 'tags/entity_type/',
+			'tags/fluids/'      : 'tags/fluid/',
+			'tags/game_events/' : 'tags/game_event/'
+	]
+
+	eachFile { file ->
+		renameMap.each { oldPathPart, newPathPart ->
+			if (file.path.contains(oldPathPart)) {
+				file.path = file.path.replaceFirst(oldPathPart, newPathPart)
+			}
+		}
+	}
 }
 
 tasks.named("runData") {
