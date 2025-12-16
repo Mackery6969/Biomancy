@@ -14,6 +14,6 @@ Decomposing component.
 <PrefabUsage />
 
 ## Obtaining
-Can be obtained by killing the following mobs with []($loot/despoil_loot):
+Can be obtained by killing the following mobs with [despoil]($loot/despoil_loot):
 
 {{MOBS}}
