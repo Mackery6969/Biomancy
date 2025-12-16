@@ -1,9 +1,6 @@
 {
   "values": [
-    {
-      "id": "#c:bosses",
-      "required": false
-    },
+    "#c:bosses",
     "minecraft:warden",
     "minecraft:elder_guardian",
     "minecraft:giant",

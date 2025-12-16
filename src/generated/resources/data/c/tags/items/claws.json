@@ -4,6 +4,7 @@
       "id": "#forge:claws",
       "required": false
     },
+    "biomancy:mob_claw",
     {
       "id": "alexsmobs:dropbear_claw",
       "required": false

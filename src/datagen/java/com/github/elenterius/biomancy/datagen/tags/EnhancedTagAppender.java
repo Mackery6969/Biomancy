@@ -64,7 +64,7 @@ public record EnhancedTagAppender<T>(IntrinsicHolderTagsProvider.IntrinsicTagApp
 	}
 
 	private boolean isValidNamespace(String namespace) {
-		return "minecraft".equals(namespace) || delegate.getModID().equals(namespace);
+		return  "c".equals(namespace) || "minecraft".equals(namespace) || delegate.getModID().equals(namespace);
 	}
 
 	@SafeVarargs

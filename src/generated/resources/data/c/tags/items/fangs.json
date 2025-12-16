@@ -4,6 +4,7 @@
       "id": "#forge:fangs",
       "required": false
     },
+    "biomancy:mob_fang",
     {
       "id": "alexsmobs:bone_serpent_tooth",
       "required": false

@@ -76,7 +76,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 				.addOptional("createaddition:chocolate_cake");
 
 		createTag(ModItemTags.FRESH_RAW_MEATS)
-				.addOptionalTag("c:foods/raw_meat")
+				.addTag(conventionalTag("foods/raw_meat"))
 				.remove(ROTTEN_FLESH);
 
 		createTag(ModItemTags.COOKED_MEATS)
@@ -269,17 +269,15 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 		createTag(ModItemTags.C_WITHER_BONES)
 				.addOptionalTag("forge:bones/wither");
 
-		TagKey<Item> forgeClaws = forgeTag("claws");
-		createTag(forgeClaws).add(ModItems.MOB_CLAW.get());
 		createTag(ModItemTags.C_CLAWS)
-				.addTag(forgeClaws)
+				.addOptionalTag("forge:claws")
+				.add(ModItems.MOB_CLAW.get())
 				.add(AMItemRegistry.DROPBEAR_CLAW.get())
 				.add(IafItemRegistry.HIPPOGRYPH_TALON.get());
 
-		TagKey<Item> forgeFangs = forgeTag("fangs");
-		createTag(forgeFangs).add(ModItems.MOB_FANG.get());
 		createTag(ModItemTags.C_FANGS)
-				.addTag(forgeFangs)
+				.addOptionalTag("forge:fangs")
+				.add(ModItems.MOB_FANG.get())
 				.add(AMItemRegistry.BONE_SERPENT_TOOTH.get())
 				.add(IafItemRegistry.SERPENT_FANG.get(), IafItemRegistry.HYDRA_FANG.get());
 
@@ -292,7 +290,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 				.add(FarmersDelightItems.SWEET_BERRY_COOKIE.get(), FarmersDelightItems.HONEY_COOKIE.get());
 
 		createTag(ModItemTags.C_RAW_PORK)
-				.addOptionalTag("forge:raw_pork")
+				.addTag(forgeTag("raw_pork"))
 				.add(FarmersDelightItems.HAM.get());
 
 		createTag(conventionalTag("foods/raw_meat"))
