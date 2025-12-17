@@ -27,7 +27,7 @@ public final class ModFluids {
 	public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, BiomancyMod.MOD_ID);
 	public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, BiomancyMod.MOD_ID);
 
-	public static final RegistryObject<TintedFluidType> ACID_TYPE = registerTintedType("acid", 0xFF_39FF14, properties -> properties.density(1024).viscosity(1024));
+	public static final RegistryObject<FluidType> ACID_TYPE = registerType("acid", properties -> properties.density(1024).viscosity(1024));
 	public static final Supplier<ForgeFlowingFluid.Properties> ACID_FLUID_PROPERTIES = () -> new ForgeFlowingFluid
 			.Properties(ACID_TYPE, ModFluids.ACID, ModFluids.FLOWING_ACID)
 			.slopeFindDistance(2)
@@ -61,9 +61,9 @@ public final class ModFluids {
 	private static RegistryObject<FluidType> registerType(String name, UnaryOperator<FluidType.Properties> operator) {
 		return FLUID_TYPES.register(name, () -> new FluidType(operator.apply(createFluidTypeProperties())) {
 
-			private final ResourceLocation stillTexture = BiomancyMod.rl("fluid/%s_still".formatted(name));
-			private final ResourceLocation flowingTexture = BiomancyMod.rl("fluid/%s_flowing".formatted(name));
-			private final ResourceLocation overlayTexture = BiomancyMod.rl("fluid/%s_overlay".formatted(name));
+			private final ResourceLocation stillTexture = BiomancyMod.rl("block/%s_still".formatted(name));
+			private final ResourceLocation flowingTexture = BiomancyMod.rl("block/%s_flowing".formatted(name));
+			private final ResourceLocation overlayTexture = BiomancyMod.rl("block/%s_overlay".formatted(name));
 
 			@Override
 			public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {

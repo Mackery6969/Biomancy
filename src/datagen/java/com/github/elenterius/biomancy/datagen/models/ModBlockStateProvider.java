@@ -177,18 +177,18 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		directionalBlockWithItem(ModBlocks.CHRYSALIS.get());
 
 		particleOnly(ModBlocks.ACID_FLUID_BLOCK, BiomancyMod.rl("block/acid_flat"));
-		layeredCauldron(ModBlocks.ACID_CAULDRON);
+		layeredCauldron(ModBlocks.ACID_CAULDRON, BiomancyMod.rl("block/acid_still"));
 		multifaceBlockWithPropertyVariants(ModBlocks.ACID_SPLATTER.get(), SplatterBlock.AGE.get(), String::valueOf);
 		multifaceBlockWithPropertyVariants(ModBlocks.VOLATILE_SPLATTER.get(), SplatterBlock.AGE.get(), String::valueOf);
 
 		existingBlockWithItem(ModBlocks.WATER_GEL_BLOCK);
 	}
 
-	public <T extends LayeredCauldronBlock> void layeredCauldron(RegistryObject<T> registryObject) {
+	public <T extends LayeredCauldronBlock> void layeredCauldron(RegistryObject<T> registryObject, ResourceLocation fluidTexture) {
 		T block = registryObject.get();
 		String path = path(block);
 
-		TextureMapping textureMapping = TextureMapping.cauldron(TextureMapping.getBlockTexture(Blocks.WATER, "_still"));
+		TextureMapping textureMapping = TextureMapping.cauldron(fluidTexture);
 		TextureSlot[] texturesSlots = {TextureSlot.CONTENT, TextureSlot.INSIDE, TextureSlot.TOP, TextureSlot.BOTTOM, TextureSlot.SIDE, TextureSlot.PARTICLE};
 
 		ModelFile modelLevel1 = getTemplateModelWithTextures(path + "_level_1", new ResourceLocation("minecraft:block/template_cauldron_level1"), texturesSlots, textureMapping).renderType("translucent");
