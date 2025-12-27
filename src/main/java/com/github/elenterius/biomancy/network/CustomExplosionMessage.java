@@ -80,21 +80,7 @@ public class CustomExplosionMessage {
 		NetworkEvent.Context context = ctx.get();
 
 		if (context.getDirection().getReceptionSide().isClient()) {
-			context.enqueueWork(() -> {
-				Minecraft minecraft = Minecraft.getInstance();
-				ClientLevel level = minecraft.level;
-				LocalPlayer player = minecraft.player;
-				if (level == null || player == null) return;
-
-				Entity source = null;
-				if (packet.sourceId != null) {
-					source = level.getEntity(packet.sourceId);
-				}
-
-				Explosion explosion = packet.type.clientFactory.create(level, source, packet.x, packet.y, packet.z, packet.radius, packet.toBlow);
-				explosion.finalizeExplosion(true);
-				player.setDeltaMovement(player.getDeltaMovement().add(packet.knockbackX, packet.knockbackY, packet.knockbackZ));
-			});
+			context.enqueueWork(() -> ClientHandler.handle(packet));
 		}
 
 		context.setPacketHandled(true);
@@ -157,6 +143,26 @@ public class CustomExplosionMessage {
 		float knockbackZ = buffer.readFloat();
 
 		return new CustomExplosionMessage(type, sourceId, x, y, z, power, toBlow, knockbackX, knockbackY, knockbackZ);
+	}
+
+	private static class ClientHandler {
+
+		private static void handle(CustomExplosionMessage packet) {
+			Minecraft minecraft = Minecraft.getInstance();
+			ClientLevel level = minecraft.level;
+			LocalPlayer player = minecraft.player;
+			if (level == null || player == null) return;
+
+			Entity source = null;
+			if (packet.sourceId != null) {
+				source = level.getEntity(packet.sourceId);
+			}
+
+			Explosion explosion = packet.type.clientFactory.create(level, source, packet.x, packet.y, packet.z, packet.radius, packet.toBlow);
+			explosion.finalizeExplosion(true);
+			player.setDeltaMovement(player.getDeltaMovement().add(packet.knockbackX, packet.knockbackY, packet.knockbackZ));
+		}
+
 	}
 
 }
