@@ -63,7 +63,8 @@ public final class ModFluids {
 
 			private final ResourceLocation stillTexture = BiomancyMod.rl("block/%s_still".formatted(name));
 			private final ResourceLocation flowingTexture = BiomancyMod.rl("block/%s_flowing".formatted(name));
-			private final ResourceLocation overlayTexture = BiomancyMod.rl("block/%s_overlay".formatted(name));
+			private final ResourceLocation blockOverlayTexture = BiomancyMod.rl("block/%s_overlay".formatted(name));
+			private final ResourceLocation screenOverlayTexture = BiomancyMod.rl("textures/block/%s_overlay.png".formatted(name));
 
 			@Override
 			public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
@@ -80,12 +81,12 @@ public final class ModFluids {
 
 					@Override
 					public ResourceLocation getOverlayTexture() {
-						return overlayTexture;
+						return blockOverlayTexture;
 					}
 
 					@Override
 					public ResourceLocation getRenderOverlayTexture(Minecraft mc) {
-						return overlayTexture;
+						return screenOverlayTexture;
 					}
 				});
 			}
