@@ -1,3 +1,11 @@
+## [9.8.1-alpha.0](https://github.com/Elenterius/Biomancy/compare/1.20.1-v2.9.8.0-alpha.0...1.20.1-v2.9.8.1-alpha.0) (2026-01-03)
+
+
+### Bug Fixes
+
+* fix acid fluid textures ([da88e9a](https://github.com/Elenterius/Biomancy/commit/da88e9a9176d0ed27eed1d15b86dcede93e8097d))
+* fix dedicated server loading client code ([c2df9b3](https://github.com/Elenterius/Biomancy/commit/c2df9b30330deff69f58567556745595c2639406))
+
 ## [9.8.0-alpha.0](https://github.com/Elenterius/Biomancy/compare/1.20.1-v2.9.7.0-alpha.0...1.20.1-v2.9.8.0-alpha.0) (2025-12-17)
 
 
@@ -12,11 +20,4 @@
 ### Bug Fixes
 
 * fix crafting table recipes of stairs ([3269606](https://github.com/Elenterius/Biomancy/commit/32696065a4c6d78bf5a3619bf1ddec88960cf901))
-
-## [9.7.0-alpha.0](https://github.com/Elenterius/Biomancy/compare/1.20.1-v2.9.6.0-alpha.0...1.20.1-v2.9.7.0-alpha.0) (2025-12-08)
-
-
-### Features
-
-* re-enable Bio-Forge recipe progression ([3e9e56c](https://github.com/Elenterius/Biomancy/commit/3e9e56cdaaae05b6578269ca4b64300114588152))
 
