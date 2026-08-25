@@ -29,21 +29,22 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BowlFoodItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jspecify.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Objects;
@@ -56,7 +57,7 @@ public class DigesterBlockEntity extends MachineBlockEntity<DigestingRecipe, Dig
 
 	public static final int MAX_FUEL = 1_000;
 
-	public static final RegistryObject<SimpleRecipeType.AdvancedRecipeType<DigestingRecipe>> RECIPE_TYPE = ModRecipes.DIGESTING_RECIPE_TYPE;
+	public static final DeferredHolder<RecipeType<?>, SimpleRecipeType.AdvancedRecipeType<DigestingRecipe>> RECIPE_TYPE = ModRecipes.DIGESTING_RECIPE_TYPE;
 	protected static final RawAnimation WORKING_ANIM = RawAnimation.begin().thenLoop("digester.working");
 	protected static final RawAnimation IDLE_ANIM = RawAnimation.begin().thenLoop("digester.idle");
 
@@ -98,7 +99,7 @@ public class DigesterBlockEntity extends MachineBlockEntity<DigestingRecipe, Dig
 
 	@Override
 	public Component getName() {
-		return BiomancyMod.translatableFrom("container", Objects.requireNonNull(ForgeRegistries.BLOCK_ENTITY_TYPES.getKey(getType())).getPath());
+		return BiomancyMod.translatableFrom("container", Objects.requireNonNull(BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(getType())).getPath());
 	}
 
 	@Nullable

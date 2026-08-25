@@ -1,50 +1,40 @@
 package com.github.elenterius.biomancy.network;
 
+import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.item.KeyPressListener;
 import com.google.common.primitives.UnsignedBytes;
-import net.minecraft.network.FriendlyByteBuf;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.function.Supplier;
+public record KeyPressMessage(byte slotIndex, byte flag) implements CustomPacketPayload {
 
-public class KeyPressMessage {
+	public static final Type<KeyPressMessage> TYPE = new Type<>(BiomancyMod.rl("key_press"));
 
-	public final byte slotIndex; //unsigned byte (0 - 255)
-	public final byte flag;
+	public static final StreamCodec<ByteBuf, KeyPressMessage> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.BYTE, KeyPressMessage::slotIndex,
+			ByteBufCodecs.BYTE, KeyPressMessage::flag,
+			KeyPressMessage::new
+	);
 
 	public KeyPressMessage(int slotIndex, byte flag) {
-		this.slotIndex = UnsignedBytes.checkedCast(slotIndex);
-		this.flag = flag;
+		this(UnsignedBytes.checkedCast(slotIndex), flag);
 	}
 
-	public KeyPressMessage(byte slotIndex, byte flag) {
-		this.slotIndex = slotIndex;
-		this.flag = flag;
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return TYPE;
 	}
 
-	public static void handle(KeyPressMessage packet, Supplier<NetworkEvent.Context> ctx) {
-		ctx.get().enqueueWork(() -> {
-			ServerPlayer player = ctx.get().getSender();
-			if (player != null) {
-				ServerLevel level = player.serverLevel();
-				KeyPressListener.onReceiveKeybindingPacket(level, player, UnsignedBytes.toInt(packet.slotIndex), packet.flag); //TODO: add version which is not tied to EquipmentSlotType
-			}
-		});
-		ctx.get().setPacketHandled(true);
-	}
-
-	public static KeyPressMessage decode(final FriendlyByteBuf byteBuf) {
-		byte slotIndex = byteBuf.readByte();
-		byte flag = byteBuf.readByte();
-
-		return new KeyPressMessage(slotIndex, flag);
-	}
-
-	public void encode(final FriendlyByteBuf byteBuf) {
-		byteBuf.writeByte(slotIndex);
-		byteBuf.writeByte(flag);
+	public static void handle(KeyPressMessage packet, IPayloadContext context) {
+		if (context.player() instanceof ServerPlayer player) {
+			ServerLevel level = player.serverLevel();
+			KeyPressListener.onReceiveKeybindingPacket(level, player, UnsignedBytes.toInt(packet.slotIndex), packet.flag); //TODO: add version which is not tied to EquipmentSlotType
+		}
 	}
 
 }

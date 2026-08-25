@@ -16,8 +16,8 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.Tags;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.function.Consumer;
 
@@ -32,7 +32,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
 	}
 
 	protected static String getItemName(ItemLike itemLike) {
-		ResourceLocation key = ForgeRegistries.ITEMS.getKey(itemLike.asItem());
+		ResourceLocation key = BuiltInRegistries.ITEM.getKey(itemLike.asItem());
 		return key != null ? key.getPath() : "unknown";
 	}
 

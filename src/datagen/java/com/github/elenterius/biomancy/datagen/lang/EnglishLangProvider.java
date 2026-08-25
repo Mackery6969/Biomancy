@@ -18,7 +18,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
@@ -42,9 +42,9 @@ public class EnglishLangProvider extends AbstractLangProvider {
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput cache) {
-		itemsToTranslate = new ArrayList<>(ModItems.ITEMS.getEntries().stream().map(RegistryObject::get).filter(item -> !(item instanceof BlockItem)).toList());
-		blocksToTranslate = new ArrayList<>(ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get).toList());
-		serumsToTranslate = new ArrayList<>(ModSerums.SERUMS.getEntries().stream().map(RegistryObject::get).toList());
+		itemsToTranslate = new ArrayList<>(ModItems.ITEMS.getEntries().stream().map(DeferredHolder::get).filter(item -> !(item instanceof BlockItem)).toList());
+		blocksToTranslate = new ArrayList<>(ModBlocks.BLOCKS.getEntries().stream().map(DeferredHolder::get).toList());
+		serumsToTranslate = new ArrayList<>(ModSerums.SERUMS.getEntries().stream().map(DeferredHolder::get).toList());
 		return super.run(cache);
 	}
 
@@ -84,7 +84,7 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		add(tab.translationKey(), name);
 	}
 
-	private void addBannerPatternItem(RegistryObject<MaykerBannerPatternItem> supplier, String name, String description) {
+	private void addBannerPatternItem(DeferredHolder<Item, MaykerBannerPatternItem> supplier, String name, String description) {
 		MaykerBannerPatternItem item = supplier.get();
 		add(item.getDescriptionId(), name);
 		add(item.getDisplayName(), description);

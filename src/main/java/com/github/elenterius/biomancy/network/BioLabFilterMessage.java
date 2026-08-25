@@ -1,69 +1,56 @@
 package com.github.elenterius.biomancy.network;
 
+import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.menu.BioLabMenu;
 import com.github.elenterius.biomancy.util.ItemStackFilter;
 import com.github.elenterius.biomancy.util.ItemStackFilterList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 //client bound message
-public class BioLabFilterMessage {
+public record BioLabFilterMessage(int containerId, List<@Nullable ItemStack> filters) implements CustomPacketPayload {
 
-	public final int containerId;
-	private final List<ItemStack> filters;
+	public static final Type<BioLabFilterMessage> TYPE = new Type<>(BiomancyMod.rl("bio_lab_filter"));
+
+	private static final StreamCodec<RegistryFriendlyByteBuf, @Nullable ItemStack> NULLABLE_ITEM_STACK_STREAM_CODEC = StreamCodec.of(
+			(buffer, stack) -> {
+				buffer.writeBoolean(stack != null);
+				if (stack != null) ItemStack.STREAM_CODEC.encode(buffer, stack);
+			},
+			buffer -> !buffer.readBoolean() ? null : ItemStack.STREAM_CODEC.decode(buffer)
+	);
+
+	public static final StreamCodec<RegistryFriendlyByteBuf, BioLabFilterMessage> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.VAR_INT, BioLabFilterMessage::containerId,
+			NULLABLE_ITEM_STACK_STREAM_CODEC.apply(ByteBufCodecs.collection(ArrayList::new)), BioLabFilterMessage::filters,
+			BioLabFilterMessage::new
+	);
 
 	public BioLabFilterMessage(int containerId, ItemStackFilterList filters) {
-		this.containerId = containerId;
-		this.filters = filters.stream().map(ItemStackFilter::getItemStack).collect(Collectors.toCollection(ArrayList::new));
+		this(containerId, filters.stream().map(ItemStackFilter::getItemStack).collect(Collectors.toCollection(ArrayList::new)));
 	}
 
-	private BioLabFilterMessage(int containerId, List<ItemStack> filters) {
-		this.containerId = containerId;
-		this.filters = filters;
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return TYPE;
 	}
 
-	public static BioLabFilterMessage decode(final FriendlyByteBuf buffer) {
-		int containerId = buffer.readVarInt();
-		List<ItemStack> filterItems = buffer.readCollection(ArrayList::new, BioLabFilterMessage::decodeNullableItemStack);
-		return new BioLabFilterMessage(containerId, filterItems);
-	}
-
-	private static void encodeNullableItemStack(final FriendlyByteBuf buffer, @Nullable ItemStack stack) {
-		buffer.writeBoolean(stack != null);
-		if (stack != null) buffer.writeItem(stack);
-	}
-
-	private static @Nullable ItemStack decodeNullableItemStack(final FriendlyByteBuf buffer) {
-		return !buffer.readBoolean() ? null : buffer.readItem();
-	}
-
-	public static void handle(BioLabFilterMessage packet, Supplier<NetworkEvent.Context> ctx) {
-		NetworkEvent.Context context = ctx.get();
-
-		if (context.getDirection().getReceptionSide().isClient()) {
-			context.enqueueWork(() -> {
-				LocalPlayer player = Minecraft.getInstance().player;
-				if (player != null && player.containerMenu instanceof BioLabMenu menu && menu.containerId == packet.containerId) {
-					menu.setFilters(packet.filters);
-				}
-			});
+	public static void handle(BioLabFilterMessage packet, IPayloadContext context) {
+		LocalPlayer player = Minecraft.getInstance().player;
+		if (player != null && player.containerMenu instanceof BioLabMenu menu && menu.containerId == packet.containerId) {
+			menu.setFilters(packet.filters);
 		}
-
-		context.setPacketHandled(true);
-	}
-
-	public void encode(final FriendlyByteBuf buffer) {
-		buffer.writeVarInt(containerId);
-		buffer.writeCollection(filters, BioLabFilterMessage::encodeNullableItemStack);
 	}
 
 }

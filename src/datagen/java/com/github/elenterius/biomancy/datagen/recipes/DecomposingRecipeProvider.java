@@ -16,8 +16,8 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.orcinus.overweightfarming.OverweightFarming;
 import net.orcinus.overweightfarming.init.OFBlocks;
 import net.orcinus.overweightfarming.init.OFItems;
@@ -292,7 +292,7 @@ public class DecomposingRecipeProvider extends RecipeProvider {
 				.addRecyclingOutput(ModItems.BONE_FRAGMENTS.get(), blockCost / 2)
 				.unlockedBy(ModItems.FLESH_PILLAR.get()).save(consumer);
 
-		ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get).filter(Membrane.class::isInstance).forEach(
+		ModBlocks.BLOCKS.getEntries().stream().map(DeferredHolder::get).filter(Membrane.class::isInstance).forEach(
 				block -> DecomposingRecipeBuilder.create().setIngredient(block).addOutput(ModItems.BILE.get(), 0, 2).unlockedBy(block).save(consumer)
 		);
 

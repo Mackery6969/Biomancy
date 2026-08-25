@@ -18,8 +18,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
@@ -112,7 +112,7 @@ public class ModularLarynxBlockEntity extends BlockEntity {
 	public Optional<SoundEvent> deserializeSoundEvent(String stringKey) {
 		ResourceLocation key = ResourceLocation.tryParse(stringKey);
 		if (key != null) {
-			return Optional.ofNullable(ForgeRegistries.SOUND_EVENTS.getValue(key));
+			return Optional.ofNullable(BuiltInRegistries.SOUND_EVENT.getValue(key));
 		}
 		return Optional.empty();
 	}

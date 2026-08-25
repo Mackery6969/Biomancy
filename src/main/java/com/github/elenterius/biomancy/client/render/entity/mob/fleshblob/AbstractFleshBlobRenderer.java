@@ -7,8 +7,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.animation.AnimationProcessor;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.animation.AnimationProcessor;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
@@ -27,7 +27,7 @@ public abstract class AbstractFleshBlobRenderer<T extends FleshBlob> extends Geo
 
 		int flag = fleshBlob.getTumorFlags();
 		for (TumorFlag tumorFlag : TumorFlag.values()) {
-			CoreGeoBone tumor = animationProcessor.getBone(tumorFlag.getBoneId());
+			GeoBone tumor = animationProcessor.getBone(tumorFlag.getBoneId());
 			tumor.setHidden(tumorFlag.isNotSet(flag));
 		}
 

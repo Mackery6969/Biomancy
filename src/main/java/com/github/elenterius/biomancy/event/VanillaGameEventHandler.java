@@ -5,11 +5,11 @@ import com.github.elenterius.biomancy.item.UnstableCompoundItem;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraftforge.event.VanillaGameEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.event.VanillaGameEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 
-@Mod.EventBusSubscriber(modid = BiomancyMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = BiomancyMod.MOD_ID)
 public final class VanillaGameEventHandler {
 
 	private VanillaGameEventHandler() {}

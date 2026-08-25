@@ -35,7 +35,6 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
 import org.jspecify.annotations.Nullable;
 
 import java.text.DecimalFormat;
@@ -66,7 +65,7 @@ public class DecomposerBlock extends HorizontalFacingMachineBlock {
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (level.getBlockEntity(pos) instanceof DecomposerBlockEntity decomposer && decomposer.canPlayerInteract(player)) {
 			if (!level.isClientSide) {
-				NetworkHooks.openScreen((ServerPlayer) player, decomposer, buffer -> buffer.writeBlockPos(pos));
+				((ServerPlayer) player).openMenu(decomposer, pos);
 				SoundUtil.Server.playBlockSound((ServerLevel) level, pos, ModSoundEvents.UI_DECOMPOSER_OPEN);
 			}
 			return InteractionResult.SUCCESS;

@@ -4,9 +4,9 @@ import com.github.elenterius.biomancy.api.tribute.SacrificeHandler;
 import com.github.elenterius.biomancy.inventory.Notify;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class FluidTributeConsumerHandler implements IFluidHandler, INBTSerializable<CompoundTag> {
 

@@ -1,25 +1,32 @@
 package com.github.elenterius.biomancy.network;
 
-import com.github.elenterius.biomancy.mixin.accessor.ExplosionAccessor;
+import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.util.ExplosionUtil;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 //client bound message
-public class CustomExplosionMessage {
+public class CustomExplosionMessage implements CustomPacketPayload {
+
+	public static final Type<CustomExplosionMessage> TYPE = new Type<>(BiomancyMod.rl("custom_explosion"));
+
+	public static final StreamCodec<ByteBuf, CustomExplosionMessage> STREAM_CODEC = StreamCodec.of(CustomExplosionMessage::encode, CustomExplosionMessage::decode);
 
 	private final ExplosionUtil.ExplosionType type;
 	private final @Nullable Integer sourceId;
@@ -41,12 +48,12 @@ public class CustomExplosionMessage {
 		Entity source = explosion.getDirectSourceEntity();
 		sourceId = source != null ? source.getId() : null;
 
-		Vec3 position = explosion.getPosition();
+		Vec3 position = explosion.center();
 		x = position.x;
 		y = position.y;
 		z = position.z;
 
-		radius = ((ExplosionAccessor) explosion).getRadius();
+		radius = explosion.radius();
 		toBlow = explosion.getToBlow();
 
 		Vec3 knockback = explosion.getHitPlayers().get(serverPlayer);
@@ -76,52 +83,53 @@ public class CustomExplosionMessage {
 		this.knockbackZ = knockbackZ;
 	}
 
-	public static void handle(CustomExplosionMessage packet, Supplier<NetworkEvent.Context> ctx) {
-		NetworkEvent.Context context = ctx.get();
-
-		if (context.getDirection().getReceptionSide().isClient()) {
-			context.enqueueWork(() -> ClientHandler.handle(packet));
-		}
-
-		context.setPacketHandled(true);
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return TYPE;
 	}
 
-	public void encode(final FriendlyByteBuf buffer) {
-		buffer.writeByte(type.id());
+	public static void handle(CustomExplosionMessage packet, IPayloadContext context) {
+		context.enqueueWork(() -> ClientHandler.handle(packet));
+	}
 
-		if (sourceId != null) {
+	public static void encode(final ByteBuf buffer, final CustomExplosionMessage message) {
+		buffer.writeByte(message.type.id());
+
+		if (message.sourceId != null) {
 			buffer.writeBoolean(true);
-			buffer.writeVarInt(sourceId);
+			ByteBufCodecs.VAR_INT.encode(buffer, message.sourceId);
 		}
 		else {
 			buffer.writeBoolean(false);
 		}
 
-		buffer.writeDouble(x);
-		buffer.writeDouble(y);
-		buffer.writeDouble(z);
-		buffer.writeFloat(radius);
+		buffer.writeDouble(message.x);
+		buffer.writeDouble(message.y);
+		buffer.writeDouble(message.z);
+		buffer.writeFloat(message.radius);
 
-		int xi = Mth.floor(x);
-		int yi = Mth.floor(y);
-		int zi = Mth.floor(z);
-		buffer.writeCollection(toBlow, (buf, pos) -> {
-			buf.writeByte(pos.getX() - xi);
-			buf.writeByte(pos.getY() - yi);
-			buf.writeByte(pos.getZ() - zi);
-		});
+		int xi = Mth.floor(message.x);
+		int yi = Mth.floor(message.y);
+		int zi = Mth.floor(message.z);
 
-		buffer.writeFloat(knockbackX);
-		buffer.writeFloat(knockbackY);
-		buffer.writeFloat(knockbackZ);
+		ByteBufCodecs.VAR_INT.encode(buffer, message.toBlow.size());
+		for (BlockPos pos : message.toBlow) {
+			buffer.writeByte(pos.getX() - xi);
+			buffer.writeByte(pos.getY() - yi);
+			buffer.writeByte(pos.getZ() - zi);
+		}
+
+		buffer.writeFloat(message.knockbackX);
+		buffer.writeFloat(message.knockbackY);
+		buffer.writeFloat(message.knockbackZ);
 	}
 
-	public static CustomExplosionMessage decode(final FriendlyByteBuf buffer) {
+	public static CustomExplosionMessage decode(final ByteBuf buffer) {
 		ExplosionUtil.ExplosionType type = ExplosionUtil.ExplosionType.fromId(buffer.readByte());
 
 		Integer sourceId = null;
 		if (buffer.readBoolean()) {
-			sourceId = buffer.readVarInt();
+			sourceId = ByteBufCodecs.VAR_INT.decode(buffer);
 		}
 
 		double x = buffer.readDouble();
@@ -132,11 +140,16 @@ public class CustomExplosionMessage {
 		int xi = Mth.floor(x);
 		int yi = Mth.floor(y);
 		int zi = Mth.floor(z);
-		List<BlockPos> toBlow = buffer.readList(buf -> new BlockPos(
-				buf.readByte() + xi,
-				buf.readByte() + yi,
-				buf.readByte() + zi
-		));
+
+		int toBlowSize = ByteBufCodecs.VAR_INT.decode(buffer);
+		List<BlockPos> toBlow = new ArrayList<>(toBlowSize);
+		for (int i = 0; i < toBlowSize; i++) {
+			toBlow.add(new BlockPos(
+					buffer.readByte() + xi,
+					buffer.readByte() + yi,
+					buffer.readByte() + zi
+			));
+		}
 
 		float knockbackX = buffer.readFloat();
 		float knockbackY = buffer.readFloat();

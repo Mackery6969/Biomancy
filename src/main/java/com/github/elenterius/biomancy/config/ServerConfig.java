@@ -1,23 +1,23 @@
 package com.github.elenterius.biomancy.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ServerConfig {
 
-	public final ForgeConfigSpec.BooleanValue doBioForgeRecipeProgression;
-	public final ForgeConfigSpec.BooleanValue addTradesToVillagers;
-	public final ForgeConfigSpec.BooleanValue addTradesToWanderingTrader;
-	public final ForgeConfigSpec.EnumValue<PrimalEnergySettings.SupplyAmount> primalEnergySupplyOfCradle;
+	public final ModConfigSpec.BooleanValue doBioForgeRecipeProgression;
+	public final ModConfigSpec.BooleanValue addTradesToVillagers;
+	public final ModConfigSpec.BooleanValue addTradesToWanderingTrader;
+	public final ModConfigSpec.EnumValue<PrimalEnergySettings.SupplyAmount> primalEnergySupplyOfCradle;
 
-	public final ForgeConfigSpec.DoubleValue absorptionMaxHearts;
-	public final ForgeConfigSpec.DoubleValue absorptionHearts;
+	public final ModConfigSpec.DoubleValue absorptionMaxHearts;
+	public final ModConfigSpec.DoubleValue absorptionHearts;
 
-	public final ForgeConfigSpec.DoubleValue pehkuiMaxScale;
-	public final ForgeConfigSpec.DoubleValue pehkuiMinScale;
-	public final ForgeConfigSpec.DoubleValue pehkuiScaleIncrement;
-	public final ForgeConfigSpec.DoubleValue pehkuiScaleDecrement;
+	public final ModConfigSpec.DoubleValue pehkuiMaxScale;
+	public final ModConfigSpec.DoubleValue pehkuiMinScale;
+	public final ModConfigSpec.DoubleValue pehkuiScaleIncrement;
+	public final ModConfigSpec.DoubleValue pehkuiScaleDecrement;
 
-	public ServerConfig(ForgeConfigSpec.Builder builder) {
+	public ServerConfig(ModConfigSpec.Builder builder) {
 		builder.push("recipes");
 		doBioForgeRecipeProgression = builder
 				.comment("Determines if the BioForge recipes need to be unlocked to be able to craft them")

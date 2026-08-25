@@ -7,9 +7,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraftforge.registries.MissingMappingsEvent;
 import net.minecraftforge.registries.MissingMappingsEvent.Mapping;
 
@@ -22,7 +22,7 @@ import java.util.List;
  * SHOULD BE FIXED IN Forge 1.19
  * <a href="https://github.com/MinecraftForge/MinecraftForge/pull/8538">viw Pull Request Draft</a>
  */
-@Mod.EventBusSubscriber(modid = BiomancyMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = BiomancyMod.MOD_ID)
 public final class MigrationHandler {
 
 	private MigrationHandler() {}
@@ -32,8 +32,8 @@ public final class MigrationHandler {
 		handleMissingSerums(event.getMappings(ModSerums.SERUMS.getRegistryKey(), BiomancyMod.MOD_ID));
 		handleMissingItems(event.getMappings(ModItems.ITEMS.getRegistryKey(), BiomancyMod.MOD_ID));
 		handleMissingBlocks(event.getMappings(ModBlocks.BLOCKS.getRegistryKey(), BiomancyMod.MOD_ID));
-		handleMissingBlockEntityTypes(event.getMappings(ForgeRegistries.BLOCK_ENTITY_TYPES.getRegistryKey(), BiomancyMod.MOD_ID));
-		handleMissingEntityTypes(event.getMappings(ForgeRegistries.ENTITY_TYPES.getRegistryKey(), BiomancyMod.MOD_ID));
+		handleMissingBlockEntityTypes(event.getMappings(BuiltInRegistries.BLOCK_ENTITY_TYPE.getRegistryKey(), BiomancyMod.MOD_ID));
+		handleMissingEntityTypes(event.getMappings(BuiltInRegistries.ENTITY_TYPE.getRegistryKey(), BiomancyMod.MOD_ID));
 	}
 
 	private static void handleMissingSerums(List<Mapping<Serum>> mappings) {

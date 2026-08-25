@@ -33,7 +33,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraft.world.level.storage.loot.providers.nbt.ContextNbtProvider;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.apache.logging.log4j.Marker;
 
 import java.util.List;
@@ -59,7 +59,7 @@ public class ModBlockLoot extends BlockLootSubProvider {
 
 	@Override
 	protected Iterable<Block> getKnownBlocks() {
-		List<Block> blocks = ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get).toList();
+		List<Block> blocks = ModBlocks.BLOCKS.getEntries().stream().map(DeferredHolder::get).toList();
 		LOGGER.info(LOG_MARKER, "generating loot tables for {} blocks...", blocks.size());
 		return blocks;
 	}

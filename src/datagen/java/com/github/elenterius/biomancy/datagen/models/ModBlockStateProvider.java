@@ -30,10 +30,10 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraftforge.client.model.generators.*;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.client.model.generators.*;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
@@ -50,14 +50,14 @@ public class ModBlockStateProvider extends BlockStateProvider {
 	}
 
 	protected ResourceLocation registryKey(Block block) {
-		return Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(block));
+		return Objects.requireNonNull(BuiltInRegistries.BLOCK.getKey(block));
 	}
 
 	protected String path(Block block) {
 		return registryKey(block).getPath();
 	}
 
-	protected <T extends Block> ResourceLocation blockAsset(RegistryObject<T> registryObject) {
+	protected <T extends Block> ResourceLocation blockAsset(DeferredHolder<Block, T> registryObject) {
 		//noinspection DataFlowIssue
 		return blockAsset(registryObject.getId());
 	}
@@ -184,7 +184,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		existingBlockWithItem(ModBlocks.WATER_GEL_BLOCK);
 	}
 
-	public <T extends LayeredCauldronBlock> void layeredCauldron(RegistryObject<T> registryObject, ResourceLocation fluidTexture) {
+	public <T extends LayeredCauldronBlock> void layeredCauldron(DeferredHolder<Block, T> registryObject, ResourceLocation fluidTexture) {
 		T block = registryObject.get();
 		String path = path(block);
 
@@ -209,7 +209,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		return modelBuilder;
 	}
 
-	public <T extends Block> void particleOnly(RegistryObject<T> block, ResourceLocation particleTexture) {
+	public <T extends Block> void particleOnly(DeferredHolder<Block, T> block, ResourceLocation particleTexture) {
 		particleOnly(block.get(), particleTexture);
 	}
 
@@ -218,19 +218,19 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		simpleBlock(block, models().getBuilder(path).texture("particle", particleTexture));
 	}
 
-	public <T extends Block> void translucentBlockWithItem(RegistryObject<T> block) {
+	public <T extends Block> void translucentBlockWithItem(DeferredHolder<Block, T> block) {
 		translucentBlockWithItem(block.get());
 	}
 
-	public <T extends FleshChainBlock> void tendonChain(RegistryObject<T> block) {
+	public <T extends FleshChainBlock> void tendonChain(DeferredHolder<Block, T> block) {
 		tendonChain(block.get());
 	}
 
-	public <T extends FleshLanternBlock> void bioLantern(RegistryObject<T> block) {
+	public <T extends FleshLanternBlock> void bioLantern(DeferredHolder<Block, T> block) {
 		bioLantern(block.get());
 	}
 
-	public void stairsBlockWithItem(RegistryObject<StairBlock> block, RegistryObject<FleshBlock> textureBlock) {
+	public void stairsBlockWithItem(DeferredHolder<Block, StairBlock> block, DeferredHolder<Block, FleshBlock> textureBlock) {
 		stairsBlockWithItem(block.get(), textureBlock.get());
 	}
 
@@ -239,7 +239,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		simpleBlockItem(block);
 	}
 
-	public <T extends RotatedPillarBlock> void axisBlockWithItem(RegistryObject<T> block) {
+	public <T extends RotatedPillarBlock> void axisBlockWithItem(DeferredHolder<Block, T> block) {
 		axisBlockWithItem(block.get());
 	}
 
@@ -273,7 +273,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		itemModels().getBuilder(path(block)).parent(frameModel);
 	}
 
-	public <T extends OwnablePressurePlateBlock> void fleshkinPressurePlate(RegistryObject<T> pressurePlate) {
+	public <T extends OwnablePressurePlateBlock> void fleshkinPressurePlate(DeferredHolder<Block, T> pressurePlate) {
 		fleshkinPressurePlate(pressurePlate.get());
 	}
 
@@ -316,7 +316,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		itemModels().getBuilder(path).parent(models().getBuilder(path));
 	}
 
-	public <W extends WallBlock, B extends Block> void wallBlockWithItem(RegistryObject<W> wallBlock, RegistryObject<B> textureBlock) {
+	public <W extends WallBlock, B extends Block> void wallBlockWithItem(DeferredHolder<Block, W> wallBlock, DeferredHolder<Block, B> textureBlock) {
 		wallBlockWithItem(wallBlock.get(), textureBlock.get());
 	}
 
@@ -333,7 +333,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 				.texture("wall", texture);
 	}
 
-	public <W extends WallBlock, B extends Block> void wallBlock(RegistryObject<W> wallBlock, RegistryObject<B> textureBlock) {
+	public <W extends WallBlock, B extends Block> void wallBlock(DeferredHolder<Block, W> wallBlock, DeferredHolder<Block, B> textureBlock) {
 		wallBlock(wallBlock.get(), textureBlock.get());
 	}
 
@@ -342,7 +342,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		wallBlock(block, texture);
 	}
 
-	public <T extends Block> void simpleBlockWithItem(RegistryObject<T> block) {
+	public <T extends Block> void simpleBlockWithItem(DeferredHolder<Block, T> block) {
 		simpleBlockWithItem(block.get());
 	}
 
@@ -360,7 +360,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		simpleBlockItem(block, modelBuilder);
 	}
 
-	public <T extends Block> void simpleVariantBlockWithItem(RegistryObject<T> block, int variants) {
+	public <T extends Block> void simpleVariantBlockWithItem(DeferredHolder<Block, T> block, int variants) {
 		simpleVariantBlockWithItem(block.get(), variants);
 	}
 
@@ -391,7 +391,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		simpleBlock(block, modelFile);
 	}
 
-	public <T extends Block> void existingBlockWithItem(RegistryObject<T> block) {
+	public <T extends Block> void existingBlockWithItem(DeferredHolder<Block, T> block) {
 		existingBlockWithItem(block.get());
 	}
 
@@ -401,7 +401,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		simpleBlockItem(block, existingModel);
 	}
 
-	public <T extends Block> void horizontalBlockWithItem(RegistryObject<T> block) {
+	public <T extends Block> void horizontalBlockWithItem(DeferredHolder<Block, T> block) {
 		horizontalBlockWithItem(block.get());
 	}
 
@@ -411,7 +411,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		simpleBlockItem(block, existingModel);
 	}
 
-	public <T extends Block> void directionalBlockWithItem(RegistryObject<T> block) {
+	public <T extends Block> void directionalBlockWithItem(DeferredHolder<Block, T> block) {
 		directionalBlockWithItem(block.get());
 	}
 
@@ -441,7 +441,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 				}, ignored);
 	}
 
-	public <T extends OrificeBlock> void orifice(RegistryObject<T> block) {
+	public <T extends OrificeBlock> void orifice(DeferredHolder<Block, T> block) {
 		orifice(block.get());
 	}
 
@@ -469,7 +469,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		simpleBlockItem(block, models[0]);
 	}
 
-	public <T extends BloomBlock> void malignantBloom(RegistryObject<T> block) {
+	public <T extends BloomBlock> void malignantBloom(DeferredHolder<Block, T> block) {
 		malignantBloom(block.get());
 	}
 
@@ -501,7 +501,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		itemModels().basicItem(block.asItem());
 	}
 
-	public <T extends Block> void storageSac(RegistryObject<T> block) {
+	public <T extends Block> void storageSac(DeferredHolder<Block, T> block) {
 		storageSac(block.get());
 	}
 
@@ -511,7 +511,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		simpleBlockItem(block, existingModel);
 	}
 
-	public <T extends Block> void geoBlockItem(RegistryObject<T> block, Vector3f modelBounds) {
+	public <T extends Block> void geoBlockItem(DeferredHolder<Block, T> block, Vector3f modelBounds) {
 		geoBlockItem(block.get(), modelBounds);
 	}
 
@@ -546,7 +546,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 				.transform(ItemDisplayContext.HEAD).translation(0, -8 * yPct, 0).scale(scaleHead * scaleMultiplier).end();
 	}
 
-	public <T extends Block> void geckolibModel(RegistryObject<T> geoBlock, ResourceLocation particleTexture) {
+	public <T extends Block> void geckolibModel(DeferredHolder<Block, T> geoBlock, ResourceLocation particleTexture) {
 		geckolibModel(geoBlock.get(), particleTexture);
 	}
 
@@ -555,7 +555,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		simpleBlock(block, models().getBuilder(path).texture("particle", particleTexture));
 	}
 
-	public <S extends DirectionalSlabBlock, B extends Block> void directionalSlabBlockWithItem(RegistryObject<S> slab, RegistryObject<B> fullBlock) {
+	public <S extends DirectionalSlabBlock, B extends Block> void directionalSlabBlockWithItem(DeferredHolder<Block, S> slab, DeferredHolder<Block, B> fullBlock) {
 		directionalSlabBlockWithItem(slab.get(), fullBlock.get());
 	}
 
@@ -600,7 +600,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 				);
 	}
 
-	public <S extends DirectionalSlabBlock, B extends Block> void directionalSlabBlockWithItemAndVariants(RegistryObject<S> slab, RegistryObject<B> fullBlock, int variants) {
+	public <S extends DirectionalSlabBlock, B extends Block> void directionalSlabBlockWithItemAndVariants(DeferredHolder<Block, S> slab, DeferredHolder<Block, B> fullBlock, int variants) {
 		directionalSlabBlockWithItemAndVariants(slab.get(), fullBlock.get(), variants);
 	}
 
@@ -656,7 +656,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 				);
 	}
 
-	public <S extends DirectionalPillarSlabBlock, B extends RotatedPillarBlock> void directionalPillarSlabBlockWithItem(RegistryObject<S> slab, RegistryObject<B> pillarBlock) {
+	public <S extends DirectionalPillarSlabBlock, B extends RotatedPillarBlock> void directionalPillarSlabBlockWithItem(DeferredHolder<Block, S> slab, DeferredHolder<Block, B> pillarBlock) {
 		directionalPillarSlabBlockWithItem(slab.get(), pillarBlock.get());
 	}
 
@@ -744,7 +744,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		simpleBlockItem(block, hangingModel);
 	}
 
-	public <T extends FleshVeinsBlock> void veinsBlock(RegistryObject<T> block) {
+	public <T extends FleshVeinsBlock> void veinsBlock(DeferredHolder<Block, T> block) {
 		veinsBlock(block.get());
 	}
 
@@ -755,7 +755,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		multifaceBlock(block, model);
 	}
 
-	public <T extends JumpPadBlock> void jumpPad(RegistryObject<T> block) {
+	public <T extends JumpPadBlock> void jumpPad(DeferredHolder<Block, T> block) {
 		ResourceLocation templateModel = BiomancyMod.rl("block/template/jump_pad");
 		multifaceBlockWithPropertyVariants(block.get(), JumpPadBlock.ENABLED, bool -> bool == true ? "enabled" : "disabled", templateModel, "solid",
 				(direction, propertyValue, model) -> {
@@ -766,7 +766,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		);
 	}
 
-	public <T extends Block> void existingMultifaceBlockWithItem(RegistryObject<T> block) {
+	public <T extends Block> void existingMultifaceBlockWithItem(DeferredHolder<Block, T> block) {
 		ModelFile model = models().getExistingFile(blockAsset(block));
 		multifaceBlock(block.get(), model);
 		simpleBlockItem(block.get(), model);
@@ -843,7 +843,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		});
 	}
 
-	public <T extends PaneBlock, S extends MembraneBlock> void membranePaneWithItem(RegistryObject<T> block, RegistryObject<S> parentBlock) {
+	public <T extends PaneBlock, S extends MembraneBlock> void membranePaneWithItem(DeferredHolder<Block, T> block, DeferredHolder<Block, S> parentBlock) {
 		membranePaneWithItem(block.get(), parentBlock.get());
 	}
 
@@ -1002,19 +1002,19 @@ public class ModBlockStateProvider extends BlockStateProvider {
 				}, FleshDoorBlock.POWERED, FleshDoorBlock.HINGE, FleshDoorBlock.FACING);
 	}
 
-	public <T extends FleshSpikeBlock> void fleshSpikes(RegistryObject<T> block) {
+	public <T extends FleshSpikeBlock> void fleshSpikes(DeferredHolder<Block, T> block) {
 		fleshSpikes(block.get());
 	}
 
-	public <T extends FleshDoorBlock> void fleshDoor(RegistryObject<T> block) {
+	public <T extends FleshDoorBlock> void fleshDoor(DeferredHolder<Block, T> block) {
 		fleshDoor(block.get());
 	}
 
-	public <T extends IrisDoorBlock> void irisDoor(RegistryObject<T> block, boolean simpleBlockItem) {
+	public <T extends IrisDoorBlock> void irisDoor(DeferredHolder<Block, T> block, boolean simpleBlockItem) {
 		irisDoor(block.get(), simpleBlockItem);
 	}
 
-	public <T extends VialHolderBlock> void vialHolder(RegistryObject<T> block) {
+	public <T extends VialHolderBlock> void vialHolder(DeferredHolder<Block, T> block) {
 		vialHolder(block.get());
 	}
 

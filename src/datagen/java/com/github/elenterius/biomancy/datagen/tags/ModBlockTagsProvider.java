@@ -12,11 +12,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.*;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.data.BlockTagsProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.jspecify.annotations.Nullable;
 
@@ -42,7 +42,7 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 	}
 
 	protected EnhancedTagAppender<Block> enhancedTag(TagKey<Block> tag) {
-		return new EnhancedTagAppender<>(tag(tag), ForgeRegistries.BLOCKS);
+		return new EnhancedTagAppender<>(tag(tag), BuiltInRegistries.BLOCK);
 	}
 
 	@Override
@@ -147,20 +147,20 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 		tag(BlockTags.FENCE_GATES).add(ModBlocks.FLESH_FENCE_GATE.get());
 
 		IntrinsicTagAppender<Block> wallsTag = tag(BlockTags.WALLS);
-		ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get).filter(WallBlock.class::isInstance).forEach(wallsTag::add);
+		ModBlocks.BLOCKS.getEntries().stream().map(DeferredHolder::get).filter(WallBlock.class::isInstance).forEach(wallsTag::add);
 
 		IntrinsicTagAppender<Block> stairsTag = tag(BlockTags.STAIRS);
-		ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get).filter(StairBlock.class::isInstance).forEach(stairsTag::add);
+		ModBlocks.BLOCKS.getEntries().stream().map(DeferredHolder::get).filter(StairBlock.class::isInstance).forEach(stairsTag::add);
 
 		tag(BlockTags.PRESSURE_PLATES).add(ModBlocks.FLESHKIN_PRESSURE_PLATE.get());
 
 		tag(BlockTags.CLIMBABLE).add(ModBlocks.FLESH_LADDER.get());
 
 		IntrinsicTagAppender<Block> slabsTag = tag(BlockTags.SLABS);
-		ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get).filter(block -> block instanceof DirectionalSlabBlock || block instanceof SlabBlock).forEach(slabsTag::add);
+		ModBlocks.BLOCKS.getEntries().stream().map(DeferredHolder::get).filter(block -> block instanceof DirectionalSlabBlock || block instanceof SlabBlock).forEach(slabsTag::add);
 
 		IntrinsicTagAppender<Block> impermeableTag = tag(BlockTags.IMPERMEABLE);
-		ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get).filter(Membrane.class::isInstance).forEach(impermeableTag::add);
+		ModBlocks.BLOCKS.getEntries().stream().map(DeferredHolder::get).filter(Membrane.class::isInstance).forEach(impermeableTag::add);
 	}
 
 	private void addMineableWithToolTags() {
@@ -174,7 +174,7 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 				ModBlocks.WATER_GEL_BLOCK.get(), ModBlocks.PRIMAL_BONE.get()
 		);
 
-		ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get)
+		ModBlocks.BLOCKS.getEntries().stream().map(DeferredHolder::get)
 				.filter(block -> !notMineableWithHoe.contains(block))
 				.forEach(hoeTag::add);
 	}
@@ -195,7 +195,7 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 		//Blocks which can count toward a functional windmill structure
 		//Example: Wool
 		IntrinsicTagAppender<Block> windmillSailsTag = tag(tagKey(modId, "windmill_sails"));
-		ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get).filter(Membrane.class::isInstance).forEach(windmillSailsTag::add);
+		ModBlocks.BLOCKS.getEntries().stream().map(DeferredHolder::get).filter(Membrane.class::isInstance).forEach(windmillSailsTag::add);
 	}
 
 	/**
@@ -206,6 +206,6 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 
 		IntrinsicTagAppender<Block> nonDoubleDoorTag = tag(tagKey(modId, "non_double_door"));
 		Predicate<Block> predicate = block -> block instanceof FleshDoorBlock || block instanceof FullFleshDoorBlock;
-		ModBlocks.BLOCKS.getEntries().stream().map(RegistryObject::get).filter(predicate).forEach(nonDoubleDoorTag::add);
+		ModBlocks.BLOCKS.getEntries().stream().map(DeferredHolder::get).filter(predicate).forEach(nonDoubleDoorTag::add);
 	}
 }

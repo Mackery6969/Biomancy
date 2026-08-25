@@ -14,8 +14,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.crafting.CraftingHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public final class RecipeUtil {
 	@SuppressWarnings("DataFlowIssue")
 	public static JsonObject writeItemStack(ItemStack stack) {
 		JsonObject json = new JsonObject();
-		json.addProperty(JsonKeys.ID, ForgeRegistries.ITEMS.getKey(stack.getItem()).toString());
+		json.addProperty(JsonKeys.ID, BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
 		if (stack.getCount() > 1) json.addProperty(JsonKeys.COUNT, stack.getCount());
 		if (stack.hasTag()) json.addProperty(JsonKeys.TAG, stack.getTag().toString());
 		return json;

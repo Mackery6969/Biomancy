@@ -13,8 +13,8 @@ import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.Tags;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.orcinus.overweightfarming.OverweightFarming;
 import net.orcinus.overweightfarming.init.OFBlocks;
 import net.orcinus.overweightfarming.init.OFItems;
@@ -30,7 +30,7 @@ public class DigestingRecipeProvider extends RecipeProvider {
 	}
 
 	protected static String getItemName(ItemLike itemLike) {
-		ResourceLocation key = ForgeRegistries.ITEMS.getKey(itemLike.asItem());
+		ResourceLocation key = BuiltInRegistries.ITEM.getKey(itemLike.asItem());
 		return key != null ? key.getPath() : "unknown";
 	}
 

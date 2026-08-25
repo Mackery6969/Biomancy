@@ -5,7 +5,7 @@ import com.github.elenterius.biomancy.util.ItemStackFilterList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;

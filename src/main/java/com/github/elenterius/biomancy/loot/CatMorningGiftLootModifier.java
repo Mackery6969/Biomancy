@@ -2,7 +2,7 @@ package com.github.elenterius.biomancy.loot;
 
 import com.github.elenterius.biomancy.init.ModItems;
 import com.google.common.base.Suppliers;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,15 +17,15 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
-import net.minecraftforge.common.loot.IGlobalLootModifier;
-import net.minecraftforge.common.loot.LootModifier;
-import net.minecraftforge.common.loot.LootTableIdCondition;
+import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
+import net.neoforged.neoforge.common.loot.LootModifier;
+import net.neoforged.neoforge.common.loot.LootTableIdCondition;
 
 import java.util.function.Supplier;
 
 public class CatMorningGiftLootModifier extends LootModifier {
 
-	public static final Supplier<Codec<CatMorningGiftLootModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.create(inst ->
+	public static final Supplier<MapCodec<CatMorningGiftLootModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.mapCodec(inst ->
 			codecStart(inst).apply(inst, CatMorningGiftLootModifier::new)));
 
 	public CatMorningGiftLootModifier() {
@@ -42,7 +42,7 @@ public class CatMorningGiftLootModifier extends LootModifier {
 	}
 
 	@Override
-	public Codec<? extends IGlobalLootModifier> codec() {
+	public MapCodec<? extends IGlobalLootModifier> codec() {
 		return CODEC.get();
 	}
 

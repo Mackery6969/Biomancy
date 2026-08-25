@@ -21,8 +21,8 @@ import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.entity.PartEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.neoforged.neoforge.entity.PartEntity;
 import net.minecraftforge.event.ForgeEventFactory;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -81,11 +81,11 @@ public final class MobUtil {
 	 * @return gravity, positive is downwards force and negative is upwards force
 	 */
 	public static double getGravity(Entity entity) {
-		return entity instanceof LivingEntity livingEntity ? livingEntity.getAttributeValue(ForgeMod.ENTITY_GRAVITY.get()) : ForgeMod.ENTITY_GRAVITY.get().getDefaultValue();
+		return entity instanceof LivingEntity livingEntity ? livingEntity.getAttributeValue(Attributes.GRAVITY.value()) : Attributes.GRAVITY.value().getDefaultValue();
 	}
 
 	public static double getGravity(Entity entity, double fallback) {
-		return entity instanceof LivingEntity livingEntity ? livingEntity.getAttributeValue(ForgeMod.ENTITY_GRAVITY.get()) : fallback;
+		return entity instanceof LivingEntity livingEntity ? livingEntity.getAttributeValue(Attributes.GRAVITY.value()) : fallback;
 	}
 
 	//	public static double getGravitationalAcceleration(Entity entity) {

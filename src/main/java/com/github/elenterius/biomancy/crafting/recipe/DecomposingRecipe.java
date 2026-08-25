@@ -17,7 +17,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,7 +113,7 @@ public class DecomposingRecipe extends StaticProcessingRecipe {
 
 			List<VariableOutput> results = RecipeUtil.readVariableProductionOutputs(GsonHelper.getAsJsonArray(json, RecipeUtil.JsonKeys.RESULTS));
 			if (results.size() > MAX_OUTPUTS) {
-				throw new JsonParseException(String.format("Too many outputs for %s recipe. Max amount is %d", ForgeRegistries.RECIPE_SERIALIZERS.getKey(this), MAX_OUTPUTS));
+				throw new JsonParseException(String.format("Too many outputs for %s recipe. Max amount is %d", BuiltInRegistries.RECIPE_SERIALIZER.getKey(this), MAX_OUTPUTS));
 			}
 
 			int time = GsonHelper.getAsInt(json, RecipeUtil.JsonKeys.PROCESSING_TIME, 100);

@@ -25,11 +25,10 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
-import net.minecraftforge.common.util.Lazy;
+import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.List;
 import java.util.UUID;
@@ -49,7 +48,7 @@ public class ClawsItem extends TieredItem implements Vanishable {
 		ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
 		builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", attackDamageModifier, AttributeModifier.Operation.ADDITION));
 		builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", attackSpeedModifier, AttributeModifier.Operation.ADDITION));
-		builder.put(ForgeMod.ENTITY_REACH.get(), new AttributeModifier(BASE_ATTACK_RANGE_UUID, "Weapon modifier", attackRangeModifier, AttributeModifier.Operation.ADDITION));
+		builder.put(Attributes.ENTITY_INTERACTION_RANGE.value(), new AttributeModifier(BASE_ATTACK_RANGE_UUID, "Weapon modifier", attackRangeModifier, AttributeModifier.Operation.ADDITION));
 		return builder;
 	}
 

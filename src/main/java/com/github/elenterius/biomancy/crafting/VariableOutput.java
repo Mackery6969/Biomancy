@@ -10,7 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
@@ -101,7 +101,7 @@ public class VariableOutput {
 
 	public JsonObject serialize() {
 		JsonObject result = new JsonObject();
-		result.addProperty("item", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(item)).toString());
+		result.addProperty("item", Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item)).toString());
 
 		JsonObject obj = new JsonObject();
 		ItemCountRange.toJson(obj, countRange);

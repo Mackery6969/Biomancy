@@ -16,14 +16,14 @@ import com.github.elenterius.biomancy.datagen.tags.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 
 import java.util.concurrent.CompletableFuture;
 
-@Mod.EventBusSubscriber(modid = BiomancyMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = BiomancyMod.MOD_ID)
 public final class DataGenerators {
 
 	private DataGenerators() {}
@@ -59,7 +59,7 @@ public final class DataGenerators {
 
 		//loot
 		generator.addProvider(includeServer, new ModLootTableProvider(packOutput));
-		generator.addProvider(includeServer, new ModGlobalLootModifierProvider(packOutput));
+		generator.addProvider(includeServer, new ModGlobalLootModifierProvider(packOutput, lookupProvider));
 		generator.addProvider(includeServer, new WikiDespoilLootProvider(packOutput, new ModDespoilLoot()));
 
 		//models & block states

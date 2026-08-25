@@ -5,7 +5,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.Collection;
 
@@ -31,7 +31,7 @@ public class BloomberryItem extends SimpleItem {
 		ItemStack result = livingEntity.eat(level, stack);
 
 		if (!level.isClientSide) {
-			Collection<Potion> potions = ForgeRegistries.POTIONS.getValues();
+			Collection<Potion> potions = BuiltInRegistries.POTION.getValues();
 			potions.stream().skip(level.random.nextInt(potions.size())).findFirst().ifPresent(potion -> applyPotion(livingEntity, potion));
 		}
 

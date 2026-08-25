@@ -8,9 +8,9 @@ import com.github.elenterius.biomancy.init.ModRecipes;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.RecipeWrapper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.wrapper.RecipeWrapper;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public final class DigestingRecipes {
 			int craftingCostNutrients = dynamicRecipe.getCraftingCostNutrients(inputInventory);
 			Ingredient ingredient = Ingredient.of(ingredientItem);
 
-			String suffix = ForgeRegistries.ITEMS.getKey(ingredientItem.getItem()).toLanguageKey();
+			String suffix = BuiltInRegistries.ITEM.getKey(ingredientItem.getItem()).toLanguageKey();
 			StaticDigestingRecipe recipe = new StaticDigestingRecipe(dynamicRecipe.getId().withSuffix("_jei_" + suffix), result, craftingTimeTicks, craftingCostNutrients, ingredient);
 
 			staticRecipes.add(recipe);

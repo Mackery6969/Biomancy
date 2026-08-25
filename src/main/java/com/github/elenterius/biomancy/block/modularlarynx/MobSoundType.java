@@ -9,7 +9,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jspecify.annotations.Nullable;
 
 public enum MobSoundType implements StringRepresentable {
@@ -43,7 +43,7 @@ public enum MobSoundType implements StringRepresentable {
 	public SoundEvent getSound(CompoundTag tag) {
 		ResourceLocation soundId = ResourceLocation.tryParse(tag.getString(name));
 		if (soundId != null) {
-			return ForgeRegistries.SOUND_EVENTS.getValue(soundId);
+			return BuiltInRegistries.SOUND_EVENT.getValue(soundId);
 		}
 		return null;
 	}

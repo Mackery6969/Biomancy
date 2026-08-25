@@ -17,10 +17,10 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
-import software.bernie.geckolib.util.RenderUtils;
+import software.bernie.geckolib.util.RenderUtil;
 
 public class GeoItemWithArmRenderer<T extends Item & GeoAnimatable> extends GeoItemRenderer<T> {
 
@@ -65,8 +65,8 @@ public class GeoItemWithArmRenderer<T extends Item & GeoAnimatable> extends GeoI
 			if (renderPerspective.firstPerson() && player != null && !player.isInvisible()) {
 				poseStack.pushPose();
 
-				RenderUtils.prepMatrixForBone(poseStack, bone);
-				RenderUtils.translateAndRotateMatrixForBone(poseStack, bone);
+				RenderUtil.prepMatrixForBone(poseStack, bone);
+				RenderUtil.translateAndRotateMatrixForBone(poseStack, bone);
 				renderPlayerArm(poseStack, bufferSource, packedLight, player, renderPerspective == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND);
 				poseStack.popPose();
 

@@ -21,7 +21,7 @@ import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import org.apache.logging.log4j.MarkerManager;
 import org.jspecify.annotations.Nullable;
 

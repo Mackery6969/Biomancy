@@ -137,14 +137,6 @@ neoForge {
 	}
 }
 
-// Mixins are declared declaratively via [[mixins]] entries in neoforge.mods.toml (NeoForge 20.3+) -
-// no Gradle-side mixin configuration is needed, and MixinExtras ships bundled with NeoForge.
-
-// Sets up a dependency configuration called 'localRuntime'.
-// This should be used instead of 'runtimeOnly' to declare a dependency that will be
-// present for runtime testing but that is "optional", meaning it will not be pulled
-// by dependents of this mod. Unlike the old Forge/legacyForge setup, NeoForge dependencies
-// are already Mojmap and need no deobfuscation/remapping configuration.
 configurations {
 	runtimeClasspath.extendsFrom localRuntime
 }

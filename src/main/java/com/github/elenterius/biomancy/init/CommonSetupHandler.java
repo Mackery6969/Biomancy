@@ -5,7 +5,6 @@ import com.github.elenterius.biomancy.entity.projectile.GrenadeProjectile;
 import com.github.elenterius.biomancy.integration.ModsCompatHandler;
 import com.github.elenterius.biomancy.item.extractor.ExtractorItem;
 import com.github.elenterius.biomancy.item.injector.InjectorItem;
-import com.github.elenterius.biomancy.network.ModNetworkHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Position;
@@ -19,20 +18,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraft.core.registries.Registries;
+import net.neoforged.neoforge.registries.RegisterEvent;
 
-@Mod.EventBusSubscriber(modid = BiomancyMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = BiomancyMod.MOD_ID)
 public final class CommonSetupHandler {
 
 	private CommonSetupHandler() {}
 
 	@SubscribeEvent
 	public static void onSetup(final FMLCommonSetupEvent event) {
-		ModNetworkHandler.register();
 		ModRecipeBookTypes.init();
 
 		// if not thread safe do it after the common setup event on a single thread
@@ -53,7 +51,7 @@ public final class CommonSetupHandler {
 
 	@SubscribeEvent
 	public static void registerRecipeSerializers(RegisterEvent event) {
-		if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS)) {
+		if (event.getRegistryKey().equals(Registries.RECIPE_SERIALIZER)) {
 			ModRecipes.registerIngredientSerializers();
 		}
 	}

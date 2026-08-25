@@ -17,7 +17,7 @@ bin
 .classpath
 .project
 
-# vscode (auto-generated run configs from the NeoForge/ModDevGradle IDE sync task)
+# vscode
 .vscode
 
 # gradle

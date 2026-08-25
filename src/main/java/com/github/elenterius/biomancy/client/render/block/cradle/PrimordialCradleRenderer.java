@@ -14,8 +14,8 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import software.bernie.geckolib.cache.object.*;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.animation.AnimationProcessor;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.animation.AnimationProcessor;
 
 public class PrimordialCradleRenderer extends CustomGeoBlockRenderer<PrimordialCradleBlockEntity> {
 
@@ -31,8 +31,8 @@ public class PrimordialCradleRenderer extends CustomGeoBlockRenderer<PrimordialC
 	@Override
 	public void preRender(PoseStack poseStack, PrimordialCradleBlockEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		AnimationProcessor<?> processor = getGeoModel().getAnimationProcessor();
-		CoreGeoBone boneFillLevel = processor.getBone("_fill_level");
-		CoreGeoBone boneToppings = processor.getBone("_toppings");
+		GeoBone boneFillLevel = processor.getBone("_fill_level");
+		GeoBone boneToppings = processor.getBone("_toppings");
 
 		boneFillLevel.setHidden(true);
 		boneToppings.setHidden(true);

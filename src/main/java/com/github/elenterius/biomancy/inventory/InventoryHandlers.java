@@ -5,7 +5,7 @@ import com.github.elenterius.biomancy.init.ModCapabilities;
 import net.minecraft.world.item.BundleItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.List;
 import java.util.function.Predicate;

@@ -24,7 +24,6 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
 import org.jspecify.annotations.Nullable;
 
 public class StorageSacBlock extends WaterloggedFacingEntityBlock {
@@ -63,7 +62,7 @@ public class StorageSacBlock extends WaterloggedFacingEntityBlock {
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (level.getBlockEntity(pos) instanceof StorageSacBlockEntity sac && sac.canPlayerInteract(player)) {
 			if (!level.isClientSide) {
-				NetworkHooks.openScreen((ServerPlayer) player, sac, buffer -> buffer.writeBlockPos(pos));
+				((ServerPlayer) player).openMenu(sac, pos);
 				SoundUtil.Server.playBlockSound((ServerLevel) level, pos, ModSoundEvents.UI_STORAGE_SAC_OPEN);
 			}
 			return InteractionResult.SUCCESS;

@@ -5,7 +5,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraftforge.client.IArmPoseTransformer;
+import net.neoforged.neoforge.client.IArmPoseTransformer;
 
 public final class ModArmPoses {
 

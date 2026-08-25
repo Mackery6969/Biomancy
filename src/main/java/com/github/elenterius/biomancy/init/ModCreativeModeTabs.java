@@ -19,9 +19,9 @@ import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.StructureMode;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.List;
 import java.util.Set;
@@ -35,18 +35,18 @@ public final class ModCreativeModeTabs {
 	public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, BiomancyMod.MOD_ID);
 	public static final DeferredRegister<CreativeModeTab> CREATIVE_DEV_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, BiomancyMod.MOD_ID);
 
-	public static final RegistryObject<CreativeModeTab> MAIN = register("main", () -> ModItems.TAB_ICON.get().getDefaultInstance(), ModCreativeModeTabs::mainTab);
-	public static final RegistryObject<CreativeModeTab> BIO_ALCHEMY = register("bio_alchemy", () -> ModItems.INJECTOR.get().getDefaultInstance(), ModCreativeModeTabs::alchemyTab);
+	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN = register("main", () -> ModItems.TAB_ICON.get().getDefaultInstance(), ModCreativeModeTabs::mainTab);
+	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> BIO_ALCHEMY = register("bio_alchemy", () -> ModItems.INJECTOR.get().getDefaultInstance(), ModCreativeModeTabs::alchemyTab);
 
-	public static final RegistryObject<CreativeModeTab> DEV = registerDev("dev", () -> ModItems.DEV_ARM_CANNON.get().getDefaultInstance(), ModCreativeModeTabs::devTab);
-	public static final RegistryObject<CreativeModeTab> DEV_STRUCTURES = registerDev("dev_structures", Items.STRUCTURE_BLOCK::getDefaultInstance, ModCreativeModeTabs::devStructuresTab);
+	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> DEV = registerDev("dev", () -> ModItems.DEV_ARM_CANNON.get().getDefaultInstance(), ModCreativeModeTabs::devTab);
+	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> DEV_STRUCTURES = registerDev("dev_structures", Items.STRUCTURE_BLOCK::getDefaultInstance, ModCreativeModeTabs::devStructuresTab);
 
 	private ModCreativeModeTabs() {}
 
 	private static CreativeModeTab.Builder mainTab(CreativeModeTab.Builder builder) {
 		return builder
 				.displayItems((params, output) -> {
-					Set<RegistryObject<? extends Item>> hiddenItems = Set.of(
+					Set<DeferredHolder<Item, ? extends Item>> hiddenItems = Set.of(
 							ModItems.TAB_ICON,
 							ModItems.ESSENCE,
 							ModItems.DEV_GUIDE_BOOK,
@@ -63,8 +63,8 @@ public final class ModCreativeModeTabs {
 							ModItems.DECAYING_ADDITIVE
 					);
 
-					Predicate<RegistryObject<Item>> isNotHidden = entry -> !hiddenItems.contains(entry);
-					Predicate<RegistryObject<Item>> isNotSerum = entry -> !(entry.get() instanceof SerumContainer);
+					Predicate<DeferredHolder<Item, ? extends Item>> isNotHidden = entry -> !hiddenItems.contains(entry);
+					Predicate<DeferredHolder<Item, ? extends Item>> isNotSerum = entry -> !(entry.get() instanceof SerumContainer);
 
 					ModItems.ITEMS.getEntries().stream()
 							.filter(isNotHidden)
@@ -82,7 +82,7 @@ public final class ModCreativeModeTabs {
 								}
 							});
 
-					for (RegistryObject<Enchantment> entry : ModEnchantments.ENCHANTMENTS.getEntries()) {
+					for (DeferredHolder<Enchantment, ? extends Enchantment> entry : ModEnchantments.ENCHANTMENTS.getEntries()) {
 						Enchantment enchantment = entry.get();
 						output.accept(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment, enchantment.getMaxLevel())));
 					}
@@ -93,7 +93,7 @@ public final class ModCreativeModeTabs {
 		return builder
 				.withTabsBefore(MAIN.getId())
 				.displayItems((params, output) -> {
-					List<RegistryObject<? extends Item>> includeItems = List.of(
+					List<DeferredHolder<Item, ? extends Item>> includeItems = List.of(
 							ModItems.BIO_LAB,
 							ModItems.INJECTOR,
 							ModItems.VIAL,
@@ -104,7 +104,7 @@ public final class ModCreativeModeTabs {
 							ModItems.HEALING_ADDITIVE,
 							ModItems.DECAYING_ADDITIVE
 					);
-					includeItems.stream().map(RegistryObject::get).forEachOrdered(output::accept);
+					includeItems.stream().map(DeferredHolder::get).forEachOrdered(output::accept);
 
 					ModItems.findItems(SerumItem.class).forEach(output::accept);
 
@@ -169,11 +169,11 @@ public final class ModCreativeModeTabs {
 				});
 	}
 
-	private static RegistryObject<CreativeModeTab> register(String name, Supplier<ItemStack> icon, UnaryOperator<CreativeModeTab.Builder> factory) {
+	private static DeferredHolder<CreativeModeTab, CreativeModeTab> register(String name, Supplier<ItemStack> icon, UnaryOperator<CreativeModeTab.Builder> factory) {
 		return CREATIVE_TABS.register(name, () -> factory.apply(CreativeModeTab.builder().icon(icon).title(ComponentUtil.translatable(translationKey(name)))).build());
 	}
 
-	private static RegistryObject<CreativeModeTab> registerDev(String name, Supplier<ItemStack> icon, UnaryOperator<CreativeModeTab.Builder> factory) {
+	private static DeferredHolder<CreativeModeTab, CreativeModeTab> registerDev(String name, Supplier<ItemStack> icon, UnaryOperator<CreativeModeTab.Builder> factory) {
 		return CREATIVE_DEV_TABS.register(name, () -> factory.apply(CreativeModeTab.builder().icon(icon).title(ComponentUtil.translatable(translationKey(name)))).build());
 	}
 

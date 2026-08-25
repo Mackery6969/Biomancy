@@ -1,7 +1,7 @@
 package com.github.elenterius.biomancy.util;
 
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.common.WorldWorkerManager;
+import net.neoforged.neoforge.common.WorldWorkerManager;
 
 import java.util.function.Consumer;
 

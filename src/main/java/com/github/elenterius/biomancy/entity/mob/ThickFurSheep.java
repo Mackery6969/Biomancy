@@ -14,7 +14,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraftforge.common.ForgeMod;
 import org.jspecify.annotations.Nullable;
 
 public class ThickFurSheep extends Sheep {
@@ -73,7 +72,7 @@ public class ThickFurSheep extends Sheep {
 
 		double pct = (double) size / MAX_WOOL_SIZE;
 		getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.23d - 0.16d * pct);
-		getAttribute(ForgeMod.ENTITY_GRAVITY.get()).setBaseValue(0.08d + 0.16d * pct);
+		getAttribute(Attributes.GRAVITY.value()).setBaseValue(0.08d + 0.16d * pct);
 		getAttribute(Attributes.ARMOR).setBaseValue(Mth.clamp(16d * pct - 1.6d, 0d, 16d));
 		getAttribute(Attributes.ARMOR_TOUGHNESS).setBaseValue(Mth.clamp(3d * pct - 1d, 0d, 16d));
 	}

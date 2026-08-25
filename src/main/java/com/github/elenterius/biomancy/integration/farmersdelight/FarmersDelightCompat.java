@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.Objects;
 
@@ -42,12 +42,12 @@ public final class FarmersDelightCompat {
 
 	private static Block getBlock(String name) {
 		ResourceLocation id = new ResourceLocation("farmersdelight", name);
-		return Objects.requireNonNull(ForgeRegistries.BLOCKS.getValue(id));
+		return Objects.requireNonNull(BuiltInRegistries.BLOCK.getValue(id));
 	}
 
 	private static Item getItem(String name) {
 		ResourceLocation id = new ResourceLocation("farmersdelight", name);
-		return Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(id));
+		return Objects.requireNonNull(BuiltInRegistries.ITEM.getValue(id));
 	}
 
 }

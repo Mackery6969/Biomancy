@@ -1,23 +1,21 @@
 package com.github.elenterius.biomancy.inventory;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.RecipeWrapper;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.wrapper.RecipeWrapper;
 
 
 public final class InventoryHandler<T extends SerializableItemHandler> implements SerializableItemHandler {
 
 	private final T itemHandler;
-	private LazyOptional<IItemHandler> optionalItemHandler;
 
 	private final RecipeWrapper recipeWrapper;
 
 	public InventoryHandler(T itemHandler) {
 		this.itemHandler = itemHandler;
 		recipeWrapper = new RecipeWrapper(itemHandler);
-		optionalItemHandler = LazyOptional.of(() -> itemHandler);
 	}
 
 	public boolean isEmpty() {
@@ -28,13 +26,13 @@ public final class InventoryHandler<T extends SerializableItemHandler> implement
 	}
 
 	@Override
-	public CompoundTag serializeNBT() {
-		return itemHandler.serializeNBT();
+	public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+		return itemHandler.serializeNBT(provider);
 	}
 
 	@Override
-	public void deserializeNBT(CompoundTag nbt) {
-		itemHandler.deserializeNBT(nbt);
+	public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+		itemHandler.deserializeNBT(provider, nbt);
 	}
 
 	public T get() {
@@ -48,20 +46,8 @@ public final class InventoryHandler<T extends SerializableItemHandler> implement
 		return itemHandler instanceof BehavioralItemHandler handler ? handler.withoutBehavior() : itemHandler;
 	}
 
-	public LazyOptional<IItemHandler> getLazyOptional() {
-		return optionalItemHandler;
-	}
-
 	public RecipeWrapper getRecipeWrapper() {
 		return recipeWrapper;
-	}
-
-	public void invalidate() {
-		optionalItemHandler.invalidate();
-	}
-
-	public void revive() {
-		optionalItemHandler = LazyOptional.of(() -> itemHandler);
 	}
 
 	@Override

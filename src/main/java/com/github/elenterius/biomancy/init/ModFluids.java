@@ -4,19 +4,20 @@ import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.fluid.AcidFluid;
 import com.github.elenterius.biomancy.fluid.TintedFluidType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.common.SoundActions;
-import net.minecraftforge.fluids.FluidInteractionRegistry;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.common.SoundActions;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
+import net.neoforged.neoforge.fluids.FluidInteractionRegistry;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -24,41 +25,41 @@ import java.util.function.UnaryOperator;
 
 public final class ModFluids {
 
-	public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, BiomancyMod.MOD_ID);
-	public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, BiomancyMod.MOD_ID);
+	public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, BiomancyMod.MOD_ID);
+	public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(BuiltInRegistries.FLUID, BiomancyMod.MOD_ID);
 
-	public static final RegistryObject<FluidType> ACID_TYPE = registerType("acid", properties -> properties.density(1024).viscosity(1024));
-	public static final Supplier<ForgeFlowingFluid.Properties> ACID_FLUID_PROPERTIES = () -> new ForgeFlowingFluid
+	public static final DeferredHolder<FluidType, FluidType> ACID_TYPE = registerType("acid", properties -> properties.density(1024).viscosity(1024));
+	public static final Supplier<BaseFlowingFluid.Properties> ACID_FLUID_PROPERTIES = () -> new BaseFlowingFluid
 			.Properties(ACID_TYPE, ModFluids.ACID, ModFluids.FLOWING_ACID)
 			.slopeFindDistance(2)
 			.levelDecreasePerBlock(2)
 			.block(ModBlocks.ACID_FLUID_BLOCK)
 			.bucket(ModItems.ACID_BUCKET);
-	public static final RegistryObject<ForgeFlowingFluid> ACID = register("acid", () -> new AcidFluid.Source(ACID_FLUID_PROPERTIES.get()));
-	public static final RegistryObject<ForgeFlowingFluid> FLOWING_ACID = register("flowing_acid", () -> new AcidFluid.Flowing(ACID_FLUID_PROPERTIES.get()));
+	public static final DeferredHolder<Fluid, BaseFlowingFluid> ACID = register("acid", () -> new AcidFluid.Source(ACID_FLUID_PROPERTIES.get()));
+	public static final DeferredHolder<Fluid, BaseFlowingFluid> FLOWING_ACID = register("flowing_acid", () -> new AcidFluid.Flowing(ACID_FLUID_PROPERTIES.get()));
 
 	private ModFluids() {}
 
 	static void registerInteractions() {
 		FluidInteractionRegistry.addInteraction(ACID_TYPE.get(), new FluidInteractionRegistry.InteractionInformation(
-				ForgeMod.WATER_TYPE.get(),
+				NeoForgeMod.WATER_TYPE.value(),
 				fluidState -> fluidState.isSource() ? Blocks.CALCITE.defaultBlockState() : Blocks.DIORITE.defaultBlockState()
 		));
 		FluidInteractionRegistry.addInteraction(ACID_TYPE.get(), new FluidInteractionRegistry.InteractionInformation(
-				ForgeMod.LAVA_TYPE.get(),
+				NeoForgeMod.LAVA_TYPE.value(),
 				fluidState -> fluidState.isSource() ? Blocks.OBSIDIAN.defaultBlockState() : Blocks.DIORITE.defaultBlockState()
 		));
 	}
 
-	private static <T extends Fluid> RegistryObject<T> register(String name, Supplier<T> factory) {
+	private static <T extends Fluid> DeferredHolder<Fluid, T> register(String name, Supplier<T> factory) {
 		return FLUIDS.register(name, factory);
 	}
 
-	private static RegistryObject<TintedFluidType> registerTintedType(String name, int colorARGB, UnaryOperator<FluidType.Properties> operator) {
+	private static DeferredHolder<FluidType, TintedFluidType> registerTintedType(String name, int colorARGB, UnaryOperator<FluidType.Properties> operator) {
 		return FLUID_TYPES.register(name, () -> new TintedFluidType(operator.apply(createFluidTypeProperties()), colorARGB));
 	}
 
-	private static RegistryObject<FluidType> registerType(String name, UnaryOperator<FluidType.Properties> operator) {
+	private static DeferredHolder<FluidType, FluidType> registerType(String name, UnaryOperator<FluidType.Properties> operator) {
 		return FLUID_TYPES.register(name, () -> new FluidType(operator.apply(createFluidTypeProperties())) {
 
 			private final ResourceLocation stillTexture = BiomancyMod.rl("block/%s_still".formatted(name));

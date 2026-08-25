@@ -7,7 +7,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 
 public final class ModScreens {
@@ -24,7 +24,7 @@ public final class ModScreens {
 		registerMenuScreen(ModMenuTypes.BIO_FORGE, BioForgeScreen::new);
 	}
 
-	private static <M extends AbstractContainerMenu, U extends Screen & MenuAccess<M>> void registerMenuScreen(RegistryObject<MenuType<M>> registryObject, MenuScreens.ScreenConstructor<M, U> factory) {
+	private static <M extends AbstractContainerMenu, U extends Screen & MenuAccess<M>> void registerMenuScreen(DeferredHolder<MenuType<?>, MenuType<M>> registryObject, MenuScreens.ScreenConstructor<M, U> factory) {
 		MenuScreens.register(registryObject.get(), factory);
 	}
 

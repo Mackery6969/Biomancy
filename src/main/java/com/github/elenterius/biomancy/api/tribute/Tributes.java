@@ -6,7 +6,7 @@ import com.github.elenterius.biomancy.util.SaturatedMath;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;

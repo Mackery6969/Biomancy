@@ -6,10 +6,10 @@ import com.github.elenterius.biomancy.integration.overweightfarming.OverweightFa
 import com.github.elenterius.biomancy.integration.overweightfarming.OverweightFarmingIntegration;
 import com.github.elenterius.biomancy.integration.pehkui.PehkuiHelper;
 import com.github.elenterius.biomancy.integration.pehkui.PehkuiIntegration;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 

@@ -17,7 +17,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -133,11 +133,11 @@ public class BioBrewingRecipe extends StaticProcessingRecipe {
 			List<IngredientStack> ingredients = RecipeUtil.readIngredientStacks(GsonHelper.getAsJsonArray(json, RecipeUtil.JsonKeys.INGREDIENTS));
 
 			if (ingredients.isEmpty()) {
-				throw new JsonParseException("No ingredients found for %s recipe".formatted(ForgeRegistries.RECIPE_SERIALIZERS.getKey(this)));
+				throw new JsonParseException("No ingredients found for %s recipe".formatted(BuiltInRegistries.RECIPE_SERIALIZER.getKey(this)));
 			}
 
 			if (ingredients.size() > MAX_INGREDIENTS) {
-				throw new JsonParseException("Too many ingredients for %s recipe. Max amount is %d".formatted(ForgeRegistries.RECIPE_SERIALIZERS.getKey(this), MAX_INGREDIENTS));
+				throw new JsonParseException("Too many ingredients for %s recipe. Max amount is %d".formatted(BuiltInRegistries.RECIPE_SERIALIZER.getKey(this), MAX_INGREDIENTS));
 			}
 
 			for (IngredientStack ingredientStack : ingredients) {

@@ -9,17 +9,17 @@ import com.github.elenterius.biomancy.menu.BioForgeTab;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterRecipeBookCategoriesEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.RegisterRecipeBookCategoriesEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-@Mod.EventBusSubscriber(modid = BiomancyMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = BiomancyMod.MOD_ID, value = Dist.CLIENT)
 public final class ModRecipeBookCategories {
 
 	private ModRecipeBookCategories() {}

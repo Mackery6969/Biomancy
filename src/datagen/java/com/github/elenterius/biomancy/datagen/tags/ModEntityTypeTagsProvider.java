@@ -12,9 +12,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.apache.commons.lang3.StringUtils;
 import org.jspecify.annotations.Nullable;
 
@@ -35,7 +35,7 @@ public class ModEntityTypeTagsProvider extends EntityTypeTagsProvider {
 	}
 
 	protected EnhancedTagAppender<EntityType<?>> createTag(TagKey<EntityType<?>> tag) {
-		return new EnhancedTagAppender<>(tag(tag), ForgeRegistries.ENTITY_TYPES);
+		return new EnhancedTagAppender<>(tag(tag), BuiltInRegistries.ENTITY_TYPE);
 	}
 
 	@Override

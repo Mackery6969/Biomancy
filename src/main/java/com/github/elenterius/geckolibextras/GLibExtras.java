@@ -13,14 +13,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jspecify.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.GeoItem;
-import software.bernie.geckolib.core.keyframe.event.KeyFrameEvent;
-import software.bernie.geckolib.core.keyframe.event.data.KeyFrameData;
-import software.bernie.geckolib.core.object.DataTicket;
+import software.bernie.geckolib.animation.keyframe.event.KeyFrameEvent;
+import software.bernie.geckolib.animation.keyframe.event.data.KeyFrameData;
+import software.bernie.geckolib.constant.dataticket.DataTicket;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
 import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer;
 

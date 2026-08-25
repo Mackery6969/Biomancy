@@ -4,12 +4,12 @@ import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.loot.CatMorningGiftLootModifier;
 import com.github.elenterius.biomancy.loot.DespoilLootModifier;
 import com.google.common.collect.Sets;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.loot.IGlobalLootModifier;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.Collections;
 import java.util.Set;
@@ -18,9 +18,9 @@ import static com.github.elenterius.biomancy.BiomancyMod.rl;
 
 public final class ModLoot {
 
-	public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> GLOBAL_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, BiomancyMod.MOD_ID);
-	public static final RegistryObject<Codec<? extends IGlobalLootModifier>> DESPOIL_SERIALIZER = GLOBAL_MODIFIERS.register("despoil", DespoilLootModifier.CODEC);
-	public static final RegistryObject<Codec<? extends IGlobalLootModifier>> CAT_MORNING_GIFT_SERIALIZER = GLOBAL_MODIFIERS.register("cat_morning_gift", CatMorningGiftLootModifier.CODEC);
+	public static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> GLOBAL_MODIFIERS = DeferredRegister.create(NeoForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, BiomancyMod.MOD_ID);
+	public static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<? extends IGlobalLootModifier>> DESPOIL_SERIALIZER = GLOBAL_MODIFIERS.register("despoil", DespoilLootModifier.CODEC);
+	public static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<? extends IGlobalLootModifier>> CAT_MORNING_GIFT_SERIALIZER = GLOBAL_MODIFIERS.register("cat_morning_gift", CatMorningGiftLootModifier.CODEC);
 
 	private ModLoot() {}
 

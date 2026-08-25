@@ -2,7 +2,7 @@ package com.github.elenterius.biomancy.api.nutrients;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Experimental

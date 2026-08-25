@@ -2,8 +2,9 @@ package com.github.elenterius.biomancy.client.render.entity.mob;
 
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.entity.mob.FleshPig;
-import net.minecraft.client.Minecraft;
-import software.bernie.geckolib.core.molang.MolangParser;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.loading.math.MathParser;
+import software.bernie.geckolib.loading.math.value.Variable;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 public class FleshPigModel<T extends FleshPig> extends DefaultedEntityGeoModel<T> {
@@ -13,36 +14,36 @@ public class FleshPigModel<T extends FleshPig> extends DefaultedEntityGeoModel<T
 	}
 
 	@Override
-	public void applyMolangQueries(T animatable, double animTime) {
-		super.applyMolangQueries(animatable, animTime);
+	public void applyMolangQueries(AnimationState<T> animationState, double animTime) {
+		super.applyMolangQueries(animationState, animTime);
 
-		MolangParser parser = MolangParser.INSTANCE;
+		T animatable = animationState.getAnimatable();
 
-		parser.setMemoizedValue("variable.limb_swing", () -> {
+		MathParser.registerVariable(new Variable("variable.limb_swing", () -> {
 			boolean shouldSit = animatable.isPassenger() && (animatable.getVehicle() != null && animatable.getVehicle().shouldRiderSit());
 
 			float limbSwing = 0;
 
 			if (!shouldSit && animatable.isAlive()) {
-				limbSwing = animatable.walkAnimation.position(Minecraft.getInstance().getPartialTick());
+				limbSwing = animatable.walkAnimation.position(animationState.getPartialTick());
 				if (animatable.isBaby()) limbSwing *= 3f;
 			}
 
 			return limbSwing;
-		});
+		}));
 
-		parser.setMemoizedValue("variable.limb_swing_amount", () -> {
+		MathParser.registerVariable(new Variable("variable.limb_swing_amount", () -> {
 			boolean shouldSit = animatable.isPassenger() && (animatable.getVehicle() != null && animatable.getVehicle().shouldRiderSit());
 
 			float limbSwingAmount = 0;
 
 			if (!shouldSit && animatable.isAlive()) {
-				limbSwingAmount = animatable.walkAnimation.speed(Minecraft.getInstance().getPartialTick());
+				limbSwingAmount = animatable.walkAnimation.speed(animationState.getPartialTick());
 				if (limbSwingAmount > 1f) limbSwingAmount = 1f;
 			}
 
 			return limbSwingAmount;
-		});
+		}));
 	}
 
 }

@@ -20,10 +20,10 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.brewing.BrewingRecipe;
-import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
-import net.minecraftforge.common.brewing.IBrewingRecipe;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.brewing.BrewingRecipe;
+import net.neoforged.neoforge.common.brewing.BrewingRecipeRegistry;
+import net.neoforged.neoforge.common.brewing.IBrewingRecipe;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
@@ -180,7 +180,7 @@ public final class PotionSerumRecipes {
 
 	private static Set<Potion> getBestPotions() {
 		Map<MobEffect, Map<Potion, MobEffectInstance>> primaryPotionEffects = new HashMap<>();
-		for (Potion potion : ForgeRegistries.POTIONS.getValues()) {
+		for (Potion potion : BuiltInRegistries.POTION.getValues()) {
 			MobEffectInstance instance = PotionSerum.getPrimaryEffectInstance(potion.getEffects());
 			if (instance == null) continue;
 			primaryPotionEffects.computeIfAbsent(instance.getEffect(), k -> new HashMap<>()).put(potion, instance);

@@ -3,7 +3,7 @@ package com.github.elenterius.biomancy.datagen.particles;
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.init.ModParticleTypes;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class ModParticleSpriteProvider extends ParticleSpriteProvider {
 

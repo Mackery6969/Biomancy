@@ -11,8 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -36,7 +36,7 @@ public sealed interface RecipeBuilder<T extends RecipeBuilder<?>> permits BioBre
 	}
 
 	private String getItemName(ItemLike itemLike) {
-		ResourceLocation key = ForgeRegistries.ITEMS.getKey(itemLike.asItem());
+		ResourceLocation key = BuiltInRegistries.ITEM.getKey(itemLike.asItem());
 		return key != null ? key.getPath() : "unknown";
 	}
 
@@ -58,7 +58,7 @@ public sealed interface RecipeBuilder<T extends RecipeBuilder<?>> permits BioBre
 		return unlockedBy("has_" + getItemName(itemLike), has(itemLike));
 	}
 
-	default T unlockedBy(RegistryObject<? extends Item> itemHolder) {
+	default T unlockedBy(DeferredHolder<Item, ? extends Item> itemHolder) {
 		Item item = itemHolder.get();
 		return unlockedBy("has_" + getItemName(item), has(item));
 	}

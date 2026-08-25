@@ -1,7 +1,7 @@
 package com.github.elenterius.biomancy.util;
 
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLEnvironment;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;

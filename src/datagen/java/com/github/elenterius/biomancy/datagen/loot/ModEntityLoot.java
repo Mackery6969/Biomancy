@@ -19,7 +19,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyC
 import net.minecraft.world.level.storage.loot.predicates.LootItemKilledByPlayerCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.stream.Stream;
 
@@ -130,7 +130,7 @@ public class ModEntityLoot extends EntityLootSubProvider {
 
 	@Override
 	protected Stream<EntityType<?>> getKnownEntityTypes() {
-		Stream<EntityType<?>> entityTypes = ModEntityTypes.ENTITIES.getEntries().stream().map(RegistryObject::get);
+		Stream<EntityType<?>> entityTypes = ModEntityTypes.ENTITIES.getEntries().stream().map(DeferredHolder::get);
 		LOGGER.info(ModLootTableProvider.LOG_MARKER, () -> String.format("generating loot tables for %s entity types...", ModEntityTypes.ENTITIES.getEntries().size()));
 		return entityTypes;
 	}

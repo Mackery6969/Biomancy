@@ -9,13 +9,13 @@ import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.HoverEvent;
-import net.minecraftforge.client.event.ClientChatEvent;
-import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.client.event.ClientChatEvent;
+import net.neoforged.neoforge.event.ServerChatEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import org.apache.commons.lang3.StringUtils;
 
-@Mod.EventBusSubscriber(modid = BiomancyMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = BiomancyMod.MOD_ID)
 public final class ChatMessageHandler {
 
 	private ChatMessageHandler() {}

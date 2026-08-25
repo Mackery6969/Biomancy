@@ -2,11 +2,11 @@ package com.github.elenterius.biomancy.client.render.entity.mob;
 
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.entity.mob.FleshChicken;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.molang.MolangParser;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.loading.math.MathParser;
+import software.bernie.geckolib.loading.math.value.Variable;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 public class FleshChickenModel<T extends FleshChicken> extends DefaultedEntityGeoModel<T> {
@@ -21,10 +21,10 @@ public class FleshChickenModel<T extends FleshChicken> extends DefaultedEntityGe
 
 		float wingRotation = getWingRotation(chicken, animationState.getPartialTick());
 
-		CoreGeoBone rightWing = getAnimationProcessor().getBone("right_wing");
+		GeoBone rightWing = getAnimationProcessor().getBone("right_wing");
 		if (rightWing != null) rightWing.setRotZ(wingRotation);
 
-		CoreGeoBone leftWing = getAnimationProcessor().getBone("left_wing");
+		GeoBone leftWing = getAnimationProcessor().getBone("left_wing");
 		if (leftWing != null) leftWing.setRotZ(-wingRotation);
 	}
 
@@ -35,36 +35,36 @@ public class FleshChickenModel<T extends FleshChicken> extends DefaultedEntityGe
 	}
 
 	@Override
-	public void applyMolangQueries(T animatable, double animTime) {
-		super.applyMolangQueries(animatable, animTime);
+	public void applyMolangQueries(AnimationState<T> animationState, double animTime) {
+		super.applyMolangQueries(animationState, animTime);
 
-		MolangParser parser = MolangParser.INSTANCE;
+		T animatable = animationState.getAnimatable();
 
-		parser.setMemoizedValue("variable.limb_swing", () -> {
+		MathParser.registerVariable(new Variable("variable.limb_swing", () -> {
 			boolean shouldSit = animatable.isPassenger() && (animatable.getVehicle() != null && animatable.getVehicle().shouldRiderSit());
 
 			float limbSwing = 0;
 
 			if (!shouldSit && animatable.isAlive()) {
-				limbSwing = animatable.walkAnimation.position(Minecraft.getInstance().getPartialTick());
+				limbSwing = animatable.walkAnimation.position(animationState.getPartialTick());
 				if (animatable.isBaby()) limbSwing *= 3f;
 			}
 
 			return limbSwing;
-		});
+		}));
 
-		parser.setMemoizedValue("variable.limb_swing_amount", () -> {
+		MathParser.registerVariable(new Variable("variable.limb_swing_amount", () -> {
 			boolean shouldSit = animatable.isPassenger() && (animatable.getVehicle() != null && animatable.getVehicle().shouldRiderSit());
 
 			float limbSwingAmount = 0;
 
 			if (!shouldSit && animatable.isAlive()) {
-				limbSwingAmount = animatable.walkAnimation.speed(Minecraft.getInstance().getPartialTick());
+				limbSwingAmount = animatable.walkAnimation.speed(animationState.getPartialTick());
 				if (limbSwingAmount > 1f) limbSwingAmount = 1f;
 			}
 
 			return limbSwingAmount;
-		});
+		}));
 	}
 
 }

@@ -3,7 +3,7 @@ package com.github.elenterius.biomancy.styles;
 import com.github.elenterius.biomancy.init.ModRarities;
 import com.github.elenterius.biomancy.item.ItemTooltipStyleProvider;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.RenderTooltipEvent;
+import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 
 public final class ColorStyles {
 

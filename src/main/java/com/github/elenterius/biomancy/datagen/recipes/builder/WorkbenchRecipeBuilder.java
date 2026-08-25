@@ -11,7 +11,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -69,7 +69,7 @@ public final class WorkbenchRecipeBuilder {
 	}
 
 	private static String getItemName(ItemLike itemLike) {
-		ResourceLocation key = ForgeRegistries.ITEMS.getKey(itemLike.asItem());
+		ResourceLocation key = BuiltInRegistries.ITEM.getKey(itemLike.asItem());
 		return key != null ? key.getPath() : "unknown";
 	}
 

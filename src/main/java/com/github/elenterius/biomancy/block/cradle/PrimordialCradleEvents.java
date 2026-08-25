@@ -4,9 +4,9 @@ import com.github.elenterius.biomancy.api.tribute.SacrificeHandler;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Mob;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.Cancelable;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.Cancelable;
+import net.neoforged.bus.api.Event;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;

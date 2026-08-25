@@ -8,8 +8,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +32,7 @@ public class ItemStackCounter {
 		record DummyKey(int hash) implements HashKey {
 
 			DummyKey(ItemStack stack) {
-				this(Objects.hash(ForgeRegistries.ITEMS.getKey(stack.getItem()), stack.getTag()));
+				this(Objects.hash(BuiltInRegistries.ITEM.getKey(stack.getItem()), stack.getTag()));
 			}
 
 			@Override
@@ -64,7 +64,7 @@ public class ItemStackCounter {
 			}
 
 			EntryKey(ItemStack stack) {
-				this(Objects.hash(ForgeRegistries.ITEMS.getKey(stack.getItem()), stack.getTag()), stack);
+				this(Objects.hash(BuiltInRegistries.ITEM.getKey(stack.getItem()), stack.getTag()), stack);
 			}
 
 			@Override

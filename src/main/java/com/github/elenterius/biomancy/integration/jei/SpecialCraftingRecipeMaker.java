@@ -20,7 +20,7 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public final class SpecialCraftingRecipeMaker {
 		return ModItems.findEntries(LivingArmorItem.class).map(SpecialCraftingRecipeMaker::createHelmetUpgradeRecipe).toList();
 	}
 
-	private static <A extends ArmorItem> CraftingRecipe createHelmetUpgradeRecipe(RegistryObject<A> armorItem) {
+	private static <A extends ArmorItem> CraftingRecipe createHelmetUpgradeRecipe(DeferredHolder<Item, A> armorItem) {
 		NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY, Ingredient.of(ModItems.PRIMORDIAL_CORE.get()), Ingredient.of(armorItem.get()));
 		ItemStack result = AcolyteArmorUpgrades.addUpgrade(armorItem.get().getDefaultInstance(), AcolyteArmorUpgrades.PRIMORDIAL_SIGHT);
 		return new ShapelessRecipe(BiomancyMod.rl("special_crafting/" + armorItem.getId().getPath() + "_upgrade"), "", CraftingBookCategory.MISC, result, inputs);

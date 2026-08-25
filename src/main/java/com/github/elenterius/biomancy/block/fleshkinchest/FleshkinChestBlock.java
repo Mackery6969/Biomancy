@@ -54,9 +54,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -154,7 +152,7 @@ public class FleshkinChestBlock extends BaseEntityBlock implements SimpleWaterlo
 
 					MenuProvider menuProvider = getMenuProvider(state, level, pos);
 					if (menuProvider != null) {
-						NetworkHooks.openScreen(serverPlayer, menuProvider, buffer -> buffer.writeBlockPos(pos));
+						serverPlayer.openMenu(menuProvider, pos);
 						return InteractionResult.SUCCESS;
 					}
 				}
@@ -196,7 +194,7 @@ public class FleshkinChestBlock extends BaseEntityBlock implements SimpleWaterlo
 	@Override
 	public float getDestroyProgress(BlockState state, Player player, BlockGetter level, BlockPos pos) {
 		if (level.getBlockEntity(pos) instanceof IRestrictedInteraction interaction && interaction.isActionAllowed(player, Actions.DESTROY_BLOCK)) {
-			int i = ForgeHooks.isCorrectToolForDrops(state, player) ? 30 : 100;
+			int i = player.getMainHandItem().isCorrectToolForDrops(state) ? 30 : 100;
 			return player.getDigSpeed(state, pos) / destroySpeed / i;
 		}
 		return 0;

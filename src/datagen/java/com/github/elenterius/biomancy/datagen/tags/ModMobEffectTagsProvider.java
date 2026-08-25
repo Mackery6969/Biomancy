@@ -11,8 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.apache.commons.lang3.StringUtils;
 import org.jspecify.annotations.Nullable;
 
@@ -21,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
 public class ModMobEffectTagsProvider extends IntrinsicHolderTagsProvider<MobEffect> {
 
 	public ModMobEffectTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-		super(output, Registries.MOB_EFFECT, lookupProvider, mobEffect -> ForgeRegistries.MOB_EFFECTS.getDelegateOrThrow(mobEffect).key(), BiomancyMod.MOD_ID, existingFileHelper);
+		super(output, Registries.MOB_EFFECT, lookupProvider, mobEffect -> BuiltInRegistries.MOB_EFFECT.getDelegateOrThrow(mobEffect).key(), BiomancyMod.MOD_ID, existingFileHelper);
 	}
 
 	private static TagKey<MobEffect> forgeTag(String path) {

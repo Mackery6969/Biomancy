@@ -10,8 +10,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -126,7 +126,7 @@ public class AdvancementBuilder {
 	}
 
 	public AdvancementBuilder addHasCriterion(ItemLike item) {
-		ResourceLocation registryName = Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(item.asItem()));
+		ResourceLocation registryName = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item.asItem()));
 		internalBuilder.addCriterion("has_" + registryName.getPath(), ModAdvancementProvider.hasItems(item));
 		return this;
 	}

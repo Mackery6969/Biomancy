@@ -3,7 +3,7 @@ package com.github.elenterius.biomancy.loot;
 import com.github.elenterius.biomancy.init.ModEnchantments;
 import com.github.elenterius.biomancy.init.ModMobEffects;
 import com.google.common.base.Suppliers;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.advancements.critereon.EntityFlagsPredicate;
@@ -25,16 +25,16 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemKilledByPlayerCondition;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.loot.IGlobalLootModifier;
-import net.minecraftforge.common.loot.LootModifier;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
+import net.neoforged.neoforge.common.loot.LootModifier;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class DespoilLootModifier extends LootModifier {
 
-	public static final Supplier<Codec<DespoilLootModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.create(inst ->
+	public static final Supplier<MapCodec<DespoilLootModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.mapCodec(inst ->
 			codecStart(inst).apply(inst, DespoilLootModifier::new)
 	));
 
@@ -96,7 +96,7 @@ public class DespoilLootModifier extends LootModifier {
 	}
 
 	@Override
-	public Codec<? extends IGlobalLootModifier> codec() {
+	public MapCodec<? extends IGlobalLootModifier> codec() {
 		return CODEC.get();
 	}
 

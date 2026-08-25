@@ -1,6 +1,6 @@
 package com.github.elenterius.biomancy.api.nutrients.fluid;
 
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Experimental

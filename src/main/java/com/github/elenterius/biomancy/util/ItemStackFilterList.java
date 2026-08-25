@@ -2,7 +2,7 @@ package com.github.elenterius.biomancy.util;
 
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import java.util.AbstractList;
 import java.util.ArrayList;

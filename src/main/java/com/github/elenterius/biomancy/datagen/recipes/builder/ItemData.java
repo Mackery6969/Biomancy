@@ -5,7 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
@@ -33,7 +33,7 @@ public final class ItemData {
 	}
 
 	public ItemData(ItemLike item, @Nullable CompoundTag tag, int count) {
-		this.registryName = Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(item.asItem()));
+		this.registryName = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item.asItem()));
 		this.tag = tag;
 		this.count = count;
 	}

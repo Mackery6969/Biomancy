@@ -8,9 +8,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.AbstractIngredient;
-import net.minecraftforge.common.crafting.CraftingHelper;
+import net.neoforged.neoforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
@@ -37,7 +37,7 @@ public class AnyFoodIngredient extends AbstractIngredient {
 
 	private void resolve() {
 		if (stacks == null) {
-			stacks = ForgeRegistries.ITEMS.getValues().stream()
+			stacks = BuiltInRegistries.ITEM.getValues().stream()
 					.filter(Item::isEdible)
 					.map(ItemStack::new)
 					.filter(stack -> NUTRITION_PREDICATE.test(stack.getFoodProperties(null)))

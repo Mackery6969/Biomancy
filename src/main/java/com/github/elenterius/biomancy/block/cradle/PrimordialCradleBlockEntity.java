@@ -40,16 +40,16 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jspecify.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.nio.charset.StandardCharsets;
@@ -398,7 +398,7 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 		mobToSpawn.push(level.random.nextGaussian() * 0.02d, 0.5d, level.random.nextGaussian() * 0.02d);
 		level.addFreshEntity(mobToSpawn);
 
-		RegistryObject<SoundEvent> soundEvent = mobToSpawn instanceof PrimordialFleshkin ? ModSoundEvents.CRADLE_SPAWN_PRIMORDIAL_MOB : ModSoundEvents.CRADLE_SPAWN_MOB;
+		DeferredHolder<SoundEvent, SoundEvent> soundEvent = mobToSpawn instanceof PrimordialFleshkin ? ModSoundEvents.CRADLE_SPAWN_PRIMORDIAL_MOB : ModSoundEvents.CRADLE_SPAWN_MOB;
 		SoundUtil.Server.playBlockSound(level, pos, soundEvent);
 	}
 

@@ -20,7 +20,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix4f;
-import software.bernie.geckolib.core.object.Color;
+import software.bernie.geckolib.util.Color;
 
 public class DevCannonScreen extends Screen {
 

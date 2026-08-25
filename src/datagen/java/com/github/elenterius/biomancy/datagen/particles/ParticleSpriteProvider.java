@@ -10,9 +10,9 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,7 +37,7 @@ public abstract class ParticleSpriteProvider implements DataProvider {
 	}
 
 	private static <O extends ParticleOptions> ResourceLocation getId(ParticleType<O> particleType) {
-		ResourceLocation key = ForgeRegistries.PARTICLE_TYPES.getKey(particleType);
+		ResourceLocation key = BuiltInRegistries.PARTICLE_TYPE.getKey(particleType);
 		if (key == null) {
 			throw new IllegalStateException("No registry key found for the particle type: " + particleType);
 		}
@@ -79,27 +79,27 @@ public abstract class ParticleSpriteProvider implements DataProvider {
 
 	public abstract void registerParticles();
 
-	protected <O extends ParticleOptions, T extends ParticleType<O>> void addParticle(final RegistryObject<T> registryObject) {
+	protected <O extends ParticleOptions, T extends ParticleType<O>> void addParticle(final DeferredHolder<ParticleType<?>, T> registryObject) {
 		ResourceLocation id = registryObject.getId();
 		addParticle(id, ParticleSprite.create(id));
 	}
 
-	protected <O extends ParticleOptions, T extends ParticleType<O>> void addParticle(final RegistryObject<T> registryObject, String texture) {
+	protected <O extends ParticleOptions, T extends ParticleType<O>> void addParticle(final DeferredHolder<ParticleType<?>, T> registryObject, String texture) {
 		ResourceLocation id = registryObject.getId();
 		addParticle(id, ParticleSprite.create(texture));
 	}
 
-	protected <O extends ParticleOptions, T extends ParticleType<O>> void addParticle(final RegistryObject<T> registryObject, ResourceLocation texture) {
+	protected <O extends ParticleOptions, T extends ParticleType<O>> void addParticle(final DeferredHolder<ParticleType<?>, T> registryObject, ResourceLocation texture) {
 		ResourceLocation id = registryObject.getId();
 		addParticle(id, ParticleSprite.create(texture));
 	}
 
-	protected <O extends ParticleOptions, T extends ParticleType<O>> void addParticle(final RegistryObject<T> registryObject, int frameCount, int frameStartNumber) {
+	protected <O extends ParticleOptions, T extends ParticleType<O>> void addParticle(final DeferredHolder<ParticleType<?>, T> registryObject, int frameCount, int frameStartNumber) {
 		ResourceLocation id = registryObject.getId();
 		addParticle(id, ParticleSprite.create(id, frameCount, frameStartNumber));
 	}
 
-	protected <O extends ParticleOptions, T extends ParticleType<O>> void addParticle(final RegistryObject<T> registryObject, int frameCount) {
+	protected <O extends ParticleOptions, T extends ParticleType<O>> void addParticle(final DeferredHolder<ParticleType<?>, T> registryObject, int frameCount) {
 		ResourceLocation id = registryObject.getId();
 		addParticle(id, ParticleSprite.create(id, frameCount));
 	}

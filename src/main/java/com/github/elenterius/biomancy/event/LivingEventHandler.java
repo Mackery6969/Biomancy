@@ -20,18 +20,19 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 
-@Mod.EventBusSubscriber(modid = BiomancyMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = BiomancyMod.MOD_ID)
 public final class LivingEventHandler {
 
 	private LivingEventHandler() {}
@@ -45,8 +46,8 @@ public final class LivingEventHandler {
 	}
 
 	@SubscribeEvent
-	public static void onLivingTick(final LivingEvent.LivingTickEvent event) {
-		LivingEntity livingEntity = event.getEntity();
+	public static void onLivingTick(final EntityTickEvent.Post event) {
+		if (!(event.getEntity() instanceof LivingEntity livingEntity)) return;
 
 		if (livingEntity instanceof LivingEntityData.TransientDataProvider provider) {
 			provider.biomancy$getData().tick(livingEntity);
@@ -56,19 +57,21 @@ public final class LivingEventHandler {
 	}
 
 	@SubscribeEvent
-	public static void onPlayerTick(final TickEvent.PlayerTickEvent event) {
-		if (event.phase == TickEvent.Phase.START) {
-			if (event.side == LogicalSide.CLIENT && event.player.tickCount % 9 == 0) {
-				Fonts.PrimordialRunes.updateTranslatable(event.player);
-			}
-			return;
+	public static void onPlayerTickPre(final PlayerTickEvent.Pre event) {
+		Player player = event.getEntity();
+		if (player.level().isClientSide() && player.tickCount % 9 == 0) {
+			Fonts.PrimordialRunes.updateTranslatable(player);
 		}
+	}
 
-		if (event.side == LogicalSide.CLIENT) return;
+	@SubscribeEvent
+	public static void onPlayerTickPost(final PlayerTickEvent.Post event) {
+		Player player = event.getEntity();
+		if (player.level().isClientSide()) return;
 
-		if (event.player.tickCount % 30 == 0) {
-			ModEnchantments.SELF_FEEDING.get().repairLivingItems(event.player);
-			ModEnchantments.PARASITIC_METABOLISM.get().repairLivingItems(event.player);
+		if (player.tickCount % 30 == 0) {
+			ModEnchantments.SELF_FEEDING.get().repairLivingItems(player);
+			ModEnchantments.PARASITIC_METABOLISM.get().repairLivingItems(player);
 		}
 	}
 

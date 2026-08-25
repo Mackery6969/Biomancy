@@ -23,19 +23,19 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
-import net.minecraftforge.common.BasicItemListing;
-import net.minecraftforge.event.entity.player.TradeWithVillagerEvent;
-import net.minecraftforge.event.village.VillagerTradesEvent;
-import net.minecraftforge.event.village.WandererTradesEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.common.BasicItemListing;
+import net.neoforged.neoforge.event.entity.player.TradeWithVillagerEvent;
+import net.neoforged.neoforge.event.village.VillagerTradesEvent;
+import net.neoforged.neoforge.event.village.WandererTradesEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-@Mod.EventBusSubscriber(modid = BiomancyMod.MOD_ID)
+@EventBusSubscriber(modid = BiomancyMod.MOD_ID)
 public final class ModVillagerTrades {
 
 	private ModVillagerTrades() {}

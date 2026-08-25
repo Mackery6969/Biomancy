@@ -5,7 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraftforge.registries.tags.ITag;
 
 public final class ModMobEffectTags {
@@ -52,7 +52,7 @@ public final class ModMobEffectTags {
 
 	public static ITag<MobEffect> getTag(TagKey<MobEffect> tagKey) {
 		//noinspection DataFlowIssue
-		return ForgeRegistries.MOB_EFFECTS.tags().getTag(tagKey);
+		return BuiltInRegistries.MOB_EFFECT.tags().getTag(tagKey);
 	}
 
 	private static TagKey<MobEffect> tag(String name) {

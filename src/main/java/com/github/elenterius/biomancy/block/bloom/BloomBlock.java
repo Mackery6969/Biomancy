@@ -34,7 +34,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.ForgeHooks;
+import net.neoforged.neoforge.common.CommonHooks;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 
@@ -114,9 +114,9 @@ public class BloomBlock extends WaterloggedFacingBlock implements IPlantable {
 		if (age < AGE.getMax()) {
 			int growthSpeed = age < AGE.getMax() - 1 ? getGrowthSpeed(level, pos) : 1;
 
-			if (ForgeHooks.onCropsGrowPre(level, pos, state, random.nextInt(growthSpeed) == 0)) {
+			if (CommonHooks.canCropGrow(level, pos, state, random.nextInt(growthSpeed) == 0)) {
 				level.setBlock(pos, AGE.addValue(state, 1), Block.UPDATE_CLIENTS);
-				ForgeHooks.onCropsGrowPost(level, pos, state);
+				CommonHooks.fireCropGrowPost(level, pos, state);
 			}
 		}
 		else {
