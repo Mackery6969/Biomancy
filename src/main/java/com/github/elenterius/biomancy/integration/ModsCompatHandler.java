@@ -1,15 +1,11 @@
 package com.github.elenterius.biomancy.integration;
 
 import com.github.elenterius.biomancy.BiomancyMod;
-import com.github.elenterius.biomancy.integration.alexscaves.AlexsCavesCompat;
 import com.github.elenterius.biomancy.integration.farmersdelight.FarmersDelightCompat;
-import com.github.elenterius.biomancy.integration.iceandfire.IceAndFireCompat;
 import com.github.elenterius.biomancy.integration.overweightfarming.OverweightFarmingHelper;
 import com.github.elenterius.biomancy.integration.overweightfarming.OverweightFarmingIntegration;
 import com.github.elenterius.biomancy.integration.pehkui.PehkuiHelper;
 import com.github.elenterius.biomancy.integration.pehkui.PehkuiIntegration;
-import com.github.elenterius.biomancy.integration.tetra.TetraCompat;
-import com.github.elenterius.biomancy.integration.tetra.TetraHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -22,7 +18,6 @@ public final class ModsCompatHandler {
 	static final Marker LOG_MARKER = MarkerManager.getMarker(ModsCompatHandler.class.getSimpleName());
 
 	static PehkuiHelper PEHKUI_HELPER = PehkuiHelper.EMPTY;
-	static TetraHelper TETRA_HELPER = TetraHelper.EMPTY;
 	static OverweightFarmingHelper OVERWEIGHT_FARMING_HELPER = OverweightFarmingHelper.createEmpty();
 
 	private ModsCompatHandler() {}
@@ -31,11 +26,6 @@ public final class ModsCompatHandler {
 		if (ModList.get().isLoaded("pehkui")) {
 			BiomancyMod.LOGGER.info(LOG_MARKER, "Initializing Pehkui Integration...");
 			PehkuiIntegration.init(helper -> PEHKUI_HELPER = helper);
-		}
-
-		if (ModList.get().isLoaded("tetra")) {
-			BiomancyMod.LOGGER.info(LOG_MARKER, "Initializing Tetra integration...");
-			TetraCompat.init(helper -> TETRA_HELPER = helper);
 		}
 
 		if (ModList.get().isLoaded("overweight_farming")) {
@@ -50,24 +40,9 @@ public final class ModsCompatHandler {
 
 	public static void onBiomancyCommonSetup(final FMLCommonSetupEvent event) {
 		event.enqueueWork(() -> {
-			if (ModList.get().isLoaded("tetra")) {
-				BiomancyMod.LOGGER.info(LOG_MARKER, "Setting up Tetra compat...");
-				TetraCompat.onPostSetup();
-			}
-
 			if (ModList.get().isLoaded("farmersdelight")) {
 				BiomancyMod.LOGGER.info(LOG_MARKER, "Setting up Farmer's Delight compat...");
 				FarmersDelightCompat.onPostSetup();
-			}
-
-			if (ModList.get().isLoaded("alexscaves")) {
-				BiomancyMod.LOGGER.info(LOG_MARKER, "Setting up Alex's Caves compat...");
-				AlexsCavesCompat.onPostSetup();
-			}
-
-			if (ModList.get().isLoaded("iceandfire")) {
-				BiomancyMod.LOGGER.info(LOG_MARKER, "Setting up Ice And Fire compat...");
-				IceAndFireCompat.onPostSetup();
 			}
 
 			if (ModList.get().isLoaded("overweight_farming")) {
@@ -88,10 +63,6 @@ public final class ModsCompatHandler {
 
 	public static PehkuiHelper getPehkuiHelper() {
 		return PEHKUI_HELPER;
-	}
-
-	public static TetraHelper getTetraHelper() {
-		return TETRA_HELPER;
 	}
 
 	public static OverweightFarmingHelper getOverweightFarmingHelper() {

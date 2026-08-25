@@ -1,11 +1,5 @@
 package com.github.elenterius.biomancy.datagen.recipes;
 
-import com.github.alexmodguy.alexscaves.AlexsCaves;
-import com.github.alexmodguy.alexscaves.server.block.ACBlockRegistry;
-import com.github.alexthe666.alexsmobs.AlexsMobs;
-import com.github.alexthe666.alexsmobs.block.AMBlockRegistry;
-import com.github.alexthe666.iceandfire.IceAndFire;
-import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import com.github.elenterius.biomancy.crafting.recipe.FoodDigestingRecipe;
 import com.github.elenterius.biomancy.datagen.recipes.builder.DigestingRecipeBuilder;
 import com.github.elenterius.biomancy.init.ModItems;
@@ -21,14 +15,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 import net.orcinus.overweightfarming.OverweightFarming;
 import net.orcinus.overweightfarming.init.OFBlocks;
 import net.orcinus.overweightfarming.init.OFItems;
 import vectorwing.farmersdelight.FarmersDelight;
 import vectorwing.farmersdelight.common.FoodValues;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 public class DigestingRecipeProvider extends RecipeProvider {
@@ -69,10 +61,6 @@ public class DigestingRecipeProvider extends RecipeProvider {
 
 		buildFarmersDelightRecipes(consumer);
 		buildOverweightFarmingRecipes(consumer);
-
-		buildAlexsMobsRecipes(consumer);
-		buildAlexsCavesRecipes(consumer);
-		buildIceAndFireRecipes(consumer);
 	}
 
 	private void buildFromFoodRecipes(Consumer<FinishedRecipe> consumer) {
@@ -165,18 +153,6 @@ public class DigestingRecipeProvider extends RecipeProvider {
 		return nutrientPasteRecipe(count, ingredient).ifModLoaded(OverweightFarming.MODID);
 	}
 
-	private DigestingRecipeBuilder alexsMobsRecipe(int count, ItemLike ingredient) {
-		return nutrientPasteRecipe(count, ingredient).ifModLoaded(AlexsMobs.MODID);
-	}
-
-	private DigestingRecipeBuilder alexsCavesRecipe(int count, ItemLike ingredient) {
-		return nutrientPasteRecipe(count, ingredient).ifModLoaded(AlexsCaves.MODID);
-	}
-
-	private DigestingRecipeBuilder iceAndFireRecipe(int count, ItemLike ingredient) {
-		return nutrientPasteRecipe(count, ingredient).ifModLoaded(IceAndFire.MODID);
-	}
-
 	private void buildFarmersDelightRecipes(Consumer<FinishedRecipe> consumer) {
 		class FarmersDelightItems extends vectorwing.farmersdelight.common.registry.ModItems {}
 
@@ -233,63 +209,6 @@ public class DigestingRecipeProvider extends RecipeProvider {
 		overweightFarmingRecipe(10 - peelNutrition, OFBlocks.PEELED_OVERWEIGHT_GINGER.get()).ifModLoaded("snowyspirit")
 				.setCraftingCost(3).addCraftingTimeModifier(25)
 				.save(consumer);
-	}
-
-	private void buildAlexsMobsRecipes(Consumer<FinishedRecipe> consumer) {
-		alexsMobsRecipe(1, AMBlockRegistry.CAIMAN_EGG.get()).save(consumer);
-		alexsMobsRecipe(1, AMBlockRegistry.CROCODILE_EGG.get()).save(consumer);
-		alexsMobsRecipe(1, AMBlockRegistry.TERRAPIN_EGG.get()).save(consumer);
-		alexsMobsRecipe(2, AMBlockRegistry.PLATYPUS_EGG.get()).save(consumer);
-		alexsMobsRecipe(1, AMBlockRegistry.BANANA_PEEL.get()).save(consumer);
-	}
-
-	private void buildAlexsCavesRecipes(Consumer<FinishedRecipe> consumer) {
-		alexsCavesRecipe(2 * 12, ACBlockRegistry.COOKED_DINOSAUR_CHOP.get()).addCraftingTimeModifier(20 * 12).save(consumer);
-		alexsCavesRecipe(2, ACBlockRegistry.PEWEN_PINES.get()).addCraftingTimeModifier(20).save(consumer);
-		alexsCavesRecipe(2, ACBlockRegistry.PEWEN_BRANCH.get()).addCraftingTimeModifier(25).save(consumer);
-		alexsCavesRecipe(2, ACBlockRegistry.FIDDLEHEAD.get()).save(consumer);
-		alexsCavesRecipe(2, ACBlockRegistry.CURLY_FERN.get()).save(consumer);
-		alexsCavesRecipe(4, ACBlockRegistry.FLYTRAP.get()).addCraftingTimeModifier(10).save(consumer);
-		alexsCavesRecipe(2, ACBlockRegistry.CYCAD.get()).addCraftingTimeModifier(40).save(consumer);
-		alexsCavesRecipe(4, ACBlockRegistry.TREE_STAR.get()).addCraftingTimeModifier(-10).save(consumer);
-		alexsCavesRecipe(2, ACBlockRegistry.ARCHAIC_VINE.get()).save(consumer);
-		alexsCavesRecipe(4, ACBlockRegistry.FERN_THATCH.get()).save(consumer);
-		alexsCavesRecipe(1, ACBlockRegistry.UNDERWEED.get()).save(consumer);
-		alexsCavesRecipe(1, ACBlockRegistry.THORNWOOD_BRANCH.get()).save(consumer);
-
-		alexsCavesRecipe(4, ACBlockRegistry.SUBTERRANODON_EGG.get()).setCraftingCost(3).save(consumer);
-		alexsCavesRecipe(4, ACBlockRegistry.VALLUMRAPTOR_EGG.get()).setCraftingCost(3).save(consumer);
-		alexsCavesRecipe(4, ACBlockRegistry.GROTTOCERATOPS_EGG.get()).setCraftingCost(3).save(consumer);
-		alexsCavesRecipe(4, ACBlockRegistry.TREMORSAURUS_EGG.get()).setCraftingCost(3).save(consumer);
-		alexsCavesRecipe(4, ACBlockRegistry.RELICHEIRUS_EGG.get()).setCraftingCost(3).save(consumer);
-		alexsCavesRecipe(4, ACBlockRegistry.ATLATITAN_EGG.get()).setCraftingCost(3).save(consumer);
-	}
-
-	private void buildIceAndFireRecipes(Consumer<FinishedRecipe> consumer) {
-		iceAndFireRecipe(2 * 4 + 1, IafItemRegistry.DRAGON_MEAL.get()).save(consumer);
-		iceAndFireRecipe(2 * 4 + 1 + 2 * 4 + 2 * 4, IafItemRegistry.SICKLY_DRAGON_MEAL.get()).save(consumer);
-
-		iceAndFireRecipe(1, IafItemRegistry.ROTTEN_EGG.get()).addCraftingTimeModifier(20).save(consumer);
-		iceAndFireRecipe(4, IafItemRegistry.HIPPOGRYPH_EGG.get()).setCraftingCost(3).save(consumer);
-		iceAndFireRecipe(4, IafItemRegistry.DEATHWORM_EGG.get()).setCraftingCost(3).save(consumer);
-		iceAndFireRecipe(4, IafItemRegistry.DEATHWORM_EGG_GIGANTIC.get()).setCraftingCost(3).save(consumer);
-		iceAndFireRecipe(4, IafItemRegistry.MYRMEX_DESERT_EGG.get()).setCraftingCost(3).save(consumer);
-		iceAndFireRecipe(4, IafItemRegistry.MYRMEX_JUNGLE_EGG.get()).setCraftingCost(3).save(consumer);
-
-		List<RegistryObject<Item>> dragonEggs = List.of(
-				IafItemRegistry.DRAGONEGG_ELECTRIC,
-				IafItemRegistry.DRAGONEGG_BRONZE, IafItemRegistry.DRAGONEGG_SILVER, IafItemRegistry.DRAGONEGG_COPPER,
-				IafItemRegistry.DRAGONEGG_AMYTHEST, IafItemRegistry.DRAGONEGG_SAPPHIRE,
-				IafItemRegistry.DRAGONEGG_RED, IafItemRegistry.DRAGONEGG_GREEN, IafItemRegistry.DRAGONEGG_BLUE, IafItemRegistry.DRAGONEGG_BLACK, IafItemRegistry.DRAGONEGG_GRAY, IafItemRegistry.DRAGONEGG_WHITE
-		);
-		for (RegistryObject<Item> dragonEgg : dragonEggs) {
-			iceAndFireRecipe(5, dragonEgg.get()).setCraftingCost(3).save(consumer);
-		}
-
-		List<RegistryObject<Item>> hearts = List.of(IafItemRegistry.ICE_DRAGON_HEART, IafItemRegistry.FIRE_DRAGON_HEART, IafItemRegistry.LIGHTNING_DRAGON_HEART, IafItemRegistry.HYDRA_HEART);
-		for (RegistryObject<Item> heart : hearts) {
-			iceAndFireRecipe(8, heart.get()).addCraftingCostModifier(1).save(consumer);
-		}
 	}
 
 }

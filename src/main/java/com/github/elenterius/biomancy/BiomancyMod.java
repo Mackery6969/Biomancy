@@ -6,10 +6,9 @@ import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.github.elenterius.biomancy.util.EventCalendar;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib.GeckoLib;
@@ -27,11 +26,8 @@ public final class BiomancyMod {
 
 	public static final String DEV_MODE_PROPERTY_KEY = "biomancy.dev_mode";
 
-	public BiomancyMod() {
+	public BiomancyMod(IEventBus modEventBus, ModContainer modContainer) {
 		GeckoLib.initialize();
-
-		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-		ModLoadingContext modLoadingContext = ModLoadingContext.get();
 
 		ModBannerPatterns.BANNERS.register(modEventBus);
 
@@ -67,7 +63,7 @@ public final class BiomancyMod {
 		ModSoundEvents.SOUND_EVENTS.register(modEventBus);
 		ModParticleTypes.PARTICLE_TYPES.register(modEventBus);
 
-		BiomancyConfig.register(modLoadingContext);
+		BiomancyConfig.register(modContainer);
 		ModsCompatHandler.onBiomancyInit(modEventBus);
 	}
 
@@ -76,7 +72,7 @@ public final class BiomancyMod {
 	}
 
 	public static ResourceLocation rl(String path) {
-		return new ResourceLocation(MOD_ID, path);
+		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
 	}
 
 	public static String rlStr(String path) {

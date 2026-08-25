@@ -2,7 +2,7 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
 plugins {
-	id 'net.neoforged.moddev.legacyforge'
+	id 'net.neoforged.moddev'
 	id 'org.moddedmc.wiki.toolkit'
 	id 'java-library'
 	id 'maven-publish'
@@ -22,7 +22,7 @@ base {
 	archivesName = "${mod_id}-neoforge-${minecraft_version}"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 
@@ -40,8 +40,8 @@ sourceSets {
 	datagen {}
 }
 
-legacyForge {
-	version = project.minecraft_version + '-' + project.forge_version
+neoForge {
+	version = project.neoforge_version
 
 	parchment {
 		mappingsVersion = project.parchment_mappings_version
@@ -65,7 +65,7 @@ legacyForge {
 			systemProperty("mixin.debug.verbose", "true")
 			//add dumpTargetOnFailure
 
-			systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+			systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
 		}
 
 		client2 {
@@ -85,7 +85,7 @@ legacyForge {
 			systemProperty("mixin.debug.verbose", "true")
 
 			programArgument('--nogui')
-			systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+			systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
 		}
 
 		// This run config launches GameTestServer and runs all registered game tests, then exits.
@@ -94,7 +94,7 @@ legacyForge {
 		gameTestServer {
 			type = "gameTestServer"
 			gameDirectory = project.file('runs/game-test')
-			systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+			systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
 		}
 
 		data {
@@ -114,12 +114,12 @@ legacyForge {
 		}
 
 		configureEach {
-			systemProperty('forge.logging.markers', 'REGISTRIES')
+			systemProperty('neoforge.logging.markers', 'REGISTRIES')
 			systemProperty('terminal.jline', 'true') // enable interactive & colored terminal features
 
 			// https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
-			logLevel = org.slf4j.event.Level.DEBUG //doesn't seem to work for legacy forge mdg
-			systemProperty("forge.logging.console.level", "debug") //force debug level with system property
+			logLevel = org.slf4j.event.Level.DEBUG
+			systemProperty("neoforge.logging.console.level", "debug") //force debug level with system property
 
 			systemProperty('geckolib.disable_examples', 'true')
 			systemProperty('biomancy.dev_mode', 'true') //enable dev items, etc
@@ -137,36 +137,19 @@ legacyForge {
 	}
 }
 
-mixin {
-	add sourceSets.main, "${mod_id}.refmap.json"
-	config "${mod_id}.mixins.json"
-}
+// Mixins are declared declaratively via [[mixins]] entries in neoforge.mods.toml (NeoForge 20.3+) -
+// no Gradle-side mixin configuration is needed, and MixinExtras ships bundled with NeoForge.
 
-// Sets up a dependency configuration called 'localRuntime' and a deobfuscating one called 'modLocalRuntime'
-// These configurations should be used instead of 'runtimeOnly' to declare
-// a dependency that will be present for runtime testing but that is
-// "optional", meaning it will not be pulled by dependents of this mod.
+// Sets up a dependency configuration called 'localRuntime'.
+// This should be used instead of 'runtimeOnly' to declare a dependency that will be
+// present for runtime testing but that is "optional", meaning it will not be pulled
+// by dependents of this mod. Unlike the old Forge/legacyForge setup, NeoForge dependencies
+// are already Mojmap and need no deobfuscation/remapping configuration.
 configurations {
 	runtimeClasspath.extendsFrom localRuntime
 }
-obfuscation {
-	createRemappingConfiguration(configurations.localRuntime)
-}
 
 dependencies {
-	// ASM Mixins /////////////////////////////////////////////////////////////////////////////////////////////
-	//TODO: remove when moving to 1.21
-	compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${mixin_extras_version}"))
-	implementation(jarJar("io.github.llamalad7:mixinextras-forge") {
-		version {
-			strictly mixin_extras_version_range
-			prefer mixin_extras_version
-		}
-	})
-
-	annotationProcessor('org.spongepowered:mixin:0.8.5:processor')
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	api("org.jspecify:jspecify:1.0.0")
 	datagenCompileOnly("org.jspecify:jspecify:1.0.0")
 	api('org.jetbrains:annotations:26.0.2-1')
@@ -181,86 +164,50 @@ dependencies {
 	additionalRuntimeClasspath "com.h2database:h2-mvstore:2.3.232"
 
 	// Geckolib
-	modImplementation("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
-	modImplementation("com.eliotlash.mclib:mclib:20")
-	datagenCompileOnly("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
+	implementation("software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}")
+	implementation("com.eliotlash.mclib:mclib:20")
+	datagenCompileOnly("software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}")
 
 	// Pehkui mod for rescaling of Mobs/Players
-	modImplementation("maven.modrinth:pehkui:3.7.12+1.20.1-forge")
+	implementation("maven.modrinth:pehkui:${pehkui_version}")
 
 	// JEI
-	modCompileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-	modCompileOnly("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}") // compile against the JEI API but do not include it at runtime
-	modLocalRuntime("mezz.jei:jei-${minecraft_version}-forge:${jei_version}") // at runtime, use the full JEI jar
+	compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+	compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}") // compile against the JEI API but do not include it at runtime
+	localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}") // at runtime, use the full JEI jar
 
-	// KubeJS
-	modCompileOnly("dev.latvian.mods:kubejs-forge:2001.6.5-build.20")
-	modCompileOnly("dev.latvian.mods:rhino-forge:2001.2.3-build.10")
-	modCompileOnly("dev.architectury:architectury-forge:9.1.12")
+	implementation("maven.modrinth:farmers-delight:${farmers_delight_version}")
+	datagenCompileOnly("maven.modrinth:farmers-delight:${farmers_delight_version}")
 
-	// needs to be commented out for datagen to work
-//	modLocalRuntime("dev.latvian.mods:kubejs-forge:2001.6.5-build.20")
-//	modLocalRuntime("dev.latvian.mods:rhino-forge:2001.2.3-build.10")
-//	modLocalRuntime("dev.architectury:architectury-forge:9.1.12")
-//	modLocalRuntime("maven.modrinth:probejs:6.0.0")
+	implementation("maven.modrinth:overweight-farming:${overweight_farming_version}")
+	datagenCompileOnly("maven.modrinth:overweight-farming:${overweight_farming_version}")
 
-	// display extra food information
-	modLocalRuntime("maven.modrinth:appleskin:2.5.1+mc1.20.1")
-
-	// modLocalRuntime("maven.modrinth:tooltip-overhaul:XLqxRPzw") // v1.0.0
-
-	// Alex's Mobs, Caves & Ice and Fire
-	modLocalRuntime("maven.modrinth:alexs-mobs:1.22.9")
-	modLocalRuntime("maven.modrinth:alexs-caves:2.0.2")
-	modLocalRuntime("maven.modrinth:ice-and-fire-dragons:2.1.13-1.20.1-beta-5")
-	modLocalRuntime("maven.modrinth:citadel:2.6.0")
-	datagenCompileOnly("maven.modrinth:alexs-mobs:1.22.9")
-	datagenCompileOnly("maven.modrinth:alexs-caves:2.0.2")
-	datagenCompileOnly("maven.modrinth:ice-and-fire-dragons:2.1.13-1.20.1-beta-5")
-	datagenCompileOnly("maven.modrinth:citadel:2.6.0")
-
-	// Tetra
-//	implementation fg.deobf("se.mickelus.mutil:mutil:1.20.1-6.1.1")
-	modCompileOnly("maven.modrinth:tetra:6.1.0")
-
-	// Farmer's Delight
-	modImplementation("maven.modrinth:farmers-delight:1.20.1-1.2.9")
-	modImplementation("curse.maven:alexs-delight-556448:5028450")
-	datagenCompileOnly("maven.modrinth:farmers-delight:1.20.1-1.2.9")
-	datagenCompileOnly("curse.maven:alexs-delight-556448:5028450")
-
-	modImplementation("maven.modrinth:overweight-farming:1.20.1-2.1.0-forge")
-	datagenCompileOnly("maven.modrinth:overweight-farming:1.20.1-2.1.0-forge")
-
-	modImplementation("maven.modrinth:sons-of-sins:2.1.6")
-	datagenCompileOnly("maven.modrinth:sons-of-sins:2.1.6")
+	implementation("maven.modrinth:sons-of-sins:${sons_of_sins_version}")
+	datagenCompileOnly("maven.modrinth:sons-of-sins:${sons_of_sins_version}")
 
 	datagenCompileOnly sourceSets.main.output
 	localRuntime sourceSets.datagen.output
-
-//	implementation sourceSets.geckolibextras.output
-//	implementation sourceSets.spatialdb.output
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
 	var replaceProperties = [
-			minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
-			forge_version       : forge_version, forge_version_range: forge_version_range,
-			loader_version_range: loader_version_range,
+			minecraft_version    : minecraft_version, minecraft_version_range: minecraft_version_range,
+			neoforge_version     : neoforge_version, neoforge_version_range: neoforge_version_range,
+			loader_version_range : loader_version_range,
 
-			mod_id              : mod_id,
-			mod_name            : mod_name,
-			mod_license         : mod_license,
-			mod_version         : mod_version,
-			mod_authors         : mod_authors,
-			mod_credits         : mod_credits,
-			mod_description     : mod_description,
-			mod_url             : mod_url,
-			mod_issue_url       : mod_issue_url,
-			mod_update_url      : mod_update_url,
+			mod_id               : mod_id,
+			mod_name             : mod_name,
+			mod_license          : mod_license,
+			mod_version          : mod_version,
+			mod_authors          : mod_authors,
+			mod_credits          : mod_credits,
+			mod_description      : mod_description,
+			mod_url              : mod_url,
+			mod_issue_url        : mod_issue_url,
+			mod_update_url       : mod_update_url,
 
-			geckolib_version    : geckolib_version, geckolib_version_range: geckolib_version_range,
-			jei_version         : jei_version, jei_version_range: jei_version_range
+			geckolib_version     : geckolib_version, geckolib_version_range: geckolib_version_range,
+			jei_version          : jei_version, jei_version_range: jei_version_range
 	]
 	inputs.properties replaceProperties
 	expand replaceProperties
@@ -295,9 +242,7 @@ jar {
 			'Implementation-Title'    : project.name,
 			'Implementation-Version'  : project.jar.archiveVersion,
 			'Implementation-Vendor'   : mod_vendor,
-			'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-
-			"MixinConfigs"            : "${mod_id}.mixins.json"
+			'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
 	])
 
 	from { ["CREDITS.md", "LICENSE.txt", "3RD_PARTY_LICENSE.txt"] } //copy files from the repository root into the jar
@@ -307,7 +252,7 @@ jar {
 // this works with both building through Gradle and the IDE.
 sourceSets.main.resources.srcDir generateModMetadata
 // To avoid having to run "generateModMetadata" manually, make it run on every project reload
-legacyForge.ideSyncTask generateModMetadata
+neoForge.ideSyncTask generateModMetadata
 
 publishing {
 	publications {
@@ -340,7 +285,6 @@ wiki {
 		}
 	}
 }
-//TODO: install https://github.com/Sinytra/WikiDataExporter when on minecraft 1.21.1
 
 tasks.register("cleanWikiData") {
 	def root = file("docs/.data")
@@ -388,7 +332,7 @@ tasks.register("copyDataToWiki", Copy) {
 	}
 	into(outputFolder)
 
-	//transform tags folder structure to 1.21 format
+	//transform legacy plural tag folder names (pre-1.21) to the current singular format, in case any linger
 	def renameMap = [
 			'tags/items/'       : 'tags/item/',
 			'tags/blocks/'      : 'tags/block/',

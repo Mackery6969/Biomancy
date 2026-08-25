@@ -1,9 +1,5 @@
 package com.github.elenterius.biomancy.datagen.tags;
 
-import com.github.alexmodguy.alexscaves.server.block.ACBlockRegistry;
-import com.github.alexmodguy.alexscaves.server.item.ACItemRegistry;
-import com.github.alexthe666.alexsmobs.item.AMItemRegistry;
-import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.tags.ModItemTags;
@@ -264,22 +260,17 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 	/// @see <a href="https://github.com/neoforged/NeoForge/tree/1.21.x/src/generated/resources/data/c/tags/item">NeoForge Repo</a>
 	private void addConventionalTags() {
 		class FarmersDelightItems extends vectorwing.farmersdelight.common.registry.ModItems {} //alias workaround
-		class AlexsDelightItems extends com.ncpbails.alexsdelight.item.ModItems {} //alias workaround
 
 		createTag(ModItemTags.C_WITHER_BONES)
 				.addOptionalTag("forge:bones/wither");
 
 		createTag(ModItemTags.C_CLAWS)
 				.addOptionalTag("forge:claws")
-				.add(ModItems.MOB_CLAW.get())
-				.add(AMItemRegistry.DROPBEAR_CLAW.get())
-				.add(IafItemRegistry.HIPPOGRYPH_TALON.get());
+				.add(ModItems.MOB_CLAW.get());
 
 		createTag(ModItemTags.C_FANGS)
 				.addOptionalTag("forge:fangs")
-				.add(ModItems.MOB_FANG.get())
-				.add(AMItemRegistry.BONE_SERPENT_TOOTH.get())
-				.add(IafItemRegistry.SERPENT_FANG.get(), IafItemRegistry.HYDRA_FANG.get());
+				.add(ModItems.MOB_FANG.get());
 
 		createTag(conventionalTag("foods/candy"))
 				.addOptionalTag("c:foods/candies", "forge:candies", "forge:candy");
@@ -299,13 +290,6 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 				.addTag(ModItemTags.C_RAW_PORK)
 				.add(BEEF, PORKCHOP, CHICKEN, RABBIT, MUTTON)
 				.add(FarmersDelightItems.HAM.get())
-				.add(AMItemRegistry.MOOSE_RIBS.get(), AMItemRegistry.KANGAROO_MEAT.get(), AMItemRegistry.MAGGOT.get())
-				.add(
-						AlexsDelightItems.RAW_BISON.get(), AlexsDelightItems.BISON_MINCE.get(), AlexsDelightItems.KANGAROO_SHANK.get(), AlexsDelightItems.LOOSE_MOOSE_RIB.get(),
-						AlexsDelightItems.RAW_BUNFUNGUS.get(), AlexsDelightItems.RAW_BUNFUNGUS_DRUMSTICK.get()
-				)
-				.add(ACBlockRegistry.DINOSAUR_CHOP.get().asItem())
-				.add(IafItemRegistry.ICE_DRAGON_FLESH.get(), IafItemRegistry.FIRE_DRAGON_FLESH.get(), IafItemRegistry.LIGHTNING_DRAGON_FLESH.get())
 				.addOptional("createfa:ground_chicken", "createfa:ground_beef")
 				.addOptional("rats:raw_rat")
 				.addOptional("circus:clown")
@@ -316,13 +300,6 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 				.addOptionalTag("c:foods/cooked_meats", "forge:cooked_meat", "forge:cooked_meats")
 				.add(COOKED_BEEF, COOKED_PORKCHOP, COOKED_CHICKEN, COOKED_RABBIT, COOKED_MUTTON)
 				.add(FarmersDelightItems.SMOKED_HAM.get())
-				.add(AMItemRegistry.COOKED_MOOSE_RIBS.get(), AMItemRegistry.COOKED_KANGAROO_MEAT.get())
-				.add(
-						AlexsDelightItems.COOKED_BISON.get(), AlexsDelightItems.BISON_PATTY.get(), AlexsDelightItems.COOKED_KANGAROO_SHANK.get(),
-						AlexsDelightItems.COOKED_LOOSE_MOOSE_RIB.get(), AlexsDelightItems.COOKED_BUNFUNGUS.get(),
-						AlexsDelightItems.COOKED_BUNFUNGUS_DRUMSTICK.get(), AlexsDelightItems.COOKED_CENTIPEDE_LEG.get()
-				)
-				.add(ACBlockRegistry.COOKED_DINOSAUR_CHOP.get().asItem())
 				.addOptional("createfa:schnitzel", "createfa:meatballs", "createfa:chicken_nuggets")
 				.addOptional("rats:cooked_rat")
 		;
@@ -330,27 +307,11 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 		createTag(conventionalTag("foods/raw_fish"))
 				.addOptionalTag("c:foods/raw_fishes", "forge:raw_fishes", "forge:raw_fish")
 				.add(COD, SALMON, TROPICAL_FISH, PUFFERFISH)
-				.add(
-						AMItemRegistry.FLYING_FISH.get(), AMItemRegistry.RAW_CATFISH.get(), AMItemRegistry.BLOBFISH.get(),
-						AMItemRegistry.LOBSTER_TAIL.get()
-				)
-				.add(
-						ACItemRegistry.TRILOCARIS_TAIL.get(), ACItemRegistry.LANTERNFISH.get(), ACItemRegistry.TRIPODFISH.get(),
-						ACItemRegistry.RADGILL.get(),
-						ACItemRegistry.DEEP_SEA_SUSHI_ROLL.get()
-				)
-				.add(AlexsDelightItems.RAW_CATFISH_SLICE.get())
 		;
 
 		createTag(conventionalTag("foods/cooked_fish"))
 				.addOptionalTag("c:foods/cooked_fishes", "forge:cooked_fishes", "forge:cooked_fish")
 				.add(COOKED_COD, COOKED_SALMON)
-				.add(AMItemRegistry.COOKED_CATFISH.get(), AMItemRegistry.COOKED_LOBSTER_TAIL.get())
-				.add(AlexsDelightItems.COOKED_CATFISH_SLICE.get())
-				.add(
-						ACItemRegistry.COOKED_TRILOCARIS_TAIL.get(), ACItemRegistry.COOKED_LANTERNFISH.get(), ACItemRegistry.COOKED_TRIPODFISH.get(),
-						ACItemRegistry.COOKED_RADGILL.get()
-				)
 		;
 	}
 

@@ -12,15 +12,15 @@ pluginManagement {
 	}
 
 	plugins {
-		id 'net.neoforged.moddev.legacyforge' version '2.0.116'
-		id 'net.neoforged.moddev.legacyforge.repositories' version '2.0.116'
+		id 'net.neoforged.moddev' version '2.0.144'
+		id 'net.neoforged.moddev.repositories' version '2.0.144'
 		id 'org.moddedmc.wiki.toolkit' version '0.3.2'
 	}
 }
 
 plugins {
 	id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
-	id 'net.neoforged.moddev.legacyforge.repositories'
+	id 'net.neoforged.moddev.repositories'
 }
 
 dependencyResolutionManagement {
@@ -37,6 +37,13 @@ dependencyResolutionManagement {
 		}
 		maven {
 			url "https://maven.sinytra.org"
+		}
+		maven {
+			name = "ParchmentMC"
+			url = uri("https://maven.parchmentmc.org")
+			content {
+				includeGroup("org.parchmentmc.data")
+			}
 		}
 		mavenCentral()
 

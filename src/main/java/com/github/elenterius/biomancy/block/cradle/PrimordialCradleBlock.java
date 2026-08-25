@@ -68,8 +68,6 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 			if (block instanceof EntityBlock) return true;
 		}
 
-		if (ModsCompatHandler.getTetraHelper().isToolOrModularItem(item)) return true;
-
 		if (stack.isEnchanted()) return true;
 		if (!item.canFitInsideContainerItems()) return true;
 		return stack.getCapability(ModCapabilities.ITEM_HANDLER).isPresent();

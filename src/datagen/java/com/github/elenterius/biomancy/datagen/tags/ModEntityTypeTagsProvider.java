@@ -1,8 +1,5 @@
 package com.github.elenterius.biomancy.datagen.tags;
 
-import com.github.alexmodguy.alexscaves.server.entity.ACEntityRegistry;
-import com.github.alexmodguy.alexscaves.server.misc.ACTagRegistry;
-import com.github.alexthe666.alexsmobs.entity.AMEntityRegistry;
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.init.ModEntityTypes;
 import com.github.elenterius.biomancy.init.tags.ModEntityTags;
@@ -56,9 +53,7 @@ public class ModEntityTypeTagsProvider extends EntityTypeTagsProvider {
 
 		createTag(ModEntityTags.CAPTURING_BY_CHRYSALIS_NOT_ALLOWED)
 				.addTag(ModEntityTags.C_BOSSES)
-				.add(EntityType.WARDEN, EntityType.ELDER_GUARDIAN, EntityType.GIANT)
-				.addOptional(ACEntityRegistry.GUM_WORM, ACEntityRegistry.TREMORZILLA, ACEntityRegistry.HULLBREAKER, ACEntityRegistry.FORSAKEN)
-				.addOptional(AMEntityRegistry.VOID_WORM);
+				.add(EntityType.WARDEN, EntityType.ELDER_GUARDIAN, EntityType.GIANT);
 
 		createTag(ModEntityTags.FLESHKIN).add(
 				ModEntityTypes.FLESH_BLOB.get(), ModEntityTypes.HUNGRY_FLESH_BLOB.get(), ModEntityTypes.LEGACY_FLESH_BLOB.get(),
@@ -77,11 +72,6 @@ public class ModEntityTypeTagsProvider extends EntityTypeTagsProvider {
 		);
 
 		tag(EntityTypeTags.DISMOUNTS_UNDERWATER).add(
-				ModEntityTypes.FLESH_CHICKEN.get()
-		);
-
-		tag(ACTagRegistry.RESISTS_ACID).add(
-				ModEntityTypes.PRIMORDIAL_FLESH_BLOB.get(), ModEntityTypes.PRIMORDIAL_HUNGRY_FLESH_BLOB.get(),
 				ModEntityTypes.FLESH_CHICKEN.get()
 		);
 	}
