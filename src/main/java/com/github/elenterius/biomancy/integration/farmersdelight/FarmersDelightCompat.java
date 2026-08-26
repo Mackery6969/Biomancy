@@ -41,12 +41,12 @@ public final class FarmersDelightCompat {
 	}
 
 	private static Block getBlock(String name) {
-		ResourceLocation id = new ResourceLocation("farmersdelight", name);
+		ResourceLocation id = ResourceLocation.fromNamespaceAndPath("farmersdelight", name);
 		return Objects.requireNonNull(BuiltInRegistries.BLOCK.getValue(id));
 	}
 
 	private static Item getItem(String name) {
-		ResourceLocation id = new ResourceLocation("farmersdelight", name);
+		ResourceLocation id = ResourceLocation.fromNamespaceAndPath("farmersdelight", name);
 		return Objects.requireNonNull(BuiltInRegistries.ITEM.getValue(id));
 	}
 

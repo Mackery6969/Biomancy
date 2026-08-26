@@ -29,12 +29,12 @@ public final class ModItemTags {
 	}
 
 	private static TagKey<Item> forgeTag(String path) {
-		return ItemTags.create(new ResourceLocation("forge", path));
+		return ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", path));
 	}
 
 	/// conventional tags introduced in neo-forge/fabric for minecraft 1.21+
 	private static TagKey<Item> conventionalTag(String path) {
-		return ItemTags.create(new ResourceLocation("c", path));
+		return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", path));
 	}
 
 }

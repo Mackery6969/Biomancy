@@ -51,7 +51,7 @@ public final class BioForgingRecipeBuilder implements RecipeBuilder<BioForgingRe
 	private int craftingCostNutrients = -1;
 
 	private BioForgingRecipeBuilder(ResourceLocation recipeId, ItemData result) {
-		this.recipeId = new ResourceLocation(recipeId.getNamespace(), RECIPE_SUB_FOLDER + "/" + recipeId.getPath());
+		this.recipeId = ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), RECIPE_SUB_FOLDER + "/" + recipeId.getPath());
 		this.result = result;
 	}
 
@@ -60,7 +60,7 @@ public final class BioForgingRecipeBuilder implements RecipeBuilder<BioForgingRe
 	}
 
 	public static BioForgingRecipeBuilder create(String modId, String outputName, ItemData result) {
-		ResourceLocation rl = new ResourceLocation(modId, outputName);
+		ResourceLocation rl = ResourceLocation.fromNamespaceAndPath(modId, outputName);
 		return new BioForgingRecipeBuilder(rl, result);
 	}
 
@@ -161,12 +161,12 @@ public final class BioForgingRecipeBuilder implements RecipeBuilder<BioForgingRe
 			craftingCostNutrients = BioForgingRecipe.DEFAULT_CRAFTING_COST_NUTRIENTS;
 		}
 
-		advancement.parent(new ResourceLocation("recipes/root"))
+		advancement.parent(ResourceLocation.parse("recipes/root"))
 				.addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId))
 				.rewards(AdvancementRewards.Builder.recipe(recipeId)).requirements(RequirementsStrategy.OR);
 
 		String folderName = RecipeBuilder.getRecipeFolderName(category, BiomancyMod.MOD_ID);
-		ResourceLocation advancementId = new ResourceLocation(recipeId.getNamespace(), "recipes/%s/%s".formatted(folderName, recipeId.getPath()));
+		ResourceLocation advancementId = ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "recipes/%s/%s".formatted(folderName, recipeId.getPath()));
 
 		consumer.accept(new Result(this, advancementId));
 	}

@@ -28,7 +28,7 @@ public final class BioForgeTab {
 	@Nullable
 	public static BioForgeTab fromJson(JsonObject json) {
 		String categoryId = GsonHelper.getAsString(json, JSON_KEY);
-		return ModBioForgeTabs.REGISTRY.get().getValue(new ResourceLocation(categoryId));
+		return ModBioForgeTabs.REGISTRY.get().getValue(ResourceLocation.parse(categoryId));
 	}
 
 	public static String getTabId(JsonObject json) {

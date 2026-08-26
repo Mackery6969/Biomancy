@@ -52,7 +52,7 @@ public final class DigestingRecipeBuilder implements RecipeBuilder<DigestingReci
 	private String group;
 
 	private DigestingRecipeBuilder(ResourceLocation recipeId, ItemData result) {
-		this.recipeId = new ResourceLocation(recipeId.getNamespace(), RECIPE_SUB_FOLDER + "/" + recipeId.getPath());
+		this.recipeId = ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), RECIPE_SUB_FOLDER + "/" + recipeId.getPath());
 		recipeResult = result;
 	}
 
@@ -61,7 +61,7 @@ public final class DigestingRecipeBuilder implements RecipeBuilder<DigestingReci
 	}
 
 	public static DigestingRecipeBuilder create(String modId, String outputName, ItemData result) {
-		ResourceLocation rl = new ResourceLocation(modId, outputName + "_from_" + result.getItemPath());
+		ResourceLocation rl = ResourceLocation.fromNamespaceAndPath(modId, outputName + "_from_" + result.getItemPath());
 		return new DigestingRecipeBuilder(rl, result);
 	}
 
@@ -182,10 +182,10 @@ public final class DigestingRecipeBuilder implements RecipeBuilder<DigestingReci
 		if (craftingTimeTicks < 0) throw new IllegalArgumentException("Invalid crafting time: " + craftingTimeTicks);
 		if (craftingCostNutrients < 0) throw new IllegalArgumentException("Invalid crafting cost: " + craftingCostNutrients);
 
-		advancement.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId)).rewards(AdvancementRewards.Builder.recipe(recipeId)).requirements(RequirementsStrategy.OR);
+		advancement.parent(ResourceLocation.parse("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId)).rewards(AdvancementRewards.Builder.recipe(recipeId)).requirements(RequirementsStrategy.OR);
 
 		String folderName = RecipeBuilder.getRecipeFolderName(category, BiomancyMod.MOD_ID);
-		ResourceLocation advancementId = new ResourceLocation(recipeId.getNamespace(), "recipes/%s/%s".formatted(folderName, recipeId.getPath()));
+		ResourceLocation advancementId = ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "recipes/%s/%s".formatted(folderName, recipeId.getPath()));
 
 		consumer.accept(new Result(this, advancementId));
 	}

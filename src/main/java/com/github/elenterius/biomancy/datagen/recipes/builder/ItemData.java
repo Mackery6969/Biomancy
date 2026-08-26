@@ -39,7 +39,7 @@ public final class ItemData {
 	}
 
 	public static ItemData from(String namespace, String path) {
-		return new ItemData(new ResourceLocation(namespace, path));
+		return new ItemData(ResourceLocation.fromNamespaceAndPath(namespace, path));
 	}
 
 	public ItemData(ResourceLocation registryName) {

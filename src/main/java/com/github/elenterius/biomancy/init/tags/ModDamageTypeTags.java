@@ -31,7 +31,7 @@ public final class ModDamageTypeTags {
 	}
 
 	private static TagKey<DamageType> forgeTag(String name) {
-		return TagKey.create(Registries.DAMAGE_TYPE, new ResourceLocation("forge", name));
+		return TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath("forge", name));
 	}
 
 }

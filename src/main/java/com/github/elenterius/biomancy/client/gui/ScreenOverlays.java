@@ -54,7 +54,7 @@ public final class ScreenOverlays {
 	public static final ResourceLocation VEINS = BiomancyMod.rl("textures/gui/overlay/veins.png");
 	public static final ResourceLocation VIGNETTE = BiomancyMod.rl("textures/gui/overlay/vignette.png");
 	public static final ResourceLocation MEMBRANE = BiomancyMod.rl("textures/gui/overlay/membrane.png");
-	public static final ResourceLocation WATER_GEL = new ResourceLocation("minecraft", "textures/misc/underwater.png");
+	public static final ResourceLocation WATER_GEL = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/misc/underwater.png");
 
 	public static final IGuiOverlay INSIDE_BLOCK_OVERLAY = (gui, guiGraphics, partialTicks, screenWidth, screenHeight) -> {
 		Minecraft minecraft = Minecraft.getInstance();

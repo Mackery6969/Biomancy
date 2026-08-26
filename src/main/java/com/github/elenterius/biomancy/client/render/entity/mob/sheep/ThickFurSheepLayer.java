@@ -15,7 +15,7 @@ import net.minecraft.world.entity.animal.Sheep;
 
 public class ThickFurSheepLayer<T extends ThickFurSheep> extends RenderLayer<T, SheepModel<T>> {
 
-	private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/sheep/sheep_fur.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/sheep/sheep_fur.png");
 
 	private final InflatedSheepFurModel<T> model;
 

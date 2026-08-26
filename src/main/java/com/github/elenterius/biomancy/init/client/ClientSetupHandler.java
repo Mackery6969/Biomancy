@@ -171,9 +171,9 @@ public final class ClientSetupHandler {
 
 	private static void registerItemModelProperties() {
 		ItemPropertyFunction shieldPropertyFunc = (stack, level, livingEntity, seed) -> livingEntity != null && livingEntity.isUsingItem() && livingEntity.getUseItem() == stack ? 1f : 0f;
-		ItemProperties.register(ModItems.THORN_SHIELD.get(), new ResourceLocation("blocking"), shieldPropertyFunc);
+		ItemProperties.register(ModItems.THORN_SHIELD.get(), ResourceLocation.withDefaultNamespace("blocking"), shieldPropertyFunc);
 
-		ItemProperties.register(ModItems.CAUSTIC_GUNBLADE.get(), new ResourceLocation("melee"), (stack, level, livingEntity, seed) -> GunbladeItem.GunbladeMode.from(stack) == GunbladeItem.GunbladeMode.MELEE ? 1f : 0f);
+		ItemProperties.register(ModItems.CAUSTIC_GUNBLADE.get(), ResourceLocation.withDefaultNamespace("melee"), (stack, level, livingEntity, seed) -> GunbladeItem.GunbladeMode.from(stack) == GunbladeItem.GunbladeMode.MELEE ? 1f : 0f);
 	}
 
 	@SubscribeEvent

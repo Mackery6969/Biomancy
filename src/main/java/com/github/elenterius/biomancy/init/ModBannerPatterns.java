@@ -30,7 +30,7 @@ public final class ModBannerPatterns {
 		ResourceLocation registryName = registryObject.getId();
 		String modId = registryName.getNamespace();
 		String name = registryName.getPath();
-		return TagKey.create(Registries.BANNER_PATTERN, new ResourceLocation(modId, "pattern_item/" + name));
+		return TagKey.create(Registries.BANNER_PATTERN, ResourceLocation.fromNamespaceAndPath(modId, "pattern_item/" + name));
 	}
 
 }

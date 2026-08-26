@@ -17,7 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ChromaSheepFurLayer extends RenderLayer<ChromaSheep, SheepModel<ChromaSheep>> {
 
-	private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/sheep/sheep_fur.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/sheep/sheep_fur.png");
 
 	private final SheepFurModel<ChromaSheep> model;
 

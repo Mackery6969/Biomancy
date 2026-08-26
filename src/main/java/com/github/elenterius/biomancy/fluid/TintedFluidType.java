@@ -20,10 +20,10 @@ import java.util.function.Consumer;
 
 public class TintedFluidType extends FluidType {
 
-	protected static final ResourceLocation STILL_TEXTURE = new ResourceLocation("block/water_still");
-	protected static final ResourceLocation FLOWING_TEXTURE = new ResourceLocation("block/water_flow");
-	protected static final ResourceLocation OVERLAY_TEXTURE = new ResourceLocation("block/water_overlay");
-	protected static final ResourceLocation INSIDE_FLUID_TEXTURE = new ResourceLocation("textures/block/water_overlay.png");
+	protected static final ResourceLocation STILL_TEXTURE = ResourceLocation.withDefaultNamespace("block/water_still");
+	protected static final ResourceLocation FLOWING_TEXTURE = ResourceLocation.withDefaultNamespace("block/water_flow");
+	protected static final ResourceLocation OVERLAY_TEXTURE = ResourceLocation.withDefaultNamespace("block/water_overlay");
+	protected static final ResourceLocation INSIDE_FLUID_TEXTURE = ResourceLocation.withDefaultNamespace("textures/block/water_overlay.png");
 
 	protected final int colorARGB;
 

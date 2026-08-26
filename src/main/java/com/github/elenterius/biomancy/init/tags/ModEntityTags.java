@@ -25,12 +25,12 @@ public final class ModEntityTags {
 	}
 
 	private static TagKey<EntityType<?>> forgeTag(String name) {
-		return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("forge", name));
+		return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("forge", name));
 	}
 
 	/// conventional tags introduced in neo-forge/fabric for minecraft 1.21+
 	private static TagKey<EntityType<?>> conventionalTag(String name) {
-		return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("c", name));
+		return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("c", name));
 	}
 
 }

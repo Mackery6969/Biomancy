@@ -122,7 +122,7 @@ public final class AdaptiveDamageResistanceHandler {
 			for (int i = 0; i < list.size(); i++) {
 				CompoundTag tag = list.getCompound(i);
 
-				ResourceLocation key = new ResourceLocation(tag.getString("damage_type_tag"));
+				ResourceLocation key = ResourceLocation.parse(tag.getString("damage_type_tag"));
 				TagKey<DamageType> damageType = TagKey.create(Registries.DAMAGE_TYPE, key);
 
 				if (tag.contains("count")) {

@@ -15,7 +15,7 @@ import net.minecraft.util.Mth;
 
 public class AcidSpitProjectileRenderer extends EntityRenderer<AcidSpitProjectile> {
 
-	private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/llama/spit.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/llama/spit.png");
 	private final LlamaSpitModel<AcidSpitProjectile> model;
 
 	public AcidSpitProjectileRenderer(EntityRendererProvider.Context context) {

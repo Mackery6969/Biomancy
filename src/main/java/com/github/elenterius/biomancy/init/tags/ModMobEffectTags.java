@@ -60,7 +60,7 @@ public final class ModMobEffectTags {
 	}
 
 	private static TagKey<MobEffect> forgeTag(String name) {
-		return createTag(new ResourceLocation("forge", name));
+		return createTag(ResourceLocation.fromNamespaceAndPath("forge", name));
 	}
 
 	private static TagKey<MobEffect> createTag(ResourceLocation key) {

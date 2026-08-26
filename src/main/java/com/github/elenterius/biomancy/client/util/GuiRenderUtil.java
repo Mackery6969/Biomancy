@@ -19,7 +19,7 @@ import java.util.List;
 
 public final class GuiRenderUtil {
 
-	protected static final ResourceLocation GUI_ICONS_TEXTURE = new ResourceLocation("textures/gui/icons.png");
+	protected static final ResourceLocation GUI_ICONS_TEXTURE = ResourceLocation.withDefaultNamespace("textures/gui/icons.png");
 
 	private GuiRenderUtil() {}
 

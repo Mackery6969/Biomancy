@@ -63,7 +63,7 @@ public final class DecomposingRecipeBuilder implements RecipeBuilder<Decomposing
 	}
 
 	//	public static DecomposerRecipeBuilder create(String modId, String ingredientName) {
-	//		ResourceLocation rl = new ResourceLocation(modId, ingredientName + SUFFIX);
+	//		ResourceLocation rl = ResourceLocation.fromNamespaceAndPath(modId, ingredientName + SUFFIX);
 	//		return new DecomposerRecipeBuilder(rl);
 	//	}
 	//
@@ -148,7 +148,7 @@ public final class DecomposingRecipeBuilder implements RecipeBuilder<Decomposing
 	public DecomposingRecipeBuilder setIngredient(Ingredient ingredient, int count, ResourceLocation recipeId) {
 		if (ingredientStack != null) throw new IllegalStateException("Ingredient is already set");
 		ingredientStack = new IngredientStack(ingredient, count);
-		this.recipeId = new ResourceLocation(recipeId.getNamespace(), RECIPE_SUB_FOLDER + "/" + recipeId.getPath());
+		this.recipeId = ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), RECIPE_SUB_FOLDER + "/" + recipeId.getPath());
 		return this;
 	}
 
@@ -208,12 +208,12 @@ public final class DecomposingRecipeBuilder implements RecipeBuilder<Decomposing
 
 		validate();
 
-		advancement.parent(new ResourceLocation("recipes/root"))
+		advancement.parent(ResourceLocation.parse("recipes/root"))
 				.addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId))
 				.rewards(AdvancementRewards.Builder.recipe(recipeId)).requirements(RequirementsStrategy.OR);
 
 		String folderName = RecipeBuilder.getRecipeFolderName(category, BiomancyMod.MOD_ID);
-		ResourceLocation advancementId = new ResourceLocation(recipeId.getNamespace(), "recipes/%s/%s".formatted(folderName, recipeId.getPath()));
+		ResourceLocation advancementId = ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "recipes/%s/%s".formatted(folderName, recipeId.getPath()));
 
 		consumer.accept(new RecipeResult(this, advancementId));
 	}

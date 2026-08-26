@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ThickFurSheepRenderer extends MobRenderer<ThickFurSheep, SheepModel<ThickFurSheep>> {
 
-	protected static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/sheep/sheep.png");
+	protected static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/sheep/sheep.png");
 
 	public ThickFurSheepRenderer(EntityRendererProvider.Context context) {
 		super(context, new SheepModel<>(context.bakeLayer(ModelLayers.SHEEP)), 0.7f);

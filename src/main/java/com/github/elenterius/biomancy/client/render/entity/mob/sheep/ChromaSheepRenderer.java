@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ChromaSheepRenderer extends MobRenderer<ChromaSheep, SheepModel<ChromaSheep>> {
 
-	protected static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/sheep/sheep.png");
+	protected static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/sheep/sheep.png");
 
 	public ChromaSheepRenderer(EntityRendererProvider.Context context) {
 		super(context, new SheepModel<>(context.bakeLayer(ModelLayers.SHEEP)), 0.7f);
