@@ -29,6 +29,13 @@ dependencyResolutionManagement {
 
 	repositories {
 		maven {
+			name = "Alex's Caves (local checkout)"
+			url = uri("file:///D:/Programs/GitHub/AlexsCaves-1.21.1/mcmodsrepo")
+			content {
+				includeGroup("com.github.alexthe668")
+			}
+		}
+		maven {
 			name = "NeoForged"
 			url = uri("https://maven.neoforged.net/releases")
 			content {

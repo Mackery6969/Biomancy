@@ -2,6 +2,7 @@ package com.github.elenterius.biomancy.api.tribute.fluid;
 
 import com.github.elenterius.biomancy.api.tribute.SacrificeHandler;
 import com.github.elenterius.biomancy.inventory.Notify;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -118,14 +119,14 @@ public class FluidTributeConsumerHandler implements IFluidHandler, INBTSerializa
 	}
 
 	@Override
-	public CompoundTag serializeNBT() {
+	public CompoundTag serializeNBT(HolderLookup.Provider registries) {
 		CompoundTag tag = new CompoundTag();
 		tag.putLongArray(MILLI_TRIBUTE_BUFFER_KEY, milliTributeBuffer);
 		return tag;
 	}
 
 	@Override
-	public void deserializeNBT(CompoundTag tag) {
+	public void deserializeNBT(HolderLookup.Provider registries, CompoundTag tag) {
 		long[] buffer = tag.getLongArray(MILLI_TRIBUTE_BUFFER_KEY);
 		System.arraycopy(buffer, 0, milliTributeBuffer, 0, milliTributeBuffer.length);
 	}

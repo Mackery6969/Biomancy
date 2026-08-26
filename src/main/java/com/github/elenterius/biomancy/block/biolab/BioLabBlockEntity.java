@@ -11,7 +11,6 @@ import com.github.elenterius.biomancy.crafting.recipe.BioBrewingRecipe;
 import com.github.elenterius.biomancy.crafting.recipe.PotionSerumRecipes;
 import com.github.elenterius.biomancy.crafting.recipe.SimpleRecipeType;
 import com.github.elenterius.biomancy.init.ModBlockEntities;
-import com.github.elenterius.biomancy.init.ModCapabilities;
 import com.github.elenterius.biomancy.init.ModRecipes;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.inventory.BehavioralItemHandler;
@@ -21,8 +20,8 @@ import com.github.elenterius.biomancy.inventory.ItemHandlerUtil;
 import com.github.elenterius.biomancy.menu.BioLabMenu;
 import com.github.elenterius.biomancy.util.sounds.LoopingSoundHelper;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -34,8 +33,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
@@ -77,9 +74,6 @@ public class BioLabBlockEntity extends MachineBlockEntity<BioBrewingRecipe, BioL
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	private LoopingSoundHelper loopingSoundHelper = LoopingSoundHelper.NULL;
 
-	private LazyOptional<IItemHandler> optionalCombinedInventory;
-	private LazyOptional<IFluidHandler> optionalFluidConsumer;
-
 	public BioLabBlockEntity(BlockPos worldPosition, BlockState blockState) {
 		super(ModBlockEntities.BIO_LAB.get(), worldPosition, blockState);
 
@@ -89,24 +83,24 @@ public class BioLabBlockEntity extends MachineBlockEntity<BioBrewingRecipe, BioL
 
 		fuelInventory = InventoryHandlers.filterFuel(FUEL_SLOTS, this::onInventoryChanged);
 
-		optionalCombinedInventory = createCombinedInventory();
-
 		fuelHandler = FuelHandlerImpl.createNutrientFuelHandler(MAX_FUEL, this::setChanged);
-		optionalFluidConsumer = LazyOptional.of(fuelHandler::getFluidConsumer);
 
 		stateData = new BioLabStateData(fuelHandler, inputInventory.get());
 	}
 
-	private LazyOptional<IItemHandler> createCombinedInventory() {
-		return LazyOptional.of(() -> new CombinedInvWrapper(
+	public IItemHandler getCombinedInventory() {
+		return new CombinedInvWrapper(
 				fuelInventory,
 				new RangedWrapper(inputInventory, inputInventory.getSlots() - 1, inputInventory.getSlots())) {
 					@Override
 					public boolean isItemValid(int slot, ItemStack stack) {
 						return !Nutrients.FUEL_PREDICATE.test(stack) && super.isItemValid(slot, stack);
 					}
-				}
-		);
+				};
+	}
+
+	public IFluidHandler getFluidConsumer() {
+		return fuelHandler.getFluidConsumer();
 	}
 
 	@Override
@@ -183,23 +177,23 @@ public class BioLabBlockEntity extends MachineBlockEntity<BioBrewingRecipe, BioL
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
+	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.saveAdditional(tag, registries);
 		stateData.serialize(tag);
-		tag.put("Fuel", fuelHandler.serializeNBT());
-		tag.put("FuelSlots", fuelInventory.serializeNBT());
-		tag.put("InputSlots", inputInventory.serializeNBT());
-		tag.put("OutputSlots", outputInventory.serializeNBT());
+		tag.put("Fuel", fuelHandler.serializeNBT(registries));
+		tag.put("FuelSlots", fuelInventory.serializeNBT(registries));
+		tag.put("InputSlots", inputInventory.serializeNBT(registries));
+		tag.put("OutputSlots", outputInventory.serializeNBT(registries));
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
+	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.loadAdditional(tag, registries);
 		stateData.deserialize(tag);
-		fuelHandler.deserializeNBT(tag.getCompound("Fuel"));
-		fuelInventory.deserializeNBT(tag.getCompound("FuelSlots"));
-		inputInventory.deserializeNBT(tag.getCompound("InputSlots"));
-		outputInventory.deserializeNBT(tag.getCompound("OutputSlots"));
+		fuelHandler.deserializeNBT(registries, tag.getCompound("Fuel"));
+		fuelInventory.deserializeNBT(registries, tag.getCompound("FuelSlots"));
+		inputInventory.deserializeNBT(registries, tag.getCompound("InputSlots"));
+		outputInventory.deserializeNBT(registries, tag.getCompound("OutputSlots"));
 	}
 
 	@Override
@@ -209,42 +203,6 @@ public class BioLabBlockEntity extends MachineBlockEntity<BioBrewingRecipe, BioL
 		ItemHandlerUtil.dropContents(level, pos, outputInventory);
 	}
 
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		if (remove) return super.getCapability(cap, side);
-
-		if (cap == ModCapabilities.ITEM_HANDLER) {
-			if (side == null || side == Direction.DOWN) return outputInventory.getLazyOptional().cast();
-			if (side == Direction.UP) return inputInventory.getLazyOptional().cast();
-			return optionalCombinedInventory.cast();
-		}
-
-		if (cap == ModCapabilities.FLUID_HANDLER) {
-			return optionalFluidConsumer.cast();
-		}
-
-		return super.getCapability(cap, side);
-	}
-
-	@Override
-	public void invalidateCaps() {
-		super.invalidateCaps();
-		fuelInventory.invalidate();
-		inputInventory.invalidate();
-		outputInventory.invalidate();
-		optionalCombinedInventory.invalidate();
-		optionalFluidConsumer.invalidate();
-	}
-
-	@Override
-	public void reviveCaps() {
-		super.reviveCaps();
-		fuelInventory.revive();
-		inputInventory.revive();
-		outputInventory.revive();
-		optionalCombinedInventory = createCombinedInventory();
-		optionalFluidConsumer = LazyOptional.of(fuelHandler::getFluidConsumer);
-	}
 
 	@Override
 	protected boolean craftRecipe(BioBrewingRecipe recipeToCraft, Level level) {

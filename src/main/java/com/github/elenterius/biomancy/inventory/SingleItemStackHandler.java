@@ -105,7 +105,7 @@ public class SingleItemStackHandler implements SerializableItemHandler, IItemHan
 		if (stackIn.isEmpty()) return ItemStack.EMPTY;
 		if (!isItemValid(slot, stackIn)) return stackIn;
 
-		if (!cachedStack.isEmpty() && !ItemHandlerHelper.canItemStacksStack(stackIn, cachedStack)) return stackIn;
+		if (!cachedStack.isEmpty() && !ItemStack.isSameItemSameComponents(stackIn, cachedStack)) return stackIn;
 		if (getAmount() >= getMaxAmount()) return stackIn;
 
 		int insertGoal = stackIn.getCount();

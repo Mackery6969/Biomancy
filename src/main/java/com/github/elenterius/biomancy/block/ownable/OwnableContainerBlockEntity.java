@@ -5,6 +5,7 @@ import com.github.elenterius.biomancy.util.ownable.Ownable;
 import com.github.elenterius.biomancy.util.permission.Actions;
 import com.github.elenterius.biomancy.util.permission.IRestrictedInteraction;
 import com.github.elenterius.biomancy.util.permission.UserType;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -127,8 +128,8 @@ public abstract class OwnableContainerBlockEntity extends SimpleContainerBlockEn
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
+	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.loadAdditional(tag, registries);
 		ownerId = tag.hasUUID("OwnerUUID") ? tag.getUUID("OwnerUUID") : null;
 
 		users.clear();
@@ -144,8 +145,8 @@ public abstract class OwnableContainerBlockEntity extends SimpleContainerBlockEn
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
+	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.saveAdditional(tag, registries);
 		if (ownerId != null) tag.putUUID("OwnerUUID", ownerId);
 
 		if (!users.isEmpty()) {

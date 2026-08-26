@@ -3,7 +3,6 @@ package com.github.elenterius.biomancy.inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import java.util.Collection;
 import java.util.function.Predicate;
@@ -171,7 +170,7 @@ interface TransferOperations extends IItemHandler, Forwarding<IItemHandler> {
 
 				if (extracted.getCount() >= targetAmount) return extracted;
 			}
-			else if (ItemHandlerHelper.canItemStacksStack(stackInSlot, extracted)) {
+			else if (ItemStack.isSameItemSameComponents(stackInSlot, extracted)) {
 				int amount = Math.min(stackInSlot.getMaxStackSize(), targetAmount - extracted.getCount());
 				ItemStack result = inner().extractItem(i, amount, simulate);
 				if (!result.isEmpty()) extracted.grow(result.getCount());

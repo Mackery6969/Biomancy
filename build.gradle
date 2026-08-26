@@ -177,6 +177,9 @@ dependencies {
 	implementation("maven.modrinth:sons-of-sins:${sons_of_sins_version}")
 	datagenCompileOnly("maven.modrinth:sons-of-sins:${sons_of_sins_version}")
 
+	compileOnly("com.github.alexthe668:AlexsCaves-1.21.1:${alexs_caves_version}")
+	datagenCompileOnly("com.github.alexthe668:AlexsCaves-1.21.1:${alexs_caves_version}")
+
 	datagenCompileOnly sourceSets.main.output
 	localRuntime sourceSets.datagen.output
 }

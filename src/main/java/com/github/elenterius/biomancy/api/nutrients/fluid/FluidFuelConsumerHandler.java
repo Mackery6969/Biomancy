@@ -1,6 +1,7 @@
 package com.github.elenterius.biomancy.api.nutrients.fluid;
 
 import com.github.elenterius.biomancy.api.nutrients.FuelHandler;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -85,14 +86,14 @@ public class FluidFuelConsumerHandler implements IFluidHandler, INBTSerializable
 	}
 
 	@Override
-	public CompoundTag serializeNBT() {
+	public CompoundTag serializeNBT(HolderLookup.Provider registries) {
 		CompoundTag tag = new CompoundTag();
 		tag.putLong(MILLI_FUEL_BUFFER_KEY, milliFuelBuffer);
 		return tag;
 	}
 
 	@Override
-	public void deserializeNBT(CompoundTag tag) {
+	public void deserializeNBT(HolderLookup.Provider registries, CompoundTag tag) {
 		milliFuelBuffer = tag.getLong(MILLI_FUEL_BUFFER_KEY);
 	}
 

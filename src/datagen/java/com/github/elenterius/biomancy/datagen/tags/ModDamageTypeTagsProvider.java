@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.datagen.tags;
 
+import com.github.alexmodguy.alexscaves.server.misc.ACDamageTypes;
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.init.ModDamageTypes;
 import com.github.elenterius.biomancy.init.tags.ModDamageTypeTags;
@@ -87,9 +88,13 @@ public class ModDamageTypeTagsProvider extends DamageTypeTagsProvider {
 				ModDamageTypes.IMPALER_PROJECTILE
 		);
 
-		tag(ModDamageTypeTags.FORGE_IS_ACID).add(
-				ModDamageTypes.CORROSIVE_ACID
-		);
+		tag(ModDamageTypeTags.FORGE_IS_ACID)
+				.add(
+						ModDamageTypes.CORROSIVE_ACID
+				)
+				.addOptionalTag(
+						ACDamageTypes.ACID.location()
+				);
 
 		tag(ModDamageTypeTags.FORGE_IS_POISON).add(
 				ModDamageTypes.TOXIN

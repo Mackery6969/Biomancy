@@ -17,10 +17,13 @@ import com.github.elenterius.biomancy.block.storagesac.StorageSacBlockEntity;
 import com.github.elenterius.biomancy.block.tongue.TongueBlockEntity;
 import com.github.elenterius.biomancy.block.vialholder.VialHolderBlockEntity;
 import com.mojang.datafixers.types.Type;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -53,12 +56,58 @@ public final class ModBlockEntities {
 
 	private ModBlockEntities() {}
 
-	private static <T extends BlockEntity, B extends Block> DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> register(DeferredHolder<BlockEntityType<?>, B> blockHolder, BlockEntityType.BlockEntitySupplier<T> factory) {
+	public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+		event.registerBlockEntity(ModCapabilities.FLUID_HANDLER, PRIMORDIAL_CRADLE.get(), (be, side) -> be.getFluidConsumer());
+
+		event.registerBlockEntity(ModCapabilities.ITEM_HANDLER, DECOMPOSER.get(), (be, side) -> {
+			if (side == null || side == Direction.DOWN) return be.getOutputInventory();
+			if (side == Direction.UP) return be.getInputInventory();
+			return be.getFuelInventory();
+		});
+		event.registerBlockEntity(ModCapabilities.FLUID_HANDLER, DECOMPOSER.get(), (be, side) -> be.getFluidConsumer());
+
+		event.registerBlockEntity(ModCapabilities.ITEM_HANDLER, BIO_FORGE.get(), (be, side) -> {
+			if (side != null && side.getAxis().isHorizontal()) return be.getFuelInventory();
+			return null;
+		});
+		event.registerBlockEntity(ModCapabilities.FLUID_HANDLER, BIO_FORGE.get(), (be, side) -> be.getFluidConsumer());
+
+		event.registerBlockEntity(ModCapabilities.ITEM_HANDLER, BIO_LAB.get(), (be, side) -> {
+			if (side == null || side == Direction.DOWN) return be.getOutputInventory();
+			if (side == Direction.UP) return be.getInputInventory();
+			return be.getCombinedInventory();
+		});
+		event.registerBlockEntity(ModCapabilities.FLUID_HANDLER, BIO_LAB.get(), (be, side) -> be.getFluidConsumer());
+
+		event.registerBlockEntity(ModCapabilities.ITEM_HANDLER, DIGESTER.get(), (be, side) -> {
+			if (side == null || side == Direction.DOWN) return be.getOutputInventory();
+			if (side == Direction.UP) return be.getInputInventory();
+			return be.getFuelInventory();
+		});
+		event.registerBlockEntity(ModCapabilities.FLUID_HANDLER, DIGESTER.get(), (be, side) -> be.getFluidConsumer());
+
+		event.registerBlockEntity(ModCapabilities.ITEM_HANDLER, MAW_HOPPER.get(), (be, side) -> be.getInventoryHandler());
+		event.registerBlockEntity(ModCapabilities.ITEM_HANDLER, STORAGE_SAC.get(), (be, side) -> be.getInventory());
+		event.registerBlockEntity(ModCapabilities.ITEM_HANDLER, MODULAR_LARYNX.get(), (be, side) -> be.getInventoryHandler());
+
+		event.registerBlockEntity(ModCapabilities.ITEM_HANDLER, BE_DELEGATOR.get(), (be, side) -> {
+			BlockEntity delegate = be.getDelegate();
+			Level level = delegate != null ? delegate.getLevel() : null;
+			return level != null ? level.getCapability(ModCapabilities.ITEM_HANDLER, delegate.getBlockPos(), side) : null;
+		});
+		event.registerBlockEntity(ModCapabilities.FLUID_HANDLER, BE_DELEGATOR.get(), (be, side) -> {
+			BlockEntity delegate = be.getDelegate();
+			Level level = delegate != null ? delegate.getLevel() : null;
+			return level != null ? level.getCapability(ModCapabilities.FLUID_HANDLER, delegate.getBlockPos(), side) : null;
+		});
+	}
+
+	private static <T extends BlockEntity, B extends Block> DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> register(DeferredHolder<Block, B> blockHolder, BlockEntityType.BlockEntitySupplier<T> factory) {
 		return BLOCK_ENTITIES.register(blockHolder.getId().getPath(), () -> BlockEntityType.Builder.of(factory, blockHolder.get()).build(noDataFixer()));
 	}
 
 	@SafeVarargs
-	private static <T extends BlockEntity> DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> register(String name, BlockEntityType.BlockEntitySupplier<T> factory, DeferredHolder<BlockEntityType<?>, ? extends Block>... blockHolders) {
+	private static <T extends BlockEntity> DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> register(String name, BlockEntityType.BlockEntitySupplier<T> factory, DeferredHolder<Block, ? extends Block>... blockHolders) {
 		return BLOCK_ENTITIES.register(name, () -> {
 			Block[] blocks = Arrays.stream(blockHolders).map(DeferredHolder::get).toList().toArray(new Block[]{});
 			return BlockEntityType.Builder.of(factory, blocks).build(noDataFixer());

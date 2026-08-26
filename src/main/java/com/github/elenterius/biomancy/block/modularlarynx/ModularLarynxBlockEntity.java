@@ -1,11 +1,10 @@
 package com.github.elenterius.biomancy.block.modularlarynx;
 
 import com.github.elenterius.biomancy.init.ModBlockEntities;
-import com.github.elenterius.biomancy.init.ModCapabilities;
 import com.github.elenterius.biomancy.inventory.SingleItemStackHandler;
 import com.github.elenterius.biomancy.item.EssenceItem;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -16,11 +15,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.minecraft.core.registries.BuiltInRegistries;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -33,7 +29,6 @@ public class ModularLarynxBlockEntity extends BlockEntity {
 	public static final Predicate<ItemStack> VALID_ITEM = stack -> stack.getItem() instanceof EssenceItem;
 
 	private final SingleItemStackHandler inventory;
-	private LazyOptional<IItemHandler> optionalItemHandler;
 
 	private SoundEvent soundEvent;
 
@@ -56,9 +51,12 @@ public class ModularLarynxBlockEntity extends BlockEntity {
 				setChanged();
 			}
 		};
-		optionalItemHandler = LazyOptional.of(() -> inventory);
 
 		soundEvent = ModularLarynxBlock.getMobSoundType(state).getSoundFallback();
+	}
+
+	public IItemHandler getInventoryHandler() {
+		return inventory;
 	}
 
 	public boolean isInventoryEmpty() {
@@ -96,23 +94,23 @@ public class ModularLarynxBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
-		tag.put(INVENTORY_TAG, inventory.serializeNBT());
+	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.saveAdditional(tag, registries);
+		tag.put(INVENTORY_TAG, inventory.serializeNBT(registries));
 		tag.putString(SOUND_EVENT_TAG, soundEvent.getLocation().toString());
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
-		inventory.deserializeNBT(tag.getCompound(INVENTORY_TAG));
+	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.loadAdditional(tag, registries);
+		inventory.deserializeNBT(registries, tag.getCompound(INVENTORY_TAG));
 		soundEvent = deserializeSoundEvent(tag.getString(SOUND_EVENT_TAG)).orElseGet(() -> ModularLarynxBlock.getMobSoundType(getBlockState()).getSoundFallback());
 	}
 
 	public Optional<SoundEvent> deserializeSoundEvent(String stringKey) {
 		ResourceLocation key = ResourceLocation.tryParse(stringKey);
 		if (key != null) {
-			return Optional.ofNullable(BuiltInRegistries.SOUND_EVENT.getValue(key));
+			return Optional.ofNullable(BuiltInRegistries.SOUND_EVENT.get(key));
 		}
 		return Optional.empty();
 	}
@@ -129,26 +127,6 @@ public class ModularLarynxBlockEntity extends BlockEntity {
 		if (!stack.isEmpty() && !player.addItem(stack)) {
 			player.drop(stack, false);
 		}
-	}
-
-	@Override
-	public void invalidateCaps() {
-		super.invalidateCaps();
-		optionalItemHandler.invalidate();
-	}
-
-	@Override
-	public void reviveCaps() {
-		super.reviveCaps();
-		optionalItemHandler = LazyOptional.of(() -> inventory);
-	}
-
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		if (!remove) {
-			return ModCapabilities.ITEM_HANDLER.orEmpty(cap, optionalItemHandler);
-		}
-		return super.getCapability(cap, side);
 	}
 
 }

@@ -7,6 +7,7 @@ import com.github.elenterius.biomancy.init.ModBlockEntities;
 import com.github.elenterius.biomancy.init.ModCapabilities;
 import com.github.elenterius.biomancy.inventory.ItemHandlerWrapper;
 import com.github.elenterius.biomancy.inventory.SingleItemStackHandler;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -21,8 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jspecify.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
@@ -47,7 +47,7 @@ public class MawHopperBlockEntity extends BlockEntity implements GeoBlockEntity 
 	public static final Predicate<Entity> CONTAINER_ENTITY_SELECTOR = entity ->
 			entity.isAlive()
 					&& (EntitySelector.CONTAINER_ENTITY_SELECTOR.test(entity) || entity instanceof Player)
-					&& entity.getCapability(ModCapabilities.ITEM_HANDLER, null).isPresent();
+					&& entity.getCapability(Capabilities.ItemHandler.ENTITY) != null;
 
 	protected static final RawAnimation IDLE_ANIM = RawAnimation.begin().thenLoop("maw_hopper.idle");
 	protected static final RawAnimation PUMPING_ANIM = RawAnimation.begin().thenLoop("maw_hopper.pumping");
@@ -57,8 +57,6 @@ public class MawHopperBlockEntity extends BlockEntity implements GeoBlockEntity 
 
 	private int ticks = BiomancyMod.GLOBAL_RANDOM.nextInt(DURATION); //add random tick offset
 
-	private LazyOptional<IItemHandler> optionalItemHandler;
-
 	public MawHopperBlockEntity(BlockPos pos, BlockState blockState) {
 		super(ModBlockEntities.MAW_HOPPER.get(), pos, blockState);
 		inventory = new SingleItemStackHandler() {
@@ -67,30 +65,27 @@ public class MawHopperBlockEntity extends BlockEntity implements GeoBlockEntity 
 				setChanged();
 			}
 		};
-		optionalItemHandler = LazyOptional.of(() -> inventory);
+	}
+
+	public IItemHandler getInventoryHandler() {
+		return inventory;
 	}
 
 	public static void serverTick(Level level, BlockPos pos, BlockState state, MawHopperBlockEntity entity) {
 		entity.serverTick((ServerLevel) level, pos, state);
 	}
 
-	private static LazyOptional<IItemHandler> getItemHandler(ServerLevel level, BlockPos pos, @Nullable Direction direction) {
-		BlockState state = level.getBlockState(pos);
-		if (state.hasBlockEntity()) {
-			BlockEntity blockEntity = level.getBlockEntity(pos);
-			if (blockEntity != null) {
-				LazyOptional<IItemHandler> capability = blockEntity.getCapability(ModCapabilities.ITEM_HANDLER, direction);
-				if (capability.isPresent()) return capability;
-			}
-		}
+	private static @Nullable IItemHandler getItemHandler(ServerLevel level, BlockPos pos, @Nullable Direction direction) {
+		IItemHandler capability = level.getCapability(ModCapabilities.ITEM_HANDLER, pos, direction);
+		if (capability != null) return capability;
 
 		List<Entity> list = level.getEntities((Entity) null, new AABB(pos), CONTAINER_ENTITY_SELECTOR);
 		if (!list.isEmpty()) {
 			int index = level.random.nextInt(list.size());
-			return list.get(index).getCapability(ModCapabilities.ITEM_HANDLER, direction);
+			return list.get(index).getCapability(Capabilities.ItemHandler.ENTITY);
 		}
 
-		return LazyOptional.empty();
+		return null;
 	}
 
 	public static void entityInside(Level level, BlockPos pos, BlockState state, MawHopperBlockEntity blockEntity, Entity entity) {
@@ -123,24 +118,6 @@ public class MawHopperBlockEntity extends BlockEntity implements GeoBlockEntity 
 		return false;
 	}
 
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		if (!remove && cap == ModCapabilities.ITEM_HANDLER) return optionalItemHandler.cast();
-		return super.getCapability(cap, side);
-	}
-
-	@Override
-	public void invalidateCaps() {
-		super.invalidateCaps();
-		optionalItemHandler.invalidate();
-	}
-
-	@Override
-	public void reviveCaps() {
-		super.reviveCaps();
-		optionalItemHandler = LazyOptional.of(() -> inventory);
-	}
-
 	private void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
 		ticks++;
 
@@ -148,16 +125,16 @@ public class MawHopperBlockEntity extends BlockEntity implements GeoBlockEntity 
 			DirectedConnection connection = MawHopperBlock.getConnection(state);
 			BlockPos insertPos = pos.relative(connection.outgoing);
 			if (level.isLoaded(insertPos)) {
-				LazyOptional<IItemHandler> itemHandler = getItemHandler(level, insertPos, connection.outgoing.getOpposite());
-				itemHandler.map(this::tryToInsertItems);
+				IItemHandler itemHandler = getItemHandler(level, insertPos, connection.outgoing.getOpposite());
+				if (itemHandler != null) tryToInsertItems(itemHandler);
 			}
 		}
 
 		if (ticks % (DURATION + DELAY) == 0 && !inventory.isFull() && isMawHead()) {
 			BlockPos pullPos = pos.relative(MawHopperBlock.getConnection(state).ingoing);
 			if (level.isLoaded(pullPos)) {
-				LazyOptional<IItemHandler> itemHandler = getItemHandler(level, pullPos, Direction.DOWN);
-				if (!itemHandler.map(this::tryToExtractItems).orElse(false)) {
+				IItemHandler itemHandler = getItemHandler(level, pullPos, Direction.DOWN);
+				if (itemHandler == null || !tryToExtractItems(itemHandler)) {
 					pullItemEntities(level, pullPos);
 				}
 			}
@@ -221,15 +198,15 @@ public class MawHopperBlockEntity extends BlockEntity implements GeoBlockEntity 
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
-		tag.put(INVENTORY_TAG, inventory.serializeNBT());
+	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.saveAdditional(tag, registries);
+		tag.put(INVENTORY_TAG, inventory.serializeNBT(registries));
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
-		inventory.deserializeNBT(tag.getCompound(INVENTORY_TAG));
+	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.loadAdditional(tag, registries);
+		inventory.deserializeNBT(registries, tag.getCompound(INVENTORY_TAG));
 	}
 
 	private <E extends MawHopperBlockEntity> PlayState handleAnim(AnimationState<E> event) {

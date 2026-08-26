@@ -10,6 +10,7 @@ import com.github.elenterius.biomancy.inventory.InventoryHandlers;
 import com.github.elenterius.biomancy.inventory.ItemHandlerUtil;
 import com.github.elenterius.biomancy.menu.FleshkinChestMenu;
 import com.github.elenterius.biomancy.util.animation.TriggerableAnimation;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -27,8 +28,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import org.jspecify.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -153,40 +152,20 @@ public class FleshkinChestBlockEntity extends OwnableContainerBlockEntity implem
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
-		tag.put("Inventory", inventory.serializeNBT());
+	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.saveAdditional(tag, registries);
+		tag.put("Inventory", inventory.serializeNBT(registries));
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
-		inventory.deserializeNBT(tag.getCompound("Inventory"));
+	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.loadAdditional(tag, registries);
+		inventory.deserializeNBT(registries, tag.getCompound("Inventory"));
 	}
 
 	@Override
 	public void dropContainerContents(Level level, BlockPos pos) {
 		ItemHandlerUtil.dropContents(level, pos, inventory);
-	}
-
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		//		if (!remove && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-		//			return inventory.getOptionalItemHandler().cast();
-		//		}
-		return super.getCapability(cap, side);
-	}
-
-	@Override
-	public void invalidateCaps() {
-		super.invalidateCaps();
-		inventory.invalidate();
-	}
-
-	@Override
-	public void reviveCaps() {
-		super.reviveCaps();
-		inventory.revive();
 	}
 
 	protected void broadcastAnimation(TriggerableAnimation animation) {

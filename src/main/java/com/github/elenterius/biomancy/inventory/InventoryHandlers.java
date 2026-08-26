@@ -4,7 +4,6 @@ import com.github.elenterius.biomancy.api.nutrients.Nutrients;
 import com.github.elenterius.biomancy.init.ModCapabilities;
 import net.minecraft.world.item.BundleItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.List;
@@ -27,23 +26,17 @@ public final class InventoryHandlers {
 		if (stack.getItem() instanceof BundleItem) return false;
 		if (!stack.getItem().canFitInsideContainerItems()) return false;
 
-		LazyOptional<IItemHandler> capability = stack.getCapability(ModCapabilities.ITEM_HANDLER);
-		final boolean[] isEmpty = {true};
-		capability.ifPresent(itemHandler -> {
-			int slots = itemHandler.getSlots();
-			if (slots > 200) { //if we have more than 200 slots we don't bother checking them and just return false
-				isEmpty[0] = false;
-				return;
-			}
-			//ItemHandler cap doesn't have a isEmpty() method which forces us to sequentially check every slot if it is empty
-			for (int i = 0; i < slots; i++) {
-				if (!itemHandler.getStackInSlot(i).isEmpty()) {
-					isEmpty[0] = false;
-					break;
-				}
-			}
-		});
-		return isEmpty[0];
+		IItemHandler itemHandler = stack.getCapability(ModCapabilities.ITEM_HANDLER_ITEM);
+		if (itemHandler == null) return true;
+
+		int slots = itemHandler.getSlots();
+		if (slots > 200) return false; //if we have more than 200 slots we don't bother checking them and just return false
+
+		//ItemHandler cap doesn't have a isEmpty() method which forces us to sequentially check every slot if it is empty
+		for (int i = 0; i < slots; i++) {
+			if (!itemHandler.getStackInSlot(i).isEmpty()) return false;
+		}
+		return true;
 	};
 
 	private InventoryHandlers() {}

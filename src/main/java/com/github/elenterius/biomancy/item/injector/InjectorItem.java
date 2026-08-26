@@ -56,7 +56,6 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jspecify.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
@@ -182,7 +181,7 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 
 		getItemHandler(injector).ifPresent(handler -> {
 			ItemStack oldStack = ItemStack.EMPTY;
-			if (!handler.getStack().isEmpty() && !ItemHandlerHelper.canItemStacksStack(foundStack, handler.getStack())) {
+			if (!handler.getStack().isEmpty() && !ItemStack.isSameItemSameComponents(foundStack, handler.getStack())) {
 				oldStack = handler.extractItem(handler.getMaxAmount(), false);
 			}
 
@@ -193,7 +192,7 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 				int slots = playerInventory.getContainerSize();
 				for (int idx = 0; idx < slots; idx++) {
 					ItemStack stack = playerInventory.getItem(idx);
-					if (ItemHandlerHelper.canItemStacksStack(stack, handler.getStack())) {
+					if (ItemStack.isSameItemSameComponents(stack, handler.getStack())) {
 						remainder = handler.insertItem(stack, false);
 						playerInventory.setItem(idx, remainder);
 						if (!remainder.isEmpty()) break;

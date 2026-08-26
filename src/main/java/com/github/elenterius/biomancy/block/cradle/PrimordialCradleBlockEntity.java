@@ -19,8 +19,8 @@ import com.github.elenterius.spatialdb.SpatialDBManager;
 import com.github.elenterius.spatialdb.geometry.Shape;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -38,8 +38,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jspecify.annotations.Nullable;
@@ -69,7 +67,6 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	protected final SacrificeHandler sacrificeHandler;
-	private LazyOptional<IFluidHandler> optionalFluidConsumer;
 
 	private long ticks;
 	private int primalEnergy;
@@ -82,7 +79,10 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 			markChunkAsUnsaved();
 			syncToClient();
 		});
-		optionalFluidConsumer = LazyOptional.of(sacrificeHandler::getFluidConsumer);
+	}
+
+	public IFluidHandler getFluidConsumer() {
+		return sacrificeHandler.getFluidConsumer();
 	}
 
 	public static void serverTick(Level level, BlockPos pos, BlockState state, PrimordialCradleBlockEntity cradle) {
@@ -427,9 +427,9 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
-		tag.put(SACRIFICE_KEY, sacrificeHandler.serializeNBT());
+	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.saveAdditional(tag, registries);
+		tag.put(SACRIFICE_KEY, sacrificeHandler.serializeNBT(registries));
 		tag.putInt(PRIMAL_ENERGY_KEY, primalEnergy);
 
 		if (procGenValues != null) {
@@ -440,19 +440,19 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 	}
 
 	@Override
-	protected void saveForSyncToClient(CompoundTag tag) {
-		//		tag.put(SACRIFICE_SYNC_KEY, sacrificeHandler.serializeNBT());
-		tag.put(SACRIFICE_KEY, sacrificeHandler.serializeNBT());
+	protected void saveForSyncToClient(CompoundTag tag, HolderLookup.Provider registries) {
+		//		tag.put(SACRIFICE_SYNC_KEY, sacrificeHandler.serializeNBT(registries));
+		tag.put(SACRIFICE_KEY, sacrificeHandler.serializeNBT(registries));
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
+	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.loadAdditional(tag, registries);
 		if (tag.contains(SACRIFICE_KEY)) {
-			sacrificeHandler.deserializeNBT(tag.getCompound(SACRIFICE_KEY));
+			sacrificeHandler.deserializeNBT(registries, tag.getCompound(SACRIFICE_KEY));
 		}
 		//		else if (tag.contains(SACRIFICE_SYNC_KEY)) {
-		//			sacrificeHandler.deserializeNBT(tag.getCompound(SACRIFICE_SYNC_KEY));
+		//			sacrificeHandler.deserializeNBT(registries, tag.getCompound(SACRIFICE_SYNC_KEY));
 		//		}
 
 		primalEnergy = tag.getInt(PRIMAL_ENERGY_KEY);
@@ -460,29 +460,6 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 		if (tag.contains(PROC_GEN_VALUES_KEY)) {
 			procGenValues = MoundShape.ProcGenValues.readFrom(tag.getCompound(PROC_GEN_VALUES_KEY));
 		}
-	}
-
-	@Override
-	public void invalidateCaps() {
-		super.invalidateCaps();
-		optionalFluidConsumer.invalidate();
-	}
-
-	@Override
-	public void reviveCaps() {
-		super.reviveCaps();
-		optionalFluidConsumer = LazyOptional.of(sacrificeHandler::getFluidConsumer);
-	}
-
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		if (remove) return super.getCapability(cap, side);
-
-		if (cap == ModCapabilities.FLUID_HANDLER) {
-			return optionalFluidConsumer.cast();
-		}
-
-		return super.getCapability(cap, side);
 	}
 
 	protected void broadcastAnimation(TriggerableAnimation animation) {

@@ -103,12 +103,11 @@ public final class AttackHandler {
 	@SubscribeEvent(receiveCanceled = false)
 	public static void onKnockback(final LivingKnockBackEvent event) {
 		//TODO: mutate damage type to have no knockback
-		event.getEntity().getCapability(ModCapabilities.NO_KNOCKBACK_FLAG_CAP).ifPresent(flag -> {
-			if (flag.isEnabled()) {
-				flag.disable();
-				event.setCanceled(true);
-			}
-		});
+		ModCapabilities.IFlagCap flag = event.getEntity().getData(ModCapabilities.NO_KNOCKBACK_FLAG.get());
+		if (flag.isEnabled()) {
+			flag.disable();
+			event.setCanceled(true);
+		}
 	}
 
 }

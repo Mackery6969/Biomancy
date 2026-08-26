@@ -3,6 +3,7 @@ package com.github.elenterius.biomancy.block.membrane;
 import com.github.elenterius.biomancy.block.base.SimpleSyncedBlockEntity;
 import com.github.elenterius.biomancy.init.ModBlockEntities;
 import com.github.elenterius.biomancy.item.EssenceItem;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -96,8 +97,8 @@ public class BiometricMembraneBlockEntity extends SimpleSyncedBlockEntity implem
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag compoundTag) {
-		super.saveAdditional(compoundTag);
+	protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider registries) {
+		super.saveAdditional(compoundTag, registries);
 		save(compoundTag);
 	}
 
@@ -122,8 +123,8 @@ public class BiometricMembraneBlockEntity extends SimpleSyncedBlockEntity implem
 	}
 
 	@Override
-	public void load(CompoundTag compoundTag) {
-		super.load(compoundTag);
+	protected void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider registries) {
+		super.loadAdditional(compoundTag, registries);
 
 		CompoundTag tag = compoundTag.getCompound(MEMBRANE_KEY);
 

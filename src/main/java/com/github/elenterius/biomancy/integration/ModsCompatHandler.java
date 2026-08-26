@@ -1,6 +1,7 @@
 package com.github.elenterius.biomancy.integration;
 
 import com.github.elenterius.biomancy.BiomancyMod;
+import com.github.elenterius.biomancy.integration.alexscaves.AlexsCavesCompat;
 import com.github.elenterius.biomancy.integration.farmersdelight.FarmersDelightCompat;
 import com.github.elenterius.biomancy.integration.overweightfarming.OverweightFarmingHelper;
 import com.github.elenterius.biomancy.integration.overweightfarming.OverweightFarmingIntegration;
@@ -48,6 +49,11 @@ public final class ModsCompatHandler {
 			if (ModList.get().isLoaded("overweight_farming")) {
 				BiomancyMod.LOGGER.info(LOG_MARKER, "Setting up Overweight Farming compat...");
 				OverweightFarmingIntegration.onPostSetup();
+			}
+
+			if (ModList.get().isLoaded("alexscaves")) {
+				BiomancyMod.LOGGER.info(LOG_MARKER, "Setting up Alex's Caves compat...");
+				AlexsCavesCompat.onPostSetup();
 			}
 		});
 	}

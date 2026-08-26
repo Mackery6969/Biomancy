@@ -3,6 +3,7 @@ package com.github.elenterius.biomancy.api.tribute;
 import com.github.elenterius.biomancy.api.tribute.fluid.FluidTributeConsumerHandler;
 import com.github.elenterius.biomancy.inventory.Notify;
 import com.github.elenterius.biomancy.util.SaturatedMath;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -254,7 +255,7 @@ public class SacrificeHandler implements INBTSerializable<CompoundTag> {
 	}
 
 	@Override
-	public CompoundTag serializeNBT() {
+	public CompoundTag serializeNBT(HolderLookup.Provider registries) {
 		CompoundTag tag = new CompoundTag();
 		tag.putByte("Biomass", biomass);
 		tag.putInt("LifeEnergy", lifeEnergy);
@@ -267,12 +268,12 @@ public class SacrificeHandler implements INBTSerializable<CompoundTag> {
 
 		tag.putBoolean("HasModifiers", hasModifiers);
 
-		tag.put("FluidConsumer", fluidConsumer.serializeNBT());
+		tag.put("FluidConsumer", fluidConsumer.serializeNBT(registries));
 		return tag;
 	}
 
 	@Override
-	public void deserializeNBT(CompoundTag tag) {
+	public void deserializeNBT(HolderLookup.Provider registries, CompoundTag tag) {
 		biomass = tag.getByte("Biomass");
 		lifeEnergy = tag.getInt("LifeEnergy");
 
@@ -284,7 +285,7 @@ public class SacrificeHandler implements INBTSerializable<CompoundTag> {
 
 		hasModifiers = tag.getBoolean("HasModifiers");
 
-		fluidConsumer.deserializeNBT(tag.getCompound("FluidConsumer"));
+		fluidConsumer.deserializeNBT(registries, tag.getCompound("FluidConsumer"));
 	}
 
 	public IFluidHandler getFluidConsumer() {

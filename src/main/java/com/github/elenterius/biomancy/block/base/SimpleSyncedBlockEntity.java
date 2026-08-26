@@ -1,6 +1,7 @@
 package com.github.elenterius.biomancy.block.base;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -18,7 +19,7 @@ public abstract class SimpleSyncedBlockEntity extends BlockEntity {
 		super(type, pos, state);
 	}
 
-	protected abstract void saveForSyncToClient(CompoundTag tag);
+	protected abstract void saveForSyncToClient(CompoundTag tag, HolderLookup.Provider registries);
 
 	protected void syncToClient() {
 		if (level != null && !level.isClientSide) {
@@ -28,9 +29,9 @@ public abstract class SimpleSyncedBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	public CompoundTag getUpdateTag() {
+	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
 		CompoundTag tag = new CompoundTag();
-		saveForSyncToClient(tag);
+		saveForSyncToClient(tag, registries);
 		return tag;
 	}
 
@@ -41,8 +42,8 @@ public abstract class SimpleSyncedBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
-		super.onDataPacket(net, packet);
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries) {
+		super.onDataPacket(net, packet, registries);
 		if (reRenderBlockOnSync && level != null) {
 			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0); //cause re-render
 		}

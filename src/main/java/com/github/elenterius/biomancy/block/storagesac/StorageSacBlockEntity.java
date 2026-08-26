@@ -3,16 +3,15 @@ package com.github.elenterius.biomancy.block.storagesac;
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.block.base.SimpleContainerBlockEntity;
 import com.github.elenterius.biomancy.init.ModBlockEntities;
-import com.github.elenterius.biomancy.init.ModCapabilities;
 import com.github.elenterius.biomancy.inventory.InventoryHandler;
 import com.github.elenterius.biomancy.inventory.InventoryHandlers;
 import com.github.elenterius.biomancy.inventory.ItemHandlerUtil;
 import com.github.elenterius.biomancy.menu.StorageSacMenu;
 import com.github.elenterius.biomancy.util.ItemStackCounter;
 import com.github.elenterius.biomancy.util.PlayerInteractionPredicate;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -35,8 +34,6 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -153,7 +150,7 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 	}
 
 	@Override
-	public CompoundTag getUpdateTag() {
+	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
 		//serialize data for sync to client
 		CompoundTag tag = new CompoundTag();
 		tag.put(TOP5_BY_COUNT_KEY, serializeTop5());
@@ -161,9 +158,9 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 	}
 
 	@Override
-	public void handleUpdateTag(CompoundTag tag) {
+	public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
 		//handle received data on the client side from level chunk load
-		super.handleUpdateTag(tag);
+		super.handleUpdateTag(tag, registries);
 	}
 
 	@Override
@@ -172,23 +169,23 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
+	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.saveAdditional(tag, registries);
 
 		if (trySaveLootTable(tag)) return;
 
-		tag.put(INVENTORY_KEY, inventory.serializeNBT());
+		tag.put(INVENTORY_KEY, inventory.serializeNBT(registries));
 		//tag.put(TOP5_BY_COUNT_KEY, serializeTop5()); //serialize for block destruction
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
+	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.loadAdditional(tag, registries);
 
 		if (tryLoadLootTable(tag)) return;
 
 		if (tag.contains(INVENTORY_KEY)) {
-			inventory.deserializeNBT(tag.getCompound(INVENTORY_KEY));
+			inventory.deserializeNBT(registries, tag.getCompound(INVENTORY_KEY));
 			countAllItems();
 		}
 
@@ -232,27 +229,6 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 	public void dropContainerContents(Level level, BlockPos pos) {
 		unpackLootTable(null);
 		ItemHandlerUtil.dropContents(level, pos, inventory);
-	}
-
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-		if (!remove && cap == ModCapabilities.ITEM_HANDLER) {
-			unpackLootTable(null);
-			return inventory.getLazyOptional().cast();
-		}
-		return super.getCapability(cap, side);
-	}
-
-	@Override
-	public void invalidateCaps() {
-		super.invalidateCaps();
-		inventory.invalidate();
-	}
-
-	@Override
-	public void reviveCaps() {
-		super.reviveCaps();
-		inventory.revive();
 	}
 
 }

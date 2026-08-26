@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraftforge.common.util.LazyOptional;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jspecify.annotations.Nullable;
 
@@ -22,15 +21,8 @@ public final class LevelUtil {
 
 	private LevelUtil() {}
 
-	public static LazyOptional<IItemHandler> getItemHandler(ServerLevel level, BlockPos pos, @Nullable Direction direction) {
-		BlockState state = level.getBlockState(pos);
-		if (state.hasBlockEntity()) {
-			BlockEntity blockEntity = level.getBlockEntity(pos);
-			if (blockEntity != null) {
-				return blockEntity.getCapability(ModCapabilities.ITEM_HANDLER, direction);
-			}
-		}
-		return LazyOptional.empty();
+	public static @Nullable IItemHandler getItemHandler(ServerLevel level, BlockPos pos, @Nullable Direction direction) {
+		return level.getCapability(ModCapabilities.ITEM_HANDLER, pos, direction);
 	}
 
 	/**

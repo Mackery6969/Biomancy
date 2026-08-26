@@ -70,7 +70,7 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 
 		if (stack.isEnchanted()) return true;
 		if (!item.canFitInsideContainerItems()) return true;
-		return stack.getCapability(ModCapabilities.ITEM_HANDLER).isPresent();
+		return stack.getCapability(ModCapabilities.ITEM_HANDLER_ITEM) != null;
 	};
 
 	protected static final VoxelShape INSIDE_AABB = box(3, 4, 3, 13, 16, 13);

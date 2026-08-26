@@ -5,6 +5,7 @@ import com.github.elenterius.biomancy.init.ModBlockEntities;
 import com.github.elenterius.biomancy.inventory.ItemHandlerWrapper;
 import com.github.elenterius.biomancy.inventory.SingleItemStackHandler;
 import com.github.elenterius.biomancy.util.LevelUtil;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -71,7 +72,8 @@ public class TongueBlockEntity extends SimpleSyncedBlockEntity implements GeoBlo
 			Direction facing = TongueBlock.getFacing(state);
 			BlockPos relativePos = pos.relative(facing.getOpposite());
 			if (level.isLoaded(relativePos)) {
-				LevelUtil.getItemHandler(level, relativePos, Direction.DOWN).ifPresent(this::tryToExtractItems);
+				IItemHandler itemHandler = LevelUtil.getItemHandler(level, relativePos, Direction.DOWN);
+				if (itemHandler != null) tryToExtractItems(itemHandler);
 			}
 
 			if (isHoldingItem()) ticks = 0;
@@ -113,20 +115,20 @@ public class TongueBlockEntity extends SimpleSyncedBlockEntity implements GeoBlo
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
-		tag.put(INVENTORY_TAG, inventory.serializeNBT());
+	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.saveAdditional(tag, registries);
+		tag.put(INVENTORY_TAG, inventory.serializeNBT(registries));
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
-		inventory.deserializeNBT(tag.getCompound(INVENTORY_TAG));
+	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.loadAdditional(tag, registries);
+		inventory.deserializeNBT(registries, tag.getCompound(INVENTORY_TAG));
 	}
 
 	@Override
 	protected void saveForSyncToClient(CompoundTag tag) {
-		tag.put(INVENTORY_TAG, inventory.serializeNBT());
+		tag.put(INVENTORY_TAG, inventory.serializeNBT(registries));
 	}
 
 	public void dropInventoryContents(Level level, BlockPos pos) {

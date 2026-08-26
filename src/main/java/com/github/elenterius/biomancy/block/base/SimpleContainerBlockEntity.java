@@ -1,6 +1,7 @@
 package com.github.elenterius.biomancy.block.base;
 
 import com.github.elenterius.biomancy.util.PlayerInteractionPredicate;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -53,16 +54,16 @@ public abstract class SimpleContainerBlockEntity extends BlockEntity implements 
 	public abstract Component getDefaultName();
 
 	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
+	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.saveAdditional(tag, registries);
 		if (name != null) {
 			tag.putString("CustomName", Component.Serializer.toJson(name));
 		}
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
+	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.loadAdditional(tag, registries);
 		if (tag.contains("CustomName", Tag.TAG_STRING)) {
 			name = Component.Serializer.fromJson(tag.getString("CustomName"));
 		}

@@ -6,7 +6,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import java.util.List;
 
@@ -93,7 +92,7 @@ public final class ItemHandlerUtil {
 			if (stack.isEmpty() || availableSlotSpace[index] <= 0) return false;
 			if (!itemHandler.isItemValid(index, stack)) return false;
 			if (itemInSlot[index].isEmpty()) return true;
-			return ItemHandlerHelper.canItemStacksStack(stack, itemInSlot[index]);
+			return ItemStack.isSameItemSameComponents(stack, itemInSlot[index]);
 		}
 
 		private ItemStack insertItem(int index, ItemStack stack) {

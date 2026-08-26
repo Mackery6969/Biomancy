@@ -2,6 +2,7 @@ package com.github.elenterius.biomancy.api.nutrients;
 
 import com.github.elenterius.biomancy.api.nutrients.fluid.FluidFuelConsumerHandler;
 import com.github.elenterius.biomancy.inventory.Notify;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -77,17 +78,17 @@ public class FuelHandlerImpl implements FuelHandler, INBTSerializable<CompoundTa
 	}
 
 	@Override
-	public CompoundTag serializeNBT() {
+	public CompoundTag serializeNBT(HolderLookup.Provider registries) {
 		CompoundTag tag = new CompoundTag();
 		tag.putInt("Amount", fuel);
-		tag.put("FluidConsumer", fluidConsumer.serializeNBT());
+		tag.put("FluidConsumer", fluidConsumer.serializeNBT(registries));
 		return tag;
 	}
 
 	@Override
-	public void deserializeNBT(CompoundTag tag) {
+	public void deserializeNBT(HolderLookup.Provider registries, CompoundTag tag) {
 		fuel = tag.getInt("Amount");
-		fluidConsumer.deserializeNBT(tag.getCompound("FluidConsumer"));
+		fluidConsumer.deserializeNBT(registries, tag.getCompound("FluidConsumer"));
 	}
 
 	public IFluidHandler getFluidConsumer() {
