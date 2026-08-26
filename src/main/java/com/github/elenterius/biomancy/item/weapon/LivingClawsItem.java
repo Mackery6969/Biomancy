@@ -25,8 +25,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbility;
+import net.neoforged.neoforge.common.ItemAbilities;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -59,7 +59,7 @@ public class LivingClawsItem extends SimpleClawsItem implements SpecialLivingToo
 	@Override
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
 		if (!MobUtil.isCreativePlayer(attacker)) {
-			consumeNutrients(stack, getLivingToolActionCost(stack, ToolActions.SWORD_SWEEP));
+			consumeNutrients(stack, getLivingToolActionCost(stack, ItemAbilities.SWORD_SWEEP));
 		}
 		return true;
 	}
@@ -67,7 +67,7 @@ public class LivingClawsItem extends SimpleClawsItem implements SpecialLivingToo
 	@Override
 	public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity entity) {
 		if (!level.isClientSide() && state.getDestroySpeed(level, pos) != 0f && !MobUtil.isCreativePlayer(entity)) {
-			consumeNutrients(stack, getLivingToolActionCost(stack, ToolActions.SWORD_DIG));
+			consumeNutrients(stack, getLivingToolActionCost(stack, ItemAbilities.SWORD_DIG));
 		}
 		return true;
 	}
@@ -106,10 +106,10 @@ public class LivingClawsItem extends SimpleClawsItem implements SpecialLivingToo
 	}
 
 	@Override
-	public int getLivingToolActionCost(ItemStack livingTool, LivingToolState state, ToolAction toolAction) {
+	public int getLivingToolActionCost(ItemStack livingTool, LivingToolState state, ItemAbility itemAbility) {
 		int baseCost = 0;
-		if (toolAction == ToolActions.SWORD_DIG) baseCost = 2;
-		if (toolAction == ToolActions.SWORD_SWEEP) baseCost = 1;
+		if (itemAbility == ItemAbilities.SWORD_DIG) baseCost = 2;
+		if (itemAbility == ItemAbilities.SWORD_SWEEP) baseCost = 1;
 
 		return switch (state) {
 			case AWAKENED -> baseCost + 4;

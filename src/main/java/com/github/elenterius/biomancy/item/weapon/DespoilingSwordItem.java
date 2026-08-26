@@ -13,7 +13,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ToolAction;
+import net.neoforged.neoforge.common.ItemAbility;
 
 public class DespoilingSwordItem extends SimpleSwordItem {
 
@@ -76,9 +76,9 @@ public class DespoilingSwordItem extends SimpleSwordItem {
 	}
 
 	@Override
-	public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
+	public boolean canPerformAction(ItemStack stack, ItemAbility itemAbility) {
 		if (isBroken(stack)) return false;
-		return super.canPerformAction(stack, toolAction);
+		return super.canPerformAction(stack, itemAbility);
 	}
 
 	@Override

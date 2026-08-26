@@ -56,7 +56,7 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 
 		Item item = stack.getItem();
 
-		if (item instanceof TieredItem || item instanceof Vanishable) return true;
+		if (item instanceof TieredItem) return true;
 
 		if (item instanceof BlockItem blockItem) {
 			Block block = blockItem.getBlock();

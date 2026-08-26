@@ -1,7 +1,7 @@
 package com.github.elenterius.biomancy.api.livingtool;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.ToolAction;
+import net.neoforged.neoforge.common.ItemAbility;
 import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Experimental
@@ -11,7 +11,7 @@ public interface SimpleLivingTool extends LivingTool {
 	default void onNutrientsChanged(ItemStack livingTool, int oldValue, int newValue) {}
 
 	@Override
-	default int getLivingToolActionCost(ItemStack livingTool, ToolAction toolAction) {
+	default int getLivingToolActionCost(ItemStack livingTool, ItemAbility itemAbility) {
 		return 1;
 	}
 

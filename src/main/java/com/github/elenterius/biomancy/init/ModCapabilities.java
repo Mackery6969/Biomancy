@@ -2,6 +2,8 @@ package com.github.elenterius.biomancy.init;
 
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.block.storagesac.StorageSacBlockEntity;
+import com.github.elenterius.biomancy.inventory.InjectorItemInventory;
+import com.github.elenterius.biomancy.item.injector.InjectorItem;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -38,6 +40,10 @@ public final class ModCapabilities {
 		event.registerItem(ITEM_HANDLER_ITEM, (stack, ctx) ->
 				new ComponentItemHandler(stack, DataComponents.CONTAINER, StorageSacBlockEntity.SLOTS),
 				ModItems.STORAGE_SAC.get());
+
+		event.registerItem(ITEM_HANDLER_ITEM, (stack, ctx) ->
+				InjectorItemInventory.create(InjectorItem.MAX_SLOT_SIZE, stack).getItemHandler(),
+				ModItems.INJECTOR.get());
 	}
 
 	public interface IFlagCap {

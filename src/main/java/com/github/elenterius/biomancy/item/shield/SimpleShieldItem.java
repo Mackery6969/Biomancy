@@ -11,8 +11,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbility;
+import net.neoforged.neoforge.common.ItemAbilities;
 
 public class SimpleShieldItem extends SimpleItem implements Equipable {
 
@@ -22,8 +22,8 @@ public class SimpleShieldItem extends SimpleItem implements Equipable {
 	}
 
 	@Override
-	public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
-		return ToolActions.DEFAULT_SHIELD_ACTIONS.contains(toolAction);
+	public boolean canPerformAction(ItemStack stack, ItemAbility itemAbility) {
+		return ItemAbilities.DEFAULT_SHIELD_ACTIONS.contains(itemAbility);
 	}
 
 	@Override

@@ -16,7 +16,9 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -40,7 +42,6 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -71,7 +72,7 @@ public class BiomancyCommands {
 									return Command.SINGLE_SUCCESS;
 								}))
 						)
-						.then(Commands.literal("dump_biome_temps").executes(ctx -> dumpBiomeTemperatureAndHumidity() ? Command.SINGLE_SUCCESS : 0))
+						.then(Commands.literal("dump_biome_temps").executes(ctx -> dumpBiomeTemperatureAndHumidity(ctx.getSource().registryAccess()) ? Command.SINGLE_SUCCESS : 0))
 				);
 
 		LiteralCommandNode<CommandSourceStack> cmd = dispatcher.register(builder);
@@ -251,11 +252,11 @@ public class BiomancyCommands {
 		}
 	}
 
-	private static boolean dumpBiomeTemperatureAndHumidity() {
+	private static boolean dumpBiomeTemperatureAndHumidity(RegistryAccess registryAccess) {
 		BiomancyMod.LOGGER.info("dumping biome default temperatures to biome_temperatures.csv...");
 		try {
-			Stream<String> stringStream = ForgeRegistries.BIOMES.getEntries().stream()
-					.map(keyEntry -> "%s,%s,%s".formatted(keyEntry.getKey().location(), keyEntry.getValue().getBaseTemperature(), keyEntry.getValue().getModifiedClimateSettings().downfall()));
+			Stream<String> stringStream = registryAccess.lookupOrThrow(Registries.BIOME).listElements()
+					.map(entry -> "%s,%s,%s".formatted(entry.key().location(), entry.value().getBaseTemperature(), entry.value().getModifiedClimateSettings().downfall()));
 
 			Files.write(Paths.get("biome_temperatures.csv"), (Iterable<String>) stringStream::iterator);
 			return true;

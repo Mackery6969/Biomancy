@@ -31,7 +31,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbilities;
 import org.jspecify.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -345,7 +345,7 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 	protected void disableShield(LivingEntity victim, int cooldownTicks) {
 		ItemStack itemStackInUse = victim.getUseItem();
 
-		if (!itemStackInUse.isEmpty() && victim.isUsingItem() && itemStackInUse.getItem().canPerformAction(itemStackInUse, ToolActions.SHIELD_BLOCK)) {
+		if (!itemStackInUse.isEmpty() && victim.isUsingItem() && itemStackInUse.getItem().canPerformAction(itemStackInUse, ItemAbilities.SHIELD_BLOCK)) {
 			if (victim instanceof Player player) player.getCooldowns().addCooldown(itemStackInUse.getItem(), cooldownTicks);
 			victim.stopUsingItem();
 			victim.playSound(SoundEvents.SHIELD_BREAK, 0.8f, 0.8f + level().random.nextFloat() * 0.4f);

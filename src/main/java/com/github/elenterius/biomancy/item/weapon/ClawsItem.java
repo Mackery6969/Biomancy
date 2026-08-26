@@ -17,23 +17,20 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TieredItem;
-import net.minecraft.world.item.Vanishable;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.IForgeShearable;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.common.IShearable;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.List;
 import java.util.UUID;
 
-public class ClawsItem extends TieredItem implements Vanishable {
+public class ClawsItem extends TieredItem {
 
 	protected static final UUID BASE_ATTACK_RANGE_UUID = UUID.fromString("d76adb08-2bb3-4e88-997d-766a919f0f6b");
 	protected final Lazy<Multimap<Attribute, AttributeModifier>> defaultAttributeModifiers;
@@ -58,8 +55,8 @@ public class ClawsItem extends TieredItem implements Vanishable {
 	}
 
 	@Override
-	public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
-		return ToolActions.DEFAULT_SWORD_ACTIONS.contains(toolAction); //use sword actions
+	public boolean canPerformAction(ItemStack stack, ItemAbility itemAbility) {
+		return ItemAbilities.DEFAULT_SWORD_ACTIONS.contains(itemAbility); //use sword actions
 	}
 
 	@Override
@@ -111,11 +108,11 @@ public class ClawsItem extends TieredItem implements Vanishable {
 	}
 
 	protected boolean shearInteractionTarget(ItemStack stack, Player player, LivingEntity targetEntity, InteractionHand usedHand) {
-		if (targetEntity instanceof IForgeShearable shearingTarget) {
+		if (targetEntity instanceof IShearable shearingTarget) {
 			BlockPos pos = targetEntity.blockPosition();
 
-			if (shearingTarget.isShearable(stack, targetEntity.level(), pos)) {
-				List<ItemStack> drops = shearingTarget.onSheared(player, stack, targetEntity.level(), pos, EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, stack));
+			if (shearingTarget.isShearable(player, stack, targetEntity.level(), pos)) {
+				List<ItemStack> drops = shearingTarget.onSheared(player, stack, targetEntity.level(), pos);
 				RandomSource rand = player.getRandom();
 				drops.forEach(lootStack -> {
 					ItemEntity itemEntity = targetEntity.spawnAtLocation(lootStack, 1f);

@@ -204,7 +204,6 @@ public class DecomposerBlockEntity extends MachineBlockEntity<DecomposingRecipe,
 		ItemHandlerUtil.dropContents(level, pos, outputInventory);
 	}
 
-
 	@Override
 	protected boolean craftRecipe(DecomposingRecipe recipeToCraft, Level level) {
 		DecomposerRecipeResult precomputedResult = getComputedRecipeResult(recipeToCraft);

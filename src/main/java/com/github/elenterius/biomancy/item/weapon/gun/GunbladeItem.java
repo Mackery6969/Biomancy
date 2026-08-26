@@ -1,13 +1,15 @@
 package com.github.elenterius.biomancy.item.weapon.gun;
 
+import com.github.elenterius.biomancy.init.ModDataComponents;
 import com.github.elenterius.biomancy.init.ModProjectiles;
 import com.github.elenterius.biomancy.item.weapon.BladeProperties;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -17,14 +19,15 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Vanishable;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 
-public abstract class GunbladeItem extends GunItem implements Vanishable {
+import java.util.Locale;
+
+public abstract class GunbladeItem extends GunItem {
 
 	protected final Multimap<Attribute, AttributeModifier> defaultBladeModifiers;
 	protected final Multimap<Attribute, AttributeModifier> defaultGunModifiers;
@@ -117,8 +120,8 @@ public abstract class GunbladeItem extends GunItem implements Vanishable {
 	}
 
 	@Override
-	public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
-		return GunbladeMode.from(stack).isBlade() && toolAction != ToolActions.SWORD_SWEEP && ToolActions.DEFAULT_SWORD_ACTIONS.contains(toolAction);
+	public boolean canPerformAction(ItemStack stack, ItemAbility itemAbility) {
+		return GunbladeMode.from(stack).isBlade() && itemAbility != ItemAbilities.SWORD_SWEEP && ItemAbilities.DEFAULT_SWORD_ACTIONS.contains(itemAbility);
 	}
 
 	@Override
@@ -157,21 +160,18 @@ public abstract class GunbladeItem extends GunItem implements Vanishable {
 		return state.is(Blocks.COBWEB);
 	}
 
-	public enum GunbladeMode {
+	public enum GunbladeMode implements StringRepresentable {
 		MELEE, RANGED;
 
-		static final String KEY = "biomancy:gunblade_mode";
+		public static final Codec<GunbladeMode> CODEC = StringRepresentable.fromEnum(GunbladeMode::values);
 
 		public static GunbladeMode from(ItemStack stack) {
-			CompoundTag tag = stack.getTagElement(KEY);
-			if (tag == null) return MELEE;
-
-			return GunbladeMode.values()[tag.getByte("ordinal")];
+			return stack.getOrDefault(ModDataComponents.GUNBLADE_MODE.get(), MELEE);
 		}
 
 		public static void set(ItemStack stack, GunbladeMode mode) {
-			CompoundTag tag = stack.getOrCreateTagElement(KEY);
-			tag.putByte("ordinal", (byte) mode.ordinal());
+			if (mode == MELEE) stack.remove(ModDataComponents.GUNBLADE_MODE.get());
+			else stack.set(ModDataComponents.GUNBLADE_MODE.get(), mode);
 		}
 
 		public boolean isBlade() {
@@ -180,6 +180,11 @@ public abstract class GunbladeItem extends GunItem implements Vanishable {
 
 		public boolean isGun() {
 			return this == RANGED;
+		}
+
+		@Override
+		public String getSerializedName() {
+			return name().toLowerCase(Locale.ROOT);
 		}
 	}
 

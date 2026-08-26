@@ -7,9 +7,10 @@ import com.github.elenterius.biomancy.client.gui.InjectorScreen;
 import com.github.elenterius.biomancy.client.render.item.injector.InjectorRenderer;
 import com.github.elenterius.biomancy.client.util.ClientTextUtil;
 import com.github.elenterius.biomancy.init.ModCapabilities;
+import com.github.elenterius.biomancy.init.ModDataComponents;
 import com.github.elenterius.biomancy.init.ModEnchantments;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
-import com.github.elenterius.biomancy.inventory.InjectorItemInventory;
+import com.github.elenterius.biomancy.inventory.InjectorContents;
 import com.github.elenterius.biomancy.inventory.LargeSingleItemStackHandler;
 import com.github.elenterius.biomancy.item.ItemTooltipStyleProvider;
 import com.github.elenterius.biomancy.item.KeyPressListener;
@@ -24,7 +25,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -45,6 +46,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
@@ -53,9 +55,6 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 import org.jspecify.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
@@ -74,7 +73,6 @@ import java.util.function.Consumer;
 public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyleProvider, KeyPressListener, GeoItem {
 
 	public static final short MAX_SLOT_SIZE = 16;
-	public static final String INVENTORY_TAG = "inventory";
 	public static final int COOL_DOWN_TICKS = 25;
 	public static final int SCHEDULE_TICKS = Mth.ceil(0.32f * 20);
 	protected static final String CURRENT_VICTIM_KEY = "CurrentVictimId";
@@ -137,7 +135,7 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 	}
 
 	public static Optional<LargeSingleItemStackHandler> getItemHandler(ItemStack stack) {
-		return stack.getCapability(ModCapabilities.ITEM_HANDLER).map(LargeSingleItemStackHandler.class::cast);
+		return Optional.ofNullable(stack.getCapability(ModCapabilities.ITEM_HANDLER_ITEM)).map(LargeSingleItemStackHandler.class::cast);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -319,12 +317,6 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 		return 15;
 	}
 
-	@Nullable
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-		return new InventoryCapability(stack);
-	}
-
 	@Override
 	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
 		super.initializeClient(consumer);
@@ -349,35 +341,28 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 	 */
 	public void setEntityHost(ItemStack stack, Entity entity) {
 		if (stack.isEmpty()) return;
-		stack.getOrCreateTag().putInt(CURRENT_HOST_KEY, entity.getId());
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putInt(CURRENT_HOST_KEY, entity.getId()));
 	}
 
 	public void setInjectionSuccess(ItemStack stack, boolean flag) {
 		if (stack.isEmpty()) return;
-		stack.getOrCreateTag().putBoolean("IsInjectionSuccess", flag);
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putBoolean("IsInjectionSuccess", flag));
 	}
 
 	public boolean getInjectionSuccess(ItemStack stack) {
 		if (stack.isEmpty()) return false;
-		return stack.getOrCreateTag().getBoolean("IsInjectionSuccess");
+		return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getBoolean("IsInjectionSuccess");
 	}
 
 	public void removeEntityHost(ItemStack stack) {
-		if (stack.hasTag()) {
-			CompoundTag tag = stack.getTag();
-			if (tag != null) {
-				tag.remove(CURRENT_HOST_KEY);
-			}
-		}
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.remove(CURRENT_HOST_KEY));
 	}
 
 	@Nullable
 	public Entity getEntityHost(ItemStack stack, Level level) {
-		if (stack.hasTag()) {
-			CompoundTag tag = stack.getTag();
-			if (tag != null && tag.contains(CURRENT_HOST_KEY, Tag.TAG_ANY_NUMERIC)) {
-				return level.getEntity(tag.getInt(CURRENT_HOST_KEY));
-			}
+		CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+		if (tag.contains(CURRENT_HOST_KEY, Tag.TAG_ANY_NUMERIC)) {
+			return level.getEntity(tag.getInt(CURRENT_HOST_KEY));
 		}
 
 		return null;
@@ -388,25 +373,18 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 
 	public void setEntityVictim(ItemStack stack, Entity entity) {
 		if (stack.isEmpty()) return;
-		stack.getOrCreateTag().putInt(CURRENT_VICTIM_KEY, entity.getId());
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putInt(CURRENT_VICTIM_KEY, entity.getId()));
 	}
 
 	public void removeEntityVictim(ItemStack stack) {
-		if (stack.hasTag()) {
-			CompoundTag tag = stack.getTag();
-			if (tag != null) {
-				tag.remove(CURRENT_VICTIM_KEY);
-			}
-		}
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.remove(CURRENT_VICTIM_KEY));
 	}
 
 	@Nullable
 	public Entity getEntityVictim(ItemStack stack, Level level) {
-		if (stack.hasTag()) {
-			CompoundTag tag = stack.getTag();
-			if (tag != null && tag.contains(CURRENT_VICTIM_KEY, Tag.TAG_ANY_NUMERIC)) {
-				return level.getEntity(tag.getInt(CURRENT_VICTIM_KEY));
-			}
+		CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+		if (tag.contains(CURRENT_VICTIM_KEY, Tag.TAG_ANY_NUMERIC)) {
+			return level.getEntity(tag.getInt(CURRENT_VICTIM_KEY));
 		}
 		return null;
 	}
@@ -458,19 +436,18 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag isAdvanced) {
 		tooltip.addAll(ClientTextUtil.getItemInfoTooltip(stack));
 		tooltip.add(ComponentUtil.EMPTY_LINE);
 
-		CompoundTag tag = stack.getOrCreateTag();
-		if (tag.contains(INVENTORY_TAG)) {
+		InjectorContents contents = stack.getOrDefault(ModDataComponents.INJECTOR_CONTENTS.get(), InjectorContents.EMPTY);
+		if (!contents.isEmpty()) {
 			Serum serum = getSerum(stack);
 			if (!serum.isEmpty()) {
 				CompoundTag serumData = getSerumData(stack);
-				short amount = tag.getCompound(INVENTORY_TAG).getShort(LargeSingleItemStackHandler.ITEM_AMOUNT_TAG);
-				tooltip.add(ComponentUtil.literal(String.format("%dx ", amount)).append(serum.getDisplayName(serumData)).withStyle(ChatFormatting.GRAY));
+				tooltip.add(ComponentUtil.literal(String.format("%dx ", contents.amount())).append(serum.getDisplayName(serumData)).withStyle(ChatFormatting.GRAY));
 				if (ClientTextUtil.showExtraInfo(tooltip)) {
-					serum.appendTooltip(serumData, level, tooltip, isAdvanced);
+					serum.appendTooltip(serumData, context.level(), tooltip, isAdvanced);
 				}
 				tooltip.add(ComponentUtil.EMPTY_LINE);
 			}
@@ -511,21 +488,6 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 					controller.triggerableAnim(injectorAnimation.name, injectorAnimation.rawAnimation);
 				}
 			}
-		}
-
-	}
-
-	private static class InventoryCapability implements ICapabilityProvider {
-
-		private final InjectorItemInventory itemHandler;
-
-		public InventoryCapability(ItemStack stack) {
-			itemHandler = InjectorItemInventory.create(MAX_SLOT_SIZE, stack);
-		}
-
-		@Override
-		public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-			return ModCapabilities.ITEM_HANDLER.orEmpty(capability, itemHandler.getLazyOptional());
 		}
 
 	}

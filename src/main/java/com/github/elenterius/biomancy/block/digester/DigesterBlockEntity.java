@@ -222,7 +222,6 @@ public class DigesterBlockEntity extends MachineBlockEntity<DigestingRecipe, Dig
 		ItemHandlerUtil.dropContents(level, pos, outputInventory);
 	}
 
-
 	private <E extends DigesterBlockEntity> PlayState handleAnimationState(AnimationState<E> event) {
 		Boolean isCrafting = getBlockState().getValue(MachineBlock.CRAFTING);
 

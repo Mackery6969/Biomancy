@@ -21,7 +21,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.ForgeSpawnEggItem;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -106,7 +105,7 @@ public class EssenceItem extends Item implements ItemTooltipStyleProvider {
 			return new int[]{0x00AFAF, 0x463AA5}; //steve colors
 		}
 
-		SpawnEggItem spawnEggItem = ForgeSpawnEggItem.fromEntityType(entityType);
+		SpawnEggItem spawnEggItem = SpawnEggItem.byId(entityType);
 		if (spawnEggItem != null) {
 			int background = spawnEggItem.getColor(0);
 			int highlight = spawnEggItem.getColor(1);

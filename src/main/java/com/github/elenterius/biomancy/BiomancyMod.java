@@ -31,6 +31,8 @@ public final class BiomancyMod {
 
 		ModBannerPatterns.BANNERS.register(modEventBus);
 
+		ModDataComponents.DATA_COMPONENT_TYPES.register(modEventBus);
+
 		ModBlocks.BLOCKS.register(modEventBus);
 		ModItems.ITEMS.register(modEventBus);
 		ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);

@@ -45,7 +45,7 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.common.ToolAction;
+import net.neoforged.neoforge.common.ItemAbility;
 import org.jspecify.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
@@ -361,8 +361,8 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 	}
 
 	@Override
-	public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
-		return super.canPerformAction(stack, toolAction) && hasNutrients(stack);
+	public boolean canPerformAction(ItemStack stack, ItemAbility itemAbility) {
+		return super.canPerformAction(stack, itemAbility) && hasNutrients(stack);
 	}
 
 	@Override

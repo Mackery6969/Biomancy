@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.inventory;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
@@ -164,21 +165,21 @@ public class SingleItemStackHandler implements SerializableItemHandler, IItemHan
 	}
 
 	@Override
-	public CompoundTag serializeNBT() {
+	public CompoundTag serializeNBT(HolderLookup.Provider registries) {
 		CompoundTag nbt = new CompoundTag();
 		serializeItemAmount(nbt);
 		if (!cachedStack.isEmpty()) {
 			int count = cachedStack.getCount();
 			if (count > 64) cachedStack.setCount(64); //prevent byte overflow
-			nbt.put(ITEM_TAG, cachedStack.save(new CompoundTag()));
+			nbt.put(ITEM_TAG, cachedStack.save(registries));
 			if (count != cachedStack.getCount()) cachedStack.setCount(count); //restore item count
 		}
 		return nbt;
 	}
 
 	@Override
-	public void deserializeNBT(CompoundTag nbt) {
-		if (nbt.contains(ITEM_TAG)) cachedStack = ItemStack.of(nbt.getCompound(ITEM_TAG));
+	public void deserializeNBT(HolderLookup.Provider registries, CompoundTag nbt) {
+		if (nbt.contains(ITEM_TAG)) cachedStack = ItemStack.parseOptional(registries, nbt.getCompound(ITEM_TAG));
 		else cachedStack = ItemStack.EMPTY;
 
 		int itemAmount = deserializeItemAmount(nbt);

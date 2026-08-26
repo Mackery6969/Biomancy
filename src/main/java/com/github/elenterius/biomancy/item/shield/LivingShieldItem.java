@@ -20,7 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.ToolAction;
+import net.neoforged.neoforge.common.ItemAbility;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -35,8 +35,8 @@ public class LivingShieldItem extends SimpleShieldItem implements SimpleLivingTo
 	}
 
 	@Override
-	public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
-		return super.canPerformAction(stack, toolAction) && hasNutrients(stack);
+	public boolean canPerformAction(ItemStack stack, ItemAbility itemAbility) {
+		return super.canPerformAction(stack, itemAbility) && hasNutrients(stack);
 	}
 
 	@Override

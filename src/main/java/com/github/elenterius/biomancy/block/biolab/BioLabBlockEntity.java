@@ -203,7 +203,6 @@ public class BioLabBlockEntity extends MachineBlockEntity<BioBrewingRecipe, BioL
 		ItemHandlerUtil.dropContents(level, pos, outputInventory);
 	}
 
-
 	@Override
 	protected boolean craftRecipe(BioBrewingRecipe recipeToCraft, Level level) {
 		ItemStack result = recipeToCraft.getResultItem(level.registryAccess()).copy();

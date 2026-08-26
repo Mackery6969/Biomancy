@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraftforge.common.ToolAction;
+import net.neoforged.neoforge.common.ItemAbility;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.text.DecimalFormat;
@@ -37,7 +37,7 @@ public interface LivingTool extends NutrientsContainerItem {
 		return Nutrients.getRepairValue(resource);
 	}
 
-	int getLivingToolActionCost(ItemStack livingTool, ToolAction toolAction);
+	int getLivingToolActionCost(ItemStack livingTool, ItemAbility itemAbility);
 
 	default void appendLivingToolTooltip(ItemStack stack, List<Component> tooltip) {
 		DecimalFormat df = FormatUtil.getIntegerFormatter();
