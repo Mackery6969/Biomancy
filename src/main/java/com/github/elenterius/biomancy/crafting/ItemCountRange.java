@@ -1,6 +1,8 @@
 package com.github.elenterius.biomancy.crafting;
 
+import com.github.elenterius.biomancy.crafting.recipe.RecipeUtil;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Mth;
@@ -9,6 +11,12 @@ import net.minecraft.util.RandomSource;
 import java.util.function.Function;
 
 public interface ItemCountRange {
+
+	Codec<ItemCountRange> CODEC = RecipeUtil.jsonBridgeCodec(range -> {
+		JsonObject json = new JsonObject();
+		toJson(json, range);
+		return json;
+	}, ItemCountRange::fromJson);
 
 	enum RangeSerializerType {
 

@@ -1,11 +1,14 @@
 package com.github.elenterius.biomancy.crafting;
 
+import com.github.elenterius.biomancy.crafting.recipe.RecipeUtil;
 import com.github.elenterius.biomancy.util.ItemStackCounter;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.item.ItemStack;
@@ -19,6 +22,9 @@ public record IngredientStack(Ingredient ingredient, int count) {
 
 	public static final String ALT_INGREDIENT_KEY = "alt"; //legacy support, unused by Biomancy
 	public static final String COUNT_KEY = "count";
+
+	public static final Codec<IngredientStack> CODEC = RecipeUtil.jsonBridgeCodec(IngredientStack::toJson, IngredientStack::fromJson);
+	public static final StreamCodec<RegistryFriendlyByteBuf, IngredientStack> STREAM_CODEC = StreamCodec.of((buf, value) -> value.toNetwork(buf), IngredientStack::fromNetwork);
 
 	public ItemStack[] getItems() {
 		return ingredient.getItems();

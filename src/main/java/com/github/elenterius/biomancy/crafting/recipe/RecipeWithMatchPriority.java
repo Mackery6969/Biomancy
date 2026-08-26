@@ -1,13 +1,13 @@
 package com.github.elenterius.biomancy.crafting.recipe;
 
 import com.github.elenterius.biomancy.mixin.accessor.IngredientAccessor;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 
 import java.util.List;
 
-public interface RecipeWithMatchPriority extends Recipe<Container> {
+public interface RecipeWithMatchPriority extends Recipe<RecipeInput> {
 
 	int getMatchPriority();
 
@@ -28,7 +28,7 @@ public interface RecipeWithMatchPriority extends Recipe<Container> {
 		if (ingredient.getClass() != Ingredient.class) return -2;
 
 		int bias = 0;
-		Ingredient.Value[] values = ((IngredientAccessor) ingredient).biomancy$values();
+		Ingredient.Value[] values = ((IngredientAccessor) (Object) ingredient).biomancy$values();
 		for (Ingredient.Value value : values) {
 			if (value instanceof Ingredient.TagValue) bias--;
 			else if (value instanceof Ingredient.ItemValue) bias += 2;

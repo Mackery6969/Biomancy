@@ -30,6 +30,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,6 +50,7 @@ import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
+import java.util.Optional;
 
 public class BioLabBlockEntity extends MachineBlockEntity<BioBrewingRecipe, BioLabStateData> implements MenuProvider, GeoBlockEntity {
 
@@ -160,15 +162,15 @@ public class BioLabBlockEntity extends MachineBlockEntity<BioBrewingRecipe, BioL
 	}
 
 	@Override
-	protected boolean doesRecipeResultFitIntoOutputInv(BioBrewingRecipe craftingGoal, ItemStack stackToCraft) {
+	protected boolean doesRecipeResultFitIntoOutputInv(RecipeHolder<BioBrewingRecipe> craftingGoal, ItemStack stackToCraft) {
 		return ItemHandlerUtil.doesItemFit(outputInventory.getRaw(), 0, stackToCraft);
 	}
 
 	@Override
-	protected @Nullable BioBrewingRecipe resolveRecipeFromInput(Level level) {
-		return RECIPE_TYPE.get()
-				.getBestRecipeFor(level, inputInventory.getRecipeWrapper())
-				.orElse(PotionSerumRecipes.getRecipeFor(level, inputInventory.getRecipeWrapper()));
+	protected @Nullable RecipeHolder<BioBrewingRecipe> resolveRecipeFromInput(Level level) {
+		Optional<RecipeHolder<BioBrewingRecipe>> recipeHolder = RECIPE_TYPE.get().getBestRecipeFor(level, inputInventory.getRecipeWrapper());
+		if (recipeHolder.isPresent()) return recipeHolder.get();
+		return PotionSerumRecipes.getRecipeFor(level, inputInventory.getRecipeWrapper());
 	}
 
 	@Override
@@ -204,14 +206,15 @@ public class BioLabBlockEntity extends MachineBlockEntity<BioBrewingRecipe, BioL
 	}
 
 	@Override
-	protected boolean craftRecipe(BioBrewingRecipe recipeToCraft, Level level) {
-		ItemStack result = recipeToCraft.getResultItem(level.registryAccess()).copy();
+	protected boolean craftRecipe(RecipeHolder<BioBrewingRecipe> recipeToCraft, Level level) {
+		BioBrewingRecipe recipe = recipeToCraft.value();
+		ItemStack result = recipe.getResultItem(level.registryAccess()).copy();
 		if (result.isEmpty() || !doesRecipeResultFitIntoOutputInv(recipeToCraft, result)) {
 			return false;
 		}
 
 		//get ingredients cost
-		List<IngredientStack> ingredients = recipeToCraft.getIngredientQuantities();
+		List<IngredientStack> ingredients = recipe.getIngredientQuantities();
 		int[] ingredientCost = new int[ingredients.size()];
 		for (int i = 0; i < ingredients.size(); i++) {
 			ingredientCost[i] = ingredients.get(i).count();

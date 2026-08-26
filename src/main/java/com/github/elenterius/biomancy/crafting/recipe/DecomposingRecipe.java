@@ -4,22 +4,21 @@ import com.github.elenterius.biomancy.crafting.IngredientStack;
 import com.github.elenterius.biomancy.crafting.VariableOutput;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.ModRecipes;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.core.registries.BuiltInRegistries;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DecomposingRecipe extends StaticProcessingRecipe {
@@ -33,8 +32,8 @@ public class DecomposingRecipe extends StaticProcessingRecipe {
 	private final int matchPriority;
 	private final NonNullList<Ingredient> vanillaIngredients;
 
-	public DecomposingRecipe(ResourceLocation id, List<VariableOutput> outputs, IngredientStack ingredientStack, int craftingTimeTicks, int craftingCostNutrients) {
-		super(id, craftingTimeTicks, craftingCostNutrients);
+	public DecomposingRecipe(List<VariableOutput> outputs, IngredientStack ingredientStack, int craftingTimeTicks, int craftingCostNutrients) {
+		super(craftingTimeTicks, craftingCostNutrients);
 		this.ingredientStack = ingredientStack;
 		this.outputs = outputs;
 
@@ -51,7 +50,7 @@ public class DecomposingRecipe extends StaticProcessingRecipe {
 	}
 
 	@Override
-	public boolean matches(Container inputInventory, Level level) {
+	public boolean matches(RecipeInput inputInventory, Level level) {
 		ItemStack stack = inputInventory.getItem(0);
 		return ingredientStack.ingredient().test(stack) && stack.getCount() >= ingredientStack.count();
 	}
@@ -62,12 +61,12 @@ public class DecomposingRecipe extends StaticProcessingRecipe {
 	}
 
 	@Override
-	public ItemStack getResultItem(RegistryAccess registryAccess) {
+	public ItemStack getResultItem(HolderLookup.Provider registries) {
 		return outputs.get(0).getItemStack();
 	}
 
 	@Override
-	public ItemStack assemble(Container inputInventory, RegistryAccess registryAccess) {
+	public ItemStack assemble(RecipeInput inputInventory, HolderLookup.Provider registries) {
 		return outputs.get(0).getItemStack().copy();
 	}
 
@@ -106,49 +105,29 @@ public class DecomposingRecipe extends StaticProcessingRecipe {
 
 	public static class Serializer implements RecipeSerializer<DecomposingRecipe> {
 
+		public static final MapCodec<DecomposingRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+				IngredientStack.CODEC.fieldOf(RecipeUtil.JsonKeys.INGREDIENT).forGetter(DecomposingRecipe::getIngredientQuantity),
+				VariableOutput.CODEC.listOf(1, MAX_OUTPUTS).fieldOf(RecipeUtil.JsonKeys.RESULTS).forGetter(DecomposingRecipe::getOutputs),
+				Codec.INT.optionalFieldOf(RecipeUtil.JsonKeys.PROCESSING_TIME, 100).forGetter(recipe -> recipe.craftingTimeTicks),
+				Codec.INT.optionalFieldOf(RecipeUtil.JsonKeys.NUTRIENTS_COST, (int) DEFAULT_CRAFTING_COST_NUTRIENTS).forGetter(recipe -> recipe.craftingCostNutrients)
+		).apply(instance, (ingredientStack, outputs, time, cost) -> new DecomposingRecipe(outputs, ingredientStack, time, cost)));
+
+		public static final StreamCodec<RegistryFriendlyByteBuf, DecomposingRecipe> STREAM_CODEC = StreamCodec.composite(
+				IngredientStack.STREAM_CODEC, DecomposingRecipe::getIngredientQuantity,
+				VariableOutput.STREAM_CODEC.apply(ByteBufCodecs.list()), DecomposingRecipe::getOutputs,
+				ByteBufCodecs.VAR_INT, recipe -> recipe.craftingTimeTicks,
+				ByteBufCodecs.VAR_INT, recipe -> recipe.craftingCostNutrients,
+				(ingredientStack, outputs, time, cost) -> new DecomposingRecipe(outputs, ingredientStack, time, cost)
+		);
+
 		@Override
-		public DecomposingRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-			JsonObject input = GsonHelper.getAsJsonObject(json, RecipeUtil.JsonKeys.INGREDIENT);
-			IngredientStack ingredientStack = IngredientStack.fromJson(input);
-
-			List<VariableOutput> results = RecipeUtil.readVariableProductionOutputs(GsonHelper.getAsJsonArray(json, RecipeUtil.JsonKeys.RESULTS));
-			if (results.size() > MAX_OUTPUTS) {
-				throw new JsonParseException(String.format("Too many outputs for %s recipe. Max amount is %d", BuiltInRegistries.RECIPE_SERIALIZER.getKey(this), MAX_OUTPUTS));
-			}
-
-			int time = GsonHelper.getAsInt(json, RecipeUtil.JsonKeys.PROCESSING_TIME, 100);
-			int cost = GsonHelper.getAsInt(json, RecipeUtil.JsonKeys.NUTRIENTS_COST, DEFAULT_CRAFTING_COST_NUTRIENTS);
-
-			return new DecomposingRecipe(recipeId, results, ingredientStack, time, cost);
+		public MapCodec<DecomposingRecipe> codec() {
+			return CODEC;
 		}
 
 		@Override
-		public DecomposingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-			IngredientStack ingredientStack = IngredientStack.fromNetwork(buffer);
-
-			int craftingTime = buffer.readVarInt();
-			int craftingCost = buffer.readVarInt();
-
-			int outputCount = buffer.readVarInt();
-			List<VariableOutput> outputs = new ArrayList<>();
-			for (int j = 0; j < outputCount; ++j) {
-				outputs.add(VariableOutput.fromNetwork(buffer));
-			}
-
-			return new DecomposingRecipe(recipeId, outputs, ingredientStack, craftingTime, craftingCost);
-		}
-
-		@Override
-		public void toNetwork(FriendlyByteBuf buffer, DecomposingRecipe recipe) {
-			recipe.ingredientStack.toNetwork(buffer);
-
-			buffer.writeVarInt(recipe.craftingTimeTicks);
-			buffer.writeVarInt(recipe.craftingCostNutrients);
-
-			buffer.writeVarInt(recipe.outputs.size());
-			for (VariableOutput output : recipe.outputs) {
-				output.toNetwork(buffer);
-			}
+		public StreamCodec<RegistryFriendlyByteBuf, DecomposingRecipe> streamCodec() {
+			return STREAM_CODEC;
 		}
 	}
 

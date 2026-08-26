@@ -1,22 +1,20 @@
 package com.github.elenterius.biomancy.crafting.recipe;
 
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
-public abstract class SimpleRecipeType<T extends Recipe<Container>> implements RecipeType<T> {
+public abstract class SimpleRecipeType<T extends Recipe<RecipeInput>> implements RecipeType<T> {
 
 	private final String identifier;
 
@@ -33,7 +31,7 @@ public abstract class SimpleRecipeType<T extends Recipe<Container>> implements R
 		return identifier;
 	}
 
-	public static class AdvancedRecipeType<R extends Recipe<Container>> extends SimpleRecipeType<R> {
+	public static class AdvancedRecipeType<R extends Recipe<RecipeInput>> extends SimpleRecipeType<R> {
 
 		public AdvancedRecipeType(String identifier) {
 			super(identifier);
@@ -41,12 +39,12 @@ public abstract class SimpleRecipeType<T extends Recipe<Container>> implements R
 
 		public Optional<R> getRecipeById(Level level, ResourceLocation id) {
 			RecipeManager recipeManager = level.getRecipeManager();
-			return Optional.ofNullable(castRecipe(recipeManager.byType(this).get(id)));
+			return recipeManager.byKey(id).map(this::castRecipeHolder).map(RecipeHolder::value);
 		}
 
-		public Optional<R> getFirstRecipeFor(Level level, Container inputInventory) {
+		public Optional<R> getFirstRecipeFor(Level level, RecipeInput inputInventory) {
 			RecipeManager recipeManager = level.getRecipeManager();
-			return recipeManager.getRecipeFor(this, inputInventory, level);
+			return recipeManager.getRecipeFor(this, inputInventory, level).map(RecipeHolder::value);
 		}
 
 		/**
@@ -54,18 +52,18 @@ public abstract class SimpleRecipeType<T extends Recipe<Container>> implements R
 		 *
 		 * @return recipe biased towards item-value ingredients
 		 */
-		public Optional<R> getBestRecipeFor(Level level, Container inputInventory) {
-			Collection<R> recipes = level.getRecipeManager().byType(this).values();
+		public Optional<RecipeHolder<R>> getBestRecipeFor(Level level, RecipeInput inputInventory) {
+			Collection<RecipeHolder<R>> recipes = level.getRecipeManager().getAllRecipesFor(this);
 
-			R topRecipe = null;
+			RecipeHolder<R> topRecipe = null;
 			int topPriority = Integer.MIN_VALUE;
 
-			for (R recipe : recipes) {
-				if (!recipe.matches(inputInventory, level)) continue;
+			for (RecipeHolder<R> recipeHolder : recipes) {
+				if (!recipeHolder.value().matches(inputInventory, level)) continue;
 
-				int currentPriority = RecipeWithMatchPriority.getOrComputeMatchPriority(recipe);
+				int currentPriority = RecipeWithMatchPriority.getOrComputeMatchPriority(recipeHolder.value());
 				if (currentPriority > topPriority) {
-					topRecipe = recipe;
+					topRecipe = recipeHolder;
 					topPriority = currentPriority;
 				}
 			}
@@ -73,9 +71,9 @@ public abstract class SimpleRecipeType<T extends Recipe<Container>> implements R
 			return Optional.ofNullable(topRecipe);
 		}
 
-		private @Nullable R castRecipe(@Nullable Recipe<Container> recipe) {
+		private @Nullable RecipeHolder<R> castRecipeHolder(RecipeHolder<?> recipeHolder) {
 			//noinspection unchecked
-			return (R) recipe;
+			return (RecipeHolder<R>) recipeHolder;
 		}
 
 		private boolean matches(R recipe, ItemStack stack) {
@@ -87,9 +85,10 @@ public abstract class SimpleRecipeType<T extends Recipe<Container>> implements R
 
 		public Optional<R> getFirstRecipeForIngredient(Level level, ItemStack stack) {
 			RecipeManager recipeManager = level.getRecipeManager();
-			return recipeManager.byType(this).values().stream()
+			return recipeManager.getAllRecipesFor(this).stream()
+					.map(RecipeHolder::value)
 					.filter(recipe -> matches(recipe, stack))
-					.findFirst().map(this::castRecipe);
+					.findFirst();
 		}
 
 		/**
@@ -98,12 +97,13 @@ public abstract class SimpleRecipeType<T extends Recipe<Container>> implements R
 		 * @return recipe biased towards item-value ingredients
 		 */
 		public Optional<R> getBestRecipeForIngredient(Level level, ItemStack stack) {
-			Collection<R> recipes = level.getRecipeManager().byType(this).values();
+			Collection<RecipeHolder<R>> recipes = level.getRecipeManager().getAllRecipesFor(this);
 
 			R topRecipe = null;
 			int topPriority = Integer.MIN_VALUE;
 
-			for (R recipe : recipes) {
+			for (RecipeHolder<R> recipeHolder : recipes) {
+				R recipe = recipeHolder.value();
 				if (!matches(recipe, stack)) continue;
 
 				int currentPriority = RecipeWithMatchPriority.getOrComputeMatchPriority(recipe);
@@ -116,21 +116,19 @@ public abstract class SimpleRecipeType<T extends Recipe<Container>> implements R
 			return Optional.ofNullable(topRecipe);
 		}
 
-		public Optional<Pair<ResourceLocation, R>> getFirstRecipeForIngredient(Level level, ItemStack stack, @Nullable ResourceLocation lastRecipeId) {
+		public Optional<RecipeHolder<R>> getFirstRecipeForIngredient(Level level, ItemStack stack, @Nullable ResourceLocation lastRecipeId) {
 			RecipeManager recipeManager = level.getRecipeManager();
 
-			Map<ResourceLocation, R> map = recipeManager.byType(this);
 			if (lastRecipeId != null) {
-				R recipe = map.get(lastRecipeId);
-				if (recipe != null && matches(recipe, stack)) {
-					return Optional.of(Pair.of(lastRecipeId, recipe));
+				Optional<RecipeHolder<R>> cached = recipeManager.byKey(lastRecipeId).map(this::castRecipeHolder);
+				if (cached.isPresent() && matches(cached.get().value(), stack)) {
+					return cached;
 				}
 			}
 
-			return map.entrySet().stream()
-					.filter(entry -> matches(entry.getValue(), stack))
-					.findFirst()
-					.map(entry -> Pair.of(entry.getKey(), entry.getValue()));
+			return recipeManager.getAllRecipesFor(this).stream()
+					.filter(recipeHolder -> matches(recipeHolder.value(), stack))
+					.findFirst();
 		}
 
 		/**
@@ -138,35 +136,32 @@ public abstract class SimpleRecipeType<T extends Recipe<Container>> implements R
 		 *
 		 * @return recipe biased towards item-value ingredients
 		 */
-		public Optional<Pair<ResourceLocation, R>> getBestRecipeForIngredient(Level level, ItemStack stack, @Nullable ResourceLocation lastRecipeId) {
+		public Optional<RecipeHolder<R>> getBestRecipeForIngredient(Level level, ItemStack stack, @Nullable ResourceLocation lastRecipeId) {
 			RecipeManager recipeManager = level.getRecipeManager();
 
-			Map<ResourceLocation, R> typedRecipes = recipeManager.byType(this);
 			if (lastRecipeId != null) {
-				R recipe = typedRecipes.get(lastRecipeId);
-				if (recipe != null && matches(recipe, stack)) {
-					return Optional.of(Pair.of(lastRecipeId, recipe));
+				Optional<RecipeHolder<R>> cached = recipeManager.byKey(lastRecipeId).map(this::castRecipeHolder);
+				if (cached.isPresent() && matches(cached.get().value(), stack)) {
+					return cached;
 				}
 			}
 
-			Set<Map.Entry<ResourceLocation, R>> recipeEntries = typedRecipes.entrySet();
+			Collection<RecipeHolder<R>> recipes = recipeManager.getAllRecipesFor(this);
 
-			Map.Entry<ResourceLocation, R> topRecipeEntry = null;
+			RecipeHolder<R> topRecipe = null;
 			int topPriority = Integer.MIN_VALUE;
 
-			for (Map.Entry<ResourceLocation, R> recipeEntry : recipeEntries) {
-				R recipe = recipeEntry.getValue();
-				if (!matches(recipe, stack)) continue;
+			for (RecipeHolder<R> recipeHolder : recipes) {
+				if (!matches(recipeHolder.value(), stack)) continue;
 
-				int currentPriority = RecipeWithMatchPriority.getOrComputeMatchPriority(recipe);
+				int currentPriority = RecipeWithMatchPriority.getOrComputeMatchPriority(recipeHolder.value());
 				if (currentPriority > topPriority) {
-					topRecipeEntry = recipeEntry;
+					topRecipe = recipeHolder;
 					topPriority = currentPriority;
 				}
 			}
 
-			return Optional.ofNullable(topRecipeEntry)
-					.map(entry -> Pair.of(entry.getKey(), entry.getValue()));
+			return Optional.ofNullable(topRecipe);
 		}
 
 	}

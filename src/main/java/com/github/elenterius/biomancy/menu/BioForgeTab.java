@@ -2,7 +2,10 @@ package com.github.elenterius.biomancy.menu;
 
 import com.github.elenterius.biomancy.init.ModBioForgeTabs;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
@@ -13,6 +16,10 @@ import java.util.Objects;
 
 public final class BioForgeTab {
 	public static final String JSON_KEY = "bio_forge_tab";
+
+	public static final Codec<BioForgeTab> CODEC = ModBioForgeTabs.REGISTRY.byNameCodec();
+	public static final StreamCodec<RegistryFriendlyByteBuf, BioForgeTab> STREAM_CODEC = StreamCodec.of((buf, value) -> value.toNetwork(buf), BioForgeTab::fromNetwork);
+
 	private final int sortPriority;
 	private final Item iconItem;
 

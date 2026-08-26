@@ -5,6 +5,7 @@ import com.github.elenterius.biomancy.api.serum.SerumContainer;
 import com.github.elenterius.biomancy.init.ModSerums;
 import com.github.elenterius.biomancy.serum.PotionSerum;
 import com.github.elenterius.biomancy.util.ComponentUtil;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -26,19 +27,19 @@ public class PotionSerumItem extends Item implements SerumContainer, ItemTooltip
 		super(properties);
 	}
 
-	public ItemStack getInstanceFrom(Potion potion) {
+	public ItemStack getInstanceFrom(Holder<Potion> potion) {
 		return setSerumData(getDefaultInstance(), potion, List.of());
 	}
 
-	public ItemStack getInstanceFrom(Potion potion, Collection<MobEffectInstance> statusEffects) {
+	public ItemStack getInstanceFrom(Holder<Potion> potion, Collection<MobEffectInstance> statusEffects) {
 		return setSerumData(getDefaultInstance(), potion, statusEffects);
 	}
 
 	public ItemStack getInstanceFrom(Collection<MobEffectInstance> statusEffects, int color) {
-		return setSerumData(getDefaultInstance(), Potions.EMPTY, statusEffects, color);
+		return setSerumData(getDefaultInstance(), Potions.WATER, statusEffects, color);
 	}
 
-	public ItemStack getInstanceFrom(Potion potion, Collection<MobEffectInstance> statusEffects, int color) {
+	public ItemStack getInstanceFrom(Holder<Potion> potion, Collection<MobEffectInstance> statusEffects, int color) {
 		return setSerumData(getDefaultInstance(), potion, statusEffects, color);
 	}
 
@@ -75,13 +76,13 @@ public class PotionSerumItem extends Item implements SerumContainer, ItemTooltip
 		return getSerum(stack).getDescriptionTranslationKey();
 	}
 
-	public static ItemStack setSerumData(ItemStack stack, Potion potion, Collection<MobEffectInstance> effects) {
+	public static ItemStack setSerumData(ItemStack stack, Holder<Potion> potion, Collection<MobEffectInstance> effects) {
 		CompoundTag tag = Serum.getOrCreateDataTag(stack);
 		PotionSerum.setData(tag, potion, effects);
 		return stack;
 	}
 
-	public static ItemStack setSerumData(ItemStack stack, Potion potion, Collection<MobEffectInstance> effects, int color) {
+	public static ItemStack setSerumData(ItemStack stack, Holder<Potion> potion, Collection<MobEffectInstance> effects, int color) {
 		CompoundTag tag = Serum.getOrCreateDataTag(stack);
 		PotionSerum.setData(tag, potion, effects, color);
 		return stack;

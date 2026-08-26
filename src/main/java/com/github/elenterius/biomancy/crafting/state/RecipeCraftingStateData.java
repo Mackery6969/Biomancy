@@ -3,9 +3,10 @@ package com.github.elenterius.biomancy.crafting.state;
 import com.github.elenterius.biomancy.crafting.recipe.ProcessingRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
@@ -52,26 +53,26 @@ public abstract class RecipeCraftingStateData<T extends ProcessingRecipe> implem
 
 	protected abstract boolean isRecipeOfInstance(Recipe<?> recipe);
 
-	public Optional<T> getCraftingGoalRecipe(Level level) {
+	public Optional<RecipeHolder<T>> getCraftingGoalRecipe(Level level) {
 		if (recipeId == null) return Optional.empty();
 
 		RecipeManager recipeManager = level.getRecipeManager();
-		Optional<? extends Recipe<?>> optional = recipeManager.byKey(recipeId);
+		Optional<RecipeHolder<?>> optional = recipeManager.byKey(recipeId);
 		if (optional.isPresent()) {
-			Recipe<?> recipe = optional.get();
-			if (isRecipeOfInstance(recipe)) {
+			RecipeHolder<?> recipeHolder = optional.get();
+			if (isRecipeOfInstance(recipeHolder.value())) {
 				//noinspection unchecked
-				return Optional.of((T) recipe);
+				return Optional.of((RecipeHolder<T>) recipeHolder);
 			}
 		}
 
 		return Optional.empty();
 	}
 
-	public void setCraftingGoalRecipe(T recipe, Container inputInventory) {
-		recipeId = recipe.getId();
-		timeForCompletion = recipe.getCraftingTimeTicks(inputInventory);
-		nutrientsCost = recipe.getCraftingCostNutrients(inputInventory);
+	public void setCraftingGoalRecipe(RecipeHolder<T> recipeHolder, RecipeInput inputInventory) {
+		recipeId = recipeHolder.id();
+		timeForCompletion = recipeHolder.value().getCraftingTimeTicks(inputInventory);
+		nutrientsCost = recipeHolder.value().getCraftingCostNutrients(inputInventory);
 		timeElapsed = 0;
 	}
 

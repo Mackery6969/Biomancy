@@ -10,9 +10,7 @@ import java.util.List;
 @Mixin(PotionBrewing.class)
 public interface PotionBrewingAccessor {
 
-	@Accessor("POTION_MIXES")
-	static List<PotionBrewing.Mix<Potion>> biomancy$POTION_MIXES() {
-		return List.of();
-	}
+	@Accessor("potionMixes")
+	List<PotionBrewing.Mix<Potion>> biomancy$potionMixes();
 
 }

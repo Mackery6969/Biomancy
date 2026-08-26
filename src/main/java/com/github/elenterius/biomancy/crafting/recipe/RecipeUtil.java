@@ -6,6 +6,10 @@ import com.github.elenterius.biomancy.menu.BioForgeTab;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.NonNullList;
 import net.minecraft.util.GsonHelper;
@@ -13,6 +17,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public final class RecipeUtil {
 
@@ -90,6 +95,26 @@ public final class RecipeUtil {
 			}
 		}
 		return flatIngredients;
+	}
+
+	public static <T> Codec<T> jsonBridgeCodec(Function<T, JsonObject> encoder, Function<JsonObject, T> decoder) {
+		return new Codec<>() {
+			@Override
+			public <O> DataResult<Pair<T, O>> decode(DynamicOps<O> ops, O input) {
+				try {
+					JsonElement json = ops.convertTo(JsonOps.INSTANCE, input);
+					return DataResult.success(Pair.of(decoder.apply(json.getAsJsonObject()), ops.empty()));
+				}
+				catch (Exception ex) {
+					return DataResult.error(ex::getMessage);
+				}
+			}
+
+			@Override
+			public <O> DataResult<O> encode(T input, DynamicOps<O> ops, O prefix) {
+				return DataResult.success(JsonOps.INSTANCE.convertTo(ops, encoder.apply(input)));
+			}
+		};
 	}
 
 }

@@ -2,22 +2,20 @@ package com.github.elenterius.biomancy.crafting.recipe;
 
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.ModRecipes;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraft.core.registries.BuiltInRegistries;
-import org.jspecify.annotations.Nullable;
 
 public class StaticDigestingRecipe extends StaticProcessingRecipe implements DigestingRecipe {
 
@@ -27,8 +25,8 @@ public class StaticDigestingRecipe extends StaticProcessingRecipe implements Dig
 	private final int matchPriority;
 	private final NonNullList<Ingredient> vanillaIngredients;
 
-	public StaticDigestingRecipe(ResourceLocation id, ItemStack result, int craftingTimeTicks, int craftingCostNutrients, Ingredient ingredient) {
-		super(id, craftingTimeTicks, craftingCostNutrients);
+	public StaticDigestingRecipe(ItemStack result, int craftingTimeTicks, int craftingCostNutrients, Ingredient ingredient) {
+		super(craftingTimeTicks, craftingCostNutrients);
 		recipeIngredient = ingredient;
 		recipeResult = result;
 
@@ -42,12 +40,12 @@ public class StaticDigestingRecipe extends StaticProcessingRecipe implements Dig
 	}
 
 	@Override
-	public boolean matches(Container inputInventory, Level worldIn) {
+	public boolean matches(RecipeInput inputInventory, Level worldIn) {
 		return recipeIngredient.test(inputInventory.getItem(0));
 	}
 
 	@Override
-	public ItemStack assemble(Container inputInventory, RegistryAccess registryAccess) {
+	public ItemStack assemble(RecipeInput inputInventory, HolderLookup.Provider registries) {
 		return recipeResult.copy();
 	}
 
@@ -57,7 +55,7 @@ public class StaticDigestingRecipe extends StaticProcessingRecipe implements Dig
 	}
 
 	@Override
-	public ItemStack getResultItem(RegistryAccess registryAccess) {
+	public ItemStack getResultItem(HolderLookup.Provider registries) {
 		return recipeResult;
 	}
 
@@ -88,43 +86,29 @@ public class StaticDigestingRecipe extends StaticProcessingRecipe implements Dig
 
 	public static class Serializer implements RecipeSerializer<StaticDigestingRecipe> {
 
+		public static final MapCodec<StaticDigestingRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+				ItemStack.CODEC.fieldOf(RecipeUtil.JsonKeys.RESULT).forGetter(recipe -> recipe.recipeResult),
+				Codec.INT.optionalFieldOf(RecipeUtil.JsonKeys.PROCESSING_TIME, 100).forGetter(recipe -> recipe.craftingTimeTicks),
+				Codec.INT.optionalFieldOf(RecipeUtil.JsonKeys.NUTRIENTS_COST, 1).forGetter(recipe -> recipe.craftingCostNutrients),
+				Ingredient.CODEC_NONEMPTY.fieldOf(RecipeUtil.JsonKeys.INGREDIENT).forGetter(StaticDigestingRecipe::getIngredient)
+		).apply(instance, StaticDigestingRecipe::new));
+
+		public static final StreamCodec<RegistryFriendlyByteBuf, StaticDigestingRecipe> STREAM_CODEC = StreamCodec.composite(
+				ItemStack.STREAM_CODEC, recipe -> recipe.recipeResult,
+				ByteBufCodecs.VAR_INT, recipe -> recipe.craftingTimeTicks,
+				ByteBufCodecs.VAR_INT, recipe -> recipe.craftingCostNutrients,
+				Ingredient.CONTENTS_STREAM_CODEC, StaticDigestingRecipe::getIngredient,
+				StaticDigestingRecipe::new
+		);
+
 		@Override
-		public StaticDigestingRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-
-			Ingredient ingredient = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, RecipeUtil.JsonKeys.INGREDIENT));
-
-			if (ingredient.isEmpty()) {
-				throw new JsonParseException("No ingredient found for %s/%s recipe".formatted(BuiltInRegistries.RECIPE_SERIALIZER.getKey(this), recipeId));
-			}
-
-			ItemStack resultStack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, RecipeUtil.JsonKeys.RESULT));
-			int time = GsonHelper.getAsInt(json, RecipeUtil.JsonKeys.PROCESSING_TIME, 100);
-			int cost = GsonHelper.getAsInt(json, RecipeUtil.JsonKeys.NUTRIENTS_COST, 1);
-
-			return new StaticDigestingRecipe(recipeId, resultStack, time, cost, ingredient);
+		public MapCodec<StaticDigestingRecipe> codec() {
+			return CODEC;
 		}
 
-		//client side
-		@Nullable
 		@Override
-		public StaticDigestingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-			ItemStack resultStack = buffer.readItem();
-
-			int craftingTime = buffer.readVarInt();
-			int craftingCost = buffer.readVarInt();
-
-			Ingredient ingredient = Ingredient.fromNetwork(buffer);
-
-			return new StaticDigestingRecipe(recipeId, resultStack, craftingTime, craftingCost, ingredient);
-		}
-
-		//server side
-		@Override
-		public void toNetwork(FriendlyByteBuf buffer, StaticDigestingRecipe recipe) {
-			buffer.writeItem(recipe.recipeResult);
-			buffer.writeVarInt(recipe.craftingTimeTicks);
-			buffer.writeVarInt(recipe.craftingCostNutrients);
-			recipe.recipeIngredient.toNetwork(buffer);
+		public StreamCodec<RegistryFriendlyByteBuf, StaticDigestingRecipe> streamCodec() {
+			return STREAM_CODEC;
 		}
 	}
 }

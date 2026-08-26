@@ -1,11 +1,14 @@
 package com.github.elenterius.biomancy.crafting;
 
+import com.github.elenterius.biomancy.crafting.recipe.RecipeUtil;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
@@ -19,6 +22,9 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 public class VariableOutput {
+
+	public static final Codec<VariableOutput> CODEC = RecipeUtil.jsonBridgeCodec(VariableOutput::serialize, VariableOutput::deserialize);
+	public static final StreamCodec<RegistryFriendlyByteBuf, VariableOutput> STREAM_CODEC = StreamCodec.of((buf, value) -> value.toNetwork(buf), VariableOutput::fromNetwork);
 
 	private final Item item;
 	private final @Nullable

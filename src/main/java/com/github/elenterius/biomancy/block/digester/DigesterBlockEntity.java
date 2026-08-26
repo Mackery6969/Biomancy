@@ -26,6 +26,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -138,12 +139,12 @@ public class DigesterBlockEntity extends MachineBlockEntity<DigestingRecipe, Dig
 	}
 
 	@Override
-	protected boolean doesRecipeResultFitIntoOutputInv(DigestingRecipe craftingGoal, ItemStack stackToCraft) {
+	protected boolean doesRecipeResultFitIntoOutputInv(RecipeHolder<DigestingRecipe> craftingGoal, ItemStack stackToCraft) {
 		return ItemHandlerUtil.doesItemFit(outputInventory.getRaw(), stackToCraft);
 	}
 
 	@Override
-	protected @Nullable DigestingRecipe resolveRecipeFromInput(Level level) {
+	protected @Nullable RecipeHolder<DigestingRecipe> resolveRecipeFromInput(Level level) {
 		return RECIPE_TYPE.get().getBestRecipeFor(level, inputInventory.getRecipeWrapper()).orElse(null);
 	}
 
@@ -153,8 +154,8 @@ public class DigesterBlockEntity extends MachineBlockEntity<DigestingRecipe, Dig
 	}
 
 	@Override
-	protected boolean craftRecipe(DigestingRecipe recipeToCraft, Level level) {
-		ItemStack result = recipeToCraft.assemble(inputInventory.getRecipeWrapper(), level.registryAccess());
+	protected boolean craftRecipe(RecipeHolder<DigestingRecipe> recipeToCraft, Level level) {
+		ItemStack result = recipeToCraft.value().assemble(inputInventory.getRecipeWrapper(), level.registryAccess());
 
 		if (!result.isEmpty() && doesRecipeResultFitIntoOutputInv(recipeToCraft, result)) {
 			ItemStack craftingRemainder = getCraftingRemainder();

@@ -1,15 +1,11 @@
 package com.github.elenterius.biomancy.crafting.recipe;
 
-import net.minecraft.world.Container;
+import net.minecraft.world.item.crafting.RecipeInput;
 
 public sealed interface ProcessingRecipe extends RecipeWithMatchPriority permits DigestingRecipe, DynamicProcessingRecipe, StaticProcessingRecipe {
 
-	int getCraftingTimeTicks(Container inputInventory);
+	int getCraftingTimeTicks(RecipeInput inputInventory);
 
-	int getCraftingCostNutrients(Container inputInventory);
-
-	default boolean isRecipeEqual(ProcessingRecipe other) {
-		return getId().equals(other.getId());
-	}
+	int getCraftingCostNutrients(RecipeInput inputInventory);
 
 }
