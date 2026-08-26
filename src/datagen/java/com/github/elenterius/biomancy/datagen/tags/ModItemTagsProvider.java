@@ -1,8 +1,12 @@
 package com.github.elenterius.biomancy.datagen.tags;
 
 import com.github.elenterius.biomancy.BiomancyMod;
+import com.github.elenterius.biomancy.api.livingtool.LivingTool;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.tags.ModItemTags;
+import com.github.elenterius.biomancy.item.extractor.ExtractorItem;
+import com.github.elenterius.biomancy.item.injector.InjectorItem;
+import com.github.elenterius.biomancy.item.weapon.ClawsItem;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -10,8 +14,11 @@ import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
 import net.neoforged.neoforge.common.Tags;
@@ -34,11 +41,11 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 	}
 
 	private static TagKey<Item> forgeTag(String path) {
-		return ItemTags.create(new ResourceLocation("forge", path));
+		return ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", path));
 	}
 
 	private static TagKey<Item> conventionalTag(String path) {
-		return ItemTags.create(new ResourceLocation("c", path));
+		return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", path));
 	}
 
 	private static TagKey<Item> biomancyTag(String path) {
@@ -91,6 +98,22 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 				.add(ModItems.NUTRIENT_PASTE.get())
 				.add(ModItems.NUTRIENT_BAR.get())
 				.add(ModItems.LIVING_FLESH.get());
+
+		createTag(ModItemTags.ENCHANTABLE_LIVING)
+				.add(ModItems.stream().filter(item -> item instanceof LivingTool));
+
+		createTag(ModItemTags.ENCHANTABLE_SYRINGE)
+				.add(ModItems.stream().filter(item -> item instanceof ExtractorItem || item instanceof InjectorItem));
+
+		createTag(ModItemTags.ENCHANTABLE_SURGERY)
+				.add(ModItems.stream().filter(item -> item instanceof ExtractorItem));
+
+		createTag(ModItemTags.ENCHANTABLE_WEAPON)
+				.add(ModItems.stream().filter(item -> item instanceof SwordItem || item instanceof TridentItem || item instanceof ClawsItem || item instanceof AxeItem))
+				.addTag(ModItemTags.FORGE_TOOLS_KNIVES);
+
+		createTag(ItemTags.SWORD_ENCHANTABLE)
+				.add(ModItems.stream().filter(item -> item instanceof ClawsItem));
 
 		Set<Item> advancedTypes = Set.of(
 				ModItems.ACID_GRENADE.get(),

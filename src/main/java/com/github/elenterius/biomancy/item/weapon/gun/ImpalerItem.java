@@ -1,8 +1,10 @@
 package com.github.elenterius.biomancy.item.weapon.gun;
 
+import net.minecraft.core.Holder;
 import com.github.elenterius.biomancy.client.render.item.impaler.ImpalerRenderer;
 import com.github.elenterius.biomancy.client.util.ClientTextUtil;
 import com.github.elenterius.biomancy.entity.projectile.ImpalerProjectile;
+import com.github.elenterius.biomancy.init.ModEnchantments;
 import com.github.elenterius.biomancy.init.ModProjectiles;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.init.client.ModArmPoses;
@@ -117,12 +119,12 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 	}
 
 	public float modifyProjectileVelocity(float baseVelocity, ItemStack stack) {
-		return baseVelocity + 0.12f * stack.getEnchantmentLevel(Enchantments.POWER_ARROWS);
+		return baseVelocity + 0.12f * ModEnchantments.getLevel(stack, Enchantments.POWER);
 	}
 
 	@Override
 	public float modifyProjectileDamage(float baseDamage, ItemStack stack) {
-		return baseDamage + gunProperties.projectileDamageModifier() + stack.getEnchantmentLevel(Enchantments.POWER_ARROWS);
+		return baseDamage + gunProperties.projectileDamageModifier() + ModEnchantments.getLevel(stack, Enchantments.POWER);
 	}
 
 	@Override
@@ -138,7 +140,7 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 				baseInaccuracy -> modifyProjectileInaccuracy(baseInaccuracy, projectileWeapon),
 				projectile -> {
 					if (projectile instanceof ImpalerProjectile impalerProjectile) {
-						impalerProjectile.setPierceLevel(projectileWeapon.getEnchantmentLevel(Enchantments.PIERCING));
+						impalerProjectile.setPierceLevel(ModEnchantments.getLevel(projectileWeapon, Enchantments.PIERCING));
 					}
 				});
 
@@ -174,10 +176,10 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 	}
 
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-		if (enchantment == Enchantments.PIERCING) return true;
-		if (enchantment == Enchantments.PUNCH_ARROWS) return false;
-		return super.canApplyAtEnchantingTable(stack, enchantment);
+	public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
+		if (enchantment.is(Enchantments.PIERCING)) return true;
+		if (enchantment.is(Enchantments.PUNCH)) return false;
+		return super.supportsEnchantment(stack, enchantment);
 	}
 
 	@Override

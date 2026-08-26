@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.item.extractor;
 
+import net.minecraft.core.Holder;
 import com.github.elenterius.biomancy.client.render.item.extractor.ExtractorRenderer;
 import com.github.elenterius.biomancy.client.util.ClientTextUtil;
 import com.github.elenterius.biomancy.init.ModEnchantments;
@@ -70,8 +71,8 @@ public class ExtractorItem extends Item implements KeyPressListener, ItemTooltip
 	private static boolean extractEssence(ItemStack stack, @Nullable Player player, LivingEntity targetEntity) {
 		if (targetEntity.isAlive() && !targetEntity.hasEffect(ModMobEffects.ESSENCE_ANEMIA.get())) {
 			if (CombatUtil.canPierceThroughArmor(stack, targetEntity, player)) {
-				int lootingLevel = stack.getEnchantmentLevel(Enchantments.MOB_LOOTING);
-				int surgicalPrecisionLevel = stack.getEnchantmentLevel(ModEnchantments.SURGICAL_PRECISION.get());
+				int lootingLevel = stack.getEnchantmentLevel(ModEnchantments.getHolder(Enchantments.LOOTING, targetEntity.level()));
+				int surgicalPrecisionLevel = stack.getEnchantmentLevel(ModEnchantments.getHolder(ModEnchantments.SURGICAL_PRECISION, targetEntity.level()));
 
 				ItemStack essenceStack = EssenceItem.fromEntity(targetEntity, surgicalPrecisionLevel, lootingLevel);
 
@@ -93,7 +94,7 @@ public class ExtractorItem extends Item implements KeyPressListener, ItemTooltip
 						}
 					}
 
-					if (stack.getEnchantmentLevel(ModEnchantments.ANESTHETIC.get()) <= 0) {
+					if (stack.getEnchantmentLevel(ModEnchantments.getHolder(ModEnchantments.ANESTHETIC, targetEntity.level())) <= 0) {
 						float damage = 0.5f * damagePct;
 						if (damage > 0) {
 							targetEntity.hurt(targetEntity.level().damageSources().sting(player), damage);
@@ -102,7 +103,8 @@ public class ExtractorItem extends Item implements KeyPressListener, ItemTooltip
 
 					int baseDuration = 2400; // 120 seconds
 					int durationPenalty = lootingLevel + 1;
-					float durationReduction = Mth.lerp((float) surgicalPrecisionLevel / ModEnchantments.SURGICAL_PRECISION.get().getMaxLevel(), 1f, 0.5f);
+					int surgicalPrecisionMaxLevel = ModEnchantments.getHolder(ModEnchantments.SURGICAL_PRECISION, targetEntity.level()).value().definition().maxLevel();
+					float durationReduction = Mth.lerp((float) surgicalPrecisionLevel / surgicalPrecisionMaxLevel, 1f, 0.5f);
 					int duration = Math.round(baseDuration * durationPenalty * durationReduction);
 
 					targetEntity.addEffect(new MobEffectInstance(ModMobEffects.ESSENCE_ANEMIA.get(), duration));
@@ -160,8 +162,8 @@ public class ExtractorItem extends Item implements KeyPressListener, ItemTooltip
 	}
 
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-		return enchantment == Enchantments.MOB_LOOTING || super.canApplyAtEnchantingTable(stack, enchantment);
+	public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
+		return enchantment.is(Enchantments.LOOTING) || super.supportsEnchantment(stack, enchantment);
 	}
 
 	@Override

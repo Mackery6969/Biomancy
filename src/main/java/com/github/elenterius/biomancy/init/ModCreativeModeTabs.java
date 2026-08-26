@@ -6,8 +6,10 @@ import com.github.elenterius.biomancy.api.serum.SerumContainer;
 import com.github.elenterius.biomancy.crafting.recipe.PotionSerumRecipes;
 import com.github.elenterius.biomancy.item.SerumItem;
 import com.github.elenterius.biomancy.util.ComponentUtil;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -82,9 +84,9 @@ public final class ModCreativeModeTabs {
 								}
 							});
 
-					for (DeferredHolder<Enchantment, ? extends Enchantment> entry : ModEnchantments.ENCHANTMENTS.getEntries()) {
-						Enchantment enchantment = entry.get();
-						output.accept(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment, enchantment.getMaxLevel())));
+					for (ResourceKey<Enchantment> key : ModEnchantments.ALL) {
+						Holder<Enchantment> enchantment = ModEnchantments.getHolder(key, params.holders());
+						output.accept(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment, enchantment.value().getMaxLevel())));
 					}
 				});
 	}

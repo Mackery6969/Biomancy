@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.util;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -14,8 +15,8 @@ public final class EnchantmentUtil {
 
 	private EnchantmentUtil() {}
 
-	public static List<Map.Entry<EquipmentSlot, ItemStack>> getItemsWithEnchantment(Enchantment enchantment, LivingEntity livingEntity, Predicate<ItemStack> predicate) {
-		Map<EquipmentSlot, ItemStack> map = enchantment.getSlotItems(livingEntity);
+	public static List<Map.Entry<EquipmentSlot, ItemStack>> getItemsWithEnchantment(Holder<Enchantment> enchantment, LivingEntity livingEntity, Predicate<ItemStack> predicate) {
+		Map<EquipmentSlot, ItemStack> map = enchantment.value().getSlotItems(livingEntity);
 		List<Map.Entry<EquipmentSlot, ItemStack>> list = new ArrayList<>();
 
 		for (Map.Entry<EquipmentSlot, ItemStack> entry : map.entrySet()) {

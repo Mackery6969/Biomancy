@@ -13,7 +13,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent;
 import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
 import net.neoforged.bus.api.Event;
@@ -37,7 +37,7 @@ public final class AttackHandler {
 	}
 
 	@SubscribeEvent
-	public static void onHurt(final LivingHurtEvent event) {
+	public static void onHurt(final LivingIncomingDamageEvent event) {
 		LivingEntity livingEntity = event.getEntity();
 
 		if (!livingEntity.level().isClientSide && event.getAmount() >= 6f && livingEntity.hasEffect(ModMobEffects.VOLATILE.get())) {
@@ -72,7 +72,7 @@ public final class AttackHandler {
 	//	}
 
 	//	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	//	public static void onHurt(final LivingHurtEvent event) {
+	//	public static void onHurt(final LivingIncomingDamageEvent event) {
 	//		if (event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return; //use BYPASSES_ARMOR instead?
 	//
 	//		List<ItemStack> armorPieces = new ArrayList<>();

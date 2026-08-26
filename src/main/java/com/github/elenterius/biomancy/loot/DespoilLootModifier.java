@@ -8,6 +8,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.advancements.critereon.EntityFlagsPredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -66,8 +68,10 @@ public class DespoilLootModifier extends LootModifier {
 	protected static int getDespoilLevel(LootContext lootContext) {
 		Entity killer = lootContext.getParamOrNull(LootContextParams.KILLER_ENTITY);
 		if (killer instanceof LivingEntity livingEntity) {
-			int itemDespoilLevel = ModEnchantments.DESPOIL.get().getSlotItems(livingEntity).values().stream()
-					.mapToInt(DespoilLootModifier::getDespoilLevel)
+			Holder<Enchantment> despoil = ModEnchantments.getHolder(ModEnchantments.DESPOIL, livingEntity.level());
+
+			int itemDespoilLevel = despoil.value().getSlotItems(livingEntity).values().stream()
+					.mapToInt(stack -> getDespoilLevel(stack, despoil))
 					.max()
 					.orElse(0);
 
@@ -80,8 +84,8 @@ public class DespoilLootModifier extends LootModifier {
 		return 0;
 	}
 
-	protected static int getDespoilLevel(ItemStack stack) {
-		return stack.getEnchantmentLevel(ModEnchantments.DESPOIL.get());
+	protected static int getDespoilLevel(ItemStack stack, Holder<Enchantment> despoil) {
+		return stack.getEnchantmentLevel(despoil);
 	}
 
 	protected static boolean isUsingTool(LootContext lootContext) {

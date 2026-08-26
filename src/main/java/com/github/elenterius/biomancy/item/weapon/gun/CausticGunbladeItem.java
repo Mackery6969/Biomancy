@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.item.weapon.gun;
 
+import net.minecraft.core.Holder;
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.api.livingtool.SimpleLivingTool;
 import com.github.elenterius.biomancy.client.render.item.caustic_gunblade.CausticGunbladeRenderer;
@@ -366,8 +367,8 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 	}
 
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-		return isValidEnchantment(stack, enchantment) && super.canApplyAtEnchantingTable(stack, enchantment);
+	public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
+		return isValidEnchantment(stack, enchantment) && super.supportsEnchantment(stack, enchantment);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.item.injector;
 
+import net.minecraft.core.Holder;
 import com.github.elenterius.biomancy.api.serum.Serum;
 import com.github.elenterius.biomancy.api.serum.SerumContainer;
 import com.github.elenterius.biomancy.api.serum.SerumInjector;
@@ -118,7 +119,7 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 					}
 				}
 
-				if (injectorStack.getEnchantmentLevel(ModEnchantments.ANESTHETIC.get()) <= 0) {
+				if (injectorStack.getEnchantmentLevel(ModEnchantments.getHolder(ModEnchantments.ANESTHETIC, level)) <= 0) {
 					float damage = 0.5f * damagePct;
 					if (damage > 0) {
 						target.hurt(level.damageSources().sting(null), damage);
@@ -308,8 +309,8 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 	}
 
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-		return enchantment == Enchantments.PIERCING || super.canApplyAtEnchantingTable(stack, enchantment);
+	public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
+		return enchantment.is(Enchantments.PIERCING) || super.supportsEnchantment(stack, enchantment);
 	}
 
 	@Override

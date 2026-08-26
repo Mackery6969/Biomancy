@@ -6,9 +6,11 @@ import com.github.elenterius.biomancy.api.nutrients.NutrientsContainerItem;
 import com.github.elenterius.biomancy.init.ModEnchantments;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.util.EnchantmentUtil;
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -16,14 +18,13 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import java.util.List;
 import java.util.Map;
 
-public class SelfFeedingEnchantment extends Enchantment {
+public final class LivingEnchantmentEffects {
 
-	public SelfFeedingEnchantment(Rarity rarity, EquipmentSlot... applicableSlots) {
-		super(rarity, ModEnchantments.LIVING_CATEGORY, applicableSlots);
-	}
+	private LivingEnchantmentEffects() {}
 
-	public void repairLivingItems(Player player) {
-		List<Map.Entry<EquipmentSlot, ItemStack>> enchantedItems = EnchantmentUtil.getItemsWithEnchantment(this, player, LivingTool.NEED_NUTRIENTS_PREDICATE);
+	public static void repairSelfFeedingItems(Player player) {
+		Holder<Enchantment> enchantment = ModEnchantments.getHolder(ModEnchantments.SELF_FEEDING, player.level());
+		List<Map.Entry<EquipmentSlot, ItemStack>> enchantedItems = EnchantmentUtil.getItemsWithEnchantment(enchantment, player, LivingTool.NEED_NUTRIENTS_PREDICATE);
 		if (enchantedItems.isEmpty()) return;
 
 		Map.Entry<EquipmentSlot, ItemStack> slotItem = enchantedItems.get(player.getRandom().nextInt(enchantedItems.size()));
@@ -48,7 +49,7 @@ public class SelfFeedingEnchantment extends Enchantment {
 		}
 	}
 
-	protected ItemStack getBestRepairItem(Player player, int neededRepairValue) {
+	private static ItemStack getBestRepairItem(Player player, int neededRepairValue) {
 		NonNullList<ItemStack> items = player.getInventory().items;
 
 		ItemStack repairItemStack = ItemStack.EMPTY;
@@ -77,6 +78,29 @@ public class SelfFeedingEnchantment extends Enchantment {
 		}
 
 		return repairItemStack;
+	}
+
+	public static void repairParasiticMetabolismItems(Player player) {
+		if (player.getHealth() <= 10f) return;
+
+		FoodData foodData = player.getFoodData();
+		if (foodData.getFoodLevel() <= 2) return;
+
+		Holder<Enchantment> enchantment = ModEnchantments.getHolder(ModEnchantments.PARASITIC_METABOLISM, player.level());
+		List<Map.Entry<EquipmentSlot, ItemStack>> enchantedItems = EnchantmentUtil.getItemsWithEnchantment(enchantment, player, LivingTool.NEED_NUTRIENTS_PREDICATE);
+
+		if (!enchantedItems.isEmpty()) {
+			Map.Entry<EquipmentSlot, ItemStack> slotItem = enchantedItems.get(player.getRandom().nextInt(enchantedItems.size()));
+			ItemStack stack = slotItem.getValue();
+			NutrientsContainerItem item = (NutrientsContainerItem) stack.getItem();
+
+			int bonusRepairValue = 2;
+			item.increaseNutrients(stack, Nutrients.getRepairValue(ModItems.NUTRIENT_PASTE.get().getDefaultInstance()) + bonusRepairValue);
+
+			if (!player.getAbilities().invulnerable) {
+				foodData.setFoodLevel(foodData.getFoodLevel() - 1);
+			}
+		}
 	}
 
 }

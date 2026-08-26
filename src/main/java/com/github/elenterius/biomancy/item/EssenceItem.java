@@ -45,7 +45,8 @@ public class EssenceItem extends Item implements ItemTooltipStyleProvider {
 	public static ItemStack fromEntity(LivingEntity livingEntity, int surgicalPrecisionLevel, int lootingLevel) {
 		int count = 1 + livingEntity.getRandom().nextInt(0, 1 + lootingLevel);
 
-		float precisionFactor = (float) surgicalPrecisionLevel / ModEnchantments.SURGICAL_PRECISION.get().getMaxLevel();
+		int surgicalPrecisionMaxLevel = ModEnchantments.getHolder(ModEnchantments.SURGICAL_PRECISION, livingEntity.level()).value().definition().maxLevel();
+		float precisionFactor = (float) surgicalPrecisionLevel / surgicalPrecisionMaxLevel;
 		int bonus = livingEntity.getRandom().nextFloat() < Mth.lerp(precisionFactor, 0.5f, 0.125f) ? 1 : 0;
 		int tier = Mth.clamp(surgicalPrecisionLevel + bonus, 1, 3);
 

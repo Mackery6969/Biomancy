@@ -70,7 +70,7 @@ final class InjectionScheduler {
 				}
 			}
 
-			if (stack.getEnchantmentLevel(ModEnchantments.ANESTHETIC.get()) <= 0) {
+			if (stack.getEnchantmentLevel(ModEnchantments.getHolder(ModEnchantments.ANESTHETIC, level)) <= 0) {
 				float damage = 0.5f * damagePct;
 				if (damage > 0) {
 					target.hurt(level.damageSources().sting(player), damage);

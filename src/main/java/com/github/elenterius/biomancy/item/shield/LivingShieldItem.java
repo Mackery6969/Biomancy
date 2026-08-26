@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.item.shield;
 
+import net.minecraft.core.Holder;
 import com.github.elenterius.biomancy.api.livingtool.SimpleLivingTool;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.styles.ColorStyles;
@@ -153,8 +154,8 @@ public class LivingShieldItem extends SimpleShieldItem implements SimpleLivingTo
 	}
 
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-		return isValidEnchantment(stack, enchantment) && super.canApplyAtEnchantingTable(stack, enchantment);
+	public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
+		return isValidEnchantment(stack, enchantment) && super.supportsEnchantment(stack, enchantment);
 	}
 
 }

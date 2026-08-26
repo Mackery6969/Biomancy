@@ -2,6 +2,7 @@ package com.github.elenterius.biomancy.item.weapon.gun;
 
 import com.github.elenterius.biomancy.client.util.ClientTextUtil;
 import com.github.elenterius.biomancy.entity.projectile.BaseProjectile;
+import com.github.elenterius.biomancy.init.ModEnchantments;
 import com.github.elenterius.biomancy.init.ModProjectiles;
 import com.github.elenterius.biomancy.item.KeyPressListener;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
@@ -9,9 +10,11 @@ import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.github.elenterius.biomancy.util.FormatUtil;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.stats.Stats;
@@ -34,7 +37,7 @@ import java.util.Set;
 
 public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPressListener {
 
-	public static final Set<Enchantment> VALID_ENCHANTMENTS = Set.of(Enchantments.PUNCH_ARROWS, Enchantments.POWER_ARROWS, Enchantments.QUICK_CHARGE);
+	public static final Set<ResourceKey<Enchantment>> VALID_ENCHANTMENTS = Set.of(Enchantments.PUNCH, Enchantments.POWER, Enchantments.QUICK_CHARGE);
 
 	protected final GunProperties gunProperties;
 	protected final ModProjectiles.ConfiguredProjectile<? extends BaseProjectile> configuredProjectile;
@@ -46,11 +49,11 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 	}
 
 	protected static int getBonusReloadReduction(ItemStack stack) {
-		return 5 * stack.getEnchantmentLevel(Enchantments.QUICK_CHARGE);
+		return 5 * ModEnchantments.getLevel(stack, Enchantments.QUICK_CHARGE);
 	}
 
 	protected static float getBonusProjectileDamageModifier(ItemStack stack) {
-		return 0.6f * stack.getEnchantmentLevel(Enchantments.POWER_ARROWS);
+		return 0.6f * ModEnchantments.getLevel(stack, Enchantments.POWER);
 	}
 
 	protected static int getBonusShootDelayReduction(ItemStack stack) {
@@ -60,7 +63,7 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 	}
 
 	protected static int getBonusProjectileKnockBackModifier(ItemStack stack) {
-		return stack.getEnchantmentLevel(Enchantments.PUNCH_ARROWS);
+		return ModEnchantments.getLevel(stack, Enchantments.PUNCH);
 	}
 
 	@Override
@@ -228,8 +231,8 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 	}
 
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-		return VALID_ENCHANTMENTS.contains(enchantment) || super.canApplyAtEnchantingTable(stack, enchantment);
+	public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
+		return enchantment.is(k -> VALID_ENCHANTMENTS.contains(k)) || super.supportsEnchantment(stack, enchantment);
 	}
 
 	@Override

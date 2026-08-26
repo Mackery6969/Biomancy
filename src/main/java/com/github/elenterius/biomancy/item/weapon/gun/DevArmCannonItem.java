@@ -17,7 +17,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import com.github.elenterius.biomancy.init.ModEnchantments;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -29,7 +32,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
@@ -48,7 +50,7 @@ import java.util.function.Consumer;
 @Deprecated
 public class DevArmCannonItem extends Item implements GeoItem, IArmPoseProvider, ItemTooltipStyleProvider, KeyPressListener {
 
-	public static final Set<Enchantment> VALID_ENCHANTMENTS = Set.of(Enchantments.PUNCH_ARROWS, Enchantments.POWER_ARROWS);
+	public static final Set<ResourceKey<Enchantment>> VALID_ENCHANTMENTS = Set.of(Enchantments.PUNCH, Enchantments.POWER);
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public DevArmCannonItem(Properties properties) {
@@ -56,11 +58,11 @@ public class DevArmCannonItem extends Item implements GeoItem, IArmPoseProvider,
 	}
 
 	private static float getBonusDamage(ItemStack stack) {
-		return 0.6f * EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack);
+		return 0.6f * ModEnchantments.getLevel(stack, Enchantments.POWER);
 	}
 
 	private static int getBonusKnockBack(ItemStack stack) {
-		return EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PUNCH_ARROWS, stack);
+		return ModEnchantments.getLevel(stack, Enchantments.PUNCH);
 	}
 
 	@Override
@@ -129,8 +131,8 @@ public class DevArmCannonItem extends Item implements GeoItem, IArmPoseProvider,
 	}
 
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-		return VALID_ENCHANTMENTS.contains(enchantment) || super.canApplyAtEnchantingTable(stack, enchantment);
+	public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
+		return enchantment.is(k -> VALID_ENCHANTMENTS.contains(k)) || super.supportsEnchantment(stack, enchantment);
 	}
 
 	@Override

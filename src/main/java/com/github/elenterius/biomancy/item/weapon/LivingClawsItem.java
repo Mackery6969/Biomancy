@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.item.weapon;
 
+import net.minecraft.core.Holder;
 import com.github.elenterius.biomancy.api.livingtool.LivingToolState;
 import com.github.elenterius.biomancy.api.livingtool.SpecialLivingTool;
 import com.github.elenterius.biomancy.client.util.ClientTextUtil;
@@ -119,8 +120,8 @@ public class LivingClawsItem extends SimpleClawsItem implements SpecialLivingToo
 	}
 
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-		return isValidEnchantment(stack, enchantment) && super.canApplyAtEnchantingTable(stack, enchantment);
+	public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
+		return isValidEnchantment(stack, enchantment) && super.supportsEnchantment(stack, enchantment);
 	}
 
 	@Override

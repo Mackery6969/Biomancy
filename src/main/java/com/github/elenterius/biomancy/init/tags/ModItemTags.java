@@ -22,6 +22,11 @@ public final class ModItemTags {
 	public static final TagKey<Item> CANNOT_BE_DIGESTED_IN_ACID = tag("cannot_be_digested_in_acid");
 	public static final TagKey<Item> CANNOT_BE_EATEN_BY_CRADLE = tag("cannot_be_eaten_by_cradle");
 
+	public static final TagKey<Item> ENCHANTABLE_LIVING = tag("enchantable/living");
+	public static final TagKey<Item> ENCHANTABLE_SYRINGE = tag("enchantable/syringe");
+	public static final TagKey<Item> ENCHANTABLE_SURGERY = tag("enchantable/surgery");
+	public static final TagKey<Item> ENCHANTABLE_WEAPON = tag("enchantable/weapon");
+
 	private ModItemTags() {}
 
 	private static TagKey<Item> tag(String name) {

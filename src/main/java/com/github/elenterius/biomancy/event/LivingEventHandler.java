@@ -3,8 +3,8 @@ package com.github.elenterius.biomancy.event;
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.block.JumpPadBlock;
 import com.github.elenterius.biomancy.entity.misc.LivingEntityData;
+import com.github.elenterius.biomancy.enchantment.LivingEnchantmentEffects;
 import com.github.elenterius.biomancy.init.AcidInteractions;
-import com.github.elenterius.biomancy.init.ModEnchantments;
 import com.github.elenterius.biomancy.init.ModMobEffects;
 import com.github.elenterius.biomancy.item.armor.WarriorArmorItem;
 import com.github.elenterius.biomancy.serum.FrenzySerum;
@@ -70,8 +70,8 @@ public final class LivingEventHandler {
 		if (player.level().isClientSide()) return;
 
 		if (player.tickCount % 30 == 0) {
-			ModEnchantments.SELF_FEEDING.get().repairLivingItems(player);
-			ModEnchantments.PARASITIC_METABOLISM.get().repairLivingItems(player);
+			LivingEnchantmentEffects.repairSelfFeedingItems(player);
+			LivingEnchantmentEffects.repairParasiticMetabolismItems(player);
 		}
 	}
 

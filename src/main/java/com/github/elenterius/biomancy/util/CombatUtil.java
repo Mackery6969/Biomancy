@@ -1,6 +1,7 @@
 package com.github.elenterius.biomancy.util;
 
 import com.github.elenterius.biomancy.init.ModDamageSources;
+import com.github.elenterius.biomancy.init.ModEnchantments;
 import com.github.elenterius.biomancy.init.ModMobEffects;
 import com.github.elenterius.biomancy.item.armor.AcolyteArmorItem;
 import net.minecraft.world.damagesource.CombatRules;
@@ -40,7 +41,7 @@ public final class CombatUtil {
 			}
 		}
 
-		int pierceLevel = weapon.getEnchantmentLevel(Enchantments.PIERCING);
+		int pierceLevel = ModEnchantments.getLevel(weapon, Enchantments.PIERCING);
 		float pct = CombatRules.getDamageAfterAbsorb(20f, target.getArmorValue(), (float) target.getAttributeValue(Attributes.ARMOR_TOUGHNESS)) / 20f;
 		return target.getRandom().nextFloat() < pct + 0.075f * pierceLevel + pierceProbability;
 	}

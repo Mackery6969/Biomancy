@@ -4,6 +4,7 @@ import com.github.elenterius.biomancy.init.ModEnchantments;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -35,12 +36,12 @@ public class DespoilingSwordItem extends SimpleSwordItem {
 	}
 
 	@Override
-	public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
+	public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
 		if (isBroken(stack)) return 0;
 
 		int level = super.getEnchantmentLevel(stack, enchantment);
 
-		if (enchantment == ModEnchantments.DESPOIL.get()) {
+		if (enchantment.is(ModEnchantments.DESPOIL)) {
 			return level + 1;
 		}
 
