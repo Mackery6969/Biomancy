@@ -1,147 +1,65 @@
 package com.github.elenterius.biomancy.init;
 
 import com.github.elenterius.biomancy.BiomancyMod;
-import com.github.elenterius.biomancy.api.serum.Serum;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraftforge.registries.MissingMappingsEvent;
-import net.minecraftforge.registries.MissingMappingsEvent.Mapping;
+import net.minecraft.world.item.Items;
 
-import java.util.List;
-
-/**
- * Currently MissingMappings Event fires on WRONG Bus (FORGE BUS) even though it implements IModBusEvent
- * <a href="https://github.com/MinecraftForge/MinecraftForge/issues/8513">view GitHub Issue</a>
- * <br>
- * SHOULD BE FIXED IN Forge 1.19
- * <a href="https://github.com/MinecraftForge/MinecraftForge/pull/8538">viw Pull Request Draft</a>
- */
-@EventBusSubscriber(modid = BiomancyMod.MOD_ID)
 public final class MigrationHandler {
 
 	private MigrationHandler() {}
 
-	@SubscribeEvent
-	public static void onMissingMappings(final MissingMappingsEvent event) {
-		handleMissingSerums(event.getMappings(ModSerums.SERUMS.getRegistryKey(), BiomancyMod.MOD_ID));
-		handleMissingItems(event.getMappings(ModItems.ITEMS.getRegistryKey(), BiomancyMod.MOD_ID));
-		handleMissingBlocks(event.getMappings(ModBlocks.BLOCKS.getRegistryKey(), BiomancyMod.MOD_ID));
-		handleMissingBlockEntityTypes(event.getMappings(BuiltInRegistries.BLOCK_ENTITY_TYPE.getRegistryKey(), BiomancyMod.MOD_ID));
-		handleMissingEntityTypes(event.getMappings(BuiltInRegistries.ENTITY_TYPE.getRegistryKey(), BiomancyMod.MOD_ID));
-	}
+	public static void registerAliases() {
+		ModSerums.SERUMS.addAlias(BiomancyMod.rl("growth_serum"), ModSerums.AGEING_SERUM.getId());
 
-	private static void handleMissingSerums(List<Mapping<Serum>> mappings) {
-		if (mappings.isEmpty()) return;
+		ModBlocks.BLOCKS.addAlias(BiomancyMod.rl("bio_lantern"), ModBlocks.YELLOW_BIO_LANTERN.getId());
+		ModBlocks.BLOCKS.addAlias(BiomancyMod.rl("bone_spike"), ModBlocks.FLESH_SPIKE.getId());
+		ModBlocks.BLOCKS.addAlias(BiomancyMod.rl("creator"), ModBlocks.PRIMORDIAL_CRADLE.getId());
+		ModBlocks.BLOCKS.addAlias(BiomancyMod.rl("flesh_block"), ModBlocks.FLESH.getId());
+		ModBlocks.BLOCKS.addAlias(BiomancyMod.rl("flesh_block_slab"), ModBlocks.FLESH_SLAB.getId());
+		ModBlocks.BLOCKS.addAlias(BiomancyMod.rl("flesh_block_stairs"), ModBlocks.FLESH_STAIRS.getId());
+		ModBlocks.BLOCKS.addAlias(BiomancyMod.rl("flesh_irisdoor"), ModBlocks.FLESH_IRIS_DOOR.getId());
+		ModBlocks.BLOCKS.addAlias(BiomancyMod.rl("necrotic_flesh_block"), ModBlocks.MALIGNANT_FLESH.getId());
+		ModBlocks.BLOCKS.addAlias(BiomancyMod.rl("flesh_tentacle"), ModBlocks.MALIGNANT_FLESH_VEINS.getId());
+		ModBlocks.BLOCKS.addAlias(BiomancyMod.rl("corrupted_primal_flesh"), ModBlocks.PRIMAL_FLESH.getId());
 
-		for (Mapping<Serum> mapping : mappings) {
-			if (mapping.getKey().getPath().equals("growth_serum")) {
-				mapping.remap(ModSerums.AGEING_SERUM.get());
-			}
-			else {
-				mapping.ignore();
-			}
-		}
-	}
+		ModEntityTypes.ENTITIES.addAlias(BiomancyMod.rl("malignant_flesh_blob"), ModEntityTypes.PRIMORDIAL_HUNGRY_FLESH_BLOB.getId());
 
-	public static void handleMissingBlocks(List<Mapping<Block>> mappings) {
-		if (mappings.isEmpty()) return;
+		ModBlockEntities.BLOCK_ENTITIES.addAlias(BiomancyMod.rl("creator"), ModBlockEntities.PRIMORDIAL_CRADLE.getId());
 
-		BiomancyMod.LOGGER.info("found missing block mappings, attempting to remap...");
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("long_claws"), ModItems.RAVENOUS_CLAWS.getId());
 
-		for (Mapping<Block> mapping : mappings) {
-			String path = mapping.getKey().getPath();
-			switch (path) {
-				case "bio_lantern" -> mapping.remap(ModBlocks.YELLOW_BIO_LANTERN.get());
-				case "bone_spike" -> mapping.remap(ModBlocks.FLESH_SPIKE.get());
-				case "creator" -> mapping.remap(ModBlocks.PRIMORDIAL_CRADLE.get());
-				case "flesh_block" -> mapping.remap(ModBlocks.FLESH.get());
-				case "flesh_block_slab" -> mapping.remap(ModBlocks.FLESH_SLAB.get());
-				case "flesh_block_stairs" -> mapping.remap(ModBlocks.FLESH_STAIRS.get());
-				case "flesh_irisdoor" -> mapping.remap(ModBlocks.FLESH_IRIS_DOOR.get());
-				case "necrotic_flesh_block" -> mapping.remap(ModBlocks.MALIGNANT_FLESH.get());
-				case "flesh_tentacle" -> mapping.remap(ModBlocks.MALIGNANT_FLESH_VEINS.get());
-				case "corrupted_primal_flesh" -> mapping.remap(ModBlocks.PRIMAL_FLESH.get());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("mascot_pattern"), ModItems.MASCOT_BANNER_PATTERNS.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("mascot_outline_pattern"), ModItems.MASCOT_BANNER_PATTERNS.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("mascot_accent_pattern"), ModItems.MASCOT_BANNER_PATTERNS.getId());
 
-				default -> mapping.ignore();
-			}
-		}
-	}
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("bio_lantern"), ModItems.YELLOW_BIO_LANTERN.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("glass_vial"), ModItems.VIAL.getId());
 
-	private static void handleMissingEntityTypes(List<Mapping<EntityType<?>>> mappings) {
-		if (mappings.isEmpty()) return;
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("creator"), ModItems.PRIMORDIAL_CRADLE.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("flesh_block"), ModItems.FLESH_BLOCK.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("flesh_block_slab"), ModItems.FLESH_SLAB.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("flesh_block_stairs"), ModItems.FLESH_STAIRS.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("flesh_irisdoor"), ModItems.FLESH_IRIS_DOOR.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("necrotic_flesh_block"), ModItems.MALIGNANT_FLESH_BLOCK.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("flesh_tentacle"), ModItems.MALIGNANT_FLESH_VEINS.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("corrupted_primal_flesh"), ModItems.PRIMAL_FLESH_BLOCK.getId());
 
-		BiomancyMod.LOGGER.info("found missing entity mappings, attempting to remap...");
-
-		for (Mapping<EntityType<?>> mapping : mappings) {
-			String path = mapping.getKey().getPath();
-			if (path.equals("malignant_flesh_blob")) {
-				mapping.remap(ModEntityTypes.PRIMORDIAL_HUNGRY_FLESH_BLOB.get());
-			}
-			else {
-				mapping.ignore();
-			}
-		}
-	}
-
-	public static void handleMissingBlockEntityTypes(List<Mapping<BlockEntityType<?>>> mappings) {
-		if (mappings.isEmpty()) return;
-
-		for (Mapping<BlockEntityType<?>> mapping : mappings) {
-			String path = mapping.getKey().getPath();
-			if (path.equals("creator")) {
-				mapping.remap(ModBlockEntities.PRIMORDIAL_CRADLE.get());
-			}
-			else {
-				mapping.ignore();
-			}
-		}
-	}
-
-	public static void handleMissingItems(List<Mapping<Item>> mappings) {
-		if (mappings.isEmpty()) return;
-
-		BiomancyMod.LOGGER.info("found missing item mappings, attempting to remap...");
-
-		for (Mapping<Item> mapping : mappings) {
-			String path = mapping.getKey().getPath();
-			switch (path) {
-				case "long_claws" -> mapping.remap(ModItems.RAVENOUS_CLAWS.get());
-
-				case "mascot_pattern", "mascot_outline_pattern", "mascot_accent_pattern" -> mapping.remap(ModItems.MASCOT_BANNER_PATTERNS.get());
-
-				case "bio_lantern" -> mapping.remap(ModItems.YELLOW_BIO_LANTERN.get());
-				case "glass_vial" -> mapping.remap(ModItems.VIAL.get());
-
-				case "creator" -> mapping.remap(ModItems.PRIMORDIAL_CRADLE.get());
-				case "flesh_block" -> mapping.remap(ModItems.FLESH_BLOCK.get());
-				case "flesh_block_slab" -> mapping.remap(ModItems.FLESH_SLAB.get());
-				case "flesh_block_stairs" -> mapping.remap(ModItems.FLESH_STAIRS.get());
-				case "flesh_irisdoor" -> mapping.remap(ModItems.FLESH_IRIS_DOOR.get());
-				case "necrotic_flesh_block" -> mapping.remap(ModItems.MALIGNANT_FLESH_BLOCK.get());
-				case "flesh_tentacle" -> mapping.remap(ModItems.MALIGNANT_FLESH_VEINS.get());
-				case "corrupted_primal_flesh" -> mapping.remap(ModItems.PRIMAL_FLESH_BLOCK.get());
-
-				case "biometal" -> mapping.remap(ModItems.LIVING_FLESH.get());
-				case "bone_gear" -> mapping.remap(Items.BONE);
-				case "lens" -> mapping.remap(ModItems.GEM_FRAGMENTS.get());
-				case "skin_chunk", "flesh_lump", "mended_skin" -> mapping.remap(ModItems.FLESH_BITS.get());
-				case "stomach", "artificial_stomach" -> mapping.remap(ModItems.GENERIC_MOB_GLAND.get());
-				case "bolus" -> mapping.remap(ModItems.NUTRIENTS.get());
-				case "keratin_filaments" -> mapping.remap(ModItems.TOUGH_FIBERS.get());
-				case "digestate" -> mapping.remap(ModItems.ORGANIC_MATTER.get());
-				case "oxide_powder", "silicate_paste", "bio_minerals" -> mapping.remap(ModItems.MINERAL_FRAGMENT.get());
-				case "hormone_bile" -> mapping.remap(ModItems.HORMONE_SECRETION.get());
-				case "corrosive_additive" -> mapping.remap(ModItems.DECAYING_ADDITIVE.get());
-
-				default -> mapping.ignore();
-			}
-		}
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("biometal"), ModItems.LIVING_FLESH.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("bone_gear"), BuiltInRegistries.ITEM.getKey(Items.BONE));
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("lens"), ModItems.GEM_FRAGMENTS.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("skin_chunk"), ModItems.FLESH_BITS.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("flesh_lump"), ModItems.FLESH_BITS.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("mended_skin"), ModItems.FLESH_BITS.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("stomach"), ModItems.GENERIC_MOB_GLAND.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("artificial_stomach"), ModItems.GENERIC_MOB_GLAND.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("bolus"), ModItems.NUTRIENTS.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("keratin_filaments"), ModItems.TOUGH_FIBERS.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("digestate"), ModItems.ORGANIC_MATTER.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("oxide_powder"), ModItems.MINERAL_FRAGMENT.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("silicate_paste"), ModItems.MINERAL_FRAGMENT.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("bio_minerals"), ModItems.MINERAL_FRAGMENT.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("hormone_bile"), ModItems.HORMONE_SECRETION.getId());
+		ModItems.ITEMS.addAlias(BiomancyMod.rl("corrosive_additive"), ModItems.DECAYING_ADDITIVE.getId());
 	}
 
 }

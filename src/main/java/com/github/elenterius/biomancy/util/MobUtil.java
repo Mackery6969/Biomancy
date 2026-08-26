@@ -7,6 +7,7 @@ import com.github.elenterius.biomancy.mixin.accessor.EntityAccessor;
 import com.github.elenterius.biomancy.mixin.accessor.ServerLevelAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
@@ -23,7 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.neoforge.entity.PartEntity;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.event.EventHooks;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
@@ -58,7 +59,7 @@ public final class MobUtil {
 	}
 
 	public static boolean isUndead(LivingEntity entity) {
-		return entity.getMobType() == MobType.UNDEAD;
+		return entity.getType().is(EntityTypeTags.UNDEAD);
 	}
 
 	public static boolean isNotUndead(LivingEntity entity) {
@@ -81,11 +82,11 @@ public final class MobUtil {
 	 * @return gravity, positive is downwards force and negative is upwards force
 	 */
 	public static double getGravity(Entity entity) {
-		return entity instanceof LivingEntity livingEntity ? livingEntity.getAttributeValue(Attributes.GRAVITY.value()) : Attributes.GRAVITY.value().getDefaultValue();
+		return entity instanceof LivingEntity livingEntity ? livingEntity.getAttributeValue(Attributes.GRAVITY) : Attributes.GRAVITY.value().getDefaultValue();
 	}
 
 	public static double getGravity(Entity entity, double fallback) {
-		return entity instanceof LivingEntity livingEntity ? livingEntity.getAttributeValue(Attributes.GRAVITY.value()) : fallback;
+		return entity instanceof LivingEntity livingEntity ? livingEntity.getAttributeValue(Attributes.GRAVITY) : fallback;
 	}
 
 	//	public static double getGravitationalAcceleration(Entity entity) {
@@ -100,19 +101,19 @@ public final class MobUtil {
 		return a == target || b == target;
 	}
 
-	public static void setAttributeBaseValue(LivingEntity livingEntity, Attribute attribute, double value) {
+	public static void setAttributeBaseValue(LivingEntity livingEntity, Holder<Attribute> attribute, double value) {
 		AttributeInstance instance = livingEntity.getAttribute(attribute);
 		if (instance != null) instance.setBaseValue(value);
 		else BiomancyMod.LOGGER.warn(LOG_MARKER, "Tried to set the value of a missing Attribute: {}, {}", attribute, livingEntity);
 	}
 
-	public static void addTransientAttributeModifier(LivingEntity livingEntity, Attribute attribute, AttributeModifier modifier) {
+	public static void addTransientAttributeModifier(LivingEntity livingEntity, Holder<Attribute> attribute, AttributeModifier modifier) {
 		AttributeInstance instance = livingEntity.getAttribute(attribute);
 		if (instance != null) instance.addTransientModifier(modifier);
 		else BiomancyMod.LOGGER.warn(LOG_MARKER, "Tried to add modifier to a missing Attribute: {}, {}", attribute, livingEntity);
 	}
 
-	public static void removeTransientAttributeModifier(LivingEntity livingEntity, Attribute attribute, AttributeModifier modifier) {
+	public static void removeTransientAttributeModifier(LivingEntity livingEntity, Holder<Attribute> attribute, AttributeModifier modifier) {
 		AttributeInstance instance = livingEntity.getAttribute(attribute);
 		if (instance != null) instance.removeModifier(modifier);
 		else BiomancyMod.LOGGER.warn(LOG_MARKER, "Tried to remove modifier from a missing Attribute: {}, {}", attribute, livingEntity);
@@ -164,13 +165,13 @@ public final class MobUtil {
 	}
 
 	public static <E extends Mob, T extends Mob> boolean convertMobTo(ServerLevel world, E oldMob, EntityType<T> outcomeMobType, boolean copyEquipment, BiConsumer<E, T> onConvert) {
-		if (ForgeEventFactory.canLivingConvert(oldMob, outcomeMobType, timer -> {})) {
+		if (EventHooks.canLivingConvert(oldMob, outcomeMobType, timer -> {})) {
 			T newMob = oldMob.convertTo(outcomeMobType, copyEquipment);// create new mob with same settings & equipment and remove old entity
 			if (newMob != null) {
-				newMob.finalizeSpawn(world, world.getCurrentDifficultyAt(oldMob.blockPosition()), MobSpawnType.CONVERSION, null, null);
+				newMob.finalizeSpawn(world, world.getCurrentDifficultyAt(oldMob.blockPosition()), MobSpawnType.CONVERSION, null);
 				newMob.invulnerableTime = 60;
 				onConvert.accept(oldMob, newMob);
-				ForgeEventFactory.onLivingConvert(oldMob, newMob);
+				EventHooks.onLivingConvert(oldMob, newMob);
 				return true;
 			}
 		}
@@ -188,15 +189,15 @@ public final class MobUtil {
 			if (entity instanceof LivingEntity livingEntity && validEntity.test(livingEntity)) {
 				//noinspection unchecked
 				EntityType<? extends LivingEntity> entityType = (EntityType<? extends LivingEntity>) outcomeType;
-				if (ForgeEventFactory.canLivingConvert(oldEntity, entityType, timer -> {})) {
+				if (EventHooks.canLivingConvert(oldEntity, entityType, timer -> {})) {
 					livingEntity.copyPosition(oldEntity);
 					if (world.addFreshEntity(livingEntity)) {
 						oldEntity.discard();
 						if (livingEntity instanceof Mob mob) {
-							mob.finalizeSpawn(world, world.getCurrentDifficultyAt(oldEntity.blockPosition()), MobSpawnType.CONVERSION, null, null);
+							mob.finalizeSpawn(world, world.getCurrentDifficultyAt(oldEntity.blockPosition()), MobSpawnType.CONVERSION, null);
 						}
 						livingEntity.invulnerableTime = 60;
-						ForgeEventFactory.onLivingConvert(oldEntity, livingEntity);
+						EventHooks.onLivingConvert(oldEntity, livingEntity);
 						return true;
 					}
 				}

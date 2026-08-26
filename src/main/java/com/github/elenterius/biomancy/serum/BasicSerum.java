@@ -42,7 +42,7 @@ public abstract class BasicSerum implements Serum {
 	@Override
 	public String getNameTranslationKey() {
 		if (translationKey == null) {
-			translationKey = Serum.makeTranslationKey(Objects.requireNonNull(ModSerums.REGISTRY.get().getKey(this)));
+			translationKey = Serum.makeTranslationKey(Objects.requireNonNull(ModSerums.REGISTRY.getKey(this)));
 		}
 		return translationKey;
 	}
@@ -53,7 +53,7 @@ public abstract class BasicSerum implements Serum {
 
 	@Override
 	public String toString() {
-		return "Serum{name=%s, color=%s}".formatted(ModSerums.REGISTRY.get().getKey(this), Integer.toHexString(color));
+		return "Serum{name=%s, color=%s}".formatted(ModSerums.REGISTRY.getKey(this), Integer.toHexString(color));
 	}
 
 }

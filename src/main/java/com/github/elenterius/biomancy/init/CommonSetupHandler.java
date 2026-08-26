@@ -21,8 +21,6 @@ import net.minecraft.world.level.block.DispenserBlock;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraft.core.registries.Registries;
-import net.neoforged.neoforge.registries.RegisterEvent;
 
 @EventBusSubscriber(modid = BiomancyMod.MOD_ID)
 public final class CommonSetupHandler {
@@ -47,13 +45,6 @@ public final class CommonSetupHandler {
 		ModFluids.registerInteractions();
 		ModRecipes.registerBrewingRecipes();
 		ModsCompatHandler.onBiomancyCommonSetup(event);
-	}
-
-	@SubscribeEvent
-	public static void registerRecipeSerializers(RegisterEvent event) {
-		if (event.getRegistryKey().equals(Registries.RECIPE_SERIALIZER)) {
-			ModRecipes.registerIngredientSerializers();
-		}
 	}
 
 	private static void registerDispenserBehaviors() {

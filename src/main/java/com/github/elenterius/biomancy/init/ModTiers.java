@@ -5,17 +5,19 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.ForgeTier;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public final class ModTiers {
 
-	public static final ForgeTier PRIMAL_FLESH = new ForgeTier(2, 500, 4.5f, 1f, 14, BlockTags.NEEDS_IRON_TOOL, () -> Ingredient.of(ModItems.LIVING_FLESH.get()));
-	public static final ForgeTier BONE = new ForgeTier(1, 142, 4.5f, 1f, 7, BlockTags.NEEDS_STONE_TOOL, ModTiers::buildBoneIngredients);
-	public static final ForgeTier BIOFLESH = new ForgeTier(4, 2031, 9f, 4f, 15, Tags.Blocks.NEEDS_NETHERITE_TOOL, () -> Ingredient.of(ModItemTags.FRESH_RAW_MEATS));
+	public static final Tier PRIMAL_FLESH = new SimpleTier(500, 4.5f, 1f, 14, BlockTags.NEEDS_IRON_TOOL, () -> Ingredient.of(ModItems.LIVING_FLESH.get()));
+	public static final Tier BONE = new SimpleTier(142, 4.5f, 1f, 7, BlockTags.NEEDS_STONE_TOOL, ModTiers::buildBoneIngredients);
+	public static final Tier BIOFLESH = new SimpleTier(2031, 9f, 4f, 15, Tags.Blocks.NEEDS_NETHERITE_TOOL, () -> Ingredient.of(ModItemTags.FRESH_RAW_MEATS));
 
 	private ModTiers() {}
 
@@ -32,6 +34,38 @@ public final class ModTiers {
 				tagIngredient(Tags.Items.BONES),
 				itemIngredient(ModItems.BONE_FRAGMENTS.get(), 4)
 		));
+	}
+
+	private record SimpleTier(int uses, float speed, float attackDamageBonus, int enchantmentValue, TagKey<Block> incorrectBlocksForDrops, Supplier<Ingredient> repairIngredient) implements Tier {
+		@Override
+		public int getUses() {
+			return uses;
+		}
+
+		@Override
+		public float getSpeed() {
+			return speed;
+		}
+
+		@Override
+		public float getAttackDamageBonus() {
+			return attackDamageBonus;
+		}
+
+		@Override
+		public TagKey<Block> getIncorrectBlocksForDrops() {
+			return incorrectBlocksForDrops;
+		}
+
+		@Override
+		public int getEnchantmentValue() {
+			return enchantmentValue;
+		}
+
+		@Override
+		public Ingredient getRepairIngredient() {
+			return repairIngredient.get();
+		}
 	}
 
 }

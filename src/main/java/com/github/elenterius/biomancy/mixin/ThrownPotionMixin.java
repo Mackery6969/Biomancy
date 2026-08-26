@@ -2,6 +2,7 @@ package com.github.elenterius.biomancy.mixin;
 
 import com.github.elenterius.biomancy.statuseffect.StatusEffectHandler;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -15,7 +16,7 @@ public abstract class ThrownPotionMixin {
 
 	@WrapWithCondition(method = "applySplash", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/effect/MobEffect;applyInstantenousEffect(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/entity/LivingEntity;ID)V"))
 	private boolean onlyApplyInstantEffectIfAllowed(MobEffect effect, Entity source, Entity indirectSource, LivingEntity livingEntity, int amplifier, double distanceMultiplier) {
-		return StatusEffectHandler.canApplySplashEffectIfAllowed(effect, livingEntity, StatusEffectHandler.CONSUME_ONE_NUTRIENT_PER_ARMOR_PIECE);
+		return StatusEffectHandler.canApplySplashEffectIfAllowed(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect), livingEntity, StatusEffectHandler.CONSUME_ONE_NUTRIENT_PER_ARMOR_PIECE);
 	}
 
 	@WrapWithCondition(method = "applySplash", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z"))

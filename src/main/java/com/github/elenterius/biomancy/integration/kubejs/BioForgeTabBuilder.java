@@ -2,7 +2,6 @@ package com.github.elenterius.biomancy.integration.kubejs;
 
 import com.github.elenterius.biomancy.menu.BioForgeTab;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
-import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -14,11 +13,6 @@ public class BioForgeTabBuilder extends BuilderBase<BioForgeTab> {
 
 	protected BioForgeTabBuilder(ResourceLocation id) {
 		super(id);
-	}
-
-	@Override
-	public RegistryInfo<BioForgeTab> getRegistryType() {
-		return BiomancyKubeJSPlugin.BIO_FORGE_TAB_REGISTRY;
 	}
 
 	public BioForgeTabBuilder sortPriority(int priority) {

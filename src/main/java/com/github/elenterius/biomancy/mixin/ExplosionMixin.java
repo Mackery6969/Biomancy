@@ -21,7 +21,7 @@ public abstract class ExplosionMixin {
 
 		Explosion self = (Explosion) (Object) this;
 		if (self instanceof ExplosionUtil.VolatileExplosion && amount > 0f && instance.isAlive() && instance instanceof LivingEntity living) {
-			living.addEffect(new MobEffectInstance(ModMobEffects.VOLATILE.get(), 60 * 20));
+			living.addEffect(new MobEffectInstance(ModMobEffects.VOLATILE, 60 * 20));
 		}
 
 		return result;

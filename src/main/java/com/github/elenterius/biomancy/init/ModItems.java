@@ -14,6 +14,7 @@ import com.github.elenterius.biomancy.item.weapon.RavenousClawsItem;
 import com.github.elenterius.biomancy.item.weapon.gun.CausticGunbladeItem;
 import com.github.elenterius.biomancy.item.weapon.gun.DevArmCannonItem;
 import com.github.elenterius.biomancy.item.weapon.gun.ImpalerItem;
+import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -127,7 +128,7 @@ public final class ModItems {
 	public static final DeferredHolder<Item, BloomberryItem> BLOOMBERRY = registerItem("bloomberry", props -> new BloomberryItem(props.food(ModFoods.NUTRIENT_PASTE)));
 	public static final DeferredHolder<Item, FertilizerItem> FERTILIZER = registerItem("fertilizer", props -> new FertilizerItem(props.rarity(ModRarities.UNCOMMON)));
 	public static final DeferredHolder<Item, SimpleItem> CREATOR_MIX = registerSimpleItem("creator_mix");
-	public static final DeferredHolder<Item, BucketItem> ACID_BUCKET = registerItem("acid_bucket", properties -> new BucketItem(ModFluids.ACID, properties.craftRemainder(Items.BUCKET).stacksTo(1).rarity(Rarity.COMMON)));
+	public static final DeferredHolder<Item, BucketItem> ACID_BUCKET = registerItem("acid_bucket", properties -> new BucketItem(ModFluids.ACID.get(), properties.craftRemainder(Items.BUCKET).stacksTo(1).rarity(Rarity.COMMON)));
 	public static final DeferredHolder<Item, SimpleItem> GELLING_AGENT = registerSimpleItem("gelling_agent");
 
 	public static final DeferredHolder<Item, MaykerBannerPatternItem> MASCOT_BANNER_PATTERNS = registerItem("mascot_patterns", props -> new MaykerBannerPatternItem(ModBannerPatterns.TAG_MASCOT, props));
@@ -278,75 +279,75 @@ public final class ModItems {
 		return ITEMS.register(name, () -> factory.apply(createProperties()));
 	}
 
-	private static <T extends Block> DeferredHolder<Item, SimpleBlockItem> registerSimpleBlockItem(DeferredHolder<Item, T> blockHolder) {
+	private static <T extends Block> DeferredHolder<Item, SimpleBlockItem> registerSimpleBlockItem(DeferredHolder<Block, T> blockHolder) {
 		return ITEMS.register(blockHolder.getId().getPath(), () -> new SimpleBlockItem(blockHolder.get(), createProperties()));
 	}
 
-	private static <T extends Block> DeferredHolder<Item, SimpleBlockItem> registerSimpleBlockItem(DeferredHolder<Item, T> blockHolder, Rarity rarity) {
+	private static <T extends Block> DeferredHolder<Item, SimpleBlockItem> registerSimpleBlockItem(DeferredHolder<Block, T> blockHolder, Rarity rarity) {
 		return registerSimpleBlockItem(blockHolder, () -> createProperties().rarity(rarity));
 	}
 
-	private static <T extends Block> DeferredHolder<Item, SimpleBlockItem> registerSimpleBlockItem(DeferredHolder<Item, T> blockHolder, Supplier<Item.Properties> properties) {
+	private static <T extends Block> DeferredHolder<Item, SimpleBlockItem> registerSimpleBlockItem(DeferredHolder<Block, T> blockHolder, Supplier<Item.Properties> properties) {
 		return ITEMS.register(blockHolder.getId().getPath(), () -> new SimpleBlockItem(blockHolder.get(), properties.get()));
 	}
 
-	private static <T extends Block, I extends BlockItem> DeferredHolder<Item, I> registerBlockItem(DeferredHolder<Item, T> blockHolder, Function<T, I> factory) {
+	private static <T extends Block, I extends BlockItem> DeferredHolder<Item, I> registerBlockItem(DeferredHolder<Block, T> blockHolder, Function<T, I> factory) {
 		return ITEMS.register(blockHolder.getId().getPath(), () -> factory.apply(blockHolder.get()));
 	}
 
-	private static <T extends Block, I extends BlockItem> DeferredHolder<Item, I> registerBlockItem(DeferredHolder<Item, T> blockHolder, IBlockItemFactory<T, I> factory) {
+	private static <T extends Block, I extends BlockItem> DeferredHolder<Item, I> registerBlockItem(DeferredHolder<Block, T> blockHolder, IBlockItemFactory<T, I> factory) {
 		return ITEMS.register(blockHolder.getId().getPath(), () -> factory.create(blockHolder.get(), createProperties()));
 	}
 
-	private static <T extends Block, I extends BlockItem> DeferredHolder<Item, I> registerBlockItem(DeferredHolder<Item, T> blockHolder, IBlockItemFactory<T, I> factory, Rarity rarity) {
+	private static <T extends Block, I extends BlockItem> DeferredHolder<Item, I> registerBlockItem(DeferredHolder<Block, T> blockHolder, IBlockItemFactory<T, I> factory, Rarity rarity) {
 		return ITEMS.register(blockHolder.getId().getPath(), () -> factory.create(blockHolder.get(), createProperties().rarity(rarity)));
 	}
 
-	private static <M extends ArmorMaterial, I extends ArmorItem> DeferredHolder<Item, I> registerArmorHelmet(String name, M material, ArmorFactory<M, ArmorItem.Type, I> factory) {
+	private static <I extends ArmorItem> DeferredHolder<Item, I> registerArmorHelmet(String name, Holder<ArmorMaterial> material, ArmorFactory<I> factory) {
 		return registerArmor(name + "_helmet", material, ArmorItem.Type.HELMET, factory);
 	}
 
-	private static <M extends ArmorMaterial, I extends ArmorItem> DeferredHolder<Item, I> registerArmorChestplate(String name, M material, ArmorFactory<M, ArmorItem.Type, I> factory) {
+	private static <I extends ArmorItem> DeferredHolder<Item, I> registerArmorChestplate(String name, Holder<ArmorMaterial> material, ArmorFactory<I> factory) {
 		return registerArmor(name + "_chestplate", material, ArmorItem.Type.CHESTPLATE, factory);
 	}
 
-	private static <M extends ArmorMaterial, I extends ArmorItem> DeferredHolder<Item, I> registerArmorLeggings(String name, M material, ArmorFactory<M, ArmorItem.Type, I> factory) {
+	private static <I extends ArmorItem> DeferredHolder<Item, I> registerArmorLeggings(String name, Holder<ArmorMaterial> material, ArmorFactory<I> factory) {
 		return registerArmor(name + "_leggings", material, ArmorItem.Type.LEGGINGS, factory);
 	}
 
-	private static <M extends ArmorMaterial, I extends ArmorItem> DeferredHolder<Item, I> registerArmorBoots(String name, M material, ArmorFactory<M, ArmorItem.Type, I> factory) {
+	private static <I extends ArmorItem> DeferredHolder<Item, I> registerArmorBoots(String name, Holder<ArmorMaterial> material, ArmorFactory<I> factory) {
 		return registerArmor(name + "_boots", material, ArmorItem.Type.BOOTS, factory);
 	}
 
-	private static <M extends ArmorMaterial, T extends ArmorItem.Type, I extends ArmorItem> DeferredHolder<Item, I> registerArmor(String name, M material, T type, ArmorFactory<M, T, I> factory) {
+	private static <I extends ArmorItem> DeferredHolder<Item, I> registerArmor(String name, Holder<ArmorMaterial> material, ArmorItem.Type type, ArmorFactory<I> factory) {
 		return ITEMS.register(name, () -> factory.create(material, type, createProperties()));
 	}
 
-	private static <M extends ArmorMaterial, I extends ArmorItem> DeferredHolder<Item, I> registerLivingArmorHelmet(String name, M material, int maxNutrients, LivingArmorFactory<M, ArmorItem.Type, I> factory) {
+	private static <I extends ArmorItem> DeferredHolder<Item, I> registerLivingArmorHelmet(String name, Holder<ArmorMaterial> material, int maxNutrients, LivingArmorFactory<I> factory) {
 		return registerLivingArmor(name + "_helmet", material, ArmorItem.Type.HELMET, maxNutrients, factory);
 	}
 
-	private static <M extends ArmorMaterial, I extends ArmorItem> DeferredHolder<Item, I> registerLivingArmorChestplate(String name, M material, int maxNutrients, LivingArmorFactory<M, ArmorItem.Type, I> factory) {
+	private static <I extends ArmorItem> DeferredHolder<Item, I> registerLivingArmorChestplate(String name, Holder<ArmorMaterial> material, int maxNutrients, LivingArmorFactory<I> factory) {
 		return registerLivingArmor(name + "_chestplate", material, ArmorItem.Type.CHESTPLATE, maxNutrients, factory);
 	}
 
-	private static <M extends ArmorMaterial, I extends ArmorItem> DeferredHolder<Item, I> registerLivingArmorLeggings(String name, M material, int maxNutrients, LivingArmorFactory<M, ArmorItem.Type, I> factory) {
+	private static <I extends ArmorItem> DeferredHolder<Item, I> registerLivingArmorLeggings(String name, Holder<ArmorMaterial> material, int maxNutrients, LivingArmorFactory<I> factory) {
 		return registerLivingArmor(name + "_leggings", material, ArmorItem.Type.LEGGINGS, maxNutrients, factory);
 	}
 
-	private static <M extends ArmorMaterial, I extends ArmorItem> DeferredHolder<Item, I> registerLivingArmorBoots(String name, M material, int maxNutrients, LivingArmorFactory<M, ArmorItem.Type, I> factory) {
+	private static <I extends ArmorItem> DeferredHolder<Item, I> registerLivingArmorBoots(String name, Holder<ArmorMaterial> material, int maxNutrients, LivingArmorFactory<I> factory) {
 		return registerLivingArmor(name + "_boots", material, ArmorItem.Type.BOOTS, maxNutrients, factory);
 	}
 
-	private static <M extends ArmorMaterial, T extends ArmorItem.Type, I extends ArmorItem> DeferredHolder<Item, I> registerLivingArmor(String name, M material, T type, int maxNutrients, LivingArmorFactory<M, T, I> factory) {
+	private static <I extends ArmorItem> DeferredHolder<Item, I> registerLivingArmor(String name, Holder<ArmorMaterial> material, ArmorItem.Type type, int maxNutrients, LivingArmorFactory<I> factory) {
 		return ITEMS.register(name, () -> factory.create(material, type, maxNutrients, createProperties().rarity(ModRarities.VERY_RARE)));
 	}
 
-	private static <T extends EntityType<? extends Mob>> DeferredHolder<Item, DeferredSpawnEggItem> registerSpawnEgg(DeferredHolder<Item, T> mobHolder, int primaryColor, int accentColor) {
+	private static <T extends EntityType<? extends Mob>> DeferredHolder<Item, DeferredSpawnEggItem> registerSpawnEgg(DeferredHolder<EntityType<?>, T> mobHolder, int primaryColor, int accentColor) {
 		return ITEMS.register(mobHolder.getId().getPath() + "_spawn_egg", () -> new DeferredSpawnEggItem(mobHolder, primaryColor, accentColor, createProperties()));
 	}
 
-	private static <T extends Serum> DeferredHolder<Item, SerumItem> registerSerumItem(DeferredHolder<Item, T> registryObject) {
+	private static <T extends Serum> DeferredHolder<Item, SerumItem> registerSerumItem(DeferredHolder<Serum, T> registryObject) {
 		return ITEMS.register(registryObject.getId().getPath(), () -> new SerumItem(createProperties().stacksTo(16).rarity(ModRarities.UNCOMMON), registryObject));
 	}
 
@@ -386,12 +387,12 @@ public final class ModItems {
 		I create(T block, Item.Properties properties);
 	}
 
-	interface ArmorFactory<M extends ArmorMaterial, T extends ArmorItem.Type, I extends ArmorItem> {
-		I create(M material, T type, Item.Properties properties);
+	interface ArmorFactory<I extends ArmorItem> {
+		I create(Holder<ArmorMaterial> material, ArmorItem.Type type, Item.Properties properties);
 	}
 
-	interface LivingArmorFactory<M extends ArmorMaterial, T extends ArmorItem.Type, I extends ArmorItem> {
-		I create(M material, T type, int maxNutrients, Item.Properties properties);
+	interface LivingArmorFactory<I extends ArmorItem> {
+		I create(Holder<ArmorMaterial> material, ArmorItem.Type type, int maxNutrients, Item.Properties properties);
 	}
 
 }

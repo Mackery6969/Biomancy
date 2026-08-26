@@ -168,6 +168,9 @@ dependencies {
 	compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}") // compile against the JEI API but do not include it at runtime
 	localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}") // at runtime, use the full JEI jar
 
+	// KubeJS
+	compileOnly("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
+
 	implementation("maven.modrinth:farmers-delight:${farmers_delight_version}")
 	datagenCompileOnly("maven.modrinth:farmers-delight:${farmers_delight_version}")
 
@@ -264,6 +267,7 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
 	options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+	options.compilerArgs << '-Xmaxerrs' << '100000'
 }
 
 idea {

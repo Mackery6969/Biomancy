@@ -42,9 +42,9 @@ public class GrenadeProjectile extends ThrowableItemProjectile {
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(DELAY_DATA, 0);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(DELAY_DATA, 0);
 	}
 
 	public int getExplodeDelayTicks() {
@@ -76,7 +76,7 @@ public class GrenadeProjectile extends ThrowableItemProjectile {
 				GasCloud cloud = new GasCloud(serverLevel, getImpactPos(hitResult));
 				cloud.setRadius(3.5f);
 				cloud.setDuration(16 * 20);
-				cloud.addEffect(new MobEffectInstance(ModMobEffects.TOXIN.get(), 8 * 20));
+				cloud.addEffect(new MobEffectInstance(ModMobEffects.TOXIN, 8 * 20));
 				serverLevel.addFreshEntity(cloud);
 			}
 			else if (item == ModItems.ACID_GRENADE.get()) {

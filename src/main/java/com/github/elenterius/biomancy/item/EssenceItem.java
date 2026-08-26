@@ -6,6 +6,7 @@ import com.github.elenterius.biomancy.init.ModEnchantments;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -20,7 +21,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.component.CustomData;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -55,7 +56,7 @@ public class EssenceItem extends Item implements ItemTooltipStyleProvider {
 
 		if (essenceItem.setEssenceData(stack, tier, livingEntity)) {
 			if (tier >= 3 && livingEntity instanceof Player player) {
-				stack.getOrCreateTag().putString(PLAYER_NAME_KEY, player.getGameProfile().getName());
+				CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putString(PLAYER_NAME_KEY, player.getGameProfile().getName()));
 			}
 			return stack;
 		}
@@ -150,17 +151,22 @@ public class EssenceItem extends Item implements ItemTooltipStyleProvider {
 			essenceTag.putUUID(ENTITY_UUID_KEY, entityUUID);
 		}
 
-		CompoundTag tag = stack.getOrCreateTag();
-		tag.put(ESSENCE_DATA_KEY, essenceTag);
-		tag.putIntArray(COLORS_KEY, colors);
-		if (tier > 0) tag.putInt(ESSENCE_TIER_KEY, tier);
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> {
+			tag.put(ESSENCE_DATA_KEY, essenceTag);
+			tag.putIntArray(COLORS_KEY, colors);
+			if (tier > 0) tag.putInt(ESSENCE_TIER_KEY, tier);
 
-		if (mobSounds != null) {
-			tag.put(SOUNDS_KEY, mobSounds);
-		}
+			if (mobSounds != null) {
+				tag.put(SOUNDS_KEY, mobSounds);
+			}
+		});
 
 		return true;
 
+	}
+
+	private static CompoundTag getTag(ItemStack stack) {
+		return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 	}
 
 	public boolean isValid(ItemStack stack) {
@@ -168,12 +174,12 @@ public class EssenceItem extends Item implements ItemTooltipStyleProvider {
 	}
 
 	public Optional<EntityType<?>> getEntityType(ItemStack stack) {
-		CompoundTag tag = stack.getOrCreateTag().getCompound(ESSENCE_DATA_KEY);
+		CompoundTag tag = getTag(stack).getCompound(ESSENCE_DATA_KEY);
 		return EntityType.byString(tag.getString(ENTITY_TYPE_KEY));
 	}
 
 	public Optional<UUID> getEntityUUID(ItemStack stack) {
-		CompoundTag tag = stack.getOrCreateTag().getCompound(ESSENCE_DATA_KEY);
+		CompoundTag tag = getTag(stack).getCompound(ESSENCE_DATA_KEY);
 		if (tag.hasUUID(ENTITY_UUID_KEY)) {
 			return Optional.of(tag.getUUID(ENTITY_UUID_KEY));
 		}
@@ -181,12 +187,12 @@ public class EssenceItem extends Item implements ItemTooltipStyleProvider {
 	}
 
 	public Optional<SoundEvent> getMobSound(ItemStack stack, MobSoundType soundType) {
-		CompoundTag tag = stack.getOrCreateTag().getCompound(SOUNDS_KEY);
+		CompoundTag tag = getTag(stack).getCompound(SOUNDS_KEY);
 		return Optional.ofNullable(soundType.getSound(tag));
 	}
 
 	public int getColor(ItemStack stack, int tintIndex) {
-		CompoundTag tag = stack.getOrCreateTag();
+		CompoundTag tag = getTag(stack);
 		if (tag.contains(COLORS_KEY, Tag.TAG_INT_ARRAY)) {
 			int[] colors = tag.getIntArray(COLORS_KEY);
 			return tintIndex == 0 ? colors[0] : colors[1];
@@ -195,7 +201,7 @@ public class EssenceItem extends Item implements ItemTooltipStyleProvider {
 	}
 
 	public int[] getColors(ItemStack stack) {
-		CompoundTag tag = stack.getOrCreateTag();
+		CompoundTag tag = getTag(stack);
 		if (tag.contains(COLORS_KEY, Tag.TAG_INT_ARRAY)) {
 			return tag.getIntArray(COLORS_KEY);
 		}
@@ -204,10 +210,10 @@ public class EssenceItem extends Item implements ItemTooltipStyleProvider {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag isAdvanced) {
 		tooltip.addAll(ClientTextUtil.getItemInfoTooltip(stack));
 
-		CompoundTag compoundTag = stack.getOrCreateTag();
+		CompoundTag compoundTag = getTag(stack);
 
 		if (compoundTag.contains(ESSENCE_DATA_KEY)) {
 			CompoundTag tag = compoundTag.getCompound(ESSENCE_DATA_KEY);
@@ -236,7 +242,7 @@ public class EssenceItem extends Item implements ItemTooltipStyleProvider {
 
 	@Override
 	public Component getName(ItemStack stack) {
-		CompoundTag compoundTag = stack.getOrCreateTag();
+		CompoundTag compoundTag = getTag(stack);
 
 		if (!compoundTag.contains(ESSENCE_DATA_KEY)) {
 			return Component.translatable(getDescriptionId(stack));

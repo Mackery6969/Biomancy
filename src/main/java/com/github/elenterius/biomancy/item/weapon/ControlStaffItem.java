@@ -84,7 +84,7 @@ public class ControlStaffItem extends Item implements KeyPressListener, ItemTool
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag isAdvanced) {
 		tooltip.addAll(ClientTextUtil.getItemInfoTooltip(stack));
 		tooltip.add(ComponentUtil.EMPTY_LINE);
 		tooltip.add(TextComponentUtil.getTooltipText("command").append(": ").withStyle().withStyle(ChatFormatting.GRAY).append(ComponentUtil.literal(getCommand(stack).toString()).withStyle(ChatFormatting.AQUA)));

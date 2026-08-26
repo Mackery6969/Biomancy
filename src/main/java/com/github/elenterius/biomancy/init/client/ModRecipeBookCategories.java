@@ -61,7 +61,7 @@ public final class ModRecipeBookCategories {
 		}
 
 		private static void registerCategories() {
-			for (Map.Entry<ResourceKey<BioForgeTab>, BioForgeTab> entry : ModBioForgeTabs.REGISTRY.get().getEntries()) {
+			for (Map.Entry<ResourceKey<BioForgeTab>, BioForgeTab> entry : ModBioForgeTabs.REGISTRY.entrySet()) {
 				BioForgeTab tab = entry.getValue();
 
 				if (tab == ModBioForgeTabs.SEARCH.get()) continue;

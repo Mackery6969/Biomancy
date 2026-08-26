@@ -3,7 +3,6 @@ package com.github.elenterius.biomancy.integration.kubejs;
 import com.github.elenterius.biomancy.api.serum.Serum;
 import com.github.elenterius.biomancy.serum.BasicSerum;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
-import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import net.minecraft.nbt.CompoundTag;
@@ -26,11 +25,6 @@ public class SerumBuilder extends BuilderBase<Serum> {
 
 	protected SerumBuilder(ResourceLocation id) {
 		super(id);
-	}
-
-	@Override
-	public RegistryInfo<Serum> getRegistryType() {
-		return BiomancyKubeJSPlugin.SERUM_REGISTRY;
 	}
 
 	public SerumBuilder color(int argbColor) {

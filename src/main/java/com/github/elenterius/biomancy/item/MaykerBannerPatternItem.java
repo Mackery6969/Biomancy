@@ -19,7 +19,7 @@ public class MaykerBannerPatternItem extends BannerPatternItem {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 		tooltip.add(getDisplayName().withStyle(TextStyles.PRIMORDIAL_RUNES_GRAY));
 	}
 

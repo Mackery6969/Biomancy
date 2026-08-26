@@ -2,15 +2,18 @@ package com.github.elenterius.biomancy.crafting;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.core.registries.BuiltInRegistries;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
@@ -27,15 +30,15 @@ public class VariableOutput {
 	}
 
 	public VariableOutput(ItemStack stack, int count) {
-		this(stack.getItem(), stack.getTag(), new ItemCountRange.ConstantValue(count));
+		this(stack.getItem(), getTag(stack), new ItemCountRange.ConstantValue(count));
 	}
 
 	public VariableOutput(ItemStack stack, int min, int max) {
-		this(stack.getItem(), stack.getTag(), new ItemCountRange.UniformRange(min, max));
+		this(stack.getItem(), getTag(stack), new ItemCountRange.UniformRange(min, max));
 	}
 
 	public VariableOutput(ItemStack stack, int n, float p) {
-		this(stack.getItem(), stack.getTag(), new ItemCountRange.BinomialRange(n, p));
+		this(stack.getItem(), getTag(stack), new ItemCountRange.BinomialRange(n, p));
 	}
 
 	public VariableOutput(ItemLike item) {
@@ -55,7 +58,7 @@ public class VariableOutput {
 	}
 
 	public VariableOutput(ItemStack stack, ItemCountRange countRange) {
-		this(stack.getItem(), stack.getTag(), countRange);
+		this(stack.getItem(), getTag(stack), countRange);
 	}
 
 	public VariableOutput(ItemLike item, ItemCountRange countRange) {
@@ -68,6 +71,11 @@ public class VariableOutput {
 		this.countRange = countRange;
 	}
 
+	private static @Nullable CompoundTag getTag(ItemStack stack) {
+		CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+		return tag.isEmpty() ? null : tag;
+	}
+
 	public Item getItem() {
 		return item;
 	}
@@ -75,7 +83,7 @@ public class VariableOutput {
 	public ItemStack getItemStack() {
 		ItemStack stack = new ItemStack(item);
 		if (tag != null && !tag.isEmpty()) {
-			stack.setTag(tag.copy());
+			CustomData.set(DataComponents.CUSTOM_DATA, stack, tag.copy());
 		}
 		return stack;
 	}
@@ -86,7 +94,7 @@ public class VariableOutput {
 
 		ItemStack stack = new ItemStack(item);
 		if (tag != null && !tag.isEmpty()) {
-			stack.setTag(tag.copy());
+			CustomData.set(DataComponents.CUSTOM_DATA, stack, tag.copy());
 		}
 		stack.setCount(count);
 
@@ -115,20 +123,21 @@ public class VariableOutput {
 	}
 
 	public static VariableOutput deserialize(JsonObject jsonObject) {
-		ItemStack stack = ShapedRecipe.itemStackFromJson(jsonObject);
+		ResourceLocation id = ResourceLocation.parse(GsonHelper.getAsString(jsonObject, "item"));
+		Item item = BuiltInRegistries.ITEM.get(id);
 		ItemCountRange countRange = ItemCountRange.fromJson(GsonHelper.getAsJsonObject(jsonObject, "countRange"));
-		if (stack.isEmpty()) throw new JsonParseException("Result can't be Empty");
-		return new VariableOutput(stack, countRange);
+		if (item == Items.AIR) throw new JsonParseException("Result can't be Empty");
+		return new VariableOutput(item, countRange);
 	}
 
-	public static VariableOutput fromNetwork(FriendlyByteBuf buffer) {
-		ItemStack stack = buffer.readItem();
+	public static VariableOutput fromNetwork(RegistryFriendlyByteBuf buffer) {
+		ItemStack stack = ItemStack.STREAM_CODEC.decode(buffer);
 		ItemCountRange range = ItemCountRange.fromNetwork(buffer);
 		return new VariableOutput(stack, range);
 	}
 
-	public void toNetwork(FriendlyByteBuf buffer) {
-		buffer.writeItem(getItemStack());
+	public void toNetwork(RegistryFriendlyByteBuf buffer) {
+		ItemStack.STREAM_CODEC.encode(buffer, getItemStack());
 		ItemCountRange.toNetwork(buffer, countRange);
 	}
 

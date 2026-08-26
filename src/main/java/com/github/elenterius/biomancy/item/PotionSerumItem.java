@@ -65,9 +65,9 @@ public class PotionSerumItem extends Item implements SerumContainer, ItemTooltip
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 		//tooltip.addAll(ClientTextUtil.getItemInfoTooltip(stack));
-		getSerum(stack).appendTooltip(getSerumData(stack), level, tooltip, flag);
+		getSerum(stack).appendTooltip(getSerumData(stack), context.level(), tooltip, flag);
 	}
 
 	@Override

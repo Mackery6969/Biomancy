@@ -1,7 +1,9 @@
 package com.github.elenterius.biomancy.init;
 
+import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.advancements.trigger.SacrificedItemTrigger;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public final class ModTriggers {
 
@@ -10,7 +12,7 @@ public final class ModTriggers {
 	private ModTriggers() {}
 
 	public static void register() {
-		CriteriaTriggers.register(SACRIFICED_ITEM_TRIGGER);
+		Registry.register(BuiltInRegistries.TRIGGER_TYPES, BiomancyMod.rl("sacrificed_item"), SACRIFICED_ITEM_TRIGGER);
 	}
 
 }

@@ -3,11 +3,8 @@ package com.github.elenterius.biomancy.entity.misc;
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.init.ModEntityTypes;
 import com.github.elenterius.biomancy.init.ModParticleTypes;
-import com.github.elenterius.biomancy.mixin.accessor.EntityAccessor;
 import com.github.elenterius.biomancy.world.DynamicGasVolume;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -17,13 +14,13 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.commands.arguments.ParticleArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -94,29 +91,25 @@ public class GasCloud extends Entity implements TraceableEntity, HitboxDebugInfo
 	}
 
 	protected static @Nullable ParticleOptions readParticleData(CompoundTag data, String key) {
-		if (data.contains(key, Tag.TAG_STRING)) {
-			String rawString = data.getString(key);
-			try {
-				return ParticleArgument.readParticle(new StringReader(rawString), BuiltInRegistries.PARTICLE_TYPE.asLookup());
-			}
-			catch (CommandSyntaxException e) {
-				BiomancyMod.LOGGER.warn("Couldn't load custom particle {}", rawString, e);
-			}
+		if (data.contains(key)) {
+			return ParticleTypes.CODEC.parse(NbtOps.INSTANCE, data.get(key))
+					.resultOrPartial(error -> BiomancyMod.LOGGER.warn("Couldn't load custom particle: {}", error))
+					.orElse(null);
 		}
 
 		return null;
 	}
 
 	protected static void writeParticleData(CompoundTag data, String key, ParticleOptions particleOptions) {
-		data.putString(key, particleOptions.writeToString());
+		ParticleTypes.CODEC.encodeStart(NbtOps.INSTANCE, particleOptions).result().ifPresent(tag -> data.put(key, tag));
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		getEntityData().define(RADIUS_DATA, DEFAULT_RADIUS);
-		getEntityData().define(PROPAGATION_DURATION_DATA, DEFAULT_PROPAGATION_DURATION);
-		getEntityData().define(IS_IDLE_DATA, true);
-		getEntityData().define(PARTICLE_DATA, DEFAULT_PARTICLE);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		builder.define(RADIUS_DATA, DEFAULT_RADIUS);
+		builder.define(PROPAGATION_DURATION_DATA, DEFAULT_PROPAGATION_DURATION);
+		builder.define(IS_IDLE_DATA, true);
+		builder.define(PARTICLE_DATA, DEFAULT_PARTICLE);
 	}
 
 	public float getRadius() {
@@ -249,8 +242,8 @@ public class GasCloud extends Entity implements TraceableEntity, HitboxDebugInfo
 				reapplyCooldowns.put(livingEntity, tickCount + effectReapplyCooldown);
 
 				for (MobEffectInstance effectInstance : effects) {
-					if (effectInstance.getEffect().isInstantenous()) {
-						effectInstance.getEffect().applyInstantenousEffect(this, getOwner(), livingEntity, effectInstance.getAmplifier(), 0.5d);
+					if (effectInstance.getEffect().value().isInstantenous()) {
+						effectInstance.getEffect().value().applyInstantenousEffect(this, getOwner(), livingEntity, effectInstance.getAmplifier(), 0.5d);
 					}
 					else {
 						livingEntity.addEffect(new MobEffectInstance(effectInstance), this);
@@ -352,22 +345,6 @@ public class GasCloud extends Entity implements TraceableEntity, HitboxDebugInfo
 	}
 
 	@Override
-	protected float getEyeHeight(Pose pose, EntityDimensions dimensions) {
-		return dimensions.height * 0f + 0.5f;
-	}
-
-	@Override
-	public void refreshDimensions() {
-		EntityDimensions dimensions = getDimensions(Pose.STANDING);
-
-		EntityAccessor accessor = (EntityAccessor) this;
-		accessor.biomancy$setDimensions(dimensions);
-		accessor.biomancy$setEyeHeight(getEyeHeight(Pose.STANDING, dimensions));
-
-		reapplyPosition();
-	}
-
-	@Override
 	protected AABB makeBoundingBox() {
 		if (dynamicGasVolume == null) {
 			return new AABB(blockPosition());
@@ -378,7 +355,7 @@ public class GasCloud extends Entity implements TraceableEntity, HitboxDebugInfo
 
 	@Override
 	public EntityDimensions getDimensions(Pose pose) {
-		return EntityDimensions.scalable(getRadius() * 2f, getRadius() * 2f);
+		return EntityDimensions.scalable(getRadius() * 2f, getRadius() * 2f).withEyeHeight(0.5f);
 	}
 
 	@Override
@@ -452,7 +429,7 @@ public class GasCloud extends Entity implements TraceableEntity, HitboxDebugInfo
 		if (!effects.isEmpty()) {
 			ListTag list = new ListTag();
 			for (MobEffectInstance effectInstance : effects) {
-				list.add(effectInstance.save(new CompoundTag()));
+				list.add(effectInstance.save());
 			}
 
 			data.put("effects", list);

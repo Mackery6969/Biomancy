@@ -30,7 +30,6 @@
     "WallBlockMixin",
     "accessor.AgeableMobAccessor",
     "accessor.AnimalAccessor",
-    "accessor.ArmorItemAccessor",
     "accessor.ArmorStandAccessor",
     "accessor.BiomeAccessor",
     "accessor.CreeperAccessor",

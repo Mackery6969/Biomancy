@@ -3,8 +3,9 @@ package com.github.elenterius.biomancy.crafting;
 import com.github.elenterius.biomancy.util.ItemStackCounter;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.item.ItemStack;
@@ -64,7 +65,7 @@ public record IngredientStack(Ingredient ingredient, int count) {
 	}
 
 	public JsonObject toJson() {
-		JsonElement ingredientJson = ingredient.toJson();
+		JsonElement ingredientJson = Ingredient.CODEC_NONEMPTY.encodeStart(JsonOps.INSTANCE, ingredient).getOrThrow();
 
 		if (ingredientJson.isJsonArray()) {
 			JsonObject json = new JsonObject();
@@ -73,7 +74,7 @@ public record IngredientStack(Ingredient ingredient, int count) {
 			return json;
 		}
 
-		JsonObject json = (JsonObject) ingredientJson;
+		JsonObject json = ingredientJson.getAsJsonObject();
 		if (count > 1) json.addProperty(COUNT_KEY, count);
 		return json;
 	}
@@ -85,21 +86,19 @@ public record IngredientStack(Ingredient ingredient, int count) {
 	}
 
 	private static Ingredient readIngredient(JsonObject json) {
-		if (GsonHelper.isArrayNode(json, ALT_INGREDIENT_KEY)) {
-			return Ingredient.fromJson(GsonHelper.getAsJsonArray(json, ALT_INGREDIENT_KEY));
-		}
-		return Ingredient.fromJson(json);
+		JsonElement ingredientJson = GsonHelper.isArrayNode(json, ALT_INGREDIENT_KEY) ? GsonHelper.getAsJsonArray(json, ALT_INGREDIENT_KEY) : json;
+		return Ingredient.CODEC_NONEMPTY.parse(JsonOps.INSTANCE, ingredientJson).getOrThrow();
 	}
 
-	public static IngredientStack fromNetwork(FriendlyByteBuf buffer) {
-		Ingredient ingredient = Ingredient.fromNetwork(buffer);
+	public static IngredientStack fromNetwork(RegistryFriendlyByteBuf buffer) {
+		Ingredient ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
 		int count = buffer.readVarInt();
 
 		return new IngredientStack(ingredient, count);
 	}
 
-	public void toNetwork(FriendlyByteBuf buffer) {
-		ingredient.toNetwork(buffer);
+	public void toNetwork(RegistryFriendlyByteBuf buffer) {
+		Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient);
 		buffer.writeVarInt(count);
 	}
 

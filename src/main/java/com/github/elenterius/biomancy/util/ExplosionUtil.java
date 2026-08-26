@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -27,7 +28,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.event.EventHooks;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -95,13 +96,14 @@ public class ExplosionUtil {
 		Explosion.BlockInteraction blockInteraction = switch (explosionInteraction) {
 			case NONE -> Explosion.BlockInteraction.KEEP;
 			case BLOCK -> getDestroyType(level, GameRules.RULE_BLOCK_EXPLOSION_DROP_DECAY);
-			case MOB -> ForgeEventFactory.getMobGriefingEvent(level, source) ? getDestroyType(level, GameRules.RULE_MOB_EXPLOSION_DROP_DECAY) : Explosion.BlockInteraction.KEEP;
+			case MOB -> EventHooks.canEntityGrief(level, source) ? getDestroyType(level, GameRules.RULE_MOB_EXPLOSION_DROP_DECAY) : Explosion.BlockInteraction.KEEP;
 			case TNT -> getDestroyType(level, GameRules.RULE_TNT_EXPLOSION_DROP_DECAY);
+			case TRIGGER -> Explosion.BlockInteraction.TRIGGER_BLOCK;
 		};
 
 		Explosion explosion = explosionType.serverFactory.create(level, source, damageSource, damageCalculator, x, y, z, radius, fire, blockInteraction);
 
-		if (ForgeEventFactory.onExplosionStart(level, explosion)) return;
+		if (EventHooks.onExplosionStart(level, explosion)) return;
 
 		explosion.explode();
 		explosion.finalizeExplosion(spawnParticles);
@@ -139,13 +141,13 @@ public class ExplosionUtil {
 		}
 
 		public VolatileExplosion(Level level, @Nullable Entity source, @Nullable DamageSource damageSource, @Nullable ExplosionDamageCalculator damageCalculator, double x, double y, double z, float radius, boolean ignoredFire, BlockInteraction interaction) {
-			super(level, source, damageSource, damageCalculator, x, y, z, radius, true, interaction); //fire is always true
+			super(level, source, damageSource, damageCalculator, x, y, z, radius, true, interaction, ParticleTypes.EXPLOSION, ParticleTypes.EXPLOSION_EMITTER, SoundEvents.GENERIC_EXPLODE); //fire is always true
 		}
 
 		@Override
 		public void finalizeExplosion(boolean spawnParticles) {
 			if (level.isClientSide) {
-				level.playLocalSound(x, y, z, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4f, (1f + (level.random.nextFloat() - level.random.nextFloat()) * 0.2f) * 0.7f, false);
+				level.playLocalSound(x, y, z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4f, (1f + (level.random.nextFloat() - level.random.nextFloat()) * 0.2f) * 0.7f, false);
 			}
 
 			boolean interactsWithBlocks = interactsWithBlocks();
@@ -193,7 +195,7 @@ public class ExplosionUtil {
 						}
 
 						state.spawnAfterBreak(serverlevel, pos, ItemStack.EMPTY, isPlayerSource);
-						state.getDrops(lootParams).forEach(stack -> addBlockDrops(drops, stack, pos.immutable()));
+						state.getDrops(lootParams).forEach(stack -> addOrAppendStack(drops, stack, pos.immutable()));
 					}
 
 					state.onBlockExploded(level, pos, this);
@@ -235,13 +237,13 @@ public class ExplosionUtil {
 		}
 
 		public DecayExplosion(Level level, @Nullable Entity source, @Nullable DamageSource damageSource, @Nullable ExplosionDamageCalculator damageCalculator, double x, double y, double z, float radius, boolean ignoredFire, BlockInteraction interaction) {
-			super(level, source, damageSource, damageCalculator, x, y, z, radius, false, interaction); //fire is always false
+			super(level, source, damageSource, damageCalculator, x, y, z, radius, false, interaction, ParticleTypes.EXPLOSION, ParticleTypes.EXPLOSION_EMITTER, SoundEvents.GENERIC_EXPLODE); //fire is always false
 		}
 
 		@Override
 		public void finalizeExplosion(boolean spawnParticles) {
 			if (level.isClientSide) {
-				level.playLocalSound(x, y, z, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4f, (1f + (level.random.nextFloat() - level.random.nextFloat()) * 0.2f) * 0.7f, false);
+				level.playLocalSound(x, y, z, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4f, (1f + (level.random.nextFloat() - level.random.nextFloat()) * 0.2f) * 0.7f, false);
 			}
 
 			boolean interactsWithBlocks = interactsWithBlocks();
@@ -284,7 +286,7 @@ public class ExplosionUtil {
 						}
 
 						state.spawnAfterBreak(serverlevel, pos, ItemStack.EMPTY, isPlayerSource);
-						state.getDrops(lootParams).forEach(stack -> addBlockDrops(drops, stack, pos.immutable()));
+						state.getDrops(lootParams).forEach(stack -> addOrAppendStack(drops, stack, pos.immutable()));
 					}
 
 					state.onBlockExploded(level, pos, this);
@@ -300,7 +302,10 @@ public class ExplosionUtil {
 	}
 
 	public enum ExplosionType {
-		VANILLA(Explosion::new, Explosion::new),
+		VANILLA(
+				(level, source, damageSource, damageCalculator, x, y, z, radius, fire, interaction) -> new Explosion(level, source, damageSource, damageCalculator, x, y, z, radius, fire, interaction, ParticleTypes.EXPLOSION, ParticleTypes.EXPLOSION_EMITTER, SoundEvents.GENERIC_EXPLODE),
+				(level, source, x, y, z, radius, positions) -> new Explosion(level, source, x, y, z, radius, positions, Explosion.BlockInteraction.DESTROY, ParticleTypes.EXPLOSION, ParticleTypes.EXPLOSION_EMITTER, SoundEvents.GENERIC_EXPLODE)
+		),
 		DECAY(DecayExplosion::new, DecayExplosion::new),
 		VOLATILE(VolatileExplosion::new, VolatileExplosion::new);
 

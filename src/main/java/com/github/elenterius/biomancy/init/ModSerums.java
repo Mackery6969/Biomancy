@@ -3,17 +3,14 @@ package com.github.elenterius.biomancy.init;
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.api.serum.Serum;
 import com.github.elenterius.biomancy.serum.*;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.neoforged.neoforge.registries.RegistryBuilder;
+import net.minecraft.core.Registry;
 import net.neoforged.neoforge.registries.DeferredHolder;
-
-import java.util.function.Supplier;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class ModSerums {
 
 	public static final DeferredRegister<Serum> SERUMS = DeferredRegister.create(BiomancyMod.rl("serum"), BiomancyMod.MOD_ID);
-	public static final Supplier<IForgeRegistry<Serum>> REGISTRY = SERUMS.makeRegistry(RegistryBuilder::new);
+	public static final Registry<Serum> REGISTRY = SERUMS.makeRegistry(builder -> {});
 
 	public static final DeferredHolder<Serum, Serum> EMPTY = SERUMS.register("empty", () -> BasicSerum.EMPTY);
 

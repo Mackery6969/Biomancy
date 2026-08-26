@@ -8,18 +8,18 @@ import com.github.elenterius.biomancy.init.client.ModKeyBindings;
 import com.github.elenterius.biomancy.item.ItemTooltipStyleProvider;
 import com.github.elenterius.biomancy.item.KeyPressListener;
 import com.github.elenterius.biomancy.item.KnowledgeReader;
-import com.github.elenterius.biomancy.mixin.accessor.ArmorItemAccessor;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.CombatUtil;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -27,7 +27,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.PanicGoal;
@@ -37,6 +36,8 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -51,7 +52,6 @@ import software.bernie.geckolib.renderer.GeoArmorRenderer;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -68,47 +68,45 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-	protected final ImmutableMultimap<Attribute, AttributeModifier> brokenAttributeModifiers;
+	protected final ItemAttributeModifiers fullAttributeModifiers;
+	protected final ItemAttributeModifiers brokenAttributeModifiers;
 
-	public WarriorArmorItem(ArmorMaterial material, Type type, int maxNutrients, Properties properties) {
+	public WarriorArmorItem(Holder<ArmorMaterial> material, Type type, int maxNutrients, Properties properties) {
 		super(material, type, maxNutrients, properties);
 
-		ArmorItemAccessor baseArmor = (ArmorItemAccessor) this;
-		UUID uuid = ArmorItemAccessor.biomancy$ARMOR_MODIFIER_UUID_PER_TYPE().get(type);
+		ResourceLocation id = ResourceLocation.withDefaultNamespace("armor." + type.getName());
+		EquipmentSlotGroup slotGroup = EquipmentSlotGroup.bySlot(type.getSlot());
 
-		ImmutableMultimap.Builder<Attribute, AttributeModifier> defaultBuilder = ImmutableMultimap.builder();
-		defaultBuilder.putAll(baseArmor.biomancy$getDefaultModifiers());
+		ItemAttributeModifiers.Builder fullBuilder = ItemAttributeModifiers.builder();
+		for (ItemAttributeModifiers.Entry entry : getDefaultAttributeModifiers().modifiers()) {
+			fullBuilder.add(entry.attribute(), entry.modifier(), entry.slot());
+		}
 
-		ImmutableMultimap.Builder<Attribute, AttributeModifier> brokenBuilder = ImmutableMultimap.builder();
+		ItemAttributeModifiers.Builder brokenBuilder = ItemAttributeModifiers.builder();
 
 		if (type == Type.CHESTPLATE) {
-			defaultBuilder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(uuid, "Armor attack damage bonus", 0.10d, AttributeModifier.Operation.MULTIPLY_BASE));
-			defaultBuilder.put(Attributes.ATTACK_KNOCKBACK, new AttributeModifier(uuid, "Armor attack knockback bonus", 0.5d, AttributeModifier.Operation.ADDITION));
+			fullBuilder.add(Attributes.ATTACK_DAMAGE, new AttributeModifier(id, 0.10d, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), slotGroup);
+			fullBuilder.add(Attributes.ATTACK_KNOCKBACK, new AttributeModifier(id, 0.5d, AttributeModifier.Operation.ADD_VALUE), slotGroup);
 
-			AttributeModifier attackSpeedPenalty = new AttributeModifier(uuid, "Armor attack speed penalty", -0.1d, AttributeModifier.Operation.MULTIPLY_BASE);
-			defaultBuilder.put(Attributes.ATTACK_SPEED, attackSpeedPenalty);
-			brokenBuilder.put(Attributes.ATTACK_SPEED, attackSpeedPenalty);
+			AttributeModifier attackSpeedPenalty = new AttributeModifier(id, -0.1d, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+			fullBuilder.add(Attributes.ATTACK_SPEED, attackSpeedPenalty, slotGroup);
+			brokenBuilder.add(Attributes.ATTACK_SPEED, attackSpeedPenalty, slotGroup);
 
-			AttributeModifier movementSpeedPenalty = new AttributeModifier(uuid, "Armor movement speed penalty", -0.2d, AttributeModifier.Operation.MULTIPLY_BASE);
-			defaultBuilder.put(Attributes.MOVEMENT_SPEED, movementSpeedPenalty);
-			brokenBuilder.put(Attributes.MOVEMENT_SPEED, movementSpeedPenalty);
+			AttributeModifier movementSpeedPenalty = new AttributeModifier(id, -0.2d, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+			fullBuilder.add(Attributes.MOVEMENT_SPEED, movementSpeedPenalty, slotGroup);
+			brokenBuilder.add(Attributes.MOVEMENT_SPEED, movementSpeedPenalty, slotGroup);
 		}
 		else if (type == Type.LEGGINGS) {
-			defaultBuilder.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(uuid, "Armor movement speed bonus", 0.2d, AttributeModifier.Operation.MULTIPLY_BASE));
+			fullBuilder.add(Attributes.MOVEMENT_SPEED, new AttributeModifier(id, 0.2d, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), slotGroup);
 		}
 
-		baseArmor.biomancy$setDefaultModifiers(defaultBuilder.build());
-
+		fullAttributeModifiers = fullBuilder.build();
 		brokenAttributeModifiers = brokenBuilder.build();
 	}
 
 	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-		return getNutrients(stack) > 0 ? super.getAttributeModifiers(slot, stack) : getBrokenAttributeModifiers(slot);
-	}
-
-	protected ImmutableMultimap<Attribute, AttributeModifier> getBrokenAttributeModifiers(EquipmentSlot slot) {
-		return slot == type.getSlot() ? brokenAttributeModifiers : ImmutableMultimap.of();
+	public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
+		return getNutrients(stack) > 0 ? fullAttributeModifiers : brokenAttributeModifiers;
 	}
 
 	//	public double getJumpBoostPower(ItemStack stack) {
@@ -195,7 +193,7 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 	}
 
 	private static int getBulletJumpCost(ServerPlayer player, ItemStack stack) {
-		CompoundTag tag = stack.getOrCreateTag();
+		CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 		long timestamp = tag.getLong("bullet_jump_timestamp");
 		long elapsedTime = player.level().getGameTime() - timestamp;
 
@@ -208,20 +206,22 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 	}
 
 	private static void increaseBulletJumpCost(ServerPlayer player, ItemStack stack) {
-		CompoundTag tag = stack.getOrCreateTag();
-		long timestamp = tag.getLong("bullet_jump_timestamp");
 		long gameTime = player.level().getGameTime();
-		long elapsedTime = gameTime - timestamp;
 
-		if (elapsedTime > BULLET_JUMP_COST_COOLDOWN) {
-			tag.putInt("bullet_jump_cost_index", 0);
-		}
-		else {
-			int index = Mth.clamp(tag.getInt("bullet_jump_cost_index") + 1, 0, BULLET_JUMP_COST.length - 1);
-			tag.putInt("bullet_jump_cost_index", index);
-		}
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> {
+			long timestamp = tag.getLong("bullet_jump_timestamp");
+			long elapsedTime = gameTime - timestamp;
 
-		tag.putLong("bullet_jump_timestamp", gameTime);
+			if (elapsedTime > BULLET_JUMP_COST_COOLDOWN) {
+				tag.putInt("bullet_jump_cost_index", 0);
+			}
+			else {
+				int index = Mth.clamp(tag.getInt("bullet_jump_cost_index") + 1, 0, BULLET_JUMP_COST.length - 1);
+				tag.putInt("bullet_jump_cost_index", index);
+			}
+
+			tag.putLong("bullet_jump_timestamp", gameTime);
+		});
 	}
 
 	public void onFall(ItemStack stack, LivingFallEvent event) {
@@ -386,7 +386,7 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag isAdvanced) {
 		AcolyteArmorUpgrades.appendHoverText(stack, tooltip);
 
 		tooltip.add(ComponentUtil.EMPTY_LINE);

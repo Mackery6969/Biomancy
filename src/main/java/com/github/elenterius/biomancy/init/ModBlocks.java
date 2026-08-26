@@ -142,7 +142,7 @@ public final class ModBlocks {
 	public static final DeferredHolder<Block, FleshLanternBlock> BLUE_BIO_LANTERN = register("bio_lantern_blue", properties -> new FleshLanternBlock(properties.sound(SoundType.SHROOMLIGHT).lightLevel(x -> 15).noOcclusion()));
 
 	//## Fluids
-	public static final DeferredHolder<Block, LiquidBlock> ACID_FLUID_BLOCK = register("acid_fluid_block", () -> new LiquidBlock(ModFluids.ACID, copyProperties(Blocks.WATER)));
+	public static final DeferredHolder<Block, LiquidBlock> ACID_FLUID_BLOCK = register("acid_fluid_block", () -> new LiquidBlock(ModFluids.ACID.get(), copyProperties(Blocks.WATER)));
 	public static final DeferredHolder<Block, AcidCauldron> ACID_CAULDRON = register("acid_cauldron", () -> new AcidCauldron(copyProperties(Blocks.CAULDRON)));
 	public static final DeferredHolder<Block, AcidSplatterBlock> ACID_SPLATTER = register("acid_splatter", () -> new AcidSplatterBlock(createProperties().mapColor(MapColor.COLOR_LIGHT_GREEN).sound(SoundType.FROGSPAWN)));
 	public static final DeferredHolder<Block, VolatileSplatterBlock> VOLATILE_SPLATTER = register("volatile_splatter", () -> new VolatileSplatterBlock(createProperties().mapColor(MapColor.COLOR_ORANGE).sound(SoundType.FROGSPAWN)));
@@ -172,7 +172,7 @@ public final class ModBlocks {
 	}
 
 	private static <T extends StairBlock> DeferredHolder<Block, T> registerStairs(String name, DeferredHolder<Block, ? extends Block> parent, StairBlockFactory<T> factory) {
-		return BLOCKS.register(name, () -> factory.create(() -> parent.get().defaultBlockState(), copyProperties(parent.get())));
+		return BLOCKS.register(name, () -> factory.create(parent.get().defaultBlockState(), copyProperties(parent.get())));
 	}
 
 	private static <T extends WallBlock> DeferredHolder<Block, T> registerWall(DeferredHolder<Block, ? extends Block> parent, Function<BlockBehaviour.Properties, T> factory) {
@@ -228,7 +228,7 @@ public final class ModBlocks {
 	}
 
 	public static BlockBehaviour.Properties copyProperties(BlockBehaviour behaviour) {
-		return BlockBehaviour.Properties.copy(behaviour);
+		return BlockBehaviour.Properties.ofFullCopy(behaviour);
 	}
 
 	public static BlockBehaviour.Properties createProperties() {
@@ -275,7 +275,7 @@ public final class ModBlocks {
 
 
 	interface StairBlockFactory<T extends StairBlock> {
-		T create(Supplier<BlockState> state, BlockBehaviour.Properties properties);
+		T create(BlockState state, BlockBehaviour.Properties properties);
 	}
 
 	interface MembraneBlockFactory<T extends MembraneBlock> {

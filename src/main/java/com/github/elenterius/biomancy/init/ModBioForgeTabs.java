@@ -2,13 +2,12 @@ package com.github.elenterius.biomancy.init;
 
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.menu.BioForgeTab;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.neoforged.neoforge.registries.RegistryBuilder;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
@@ -16,7 +15,7 @@ public final class ModBioForgeTabs {
 
 	public static final ResourceLocation REGISTRY_KEY = BiomancyMod.rl("bio_forge_tab");
 	public static final DeferredRegister<BioForgeTab> BIO_FORGE_TABS = DeferredRegister.create(REGISTRY_KEY, BiomancyMod.MOD_ID);
-	public static final Supplier<IForgeRegistry<BioForgeTab>> REGISTRY = BIO_FORGE_TABS.makeRegistry(RegistryBuilder::new);
+	public static final Registry<BioForgeTab> REGISTRY = BIO_FORGE_TABS.makeRegistry(builder -> {});
 
 	public static final DeferredHolder<BioForgeTab, BioForgeTab> SEARCH = register("search", 99, () -> Items.COMPASS);
 	public static final DeferredHolder<BioForgeTab, BioForgeTab> BUILDING_BLOCKS = register("blocks", 10, ModItems.FLESH_BLOCK);

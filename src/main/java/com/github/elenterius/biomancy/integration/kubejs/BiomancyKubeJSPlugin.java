@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.integration.kubejs;
 
+import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.api.nutrients.Nutrients;
 import com.github.elenterius.biomancy.api.serum.Serum;
 import com.github.elenterius.biomancy.api.tribute.SimpleTribute;
@@ -7,7 +8,6 @@ import com.github.elenterius.biomancy.api.tribute.Tributes;
 import com.github.elenterius.biomancy.block.cradle.PrimordialCradleEvents;
 import com.github.elenterius.biomancy.crafting.EssenceIngredient;
 import com.github.elenterius.biomancy.crafting.IngredientStack;
-import com.github.elenterius.biomancy.crafting.ItemCountRange;
 import com.github.elenterius.biomancy.crafting.VariableOutput;
 import com.github.elenterius.biomancy.crafting.recipe.RecipeUtil;
 import com.github.elenterius.biomancy.entity.mob.fleshblob.FleshBlob;
@@ -16,57 +16,68 @@ import com.github.elenterius.biomancy.init.ModRecipes;
 import com.github.elenterius.biomancy.init.ModSerums;
 import com.github.elenterius.biomancy.item.EssenceItem;
 import com.github.elenterius.biomancy.menu.BioForgeTab;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.latvian.mods.kubejs.KubeJSPlugin;
-import dev.latvian.mods.kubejs.item.InputItem;
-import dev.latvian.mods.kubejs.item.OutputItem;
-import dev.latvian.mods.kubejs.recipe.RecipeJS;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.JsonOps;
+import dev.latvian.mods.kubejs.event.EventGroupRegistry;
+import dev.latvian.mods.kubejs.plugin.ClassFilter;
+import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
-import dev.latvian.mods.kubejs.recipe.component.*;
+import dev.latvian.mods.kubejs.recipe.RecipeScriptContext;
+import dev.latvian.mods.kubejs.recipe.component.IngredientComponent;
+import dev.latvian.mods.kubejs.recipe.component.ItemStackComponent;
+import dev.latvian.mods.kubejs.recipe.component.NumberComponent;
+import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
+import dev.latvian.mods.kubejs.recipe.component.RecipeComponentType;
+import dev.latvian.mods.kubejs.recipe.component.StringComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
-import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
-import dev.latvian.mods.kubejs.registry.RegistryInfo;
-import dev.latvian.mods.kubejs.script.BindingsEvent;
-import dev.latvian.mods.kubejs.script.ScriptType;
+import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
+import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
+import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
-import dev.latvian.mods.kubejs.util.ClassFilter;
-import net.minecraft.util.valueproviders.ConstantInt;
+import dev.latvian.mods.kubejs.util.Cast;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
 import java.util.UUID;
 
-public class BiomancyKubeJSPlugin extends KubeJSPlugin {
+public class BiomancyKubeJSPlugin implements KubeJSPlugin {
 
 	public static final Logger LOGGER = LogManager.getLogger("Biomancy KubeJS Plugin");
 
-	public static final RegistryInfo<Serum> SERUM_REGISTRY = RegistryInfo.of(ModSerums.SERUMS.getRegistryKey(), Serum.class);
-	public static final RegistryInfo<BioForgeTab> BIO_FORGE_TAB_REGISTRY = RegistryInfo.of(ModBioForgeTabs.BIO_FORGE_TABS.getRegistryKey(), BioForgeTab.class);
-
 	@Override
 	public void init() {
-		SERUM_REGISTRY.addType("basic", SerumBuilder.class, SerumBuilder::new);
-		RegistryInfo.ITEM.addType("biomancy:basic_serum", SerumItemBuilder.class, SerumItemBuilder::new);
-
-		BIO_FORGE_TAB_REGISTRY.addType("basic", BioForgeTabBuilder.class, BioForgeTabBuilder::new);
-
-		MinecraftForge.EVENT_BUS.addListener(BiomancyKJSEvents::canCradleSpawnMob);
-		MinecraftForge.EVENT_BUS.addListener(BiomancyKJSEvents::onCradleSpawnMob);
+		NeoForge.EVENT_BUS.addListener(BiomancyKJSEvents::canCradleSpawnMob);
+		NeoForge.EVENT_BUS.addListener(BiomancyKJSEvents::onCradleSpawnMob);
 	}
 
 	@Override
-	public void registerEvents() {
-		BiomancyKJSEvents.GROUP.register();
+	public void registerBuilderTypes(BuilderTypeRegistry registry) {
+		registry.of(Cast.<ResourceKey<Registry<Serum>>>to(ModSerums.SERUMS.getRegistryKey()), reg -> reg.addDefault(SerumBuilder.class, SerumBuilder::new));
+		registry.of(Registries.ITEM, reg -> reg.add(BiomancyMod.rl("basic_serum"), SerumItemBuilder.class, SerumItemBuilder::new));
+		registry.of(Cast.<ResourceKey<Registry<BioForgeTab>>>to(ModBioForgeTabs.BIO_FORGE_TABS.getRegistryKey()), reg -> reg.addDefault(BioForgeTabBuilder.class, BioForgeTabBuilder::new));
 	}
 
 	@Override
-	public void registerClasses(ScriptType type, ClassFilter filter) {
+	public void registerEvents(EventGroupRegistry registry) {
+		registry.register(BiomancyKJSEvents.GROUP);
+	}
+
+	@Override
+	public void registerClasses(ClassFilter filter) {
 		filter.allow("com.github.elenterius.biomancy");
 
 		filter.deny("com.github.elenterius.biomancy.integration");
@@ -77,131 +88,143 @@ public class BiomancyKubeJSPlugin extends KubeJSPlugin {
 	}
 
 	@Override
-	public void registerBindings(BindingsEvent event) {
-		event.add("Biomancy$EssenceIngredient", EssenceIngredientUtil.class);
-		event.add("Biomancy$EssenceItem", EssenceItemUtil.class);
-		event.add("Biomancy$Nutrients", Nutrients.class);
-		event.add("Biomancy$Tributes", Tributes.class);
-		event.add("Biomancy$SimpleTribute", SimpleTribute.class);
-		event.add("Biomancy$FleshBlob", FleshBlob.class);
-		event.add("Biomancy$CradleEvent$CanSpawnMob", PrimordialCradleEvents.CanSpawnMob.class);
-		event.add("Biomancy$CradleEvent$OnSpawnMob", PrimordialCradleEvents.OnSpawnMob.class);
+	public void registerBindings(BindingRegistry bindings) {
+		bindings.add("Biomancy$EssenceIngredient", EssenceIngredientUtil.class);
+		bindings.add("Biomancy$EssenceItem", EssenceItemUtil.class);
+		bindings.add("Biomancy$Nutrients", Nutrients.class);
+		bindings.add("Biomancy$Tributes", Tributes.class);
+		bindings.add("Biomancy$SimpleTribute", SimpleTribute.class);
+		bindings.add("Biomancy$FleshBlob", FleshBlob.class);
+		bindings.add("Biomancy$CradleEvent$CanSpawnMob", PrimordialCradleEvents.CanSpawnMob.class);
+		bindings.add("Biomancy$CradleEvent$OnSpawnMob", PrimordialCradleEvents.OnSpawnMob.class);
 	}
 
-	@SuppressWarnings("DataFlowIssue")
 	@Override
-	public void registerRecipeSchemas(RegisterRecipeSchemasEvent event) {
+	public void registerRecipeSchemas(RecipeSchemaRegistry registry) {
 		LOGGER.info("Registering Recipe Schemas...");
 
-		event.register(ModRecipes.DIGESTING_RECIPE_TYPE.getId(), SimpleRecipeSchemas.DIGESTING_SCHEMA);
-		event.register(ModRecipes.BIO_BREWING_RECIPE_TYPE.getId(), SimpleRecipeSchemas.BIO_BREWING_SCHEMA);
-		event.register(ModRecipes.BIO_FORGING_RECIPE_TYPE.getId(), BioForgingRecipeSchema.SCHEMA);
-		event.register(ModRecipes.DECOMPOSING_RECIPE_TYPE.getId(), DecomposingRecipeSchema.SCHEMA);
+		registry.register(ModRecipes.DIGESTING_RECIPE_TYPE.getId(), SimpleRecipeSchemas.DIGESTING_SCHEMA);
+		registry.register(ModRecipes.BIO_BREWING_RECIPE_TYPE.getId(), SimpleRecipeSchemas.BIO_BREWING_SCHEMA);
+		registry.register(ModRecipes.BIO_FORGING_RECIPE_TYPE.getId(), BioForgingRecipeSchema.SCHEMA);
+		registry.register(ModRecipes.DECOMPOSING_RECIPE_TYPE.getId(), DecomposingRecipeSchema.SCHEMA);
+	}
+
+	private static <T> Codec<T> jsonBridgeCodec(java.util.function.Function<T, JsonObject> encoder, java.util.function.Function<JsonObject, T> decoder) {
+		return new Codec<>() {
+			@Override
+			public <O> DataResult<Pair<T, O>> decode(DynamicOps<O> ops, O input) {
+				try {
+					var json = ops.convertTo(JsonOps.INSTANCE, input);
+					return DataResult.success(Pair.of(decoder.apply(json.getAsJsonObject()), ops.empty()));
+				}
+				catch (Exception ex) {
+					return DataResult.error(ex::getMessage);
+				}
+			}
+
+			@Override
+			public <O> DataResult<O> encode(T input, DynamicOps<O> ops, O prefix) {
+				return DataResult.success(JsonOps.INSTANCE.convertTo(ops, encoder.apply(input)));
+			}
+		};
 	}
 
 	interface RecipeKeys {
-		RecipeKey<InputItem> INGREDIENT = ItemComponents.INPUT.key(RecipeUtil.JsonKeys.INGREDIENT);
-		RecipeKey<InputItem[]> INGREDIENTS = ItemComponents.INPUT_ARRAY.key(RecipeUtil.JsonKeys.INGREDIENTS);
+		RecipeKey<Ingredient> INGREDIENT = IngredientComponent.INGREDIENT.instance().inputKey(RecipeUtil.JsonKeys.INGREDIENT);
+		RecipeKey<List<Ingredient>> INGREDIENTS = IngredientComponent.INGREDIENT.instance().asList().inputKey(RecipeUtil.JsonKeys.INGREDIENTS);
 
-		RecipeKey<OutputItem> RESULT = ItemComponents.OUTPUT.key(RecipeUtil.JsonKeys.RESULT);
+		RecipeKey<ItemStack> RESULT = ItemStackComponent.ITEM_STACK.instance().outputKey(RecipeUtil.JsonKeys.RESULT);
 
-		RecipeKey<Integer> PROCESSING_TIME = NumberComponent.INT.key(RecipeUtil.JsonKeys.PROCESSING_TIME).defaultOptional();
-		RecipeKey<Integer> NUTRIENTS_COST = NumberComponent.INT.key(RecipeUtil.JsonKeys.NUTRIENTS_COST).defaultOptional();
+		RecipeKey<Integer> PROCESSING_TIME = NumberComponent.INT.otherKey(RecipeUtil.JsonKeys.PROCESSING_TIME).defaultOptional();
+		RecipeKey<Integer> NUTRIENTS_COST = NumberComponent.INT.otherKey(RecipeUtil.JsonKeys.NUTRIENTS_COST).defaultOptional();
 	}
 
 	interface SimpleRecipeSchemas {
 		RecipeSchema DIGESTING_SCHEMA = new RecipeSchema(RecipeKeys.INGREDIENT, RecipeKeys.RESULT, RecipeKeys.PROCESSING_TIME, RecipeKeys.NUTRIENTS_COST);
 
-		RecipeKey<InputItem> REACTANT = ItemComponents.INPUT.key(RecipeUtil.JsonKeys.REACTANT);
+		RecipeKey<Ingredient> REACTANT = IngredientComponent.INGREDIENT.instance().inputKey(RecipeUtil.JsonKeys.REACTANT);
 		RecipeSchema BIO_BREWING_SCHEMA = new RecipeSchema(RecipeKeys.INGREDIENTS, REACTANT, RecipeKeys.RESULT, RecipeKeys.PROCESSING_TIME, RecipeKeys.NUTRIENTS_COST);
 	}
 
 	interface BioForgingRecipeSchema {
-		RecipeComponent<InputItem> INPUT_WITH_COUNT = new RecipeComponentWithParent<>() {
+		RecipeComponentType<IngredientStack> INPUT_WITH_COUNT_TYPE = RecipeComponentType.unit(BiomancyMod.rl("ingredient_with_count"), type -> new RecipeComponent<>() {
 			@Override
-			public RecipeComponent<InputItem> parentComponent() {
-				return ItemComponents.INPUT;
+			public RecipeComponentType<?> type() {
+				return type;
 			}
 
 			@Override
-			public JsonElement write(RecipeJS recipe, InputItem input) {
-				IngredientStack ingredientStack = new IngredientStack(input.ingredient, input.count);
-				return ingredientStack.toJson();
+			public Codec<IngredientStack> codec() {
+				return jsonBridgeCodec(IngredientStack::toJson, IngredientStack::fromJson);
 			}
 
-			// not needed because InputItem can read count json keys
-			//		@Override
-			//		public InputItem read(RecipeJS recipe, Object from) {
-			//			if (from instanceof JsonObject json) {
-			//				IngredientStack ingredientStack = IngredientStack.fromJson(json);
-			//				return InputItem.of(ingredientStack.ingredient(), ingredientStack.count());
-			//			}
-			//			return parentComponent().read(recipe, from);
-			//		}
+			@Override
+			public dev.latvian.mods.rhino.type.TypeInfo typeInfo() {
+				return IngredientComponent.INGREDIENT.instance().typeInfo();
+			}
+
+			@Override
+			public IngredientStack wrap(RecipeScriptContext cx, Object from) {
+				Ingredient ingredient = IngredientComponent.INGREDIENT.instance().wrap(cx, from);
+				return new IngredientStack(ingredient, 1);
+			}
+
+			@Override
+			public boolean isEmpty(IngredientStack value) {
+				return value.ingredient().isEmpty();
+			}
 
 			@Override
 			public String toString() {
-				return parentComponent().toString();
+				return type.toString();
 			}
-		};
+		});
 
-		RecipeKey<InputItem[]> INGREDIENTS_WITH_COUNT = INPUT_WITH_COUNT.asArray().key(RecipeUtil.JsonKeys.INGREDIENTS);
-		RecipeKey<String> BIO_FORGE_TAB = StringComponent.ID.key(RecipeUtil.JsonKeys.BIO_FORGE_TAB);
+		RecipeComponent<IngredientStack> INPUT_WITH_COUNT = INPUT_WITH_COUNT_TYPE.instance();
+
+		RecipeKey<List<IngredientStack>> INGREDIENTS_WITH_COUNT = INPUT_WITH_COUNT.asList().inputKey(RecipeUtil.JsonKeys.INGREDIENTS);
+		RecipeKey<String> BIO_FORGE_TAB = StringComponent.ID.instance().otherKey(RecipeUtil.JsonKeys.BIO_FORGE_TAB);
 
 		RecipeSchema SCHEMA = new RecipeSchema(INGREDIENTS_WITH_COUNT, RecipeKeys.RESULT, BIO_FORGE_TAB, RecipeKeys.NUTRIENTS_COST);
 	}
 
 	interface DecomposingRecipeSchema {
-		RecipeComponent<OutputItem> VARIABLE_OUTPUT = new RecipeComponentWithParent<>() {
+		RecipeComponentType<VariableOutput> VARIABLE_OUTPUT_TYPE = RecipeComponentType.unit(BiomancyMod.rl("variable_output"), type -> new RecipeComponent<>() {
 			@Override
-			public RecipeComponent<OutputItem> parentComponent() {
-				return ItemComponents.OUTPUT;
+			public RecipeComponentType<?> type() {
+				return type;
 			}
 
 			@Override
-			public JsonElement write(RecipeJS recipe, OutputItem output) {
-				if (output.rolls == null) {
-					VariableOutput variableOutput = new VariableOutput(output.item);
-					return variableOutput.serialize();
-				}
-				else if (output.rolls instanceof ConstantInt c) {
-					VariableOutput variableOutput = new VariableOutput(output.item.getItem(), c.getValue());
-					return variableOutput.serialize();
-				}
-				else {
-					VariableOutput variableOutput = new VariableOutput(output.item.getItem(), output.rolls.getMinValue(), output.rolls.getMaxValue());
-					return variableOutput.serialize();
-				}
+			public Codec<VariableOutput> codec() {
+				return jsonBridgeCodec(VariableOutput::serialize, VariableOutput::deserialize);
 			}
 
 			@Override
-			public OutputItem read(RecipeJS recipe, Object from) {
-				if (from instanceof JsonObject json) {
-					VariableOutput variableOutput = VariableOutput.deserialize(json);
-					OutputItem output = OutputItem.of(variableOutput.getItemStack());
+			public dev.latvian.mods.rhino.type.TypeInfo typeInfo() {
+				return ItemStackComponent.ITEM_STACK.instance().typeInfo();
+			}
 
-					ItemCountRange countRange = variableOutput.getCountRange();
-					if (countRange instanceof ItemCountRange.ConstantValue c) {
-						return output.withCount(c.value());
-					}
-					else if (countRange instanceof ItemCountRange.UniformRange range) {
-						return output.withRolls(range.min(), range.max());
-					}
+			@Override
+			public VariableOutput wrap(RecipeScriptContext cx, Object from) {
+				ItemStack stack = ItemStackComponent.ITEM_STACK.instance().wrap(cx, from);
+				return new VariableOutput(stack);
+			}
 
-					// BinomialRange is not supported by OutputItem. Technically we could extend IntProvider, but we won't do that for the KubeJSPlugin.
-					return output;
-				}
-
-				return parentComponent().read(recipe, from);
+			@Override
+			public boolean isEmpty(VariableOutput value) {
+				return value.getItem() == net.minecraft.world.item.Items.AIR;
 			}
 
 			@Override
 			public String toString() {
-				return parentComponent().toString();
+				return type.toString();
 			}
-		};
+		});
 
-		RecipeKey<OutputItem[]> RESULTS = VARIABLE_OUTPUT.asArray().key(RecipeUtil.JsonKeys.RESULTS);
+		RecipeComponent<VariableOutput> VARIABLE_OUTPUT = VARIABLE_OUTPUT_TYPE.instance();
+
+		RecipeKey<List<VariableOutput>> RESULTS = VARIABLE_OUTPUT.asList().outputKey(RecipeUtil.JsonKeys.RESULTS);
 
 		RecipeSchema SCHEMA = new RecipeSchema(RecipeKeys.INGREDIENT, RESULTS, RecipeKeys.PROCESSING_TIME, RecipeKeys.NUTRIENTS_COST);
 	}
@@ -215,7 +238,7 @@ public class BiomancyKubeJSPlugin extends KubeJSPlugin {
 						@Param(name = "tier", value = "The tier that this essence ingredient requires. Valid tiers are: 0, 1, 2 or 3")
 				}
 		)
-		static EssenceIngredient fromTier(EntityType<?> entityType, int tier) {
+		static Ingredient fromTier(EntityType<?> entityType, int tier) {
 			BiomancyKubeJSPlugin.LOGGER.warn("Creating EssenceIngredient for {} with tier {}", entityType.getDescriptionId(), tier);
 			return EssenceIngredient.of(entityType, tier);
 		}
@@ -224,7 +247,7 @@ public class BiomancyKubeJSPlugin extends KubeJSPlugin {
 				value = "Creates a essence ingredient that matches any tier",
 				params = {@Param(name = "entityType")}
 		)
-		static EssenceIngredient from(EntityType<?> entityType) {
+		static Ingredient from(EntityType<?> entityType) {
 			BiomancyKubeJSPlugin.LOGGER.warn("Creating EssenceIngredient for {} with tier -1", entityType.getDescriptionId());
 			return EssenceIngredient.of(entityType);
 		}

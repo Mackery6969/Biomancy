@@ -3,12 +3,14 @@ package com.github.elenterius.biomancy.serum;
 import com.github.elenterius.biomancy.api.serum.Serum;
 import com.github.elenterius.biomancy.init.ModSerums;
 import com.github.elenterius.biomancy.util.ComponentUtil;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
@@ -19,7 +21,7 @@ import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
@@ -65,15 +67,15 @@ public class PotionSerum implements Serum {
 		List<MobEffectInstance> effects = getAllEffects(tag);
 
 		for (MobEffectInstance effectInstance : effects) {
-			if (effectInstance.getEffect().isInstantenous()) {
-				effectInstance.getEffect().applyInstantenousEffect(source, source, target, effectInstance.getAmplifier(), 1);
+			if (effectInstance.getEffect().value().isInstantenous()) {
+				effectInstance.getEffect().value().applyInstantenousEffect(source, source, target, effectInstance.getAmplifier(), 1);
 			}
 			else {
 				target.addEffect(new MobEffectInstance(effectInstance), source); //we need to create a new instance because it could be tied to a potion
 			}
 		}
 
-		if (effects.isEmpty() && getPotion(tag) == Potions.WATER) {
+		if (effects.isEmpty() && getPotion(tag).is(Potions.WATER)) {
 			if (target.isSensitiveToWater()) {
 				//noinspection DataFlowIssue
 				target.hurt(level.damageSources().indirectMagic(source, source), 1f);
@@ -91,7 +93,7 @@ public class PotionSerum implements Serum {
 
 	@Override
 	public String getNameTranslationKey() {
-		return Serum.makeTranslationKey(Objects.requireNonNull(ModSerums.REGISTRY.get().getKey(this)));
+		return Serum.makeTranslationKey(Objects.requireNonNull(ModSerums.REGISTRY.getKey(this)));
 	}
 
 	@Override
@@ -101,20 +103,20 @@ public class PotionSerum implements Serum {
 	}
 
 	public void appendTooltip(CompoundTag tag, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-		PotionUtils.addPotionTooltip(getAllEffects(tag), tooltip, 1f);
+		PotionContents.addPotionTooltip(getAllEffects(tag), tooltip::add, 1f, 20f);
 	}
 
 	@Override
 	public String toString() {
-		return "Serum{name=%s}".formatted(ModSerums.REGISTRY.get().getKey(this));
+		return "Serum{name=%s}".formatted(ModSerums.REGISTRY.getKey(this));
 	}
 
-	public static void setData(CompoundTag tag, Potion potion, Collection<MobEffectInstance> statusEffects) {
+	public static void setData(CompoundTag tag, Holder<Potion> potion, Collection<MobEffectInstance> statusEffects) {
 		setPotion(tag, potion);
 		setStatusEffects(tag, statusEffects);
 
 		List<MobEffectInstance> allEffects = new ArrayList<>();
-		allEffects.addAll(getPotion(tag).getEffects());
+		allEffects.addAll(getPotion(tag).value().getEffects());
 		allEffects.addAll(statusEffects);
 
 		tag.putInt(COLOR_TAG, computeColor(potion, allEffects));
@@ -125,13 +127,13 @@ public class PotionSerum implements Serum {
 		}
 	}
 
-	public static void setData(CompoundTag tag, Potion potion, Collection<MobEffectInstance> statusEffects, int color) {
+	public static void setData(CompoundTag tag, Holder<Potion> potion, Collection<MobEffectInstance> statusEffects, int color) {
 		setPotion(tag, potion);
 		setStatusEffects(tag, statusEffects);
 		tag.putInt(COLOR_TAG, color);
 
 		List<MobEffectInstance> allEffects = new ArrayList<>();
-		allEffects.addAll(getPotion(tag).getEffects());
+		allEffects.addAll(getPotion(tag).value().getEffects());
 		allEffects.addAll(statusEffects);
 
 		MobEffect primaryEffect = getPrimaryEffect(allEffects);
@@ -140,17 +142,21 @@ public class PotionSerum implements Serum {
 		}
 	}
 
-	public static void setPotion(CompoundTag tag, Potion potion) {
-		if (potion == Potions.EMPTY) {
+	public static void setPotion(CompoundTag tag, Holder<Potion> potion) {
+		if (potion.is(Potions.WATER)) {
 			tag.remove(POTION_TAG);
 		}
 		else {
-			tag.putString(POTION_TAG, BuiltInRegistries.POTION.getKey(potion).toString());
+			tag.putString(POTION_TAG, BuiltInRegistries.POTION.getKey(potion.value()).toString());
 		}
 	}
 
-	public static Potion getPotion(CompoundTag tag) {
-		return Potion.byName(tag.getString(POTION_TAG));
+	public static Holder<Potion> getPotion(CompoundTag tag) {
+		ResourceLocation id = ResourceLocation.tryParse(tag.getString(POTION_TAG));
+		if (id == null) return Potions.WATER;
+
+		Optional<Holder.Reference<Potion>> holder = BuiltInRegistries.POTION.getHolder(id);
+		return holder.isPresent() ? holder.get() : Potions.WATER;
 	}
 
 	public static void setStatusEffects(CompoundTag tag, Collection<MobEffectInstance> effects) {
@@ -159,7 +165,7 @@ public class PotionSerum implements Serum {
 		ListTag list = new ListTag();
 
 		for (MobEffectInstance mobeffectinstance : effects) {
-			list.add(mobeffectinstance.save(new CompoundTag()));
+			list.add(mobeffectinstance.save());
 		}
 
 		tag.put(STATUS_EFFECTS_TAG, list);
@@ -171,7 +177,7 @@ public class PotionSerum implements Serum {
 		ListTag list = tag.getList(STATUS_EFFECTS_TAG, Tag.TAG_LIST);
 
 		for (MobEffectInstance mobeffectinstance : effects) {
-			list.add(mobeffectinstance.save(new CompoundTag()));
+			list.add(mobeffectinstance.save());
 		}
 
 		tag.put(STATUS_EFFECTS_TAG, list);
@@ -193,23 +199,23 @@ public class PotionSerum implements Serum {
 
 	public static List<MobEffectInstance> getAllEffects(CompoundTag tag) {
 		List<MobEffectInstance> effects = getStatusEffects(tag);
-		effects.addAll(0, getPotion(tag).getEffects());
+		effects.addAll(0, getPotion(tag).value().getEffects());
 		return effects;
 	}
 
-	public static int computeColor(Potion potion, List<MobEffectInstance> allEffects) {
-		if (potion == EMPTY && allEffects.isEmpty()) {
+	public static int computeColor(Holder<Potion> potion, List<MobEffectInstance> allEffects) {
+		if (potion.is(Potions.WATER) && allEffects.isEmpty()) {
 			return 0x18CCE5;
 		}
 		else {
-			return PotionUtils.getColor(allEffects);
+			return PotionContents.getColor(allEffects);
 		}
 	}
 
 	@Nullable
 	public static MobEffect getPrimaryEffect(Collection<MobEffectInstance> allEffects) {
 		MobEffectInstance instance = getPrimaryEffectInstance(allEffects);
-		return instance != null ? instance.getEffect() : null;
+		return instance != null ? instance.getEffect().value() : null;
 	}
 
 	@Nullable
@@ -221,8 +227,8 @@ public class PotionSerum implements Serum {
 
 		while (iterator.hasNext()) {
 			MobEffectInstance instance = iterator.next();
-			boolean isInstanceHarmful = instance.getEffect().getCategory() == MobEffectCategory.HARMFUL;
-			boolean isPrimaryHarmful = primary.getEffect().getCategory() == MobEffectCategory.HARMFUL;
+			boolean isInstanceHarmful = instance.getEffect().value().getCategory() == MobEffectCategory.HARMFUL;
+			boolean isPrimaryHarmful = primary.getEffect().value().getCategory() == MobEffectCategory.HARMFUL;
 
 			if (isInstanceHarmful && !isPrimaryHarmful) {
 				continue;

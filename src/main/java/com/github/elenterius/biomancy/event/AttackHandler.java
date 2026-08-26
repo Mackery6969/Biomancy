@@ -16,7 +16,6 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent;
 import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
-import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -28,7 +27,7 @@ public final class AttackHandler {
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onCriticalHit(final CriticalHitEvent event) {
-		if (event.getDamageModifier() > 0 && event.getTarget() instanceof LivingEntity target && (event.getResult() == Event.Result.ALLOW || (event.isVanillaCritical() && event.getResult() == Event.Result.DEFAULT))) {
+		if (event.getDamageMultiplier() > 0 && event.getTarget() instanceof LivingEntity target && event.isCriticalHit()) {
 			ItemStack heldStack = event.getEntity().getMainHandItem();
 			if (heldStack.getItem() instanceof CriticalHitListener listener) {
 				listener.onCriticalHitEntity(heldStack, event.getEntity(), target);
@@ -40,9 +39,9 @@ public final class AttackHandler {
 	public static void onHurt(final LivingIncomingDamageEvent event) {
 		LivingEntity livingEntity = event.getEntity();
 
-		if (!livingEntity.level().isClientSide && event.getAmount() >= 6f && livingEntity.hasEffect(ModMobEffects.VOLATILE.get())) {
+		if (!livingEntity.level().isClientSide && event.getAmount() >= 6f && livingEntity.hasEffect(ModMobEffects.VOLATILE)) {
 			OneShotTaskWorker.onNextTick(livingEntity, living -> {
-				living.removeEffect(ModMobEffects.VOLATILE.get());
+				living.removeEffect(ModMobEffects.VOLATILE);
 				float radius = 3f - living.getArmorCoverPercentage() * 1.5f;
 				ExplosionUtil.explodeIncendiary(living.level(), living, radius, Level.ExplosionInteraction.MOB);
 			});

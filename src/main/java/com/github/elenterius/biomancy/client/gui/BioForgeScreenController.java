@@ -55,7 +55,7 @@ class BioForgeScreenController {
 		this.minecraft = minecraft;
 		this.menu = menu;
 
-		tabs = ModBioForgeTabs.REGISTRY.get().getValues().stream().sorted(CATEGORY_COMPARATOR).toList();
+		tabs = ModBioForgeTabs.REGISTRY.stream().sorted(CATEGORY_COMPARATOR).toList();
 
 		playerInvChanges = getPlayer().getInventory().getTimesChanged();
 		itemCounter = new ItemStackCounter();

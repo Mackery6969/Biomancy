@@ -4,6 +4,7 @@ import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.tags.ModItemTags;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
@@ -43,14 +44,10 @@ public final class Nutrients {
 		if (resource.isEmpty()) return false;
 		if (REPAIR_VALUES.containsKey(resource.getItem())) return true;
 
-		if (resource.isEdible()) {
-			FoodProperties foodProperties = resource.getFoodProperties(null);
-			if (foodProperties == null) return false;
+		FoodProperties foodProperties = resource.get(DataComponents.FOOD);
+		if (foodProperties == null) return false;
 
-			return foodProperties.isMeat() && resource.is(ModItemTags.FRESH_RAW_MEATS) && foodProperties.getNutrition() > 0;
-		}
-
-		return false;
+		return resource.is(ModItemTags.FRESH_RAW_MEATS) && foodProperties.nutrition() > 0;
 	}
 
 	@ApiStatus.Internal
@@ -69,13 +66,9 @@ public final class Nutrients {
 			return REPAIR_VALUES.getInt(item);
 		}
 
-		if (resource.isEdible()) {
-			FoodProperties foodProperties = resource.getFoodProperties(null);
-			if (foodProperties == null) return 0;
-
-			if (foodProperties.isMeat() && resource.is(ModItemTags.FRESH_RAW_MEATS)) {
-				return RAW_MEAT_NUTRITION_MODIFIER.applyAsInt(foodProperties.getNutrition()) * 2; //TODO: don't give bonus for rotten meats
-			}
+		FoodProperties foodProperties = resource.get(DataComponents.FOOD);
+		if (foodProperties != null && resource.is(ModItemTags.FRESH_RAW_MEATS)) {
+			return RAW_MEAT_NUTRITION_MODIFIER.applyAsInt(foodProperties.nutrition()) * 2; //TODO: don't give bonus for rotten meats
 		}
 
 		return 0;
@@ -85,12 +78,8 @@ public final class Nutrients {
 		if (resource.isEmpty()) return false;
 		if (FUEL_VALUES.containsKey(resource.getItem())) return true;
 
-		if (resource.isEdible()) {
-			FoodProperties foodProperties = resource.getFoodProperties(null);
-			return foodProperties != null && foodProperties.getNutrition() > 0;
-		}
-
-		return false;
+		FoodProperties foodProperties = resource.get(DataComponents.FOOD);
+		return foodProperties != null && foodProperties.nutrition() > 0;
 	}
 
 	@ApiStatus.Internal
@@ -109,18 +98,14 @@ public final class Nutrients {
 			return FUEL_VALUES.getInt(item);
 		}
 
-		if (resource.isEdible()) {
-			FoodProperties foodProperties = resource.getFoodProperties(null);
-			if (foodProperties == null) return 0;
+		FoodProperties foodProperties = resource.get(DataComponents.FOOD);
+		if (foodProperties == null) return 0;
 
-			int nutrition = foodProperties.getNutrition();
-			if (foodProperties.isMeat() && resource.is(ModItemTags.FRESH_RAW_MEATS)) {
-				return RAW_MEAT_NUTRITION_MODIFIER.applyAsInt(nutrition);
-			}
-			return nutrition;
+		int nutrition = foodProperties.nutrition();
+		if (resource.is(ModItemTags.FRESH_RAW_MEATS)) {
+			return RAW_MEAT_NUTRITION_MODIFIER.applyAsInt(nutrition);
 		}
-
-		return 0;
+		return nutrition;
 	}
 
 }

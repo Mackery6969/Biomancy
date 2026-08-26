@@ -50,7 +50,7 @@ public class SerumItemBuilder extends ItemBuilder {
 		@Override
 		public Serum getSerum(ItemStack stack) {
 			if (serum == null) {
-				serum = ModSerums.REGISTRY.get().getValue(serumId);
+				serum = ModSerums.REGISTRY.get(serumId);
 			}
 
 			if (serum == null) {
@@ -66,7 +66,7 @@ public class SerumItemBuilder extends ItemBuilder {
 		}
 
 		@Override
-		public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
+		public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag isAdvanced) {
 			tooltip.addAll(ClientTextUtil.getItemInfoTooltip(stack));
 		}
 

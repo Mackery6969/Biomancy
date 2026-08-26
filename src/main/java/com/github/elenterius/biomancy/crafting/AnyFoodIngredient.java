@@ -1,62 +1,33 @@
 package com.github.elenterius.biomancy.crafting;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.crafting.AbstractIngredient;
-import net.neoforged.neoforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.IIngredientSerializer;
+import com.github.elenterius.biomancy.init.ModIngredientTypes;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.registries.BuiltInRegistries;
-import org.jspecify.annotations.Nullable;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.crafting.ICustomIngredient;
+import net.neoforged.neoforge.common.crafting.IngredientType;
 
-import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
-public class AnyFoodIngredient extends AbstractIngredient {
+public record AnyFoodIngredient() implements ICustomIngredient {
 
-	private static final Predicate<FoodProperties> NUTRITION_PREDICATE = foodProperties -> foodProperties != null && foodProperties.getNutrition() > 0;
+	public static final MapCodec<AnyFoodIngredient> CODEC = MapCodec.unit(AnyFoodIngredient::new);
 
-	private @Nullable ItemStack[] stacks = null;
-
-	public AnyFoodIngredient() {}
-
-	@Override
-	public boolean isEmpty() {
-		return false;
-	}
+	private static final Predicate<FoodProperties> NUTRITION_PREDICATE = foodProperties -> foodProperties != null && foodProperties.nutrition() > 0;
 
 	@Override
-	public ItemStack[] getItems() {
-		resolve();
-		return stacks;
-	}
-
-	private void resolve() {
-		if (stacks == null) {
-			stacks = BuiltInRegistries.ITEM.getValues().stream()
-					.filter(Item::isEdible)
-					.map(ItemStack::new)
-					.filter(stack -> NUTRITION_PREDICATE.test(stack.getFoodProperties(null)))
-					.toArray(ItemStack[]::new);
-		}
-	}
-
-	@Override
-	protected void invalidate() {
-		stacks = null;
-	}
-
-	@Override
-	public boolean test(@Nullable ItemStack stack) {
-		if (stack == null) return false;
+	public boolean test(ItemStack stack) {
 		if (stack.isEmpty()) return false;
-		if (!stack.isEdible()) return false;
-
 		return NUTRITION_PREDICATE.test(stack.getFoodProperties(null));
+	}
+
+	@Override
+	public Stream<ItemStack> getItems() {
+		return BuiltInRegistries.ITEM.stream()
+				.map(ItemStack::new)
+				.filter(stack -> NUTRITION_PREDICATE.test(stack.getFoodProperties(null)));
 	}
 
 	@Override
@@ -65,33 +36,8 @@ public class AnyFoodIngredient extends AbstractIngredient {
 	}
 
 	@Override
-	public IIngredientSerializer<? extends Ingredient> getSerializer() {
-		return Serializer.INSTANCE;
-	}
-
-	@Override
-	public JsonElement toJson() {
-		JsonObject json = new JsonObject();
-		json.addProperty("type", Objects.requireNonNull(CraftingHelper.getID(Serializer.INSTANCE)).toString());
-		return json;
-	}
-
-	public static class Serializer implements IIngredientSerializer<AnyFoodIngredient> {
-
-		public static final Serializer INSTANCE = new Serializer();
-
-		@Override
-		public AnyFoodIngredient parse(FriendlyByteBuf buffer) {
-			return new AnyFoodIngredient();
-		}
-
-		@Override
-		public AnyFoodIngredient parse(JsonObject json) {
-			return new AnyFoodIngredient();
-		}
-
-		@Override
-		public void write(FriendlyByteBuf buffer, AnyFoodIngredient ingredient) {}
+	public IngredientType<?> getType() {
+		return ModIngredientTypes.ANY_FOOD.get();
 	}
 
 }

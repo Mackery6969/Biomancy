@@ -7,6 +7,7 @@ import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,7 +15,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jspecify.annotations.Nullable;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -29,7 +29,7 @@ public final class AcolyteArmorItem extends LivingArmorGeoItem implements Knowle
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-	public AcolyteArmorItem(ArmorMaterial material, Type type, int maxNutrients, Properties properties) {
+	public AcolyteArmorItem(Holder<ArmorMaterial> material, Type type, int maxNutrients, Properties properties) {
 		super(material, type, maxNutrients, properties);
 	}
 
@@ -72,7 +72,7 @@ public final class AcolyteArmorItem extends LivingArmorGeoItem implements Knowle
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag isAdvanced) {
 		AcolyteArmorUpgrades.appendHoverText(stack, tooltip);
 
 		tooltip.add(ComponentUtil.EMPTY_LINE);

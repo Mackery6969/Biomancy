@@ -1,43 +1,32 @@
 package com.github.elenterius.biomancy.crafting;
 
-import com.github.elenterius.biomancy.crafting.recipe.RecipeUtil;
+import com.github.elenterius.biomancy.init.ModIngredientTypes;
 import com.github.elenterius.biomancy.item.EssenceItem;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.minecraft.advancements.critereon.NbtPredicate;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.crafting.AbstractIngredient;
-import net.neoforged.neoforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.IIngredientSerializer;
-import org.jspecify.annotations.Nullable;
+import net.neoforged.neoforge.common.crafting.ICustomIngredient;
+import net.neoforged.neoforge.common.crafting.IngredientType;
 
-import java.util.Objects;
 import java.util.stream.Stream;
 
-public class EssenceIngredient extends AbstractIngredient {
+public record EssenceIngredient(ItemStack itemStack, CompoundTag partialTag) implements ICustomIngredient {
 
-	private final ItemStack itemStack;
-	private final CompoundTag partialTag;
-	private final NbtPredicate predicate;
+	public static final MapCodec<EssenceIngredient> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+			ItemStack.SINGLE_ITEM_CODEC.fieldOf("item").forGetter(EssenceIngredient::itemStack),
+			CompoundTag.CODEC.fieldOf("predicate_tag").forGetter(EssenceIngredient::partialTag)
+	).apply(instance, EssenceIngredient::new));
 
-	protected EssenceIngredient(ItemStack itemStack, CompoundTag partialTag) {
-		super(Stream.of(new Ingredient.ItemValue(itemStack)));
-
-		this.itemStack = itemStack;
-		this.partialTag = partialTag;
-
-		predicate = new NbtPredicate(partialTag);
-	}
-
-	public static EssenceIngredient of(EntityType<?> entityType) {
+	public static Ingredient of(EntityType<?> entityType) {
 		return of(entityType, 0);
 	}
 
-	public static EssenceIngredient of(EntityType<?> entityType, int tier) {
+	public static Ingredient of(EntityType<?> entityType, int tier) {
 		if (tier < 0 || tier > 3) throw new IllegalArgumentException("Cannot create a EssenceIngredient with invalid tier");
 
 		CompoundTag essenceTag = new CompoundTag();
@@ -49,13 +38,18 @@ public class EssenceIngredient extends AbstractIngredient {
 
 		ItemStack stack = EssenceItem.fromEntityType(entityType, tier); //we set the tier here only for visual purposes
 
-		return new EssenceIngredient(stack, partialTag);
+		return new EssenceIngredient(stack, partialTag).toVanilla();
 	}
 
 	@Override
-	public boolean test(@Nullable ItemStack stack) {
-		if (stack == null) return false;
-		return itemStack.getItem() == stack.getItem() && predicate.matches(stack.getShareTag());
+	public boolean test(ItemStack stack) {
+		if (stack.isEmpty()) return false;
+		return itemStack.getItem() == stack.getItem() && CustomData.itemMatcher(DataComponents.CUSTOM_DATA, partialTag).test(stack);
+	}
+
+	@Override
+	public Stream<ItemStack> getItems() {
+		return Stream.of(itemStack);
 	}
 
 	@Override
@@ -64,43 +58,8 @@ public class EssenceIngredient extends AbstractIngredient {
 	}
 
 	@Override
-	public IIngredientSerializer<? extends Ingredient> getSerializer() {
-		return Serializer.INSTANCE;
-	}
-
-	@Override
-	public JsonElement toJson() {
-		JsonObject json = new JsonObject();
-		json.addProperty("type", Objects.requireNonNull(CraftingHelper.getID(Serializer.INSTANCE)).toString());
-		json.add("item", RecipeUtil.writeItemStack(itemStack));
-		json.addProperty("predicate_tag", partialTag.toString());
-		return json;
-	}
-
-	public static class Serializer implements IIngredientSerializer<EssenceIngredient> {
-
-		public static final Serializer INSTANCE = new Serializer();
-
-		@Override
-		public EssenceIngredient parse(JsonObject json) {
-			ItemStack stack = RecipeUtil.readItemStack(json.getAsJsonObject("item"));
-			CompoundTag tag = CraftingHelper.getNBT(json.get("predicate_tag"));
-			return new EssenceIngredient(stack, tag);
-		}
-
-		@Override
-		public EssenceIngredient parse(FriendlyByteBuf buffer) {
-			ItemStack stack = buffer.readItem();
-			CompoundTag tag = buffer.readNbt();
-			return new EssenceIngredient(stack, Objects.requireNonNull(tag));
-		}
-
-		@Override
-		public void write(FriendlyByteBuf buffer, EssenceIngredient ingredient) {
-			buffer.writeItem(ingredient.itemStack);
-			buffer.writeNbt(ingredient.partialTag);
-		}
-
+	public IngredientType<?> getType() {
+		return ModIngredientTypes.ESSENCE.get();
 	}
 
 }

@@ -155,7 +155,7 @@ public abstract class LivingGunItem extends GunItem implements SimpleLivingTool 
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag isAdvanced) {
 		appendGunStats(stack, tooltip);
 
 		tooltip.add(ComponentUtil.EMPTY_LINE);

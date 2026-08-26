@@ -1,10 +1,9 @@
 package com.github.elenterius.biomancy.init;
 
 import com.github.elenterius.biomancy.BiomancyMod;
-import com.github.elenterius.biomancy.crafting.AnyFoodIngredient;
-import com.github.elenterius.biomancy.crafting.EssenceIngredient;
 import com.github.elenterius.biomancy.crafting.recipe.*;
 import com.github.elenterius.biomancy.crafting.recipe.SimpleRecipeType.AdvancedRecipeType;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -12,14 +11,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.block.ComposterBlock;
 import net.neoforged.neoforge.common.brewing.BrewingRecipe;
 import net.neoforged.neoforge.common.brewing.BrewingRecipeRegistry;
-import net.neoforged.neoforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.StrictNBTIngredient;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -60,29 +58,20 @@ public final class ModRecipes {
 		registerBrewingRecipe(ModItems.TOXIN_GLAND.get(), Potions.THICK, Potions.STRONG_POISON);
 		registerBrewingRecipe(ModItems.WITHERING_OOZE.get(), Potions.POISON, Potions.HARMING);
 		registerBrewingRecipe(ModItems.WITHERING_OOZE.get(), Potions.STRONG_POISON, Potions.STRONG_HARMING);
-		registerBrewingRecipe(ModItems.BLOOMBERRY.get(), Potions.MUNDANE, ModPotions.PRIMORDIAL_INFESTATION.get());
-		registerBrewingRecipe(Items.REDSTONE, ModPotions.PRIMORDIAL_INFESTATION.get(), ModPotions.LONG_PRIMORDIAL_INFESTATION.get());
+		registerBrewingRecipe(ModItems.BLOOMBERRY.get(), Potions.MUNDANE, ModPotions.PRIMORDIAL_INFESTATION);
+		registerBrewingRecipe(Items.REDSTONE, ModPotions.PRIMORDIAL_INFESTATION, ModPotions.LONG_PRIMORDIAL_INFESTATION);
 	}
 
-	private static void registerBrewingRecipe(Item reactant, Potion potionBase, Potion potionResult) {
+	private static void registerBrewingRecipe(Item reactant, Holder<Potion> potionBase, Holder<Potion> potionResult) {
 		BrewingRecipeRegistry.addRecipe(new BrewingRecipe(createPotionIngredient(potionBase), Ingredient.of(reactant), createPotionStack(potionResult)));
 	}
 
-	private static ItemStack createPotionStack(Supplier<Potion> supplier) {
-		return createPotionStack(supplier.get());
+	private static ItemStack createPotionStack(Holder<Potion> potion) {
+		return PotionContents.createItemStack(Items.POTION, potion);
 	}
 
-	private static ItemStack createPotionStack(Potion potion) {
-		return PotionUtils.setPotion(new ItemStack(Items.POTION), potion);
-	}
-
-	private static Ingredient createPotionIngredient(Potion potion) {
-		return StrictNBTIngredient.of(createPotionStack(potion));
-	}
-
-	public static void registerIngredientSerializers() {
-		CraftingHelper.register(BiomancyMod.rl("food_nutrition"), AnyFoodIngredient.Serializer.INSTANCE);
-		CraftingHelper.register(BiomancyMod.rl("essence"), EssenceIngredient.Serializer.INSTANCE);
+	private static Ingredient createPotionIngredient(Holder<Potion> potion) {
+		return DataComponentIngredient.of(true, createPotionStack(potion));
 	}
 
 	private static <T extends RecipeType<?>, R extends Recipe<Container>> DeferredHolder<RecipeSerializer<?>, RecipeSerializer<R>> registerRecipeSerializer(DeferredHolder<RecipeType<?>, T> recipeType, Supplier<RecipeSerializer<R>> serializerSupplier) {

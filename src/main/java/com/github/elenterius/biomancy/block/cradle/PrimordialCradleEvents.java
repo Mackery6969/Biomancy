@@ -4,9 +4,9 @@ import com.github.elenterius.biomancy.api.tribute.SacrificeHandler;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Mob;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.bus.api.Cancelable;
 import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.ICancellableEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -15,17 +15,17 @@ public final class PrimordialCradleEvents {
 
 	public static boolean triggerCanSpawnMob(ServerLevel level, PrimordialCradleBlockEntity cradle, List<ServerPlayer> nearbyPlayers) {
 		CanSpawnMob event = new CanSpawnMob(level, cradle, nearbyPlayers);
-		return !MinecraftForge.EVENT_BUS.post(event);
+		NeoForge.EVENT_BUS.post(event);
+		return !event.isCanceled();
 	}
 
 	public static Mob triggerOnSpawnMob(ServerLevel level, PrimordialCradleBlockEntity cradle, Mob mobToSpawn, List<ServerPlayer> nearbyPlayers) {
 		OnSpawnMob event = new OnSpawnMob(level, cradle, mobToSpawn, nearbyPlayers);
-		boolean cancelled = MinecraftForge.EVENT_BUS.post(event);
-		return !cancelled ? event.getMobToSpawn() : mobToSpawn;
+		NeoForge.EVENT_BUS.post(event);
+		return !event.isCanceled() ? event.getMobToSpawn() : mobToSpawn;
 	}
 
-	@Cancelable
-	public static class CanSpawnMob extends Event {
+	public static class CanSpawnMob extends Event implements ICancellableEvent {
 
 		private final ServerLevel level;
 		private final PrimordialCradleBlockEntity cradle;
@@ -60,8 +60,7 @@ public final class PrimordialCradleEvents {
 
 	}
 
-	@Cancelable
-	public static class OnSpawnMob extends Event {
+	public static class OnSpawnMob extends Event implements ICancellableEvent {
 
 		private final ServerLevel level;
 		private final PrimordialCradleBlockEntity cradle;

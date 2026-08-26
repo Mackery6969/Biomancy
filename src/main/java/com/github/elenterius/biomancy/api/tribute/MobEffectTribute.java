@@ -4,14 +4,15 @@ import com.github.elenterius.biomancy.init.tags.ModMobEffectTags;
 import com.github.elenterius.biomancy.item.PotionSerumItem;
 import com.github.elenterius.biomancy.mixin.accessor.SuspiciousStewItemAccessor;
 import com.github.elenterius.biomancy.serum.PotionSerum;
-import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.SuspiciousStewItem;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
@@ -27,15 +28,15 @@ public record MobEffectTribute(int lifeEnergy, int successModifier, int diseaseM
 		boolean isSuspiciousStewItem = stack.getItem() instanceof SuspiciousStewItem;
 
 		FoodProperties food = stack.getFoodProperties(null);
-		boolean isFoodItem = food != null && !food.getEffects().isEmpty(); //we check if the food has any effects because they are optional
+		boolean isFoodItem = food != null && !food.effects().isEmpty(); //we check if the food has any effects because they are optional
 
 		if (!isPotionItem && !isSuspiciousStewItem && !isFoodItem && !isPotionSerum) return Tribute.EMPTY; //avoid creation of new empty objects
 
 		Builder builder = new Builder();
 
 		if (isPotionItem) {
-			List<MobEffectInstance> effectInstances = PotionUtils.getMobEffects(stack);
-			for (MobEffectInstance effectInstance : effectInstances) {
+			PotionContents potionContents = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+			for (MobEffectInstance effectInstance : potionContents.getAllEffects()) {
 				builder.addEffect(effectInstance);
 			}
 		}
@@ -52,10 +53,8 @@ public record MobEffectTribute(int lifeEnergy, int successModifier, int diseaseM
 		}
 
 		if (isFoodItem) {
-			for (Pair<MobEffectInstance, Float> pair : food.getEffects()) {
-				MobEffectInstance effectInstance = pair.getFirst();
-				float chance = pair.getSecond();
-				builder.addEffect(effectInstance, chance * 1.2f);
+			for (FoodProperties.PossibleEffect possibleEffect : food.effects()) {
+				builder.addEffect(possibleEffect.effect(), possibleEffect.probability() * 1.2f);
 			}
 		}
 
@@ -101,30 +100,30 @@ public record MobEffectTribute(int lifeEnergy, int successModifier, int diseaseM
 			return this;
 		}
 
-		public Builder addEffect(MobEffect effect) {
+		public Builder addEffect(Holder<MobEffect> effect) {
 			addEffect(effect, 0, BASE_POTION_DURATION, 1f);
 			return this;
 		}
 
-		public Builder addEffect(MobEffect effect, int amplifier, int duration, float multiplier) {
+		public Builder addEffect(Holder<MobEffect> effect, int amplifier, int duration, float multiplier) {
 			if (ModMobEffectTags.isCradleLifeEnergySource(effect)) { //heal, regeneration, health boost, absorption
-				lifeEnergy += calculateEffectModifier(effect.isInstantenous(), amplifier, duration, 60) * multiplier;
+				lifeEnergy += calculateEffectModifier(effect.value().isInstantenous(), amplifier, duration, 60) * multiplier;
 			}
 
 			if (ModMobEffectTags.isCradleDiseaseSource(effect)) { //weakness, wither, poison
-				diseaseModifier += calculateEffectModifier(effect.isInstantenous(), amplifier, duration, 15) * multiplier;
+				diseaseModifier += calculateEffectModifier(effect.value().isInstantenous(), amplifier, duration, 15) * multiplier;
 			}
 
 			if (ModMobEffectTags.isCradleSuccessSource(effect)) { //luck, saturation, libido
-				successModifier += calculateEffectModifier(effect.isInstantenous(), amplifier, duration, 50) * multiplier;
+				successModifier += calculateEffectModifier(effect.value().isInstantenous(), amplifier, duration, 50) * multiplier;
 			}
 
 			if (ModMobEffectTags.isCradleHostilitySource(effect)) { //hunger, confusion, blindness, harm, wither, poison, bleed
-				hostileModifier += calculateEffectModifier(effect.isInstantenous(), amplifier, duration, 15) * multiplier;
+				hostileModifier += calculateEffectModifier(effect.value().isInstantenous(), amplifier, duration, 15) * multiplier;
 			}
 
 			if (ModMobEffectTags.isCradleAnomalySource(effect)) { //bad omen, darkness, corrosive
-				anomalyModifier += calculateEffectModifier(effect.isInstantenous(), amplifier, duration, 50) * multiplier;
+				anomalyModifier += calculateEffectModifier(effect.value().isInstantenous(), amplifier, duration, 50) * multiplier;
 			}
 
 			return this;

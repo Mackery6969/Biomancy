@@ -15,7 +15,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.Level;
@@ -110,9 +110,9 @@ public final class ModCreativeModeTabs {
 
 					ModItems.findItems(SerumItem.class).forEach(output::accept);
 
-					output.accept(PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.PRIMORDIAL_INFESTATION.get()));
-					output.accept(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.PRIMORDIAL_INFESTATION.get()));
-					output.accept(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.PRIMORDIAL_INFESTATION.get()));
+					output.accept(PotionContents.createItemStack(Items.POTION, ModPotions.PRIMORDIAL_INFESTATION));
+					output.accept(PotionContents.createItemStack(Items.SPLASH_POTION, ModPotions.PRIMORDIAL_INFESTATION));
+					output.accept(PotionContents.createItemStack(Items.LINGERING_POTION, ModPotions.PRIMORDIAL_INFESTATION));
 
 					for (Potion potion : PotionSerumRecipes.POTIONS) {
 						output.accept(ModItems.POTION_SERUM.get().getInstanceFrom(potion));

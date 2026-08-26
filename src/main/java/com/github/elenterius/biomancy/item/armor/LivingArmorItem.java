@@ -7,17 +7,12 @@ import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.styles.ColorStyles;
 import com.github.elenterius.biomancy.util.ArrayUtil;
 import com.github.elenterius.biomancy.util.ComponentUtil;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
@@ -25,8 +20,8 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -37,7 +32,7 @@ public class LivingArmorItem extends ArmorItem implements SimpleLivingTool {
 
 	private final int maxNutrients;
 
-	public LivingArmorItem(ArmorMaterial material, Type type, int maxNutrients, Properties properties) {
+	public LivingArmorItem(Holder<ArmorMaterial> material, Type type, int maxNutrients, Properties properties) {
 		super(material, type, properties);
 		this.maxNutrients = maxNutrients;
 	}
@@ -136,7 +131,7 @@ public class LivingArmorItem extends ArmorItem implements SimpleLivingTool {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag isAdvanced) {
 		tooltip.addAll(ClientTextUtil.getItemInfoTooltip(stack));
 		tooltip.add(ComponentUtil.EMPTY_LINE);
 
@@ -153,8 +148,8 @@ public class LivingArmorItem extends ArmorItem implements SimpleLivingTool {
 	}
 
 	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-		return getNutrients(stack) > 0 ? super.getAttributeModifiers(slot, stack) : ImmutableMultimap.of();
+	public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
+		return getNutrients(stack) > 0 ? getDefaultAttributeModifiers() : ItemAttributeModifiers.EMPTY;
 	}
 
 	@Override

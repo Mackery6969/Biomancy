@@ -4,6 +4,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -33,7 +34,7 @@ public abstract class BaseProjectile extends Projectile implements IEntityWithCo
 	}
 
 	@Override
-	protected void defineSynchedData() {}
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {}
 
 	@Override
 	public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
@@ -90,7 +91,8 @@ public abstract class BaseProjectile extends Projectile implements IEntityWithCo
 		return DEFAULT_WATER_DRAG;
 	}
 
-	public float getGravity() {
+	@Override
+	protected double getDefaultGravity() {
 		return DEFAULT_GRAVITY;
 	}
 
@@ -123,9 +125,7 @@ public abstract class BaseProjectile extends Projectile implements IEntityWithCo
 
 			setDeltaMovement(motion.scale(drag));
 
-			if (!isNoGravity()) {
-				setDeltaMovement(getDeltaMovement().add(0, -getGravity(), 0));
-			}
+			applyGravity();
 
 			spawnParticle(posX, posY, posZ);
 			setPos(posX, posY, posZ);
