@@ -4,7 +4,7 @@ import net.minecraft.world.inventory.RecipeBookType;
 
 public final class ModRecipeBookTypes {
 
-	public static final RecipeBookType BIO_FORGE = RecipeBookType.create("biomancy_bio_forge");
+	public static final RecipeBookType BIO_FORGE = RecipeBookType.valueOf("BIOMANCY_BIO_FORGE");
 
 	private ModRecipeBookTypes() {}
 

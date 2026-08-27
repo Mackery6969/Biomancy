@@ -25,13 +25,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.List;
 import java.util.Objects;
 
-public class BioForgingCategory implements IRecipeCategory<BioForgingRecipe> {
+public class BioForgingCategory implements IRecipeCategory<RecipeHolder<BioForgingRecipe>> {
 
-	public static final RecipeType<BioForgingRecipe> RECIPE_TYPE = new RecipeType<>(ModRecipes.BIO_FORGING_RECIPE_TYPE.getId(), BioForgingRecipe.class);
+	public static final RecipeType<RecipeHolder<BioForgingRecipe>> RECIPE_TYPE = RecipeType.createFromVanilla(ModRecipes.BIO_FORGING_RECIPE_TYPE.get());
 	private final IDrawable background;
 	private final IDrawable icon;
 
@@ -42,7 +43,7 @@ public class BioForgingCategory implements IRecipeCategory<BioForgingRecipe> {
 	}
 
 	@Override
-	public RecipeType<BioForgingRecipe> getRecipeType() {
+	public RecipeType<RecipeHolder<BioForgingRecipe>> getRecipeType() {
 		return RECIPE_TYPE;
 	}
 
@@ -62,7 +63,8 @@ public class BioForgingCategory implements IRecipeCategory<BioForgingRecipe> {
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayoutBuilder builder, BioForgingRecipe recipe, IFocusGroup focuses) {
+	public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<BioForgingRecipe> recipeHolder, IFocusGroup focuses) {
+		BioForgingRecipe recipe = recipeHolder.value();
 		ClientLevel level = Objects.requireNonNull(Minecraft.getInstance().level);
 
 		List<IngredientStack> ingredientQuantities = recipe.getIngredientQuantities();
@@ -87,7 +89,8 @@ public class BioForgingCategory implements IRecipeCategory<BioForgingRecipe> {
 	}
 
 	@Override
-	public void draw(BioForgingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+	public void draw(RecipeHolder<BioForgingRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+		BioForgingRecipe recipe = recipeHolder.value();
 		Font font = Minecraft.getInstance().font;
 		MutableComponent costString = ComponentUtil.literal("-" + recipe.getCraftingCostNutrients());
 		guiGraphics.drawString(font, costString, 108, 32 - font.lineHeight + 1, ColorStyles.WHITE_ARGB);

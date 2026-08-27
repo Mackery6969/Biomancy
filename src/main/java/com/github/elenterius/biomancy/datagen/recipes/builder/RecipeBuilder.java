@@ -1,12 +1,10 @@
 package com.github.elenterius.biomancy.datagen.recipes.builder;
 
-import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.advancements.critereon.ContextAwarePredicate;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.MinMaxBounds;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -15,24 +13,18 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jspecify.annotations.Nullable;
 
-import java.util.function.Consumer;
-
 public sealed interface RecipeBuilder<T extends RecipeBuilder<?>> permits BioBrewingRecipeBuilder, BioForgingRecipeBuilder, DecomposingRecipeBuilder, DigestingRecipeBuilder, WorkbenchRecipeBuilder.ShapedBuilder, WorkbenchRecipeBuilder.ShapelessBuilder {
 
 	static String getRecipeFolderName(@Nullable RecipeCategory category, String modId) {
 		return category != null ? category.getFolderName() : modId;
 	}
 
-	private InventoryChangeTrigger.TriggerInstance has(ItemLike itemLike) {
-		return inventoryTrigger(ItemPredicate.Builder.item().of(itemLike).build());
+	private Criterion<InventoryChangeTrigger.TriggerInstance> has(ItemLike itemLike) {
+		return InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(itemLike).build());
 	}
 
-	private InventoryChangeTrigger.TriggerInstance has(TagKey<Item> tag) {
-		return inventoryTrigger(ItemPredicate.Builder.item().of(tag).build());
-	}
-
-	private InventoryChangeTrigger.TriggerInstance inventoryTrigger(ItemPredicate... predicates) {
-		return new InventoryChangeTrigger.TriggerInstance(ContextAwarePredicate.ANY, MinMaxBounds.Ints.ANY, MinMaxBounds.Ints.ANY, MinMaxBounds.Ints.ANY, predicates);
+	private Criterion<InventoryChangeTrigger.TriggerInstance> has(TagKey<Item> tag) {
+		return InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(tag).build());
 	}
 
 	private String getItemName(ItemLike itemLike) {
@@ -44,14 +36,14 @@ public sealed interface RecipeBuilder<T extends RecipeBuilder<?>> permits BioBre
 		return tag.location().getPath();
 	}
 
-	T unlockedBy(String name, CriterionTriggerInstance criterionTrigger);
+	T unlockedBy(String name, Criterion<?> criterion);
 
 	default T unlockedBy(String name, ItemPredicate predicate) {
-		return unlockedBy(name, inventoryTrigger(predicate));
+		return unlockedBy(name, InventoryChangeTrigger.TriggerInstance.hasItems(predicate));
 	}
 
-	default T unlockedBy(ItemLike itemLike, CriterionTriggerInstance criterionTrigger) {
-		return unlockedBy("has_" + getItemName(itemLike), criterionTrigger);
+	default T unlockedBy(ItemLike itemLike, Criterion<?> criterion) {
+		return unlockedBy("has_" + getItemName(itemLike), criterion);
 	}
 
 	default T unlockedBy(ItemLike itemLike) {
@@ -63,18 +55,18 @@ public sealed interface RecipeBuilder<T extends RecipeBuilder<?>> permits BioBre
 		return unlockedBy("has_" + getItemName(item), has(item));
 	}
 
-	default T unlockedBy(TagKey<Item> tag, CriterionTriggerInstance criterionTrigger) {
-		return unlockedBy("has_" + getTagName(tag), criterionTrigger);
+	default T unlockedBy(TagKey<Item> tag, Criterion<?> criterion) {
+		return unlockedBy("has_" + getTagName(tag), criterion);
 	}
 
 	default T unlockedBy(TagKey<Item> tag) {
 		return unlockedBy("has_" + getTagName(tag), has(tag));
 	}
 
-	default void save(Consumer<FinishedRecipe> consumer) {
-		save(consumer, null);
+	default void save(RecipeOutput recipeOutput) {
+		save(recipeOutput, null);
 	}
 
-	void save(Consumer<FinishedRecipe> consumer, @Nullable RecipeCategory category);
+	void save(RecipeOutput recipeOutput, @Nullable RecipeCategory category);
 
 }

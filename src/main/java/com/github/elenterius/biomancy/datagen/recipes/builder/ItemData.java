@@ -1,9 +1,10 @@
 package com.github.elenterius.biomancy.datagen.recipes.builder;
 
-import com.google.gson.JsonObject;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.core.registries.BuiltInRegistries;
 import org.jspecify.annotations.Nullable;
@@ -25,7 +26,7 @@ public final class ItemData {
 	}
 
 	public ItemData(ItemStack stack, int count) {
-		this(stack.getItem(), stack.getTag(), count);
+		this(stack.getItem(), stack.get(DataComponents.CUSTOM_DATA) != null ? stack.get(DataComponents.CUSTOM_DATA).copyTag() : null, count);
 	}
 
 	public ItemData(ItemLike item, int count) {
@@ -60,12 +61,12 @@ public final class ItemData {
 		return registryName;
 	}
 
-	public JsonObject toJson() {
-		JsonObject json = new JsonObject();
-		json.addProperty("item", registryName.toString());
-		if (count > 1) json.addProperty("count", count);
-		if (tag != null && !tag.isEmpty()) json.addProperty("nbt", tag.getAsString());
-		return json;
+	public ItemStack toItemStack() {
+		ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(registryName), count);
+		if (tag != null && !tag.isEmpty()) {
+			stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+		}
+		return stack;
 	}
 
 	public String getItemPath() {

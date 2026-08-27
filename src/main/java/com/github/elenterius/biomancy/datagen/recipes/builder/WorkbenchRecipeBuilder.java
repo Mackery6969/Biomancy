@@ -1,9 +1,9 @@
 package com.github.elenterius.biomancy.datagen.recipes.builder;
 
 import com.github.elenterius.biomancy.BiomancyMod;
-import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -13,8 +13,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.core.registries.BuiltInRegistries;
 import org.jspecify.annotations.Nullable;
-
-import java.util.function.Consumer;
 
 public final class WorkbenchRecipeBuilder {
 
@@ -115,18 +113,18 @@ public final class WorkbenchRecipeBuilder {
 			return this;
 		}
 
-		public ShapedBuilder unlockedBy(String name, CriterionTriggerInstance trigger) {
+		public ShapedBuilder unlockedBy(String name, Criterion<?> trigger) {
 			internalBuilder.unlockedBy(name, trigger);
 			return this;
 		}
 
 		@Override
-		public void save(Consumer<FinishedRecipe> consumer, @Nullable RecipeCategory category) {
-			save(consumer, BiomancyMod.rl(getItemName(internalBuilder.getResult())));
+		public void save(RecipeOutput recipeOutput, @Nullable RecipeCategory category) {
+			save(recipeOutput, BiomancyMod.rl(getItemName(internalBuilder.getResult())));
 		}
 
-		public void save(Consumer<FinishedRecipe> consumer, ResourceLocation recipeId) {
-			internalBuilder.save(consumer, recipeId.withPrefix("crafting/"));
+		public void save(RecipeOutput recipeOutput, ResourceLocation recipeId) {
+			internalBuilder.save(recipeOutput, recipeId.withPrefix("crafting/"));
 		}
 
 	}
@@ -170,18 +168,18 @@ public final class WorkbenchRecipeBuilder {
 		}
 
 		@Override
-		public ShapelessBuilder unlockedBy(String name, CriterionTriggerInstance trigger) {
+		public ShapelessBuilder unlockedBy(String name, Criterion<?> trigger) {
 			internalBuilder.unlockedBy(name, trigger);
 			return this;
 		}
 
 		@Override
-		public void save(Consumer<FinishedRecipe> consumer, @Nullable RecipeCategory category) {
-			save(consumer, BiomancyMod.rl(getItemName(internalBuilder.getResult())));
+		public void save(RecipeOutput recipeOutput, @Nullable RecipeCategory category) {
+			save(recipeOutput, BiomancyMod.rl(getItemName(internalBuilder.getResult())));
 		}
 
-		public void save(Consumer<FinishedRecipe> consumer, ResourceLocation recipeId) {
-			internalBuilder.save(consumer, recipeId.withPrefix("crafting/"));
+		public void save(RecipeOutput recipeOutput, ResourceLocation recipeId) {
+			internalBuilder.save(recipeOutput, recipeId.withPrefix("crafting/"));
 		}
 
 	}

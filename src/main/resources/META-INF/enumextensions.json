@@ -1,0 +1,226 @@
+{
+    "entries": [
+        {
+            "enum": "net/minecraft/world/inventory/RecipeBookType",
+            "name": "BIOMANCY_BIO_FORGE",
+            "constructor": "()V",
+            "parameters": []
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_0",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_1",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_2",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_3",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_4",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_5",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_6",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_7",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_8",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_9",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_10",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_11",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_12",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_13",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_14",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_15",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_16",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_17",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_18",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_19",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_20",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_21",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_22",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        },
+        {
+            "enum": "net/minecraft/client/RecipeBookCategories",
+            "name": "BIOMANCY_BIO_FORGE_TAB_23",
+            "constructor": "(Ljava/util/function/Supplier;)V",
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
+                "field": "DUMMY_ICON_SUPPLIER"
+            }
+        }
+    ]
+}

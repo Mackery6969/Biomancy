@@ -3,36 +3,31 @@ package com.github.elenterius.biomancy.datagen.recipes.builder;
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.crafting.IngredientStack;
 import com.github.elenterius.biomancy.crafting.recipe.BioBrewingRecipe;
-import com.github.elenterius.biomancy.crafting.recipe.RecipeUtil;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.ModRecipes;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.advancements.RequirementsStrategy;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.crafting.ConditionalAdvancement;
-import net.neoforged.neoforge.common.crafting.CraftingHelper;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 import net.neoforged.neoforge.common.conditions.NotCondition;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.Map;
 
 public final class BioBrewingRecipeBuilder implements RecipeBuilder<BioBrewingRecipeBuilder> {
 
@@ -42,7 +37,7 @@ public final class BioBrewingRecipeBuilder implements RecipeBuilder<BioBrewingRe
 	private final List<ICondition> conditions = new ArrayList<>();
 	private final ItemData result;
 	private final List<IngredientStack> ingredients = new ArrayList<>();
-	private final Advancement.Builder advancement = Advancement.Builder.recipeAdvancement();
+	private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
 	private Ingredient reactant = Ingredient.of(ModItems.VIAL.get());
 	private int craftingTimeTicks = -1;
 	private int craftingCostNutrients = -1;
@@ -156,13 +151,13 @@ public final class BioBrewingRecipeBuilder implements RecipeBuilder<BioBrewingRe
 	}
 
 	@Override
-	public BioBrewingRecipeBuilder unlockedBy(String name, CriterionTriggerInstance criterionTrigger) {
-		advancement.addCriterion(name, criterionTrigger);
+	public BioBrewingRecipeBuilder unlockedBy(String name, Criterion<?> criterion) {
+		criteria.put(name, criterion);
 		return this;
 	}
 
 	@Override
-	public void save(Consumer<FinishedRecipe> consumer, @Nullable RecipeCategory category) {
+	public void save(RecipeOutput recipeOutput, @Nullable RecipeCategory category) {
 		validateCriteria();
 
 		if (craftingTimeTicks < 0) {
@@ -173,108 +168,23 @@ public final class BioBrewingRecipeBuilder implements RecipeBuilder<BioBrewingRe
 			craftingCostNutrients = RecipeCostUtil.getCost(BioBrewingRecipe.DEFAULT_CRAFTING_COST_NUTRIENTS, craftingTimeTicks);
 		}
 
-		advancement.parent(ResourceLocation.parse("recipes/root"))
+		BioBrewingRecipe recipe = new BioBrewingRecipe(result.toItemStack(), craftingTimeTicks, craftingCostNutrients, ingredients, reactant);
+
+		Advancement.Builder advancementBuilder = recipeOutput.advancement()
 				.addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId))
-				.rewards(AdvancementRewards.Builder.recipe(recipeId)).requirements(RequirementsStrategy.OR);
+				.rewards(AdvancementRewards.Builder.recipe(recipeId)).requirements(AdvancementRequirements.Strategy.OR);
+		criteria.forEach(advancementBuilder::addCriterion);
 
 		String folderName = RecipeBuilder.getRecipeFolderName(category, BiomancyMod.MOD_ID);
-		ResourceLocation advancementId = ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "recipes/%s/%s".formatted(folderName, recipeId.getPath()));
+		AdvancementHolder advancementHolder = advancementBuilder.build(recipeId.withPrefix("recipes/" + folderName + "/"));
 
-		consumer.accept(new Result(this, advancementId));
+		recipeOutput.accept(recipeId, recipe, advancementHolder, conditions.toArray(ICondition[]::new));
 	}
 
 	private void validateCriteria() {
-		if (advancement.getCriteria().isEmpty()) {
+		if (criteria.isEmpty()) {
 			throw new IllegalStateException("No way of obtaining recipe %s because Criteria are empty.".formatted(recipeId));
 		}
 	}
 
-	public static class Result implements FinishedRecipe, WikiRecipe {
-		private final ResourceLocation id;
-		private final List<IngredientStack> ingredients;
-		private final Ingredient reactant;
-		private final ItemData result;
-		private final int craftingTime;
-		private final int craftingCost;
-		private final List<ICondition> conditions;
-
-		private final Advancement.Builder advancementBuilder;
-		private final ResourceLocation advancementId;
-
-		public Result(BioBrewingRecipeBuilder builder, ResourceLocation advancementId) {
-			id = builder.recipeId;
-			ingredients = builder.ingredients;
-			reactant = builder.reactant;
-			result = builder.result;
-			craftingTime = builder.craftingTimeTicks;
-			craftingCost = builder.craftingCostNutrients;
-			conditions = builder.conditions;
-
-			advancementBuilder = builder.advancement;
-			this.advancementId = advancementId;
-		}
-
-		@Override
-		public void serializeRecipeData(JsonObject json) {
-			JsonArray jsonArray = new JsonArray();
-			for (IngredientStack ingredient : ingredients) {
-				jsonArray.add(ingredient.toJson());
-			}
-			json.add(RecipeUtil.JsonKeys.INGREDIENTS, jsonArray);
-
-			if (!reactant.isEmpty()) {
-				json.add(RecipeUtil.JsonKeys.REACTANT, reactant.toJson());
-			}
-
-			json.add(RecipeUtil.JsonKeys.RESULT, result.toJson());
-
-			json.addProperty(RecipeUtil.JsonKeys.PROCESSING_TIME, craftingTime);
-			json.addProperty(RecipeUtil.JsonKeys.NUTRIENTS_COST, craftingCost);
-
-			//serialize conditions
-			if (!conditions.isEmpty()) {
-				JsonArray array = new JsonArray();
-				conditions.forEach(c -> array.add(CraftingHelper.serialize(c)));
-				json.add(RecipeUtil.JsonKeys.CONDITIONS, array);
-			}
-		}
-
-		@Override
-		public void serializeWikiRecipeData(Consumer<JsonElement> input, Consumer<JsonElement> output) {
-			input.accept(reactant.toJson());
-
-			for (IngredientStack ingredient : ingredients) {
-				input.accept(ingredient.toJson());
-			}
-
-			output.accept(result.toJson());
-		}
-
-		@Override
-		public RecipeSerializer<?> getType() {
-			return ModRecipes.BIO_BREWING_SERIALIZER.get();
-		}
-
-		@Override
-		public ResourceLocation getId() {
-			return id;
-		}
-
-		@Override
-		@Nullable
-		public JsonObject serializeAdvancement() {
-			if (conditions.isEmpty()) return advancementBuilder.serializeToJson();
-
-			ConditionalAdvancement.Builder conditionalBuilder = ConditionalAdvancement.builder();
-			conditions.forEach(conditionalBuilder::addCondition);
-			conditionalBuilder.addAdvancement(advancementBuilder);
-			return conditionalBuilder.write();
-		}
-
-		@Override
-		@Nullable
-		public ResourceLocation getAdvancementId() {
-			return advancementId;
-		}
-	}
 }

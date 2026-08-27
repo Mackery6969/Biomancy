@@ -8,7 +8,9 @@ import com.github.elenterius.biomancy.init.ModRecipes;
 import com.github.elenterius.biomancy.menu.BioForgeTab;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.client.event.RegisterRecipeBookCategoriesEvent;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -18,14 +20,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = BiomancyMod.MOD_ID, value = Dist.CLIENT)
 public final class ModRecipeBookCategories {
 
+	public static final Supplier<List<ItemStack>> DUMMY_ICON_SUPPLIER = () -> List.of(new ItemStack(Items.BARRIER));
+
 	private ModRecipeBookCategories() {}
 
 	public static RecipeBookCategories getRecipeBookCategories(BioForgeTab category) {
-		return BioForgeCategories.TAB_TO_CATEGORY.get(category.enumId());
+		return BioForgeCategories.TAB_TO_CATEGORY.getOrDefault(category.enumId(), RecipeBookCategories.UNKNOWN);
 	}
 
 	@SubscribeEvent
@@ -40,11 +45,13 @@ public final class ModRecipeBookCategories {
 	private static final class BioForgeCategories {
 		//inner class prevents pre-mature initialization from the EventBusSubscriber annotation
 
+		private static final int SLOT_COUNT = 24;
+
 		private static final Map<String, RecipeBookCategories> TAB_TO_CATEGORY = new HashMap<>();
 		public static final RecipeBookCategories SEARCH_CATEGORY = createAndRegisterSearchCategory();
 
-		public static final Function<Recipe<?>, RecipeBookCategories> RECIPE_CATEGORY_FINDER = recipe -> {
-			if (recipe instanceof BioForgingRecipe bioForgingRecipe) {
+		public static final Function<RecipeHolder<?>, RecipeBookCategories> RECIPE_CATEGORY_FINDER = recipeHolder -> {
+			if (recipeHolder.value() instanceof BioForgingRecipe bioForgingRecipe) {
 				return TAB_TO_CATEGORY.get(bioForgingRecipe.getTab().enumId());
 			}
 			return null;
@@ -52,23 +59,31 @@ public final class ModRecipeBookCategories {
 
 		private BioForgeCategories() {}
 
+		private static RecipeBookCategories slot(int index) {
+			return RecipeBookCategories.valueOf("BIOMANCY_BIO_FORGE_TAB_" + index);
+		}
+
 		private static RecipeBookCategories createAndRegisterSearchCategory() {
 			BioForgeTab tab = ModBioForgeTabs.SEARCH.get();
 			String name = tab.enumId();
-			RecipeBookCategories category = RecipeBookCategories.create(name, tab.getIcon());
+			RecipeBookCategories category = slot(0);
 			TAB_TO_CATEGORY.put(name, category);
 			return category;
 		}
 
 		private static void registerCategories() {
+			int nextSlot = 1;
 			for (Map.Entry<ResourceKey<BioForgeTab>, BioForgeTab> entry : ModBioForgeTabs.REGISTRY.entrySet()) {
 				BioForgeTab tab = entry.getValue();
 
 				if (tab == ModBioForgeTabs.SEARCH.get()) continue;
 
-				String name = tab.enumId();
-				RecipeBookCategories categories = RecipeBookCategories.create(name, tab.getIcon());
-				TAB_TO_CATEGORY.put(name, categories);
+				if (nextSlot >= SLOT_COUNT) {
+					BiomancyMod.LOGGER.warn("Ran out of Bio-Forge recipe book category slots, tab '{}' will not be filterable in the recipe book", tab.enumId());
+					continue;
+				}
+
+				TAB_TO_CATEGORY.put(tab.enumId(), slot(nextSlot++));
 			}
 		}
 

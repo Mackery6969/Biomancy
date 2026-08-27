@@ -28,30 +28,32 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.wrapper.RecipeWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DecomposingCategory implements IRecipeCategory<DecomposingRecipe> {
+public class DecomposingCategory implements IRecipeCategory<RecipeHolder<DecomposingRecipe>> {
 
-	@SuppressWarnings("DataFlowIssue")
-	public static final RecipeType<DecomposingRecipe> RECIPE_TYPE = new RecipeType<>(ModRecipes.DECOMPOSING_RECIPE_TYPE.getId(), DecomposingRecipe.class);
+	public static final RecipeType<RecipeHolder<DecomposingRecipe>> RECIPE_TYPE = RecipeType.createFromVanilla(ModRecipes.DECOMPOSING_RECIPE_TYPE.get());
 	private final IDrawable background;
 	private final IDrawable icon;
 
+	private final ItemStackHandler inputInventoryHandler;
 	private final RecipeWrapper inputInventoryWrapper;
 
 	public DecomposingCategory(IGuiHelper guiHelper) {
 		icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.DECOMPOSER.get()));
 		background = guiHelper.drawableBuilder(BiomancyMod.rl("textures/gui/jei/decomposer_recipe.png"), 0, 0, 132, 64).setTextureSize(132, 64).build();
 
-		inputInventoryWrapper = new RecipeWrapper(new ItemStackHandler(DigesterBlockEntity.INPUT_SLOTS));
+		inputInventoryHandler = new ItemStackHandler(DigesterBlockEntity.INPUT_SLOTS);
+		inputInventoryWrapper = new RecipeWrapper(inputInventoryHandler);
 	}
 
 	@Override
-	public RecipeType<DecomposingRecipe> getRecipeType() {
+	public RecipeType<RecipeHolder<DecomposingRecipe>> getRecipeType() {
 		return RECIPE_TYPE;
 	}
 
@@ -71,7 +73,8 @@ public class DecomposingCategory implements IRecipeCategory<DecomposingRecipe> {
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayoutBuilder builder, DecomposingRecipe recipe, IFocusGroup focuses) {
+	public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<DecomposingRecipe> recipeHolder, IFocusGroup focuses) {
+		DecomposingRecipe recipe = recipeHolder.value();
 		int gap = 10;
 		int offset = 16 + gap;
 
@@ -133,12 +136,13 @@ public class DecomposingCategory implements IRecipeCategory<DecomposingRecipe> {
 	}
 
 	@Override
-	public void draw(DecomposingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+	public void draw(RecipeHolder<DecomposingRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+		DecomposingRecipe recipe = recipeHolder.value();
 		Font font = Minecraft.getInstance().font;
 
 		IRecipeSlotView slotView = recipeSlotsView.getSlotViews(RecipeIngredientRole.INPUT).get(0);
 		ItemStack itemStack = slotView.getDisplayedItemStack().orElse(ItemStack.EMPTY);
-		inputInventoryWrapper.setItem(0, itemStack);
+		inputInventoryHandler.setStackInSlot(0, itemStack);
 
 		int ticks = recipe.getCraftingTimeTicks(inputInventoryWrapper);
 		int seconds = ticks > 0 ? ticks / 20 : 0;

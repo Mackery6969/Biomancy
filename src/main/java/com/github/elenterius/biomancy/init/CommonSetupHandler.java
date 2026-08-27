@@ -6,9 +6,8 @@ import com.github.elenterius.biomancy.integration.ModsCompatHandler;
 import com.github.elenterius.biomancy.item.extractor.ExtractorItem;
 import com.github.elenterius.biomancy.item.injector.InjectorItem;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockSource;
 import net.minecraft.core.Position;
-import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
@@ -43,7 +42,6 @@ public final class CommonSetupHandler {
 		});
 
 		ModFluids.registerInteractions();
-		ModRecipes.registerBrewingRecipes();
 		ModsCompatHandler.onBiomancyCommonSetup(event);
 	}
 

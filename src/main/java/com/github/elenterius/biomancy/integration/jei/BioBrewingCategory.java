@@ -26,18 +26,20 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.wrapper.RecipeWrapper;
 
 import java.util.List;
 import java.util.Objects;
 
-public class BioBrewingCategory implements IRecipeCategory<BioBrewingRecipe> {
+public class BioBrewingCategory implements IRecipeCategory<RecipeHolder<BioBrewingRecipe>> {
 
-	public static final RecipeType<BioBrewingRecipe> RECIPE_TYPE = new RecipeType<>(ModRecipes.BIO_BREWING_RECIPE_TYPE.getId(), BioBrewingRecipe.class);
+	public static final RecipeType<RecipeHolder<BioBrewingRecipe>> RECIPE_TYPE = RecipeType.createFromVanilla(ModRecipes.BIO_BREWING_RECIPE_TYPE.get());
 	private final IDrawable background;
 	private final IDrawable icon;
 
+	private final ItemStackHandler inputInventoryHandler;
 	private final RecipeWrapper inputInventoryWrapper;
 
 	public BioBrewingCategory(IGuiHelper guiHelper) {
@@ -45,11 +47,12 @@ public class BioBrewingCategory implements IRecipeCategory<BioBrewingRecipe> {
 		ResourceLocation texture = BiomancyMod.rl("textures/gui/jei/bio_lab_recipe.png");
 		background = guiHelper.drawableBuilder(texture, 0, 0, 134, 54).setTextureSize(134, 54).addPadding(0, 4, 0, 0).build();
 
-		inputInventoryWrapper = new RecipeWrapper(new ItemStackHandler(BioLabBlockEntity.INPUT_SLOTS));
+		inputInventoryHandler = new ItemStackHandler(BioLabBlockEntity.INPUT_SLOTS);
+		inputInventoryWrapper = new RecipeWrapper(inputInventoryHandler);
 	}
 
 	@Override
-	public RecipeType<BioBrewingRecipe> getRecipeType() {
+	public RecipeType<RecipeHolder<BioBrewingRecipe>> getRecipeType() {
 		return RECIPE_TYPE;
 	}
 
@@ -69,7 +72,8 @@ public class BioBrewingCategory implements IRecipeCategory<BioBrewingRecipe> {
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayoutBuilder builder, BioBrewingRecipe recipe, IFocusGroup focuses) {
+	public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<BioBrewingRecipe> recipeHolder, IFocusGroup focuses) {
+		BioBrewingRecipe recipe = recipeHolder.value();
 		ClientLevel level = Objects.requireNonNull(Minecraft.getInstance().level);
 
 		builder.setShapeless();
@@ -96,14 +100,15 @@ public class BioBrewingCategory implements IRecipeCategory<BioBrewingRecipe> {
 	}
 
 	@Override
-	public void draw(BioBrewingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+	public void draw(RecipeHolder<BioBrewingRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+		BioBrewingRecipe recipe = recipeHolder.value();
 		Font font = Minecraft.getInstance().font;
 
 		List<IRecipeSlotView> slotViews = recipeSlotsView.getSlotViews(RecipeIngredientRole.INPUT);
 		for (int i = 0; i < slotViews.size(); i++) {
 			IRecipeSlotView slotView = slotViews.get(i);
 			ItemStack itemStack = slotView.getDisplayedItemStack().orElse(ItemStack.EMPTY);
-			inputInventoryWrapper.setItem(i, itemStack);
+			inputInventoryHandler.setStackInSlot(i, itemStack);
 		}
 
 		int ticks = recipe.getCraftingTimeTicks(inputInventoryWrapper);

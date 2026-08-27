@@ -8,6 +8,7 @@ import com.github.elenterius.biomancy.item.SerumItem;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -21,6 +22,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.properties.StructureMode;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -156,7 +158,7 @@ public final class ModCreativeModeTabs {
 						Stream<ResourceLocation> templates = level.getStructureManager().listTemplates().filter(id -> id.getNamespace().equals(BiomancyMod.MOD_ID));
 						templates.forEach(id -> {
 							ItemStack stack = new ItemStack(Blocks.STRUCTURE_BLOCK);
-							stack.setHoverName(ComponentUtil.literal(id.toString()));
+							stack.set(DataComponents.CUSTOM_NAME, ComponentUtil.literal(id.toString()));
 
 							CompoundTag tag = new CompoundTag();
 							tag.putString("name", id.toString());
@@ -166,7 +168,7 @@ public final class ModCreativeModeTabs {
 							tag.putString("mode", StructureMode.LOAD.toString());
 							tag.putBoolean("showair", true);
 
-							stack.addTagElement("BlockEntityTag", tag);
+							BlockItem.setBlockEntityData(stack, BlockEntityType.STRUCTURE_BLOCK, tag);
 
 							output.accept(stack);
 						});

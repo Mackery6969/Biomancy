@@ -4,7 +4,6 @@ import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.crafting.IngredientStack;
 import com.github.elenterius.biomancy.datagen.recipes.builder.RecipeCostUtil;
 import com.github.elenterius.biomancy.init.ModItems;
-import com.github.elenterius.biomancy.mixin.accessor.PotionBrewingAccessor;
 import com.github.elenterius.biomancy.serum.PotionSerum;
 import com.github.elenterius.biomancy.util.ItemStackCounter;
 import net.minecraft.core.Holder;
@@ -16,6 +15,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.BiomancyPotionMixAccess;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -87,7 +87,7 @@ public final class PotionSerumRecipes {
 		List<PotionRecipe> bestPotionRecipes = new ArrayList<>();
 		Map<Holder<Potion>, List<PotionRecipe>> recipeLookup = new HashMap<>();
 
-		for (PotionBrewing.Mix<Potion> mix : ((PotionBrewingAccessor) potionBrewing).biomancy$potionMixes()) {
+		for (BiomancyPotionMixAccess.PotionMix mix : BiomancyPotionMixAccess.getPotionMixes(potionBrewing)) {
 			PotionRecipe recipe = new PotionRecipe(mix.ingredient(), mix.from(), mix.to());
 			recipeLookup.computeIfAbsent(recipe.result, potion -> new ArrayList<>()).add(recipe);
 			if (bestPotions.contains(recipe.result)) {

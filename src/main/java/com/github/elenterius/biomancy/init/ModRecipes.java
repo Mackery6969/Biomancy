@@ -6,18 +6,17 @@ import com.github.elenterius.biomancy.crafting.recipe.SimpleRecipeType.AdvancedR
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.block.ComposterBlock;
-import net.neoforged.neoforge.common.brewing.BrewingRecipe;
-import net.neoforged.neoforge.common.brewing.BrewingRecipeRegistry;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
+import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -52,18 +51,19 @@ public final class ModRecipes {
 		ComposterBlock.COMPOSTABLES.putIfAbsent(ModItems.ORGANIC_MATTER.get(), 0.25f);
 	}
 
-	public static void registerBrewingRecipes() {
-		registerBrewingRecipe(ModItems.TOXIN_EXTRACT.get(), Potions.AWKWARD, Potions.POISON);
-		registerBrewingRecipe(ModItems.TOXIN_GLAND.get(), Potions.MUNDANE, Potions.LONG_POISON);
-		registerBrewingRecipe(ModItems.TOXIN_GLAND.get(), Potions.THICK, Potions.STRONG_POISON);
-		registerBrewingRecipe(ModItems.WITHERING_OOZE.get(), Potions.POISON, Potions.HARMING);
-		registerBrewingRecipe(ModItems.WITHERING_OOZE.get(), Potions.STRONG_POISON, Potions.STRONG_HARMING);
-		registerBrewingRecipe(ModItems.BLOOMBERRY.get(), Potions.MUNDANE, ModPotions.PRIMORDIAL_INFESTATION);
-		registerBrewingRecipe(Items.REDSTONE, ModPotions.PRIMORDIAL_INFESTATION, ModPotions.LONG_PRIMORDIAL_INFESTATION);
+	public static void onRegisterBrewingRecipes(RegisterBrewingRecipesEvent event) {
+		PotionBrewing.Builder builder = event.getBuilder();
+		registerBrewingRecipe(builder, ModItems.TOXIN_EXTRACT.get(), Potions.AWKWARD, Potions.POISON);
+		registerBrewingRecipe(builder, ModItems.TOXIN_GLAND.get(), Potions.MUNDANE, Potions.LONG_POISON);
+		registerBrewingRecipe(builder, ModItems.TOXIN_GLAND.get(), Potions.THICK, Potions.STRONG_POISON);
+		registerBrewingRecipe(builder, ModItems.WITHERING_OOZE.get(), Potions.POISON, Potions.HARMING);
+		registerBrewingRecipe(builder, ModItems.WITHERING_OOZE.get(), Potions.STRONG_POISON, Potions.STRONG_HARMING);
+		registerBrewingRecipe(builder, ModItems.BLOOMBERRY.get(), Potions.MUNDANE, ModPotions.PRIMORDIAL_INFESTATION);
+		registerBrewingRecipe(builder, Items.REDSTONE, ModPotions.PRIMORDIAL_INFESTATION, ModPotions.LONG_PRIMORDIAL_INFESTATION);
 	}
 
-	private static void registerBrewingRecipe(Item reactant, Holder<Potion> potionBase, Holder<Potion> potionResult) {
-		BrewingRecipeRegistry.addRecipe(new BrewingRecipe(createPotionIngredient(potionBase), Ingredient.of(reactant), createPotionStack(potionResult)));
+	private static void registerBrewingRecipe(PotionBrewing.Builder builder, Item reactant, Holder<Potion> potionBase, Holder<Potion> potionResult) {
+		builder.addRecipe(createPotionIngredient(potionBase), Ingredient.of(reactant), createPotionStack(potionResult));
 	}
 
 	private static ItemStack createPotionStack(Holder<Potion> potion) {
@@ -74,11 +74,11 @@ public final class ModRecipes {
 		return DataComponentIngredient.of(true, createPotionStack(potion));
 	}
 
-	private static <T extends RecipeType<?>, R extends Recipe<Container>> DeferredHolder<RecipeSerializer<?>, RecipeSerializer<R>> registerRecipeSerializer(DeferredHolder<RecipeType<?>, T> recipeType, Supplier<RecipeSerializer<R>> serializerSupplier) {
+	private static <T extends RecipeType<?>, R extends Recipe<RecipeInput>> DeferredHolder<RecipeSerializer<?>, RecipeSerializer<R>> registerRecipeSerializer(DeferredHolder<RecipeType<?>, T> recipeType, Supplier<RecipeSerializer<R>> serializerSupplier) {
 		return RECIPE_SERIALIZERS.register(recipeType.getId().getPath(), serializerSupplier);
 	}
 
-	private static <T extends RecipeType<?>, R extends Recipe<Container>> DeferredHolder<RecipeSerializer<?>, RecipeSerializer<R>> registerDynamicRecipeSerializer(DeferredHolder<RecipeType<?>, T> recipeType, String name, Supplier<RecipeSerializer<R>> serializerSupplier) {
+	private static <T extends RecipeType<?>, R extends Recipe<RecipeInput>> DeferredHolder<RecipeSerializer<?>, RecipeSerializer<R>> registerDynamicRecipeSerializer(DeferredHolder<RecipeType<?>, T> recipeType, String name, Supplier<RecipeSerializer<R>> serializerSupplier) {
 		String prefix = recipeType.getId().getPath() + "_dynamic_";
 		return RECIPE_SERIALIZERS.register(prefix + name, serializerSupplier);
 	}
@@ -92,7 +92,7 @@ public final class ModRecipes {
 		return RECIPE_SERIALIZERS.register(name, serializer);
 	}
 
-	private static <T extends Recipe<Container>> DeferredHolder<RecipeType<?>, AdvancedRecipeType<T>> registerRecipeType(String namespacedId) {
+	private static <T extends Recipe<RecipeInput>> DeferredHolder<RecipeType<?>, AdvancedRecipeType<T>> registerRecipeType(String namespacedId) {
 		return RECIPE_TYPES.register(namespacedId, () -> new AdvancedRecipeType<>(BiomancyMod.rlStr(namespacedId)));
 	}
 

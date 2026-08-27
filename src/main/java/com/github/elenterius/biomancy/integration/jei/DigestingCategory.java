@@ -25,6 +25,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.wrapper.RecipeWrapper;
 
@@ -32,12 +33,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class DigestingCategory implements IRecipeCategory<DigestingRecipe> {
+public class DigestingCategory implements IRecipeCategory<RecipeHolder<DigestingRecipe>> {
 
-	public static final RecipeType<DigestingRecipe> RECIPE_TYPE = new RecipeType<>(ModRecipes.DIGESTING_RECIPE_TYPE.getId(), DigestingRecipe.class);
+	public static final RecipeType<RecipeHolder<DigestingRecipe>> RECIPE_TYPE = RecipeType.createFromVanilla(ModRecipes.DIGESTING_RECIPE_TYPE.get());
 	private final IDrawable background;
 	private final IDrawable icon;
 
+	private final ItemStackHandler inputInventoryHandler;
 	private final RecipeWrapper inputInventoryWrapper;
 
 	public DigestingCategory(IGuiHelper guiHelper) {
@@ -45,11 +47,12 @@ public class DigestingCategory implements IRecipeCategory<DigestingRecipe> {
 		ResourceLocation texture = BiomancyMod.rl("textures/gui/jei/digester_recipe.png");
 		background = guiHelper.drawableBuilder(texture, 0, 0, 80, 47).setTextureSize(80, 47).addPadding(0, 4, 0, 0).build();
 
-		inputInventoryWrapper = new RecipeWrapper(new ItemStackHandler(DigesterBlockEntity.INPUT_SLOTS));
+		inputInventoryHandler = new ItemStackHandler(DigesterBlockEntity.INPUT_SLOTS);
+		inputInventoryWrapper = new RecipeWrapper(inputInventoryHandler);
 	}
 
 	@Override
-	public RecipeType<DigestingRecipe> getRecipeType() {
+	public RecipeType<RecipeHolder<DigestingRecipe>> getRecipeType() {
 		return RECIPE_TYPE;
 	}
 
@@ -69,7 +72,8 @@ public class DigestingCategory implements IRecipeCategory<DigestingRecipe> {
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayoutBuilder builder, DigestingRecipe recipe, IFocusGroup focuses) {
+	public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<DigestingRecipe> recipeHolder, IFocusGroup focuses) {
+		DigestingRecipe recipe = recipeHolder.value();
 		ClientLevel level = Objects.requireNonNull(Minecraft.getInstance().level);
 
 		builder.setShapeless();
@@ -80,7 +84,7 @@ public class DigestingCategory implements IRecipeCategory<DigestingRecipe> {
 
 			List<ItemStack> possibleOutputs = new ArrayList<>();
 			for (ItemStack ingredientItem : ingredient.getItems()) {
-				inputInventoryWrapper.setItem(0, ingredientItem);
+				inputInventoryHandler.setStackInSlot(0, ingredientItem);
 				ItemStack result = recipe.assemble(inputInventoryWrapper, level.registryAccess());
 				possibleOutputs.add(result);
 			}
@@ -94,12 +98,13 @@ public class DigestingCategory implements IRecipeCategory<DigestingRecipe> {
 	}
 
 	@Override
-	public void draw(DigestingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+	public void draw(RecipeHolder<DigestingRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+		DigestingRecipe recipe = recipeHolder.value();
 		Font font = Minecraft.getInstance().font;
 
 		IRecipeSlotView slotView = recipeSlotsView.getSlotViews(RecipeIngredientRole.INPUT).get(0);
 		ItemStack itemStack = slotView.getDisplayedItemStack().orElse(ItemStack.EMPTY);
-		inputInventoryWrapper.setItem(0, itemStack);
+		inputInventoryHandler.setStackInSlot(0, itemStack);
 
 		int ticks = recipe.getCraftingTimeTicks(inputInventoryWrapper);
 		int seconds = ticks > 0 ? ticks / 20 : 0;

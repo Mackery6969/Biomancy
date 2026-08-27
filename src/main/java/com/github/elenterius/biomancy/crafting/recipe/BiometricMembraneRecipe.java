@@ -5,16 +5,16 @@ import com.github.elenterius.biomancy.block.membrane.BiometricMembraneBlockEntit
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.ModRecipes;
 import com.github.elenterius.biomancy.item.EssenceItem;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -24,19 +24,19 @@ import java.util.UUID;
 
 public class BiometricMembraneRecipe extends CustomRecipe {
 
-	public BiometricMembraneRecipe(ResourceLocation id, CraftingBookCategory category) {
-		super(id, category);
+	public BiometricMembraneRecipe(CraftingBookCategory category) {
+		super(category);
 	}
 
 	@Override
-	public boolean matches(CraftingContainer container, Level level) {
-		if (!canCraftInDimensions(container.getWidth(), container.getHeight())) return false;
+	public boolean matches(CraftingInput container, Level level) {
+		if (!canCraftInDimensions(container.width(), container.height())) return false;
 
 		ItemStack membrane = ItemStack.EMPTY;
 		ItemStack essence = ItemStack.EMPTY;
 		ItemStack inversion = ItemStack.EMPTY;
 
-		for (int i = 0; i < container.getContainerSize(); i++) {
+		for (int i = 0; i < container.size(); i++) {
 			ItemStack stack = container.getItem(i);
 			if (stack.isEmpty()) continue;
 
@@ -58,19 +58,19 @@ public class BiometricMembraneRecipe extends CustomRecipe {
 		if (membrane.isEmpty()) return false;
 
 		if (essence.isEmpty() && inversion.isEmpty()) {
-			return BlockItem.getBlockEntityData(membrane) != null;
+			return membrane.has(DataComponents.BLOCK_ENTITY_DATA);
 		}
 
 		return true;
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer container, RegistryAccess registryAccess) {
+	public ItemStack assemble(CraftingInput container, HolderLookup.Provider registries) {
 		ItemStack membrane = ItemStack.EMPTY;
 		ItemStack essence = ItemStack.EMPTY;
 		ItemStack inversion = ItemStack.EMPTY;
 
-		for (int i = 0; i < container.getContainerSize(); i++) {
+		for (int i = 0; i < container.size(); i++) {
 			ItemStack stack = container.getItem(i);
 			if (stack.isEmpty()) continue;
 
@@ -93,7 +93,8 @@ public class BiometricMembraneRecipe extends CustomRecipe {
 	}
 
 	public ItemStack createItem(ItemStack membrane, ItemStack essenceStack, ItemStack inversionStack) {
-		CompoundTag compoundTag = BlockItem.getBlockEntityData(membrane);
+		CustomData customData = membrane.get(DataComponents.BLOCK_ENTITY_DATA);
+		CompoundTag compoundTag = customData != null ? customData.copyTag() : null;
 		CompoundTag tag = compoundTag != null ? compoundTag.getCompound(BiometricMembraneBlockEntity.MEMBRANE_KEY) : new CompoundTag();
 
 		EntityType<?> entityType = EntityType.byString(tag.getString(BiometricMembraneBlockEntity.ENTITY_TYPE_KEY)).orElse(null);

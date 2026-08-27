@@ -3,37 +3,36 @@ package com.github.elenterius.biomancy.crafting.recipe;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.ModRecipes;
 import com.github.elenterius.biomancy.item.EssenceItem;
-import com.mojang.authlib.GameProfile;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.resources.ResourceLocation;
+import com.mojang.authlib.properties.PropertyMap;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PlayerHeadItem;
+import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class PlayerHeadRecipe extends CustomRecipe {
 
-	public PlayerHeadRecipe(ResourceLocation id, CraftingBookCategory category) {
-		super(id, category);
+	public PlayerHeadRecipe(CraftingBookCategory category) {
+		super(category);
 	}
 
 	@Override
-	public boolean matches(CraftingContainer inventory, Level level) {
+	public boolean matches(CraftingInput inventory, Level level) {
 		boolean hasPlayerHead = false;
 		boolean hasPlayerUUID = false;
 		boolean hasExoticDust = false;
 
-		for (int i = 0; i < inventory.getContainerSize(); i++) {
+		for (int i = 0; i < inventory.size(); i++) {
 			ItemStack stack = inventory.getItem(i);
 
 			if (stack.isEmpty()) continue;
@@ -61,12 +60,12 @@ public class PlayerHeadRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inventory, RegistryAccess registryAccess) {
+	public ItemStack assemble(CraftingInput inventory, HolderLookup.Provider registries) {
 		UUID uuid = null;
 		boolean hasPlayerHead = false;
 		boolean hasExoticDust = false;
 
-		for (int i = 0; i < inventory.getContainerSize(); i++) {
+		for (int i = 0; i < inventory.size(); i++) {
 			ItemStack stack = inventory.getItem(i);
 
 			if (stack.isEmpty()) continue;
@@ -95,11 +94,8 @@ public class PlayerHeadRecipe extends CustomRecipe {
 	}
 
 	private ItemStack createPlayerHeadFrom(UUID uuid) {
-		GameProfile gameProfile = new GameProfile(uuid, null);
-
 		ItemStack stack = Items.PLAYER_HEAD.getDefaultInstance();
-		CompoundTag tag = stack.getOrCreateTag();
-		tag.put(PlayerHeadItem.TAG_SKULL_OWNER, NbtUtils.writeGameProfile(new CompoundTag(), gameProfile));
+		stack.set(DataComponents.PROFILE, new ResolvableProfile(Optional.empty(), Optional.of(uuid), new PropertyMap()));
 
 		return stack;
 	}

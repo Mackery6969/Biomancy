@@ -4,30 +4,24 @@ import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.crafting.IngredientStack;
 import com.github.elenterius.biomancy.crafting.VariableOutput;
 import com.github.elenterius.biomancy.crafting.recipe.DecomposingRecipe;
-import com.github.elenterius.biomancy.crafting.recipe.RecipeUtil;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.ModRecipes;
 import com.github.elenterius.biomancy.util.ItemStackCounter;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.advancements.RequirementsStrategy;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.crafting.ConditionalAdvancement;
-import net.neoforged.neoforge.common.crafting.CraftingHelper;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 import net.neoforged.neoforge.common.conditions.NotCondition;
@@ -36,23 +30,20 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public final class DecomposingRecipeBuilder implements RecipeBuilder<DecomposingRecipeBuilder> {
 
 	public static final String RECIPE_SUB_FOLDER = ModRecipes.DECOMPOSING_RECIPE_TYPE.getId().getPath();
 
 	private final List<VariableOutput> outputs = new ArrayList<>();
-	private final Advancement.Builder advancement = Advancement.Builder.recipeAdvancement();
+	private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
 	private final List<ICondition> conditions = new ArrayList<>();
 	private ResourceLocation recipeId;
-	private IngredientStack ingredientStack = null;
+	private @Nullable IngredientStack ingredientStack = null;
 	private int craftingTimeTicks = -1;
 	private int extraCraftingTimeTicks = 0;
 	private int craftingCostNutrients = -1;
 	private int extraCraftingCostNutrients = 0;
-	@Nullable
-	private String group;
 
 	private DecomposingRecipeBuilder() {
 		this.recipeId = BiomancyMod.rl("unknown");
@@ -61,20 +52,6 @@ public final class DecomposingRecipeBuilder implements RecipeBuilder<Decomposing
 	public static DecomposingRecipeBuilder create() {
 		return new DecomposingRecipeBuilder();
 	}
-
-	//	public static DecomposerRecipeBuilder create(String modId, String ingredientName) {
-	//		ResourceLocation rl = ResourceLocation.fromNamespaceAndPath(modId, ingredientName + SUFFIX);
-	//		return new DecomposerRecipeBuilder(rl);
-	//	}
-	//
-	//	public static DecomposerRecipeBuilder create(String ingredientName) {
-	//		ResourceLocation rl = BiomancyMod.createRL(ingredientName + SUFFIX);
-	//		return new DecomposerRecipeBuilder(rl);
-	//	}
-	//
-	//	public static DecomposerRecipeBuilder create(ResourceLocation recipeId) {
-	//		return new DecomposerRecipeBuilder(recipeId);
-	//	}
 
 	private static ResourceLocation getRegistryKey(ItemLike itemLike) {
 		return Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(itemLike.asItem()));
@@ -183,18 +160,13 @@ public final class DecomposingRecipeBuilder implements RecipeBuilder<Decomposing
 	}
 
 	@Override
-	public DecomposingRecipeBuilder unlockedBy(String name, CriterionTriggerInstance criterionTrigger) {
-		advancement.addCriterion(name, criterionTrigger);
-		return this;
-	}
-
-	public DecomposingRecipeBuilder setGroup(@Nullable String name) {
-		group = name;
+	public DecomposingRecipeBuilder unlockedBy(String name, Criterion<?> criterion) {
+		criteria.put(name, criterion);
 		return this;
 	}
 
 	@Override
-	public void save(Consumer<FinishedRecipe> consumer, @Nullable RecipeCategory category) {
+	public void save(RecipeOutput recipeOutput, @Nullable RecipeCategory category) {
 		if (craftingTimeTicks < 0) {
 			craftingTimeTicks = CraftingTimeUtil.getTotalTicks(outputs);
 		}
@@ -208,20 +180,23 @@ public final class DecomposingRecipeBuilder implements RecipeBuilder<Decomposing
 
 		validate();
 
-		advancement.parent(ResourceLocation.parse("recipes/root"))
+		DecomposingRecipe recipe = new DecomposingRecipe(outputs, ingredientStack, craftingTimeTicks, craftingCostNutrients);
+
+		Advancement.Builder advancementBuilder = recipeOutput.advancement()
 				.addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId))
-				.rewards(AdvancementRewards.Builder.recipe(recipeId)).requirements(RequirementsStrategy.OR);
+				.rewards(AdvancementRewards.Builder.recipe(recipeId)).requirements(AdvancementRequirements.Strategy.OR);
+		criteria.forEach(advancementBuilder::addCriterion);
 
 		String folderName = RecipeBuilder.getRecipeFolderName(category, BiomancyMod.MOD_ID);
-		ResourceLocation advancementId = ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(), "recipes/%s/%s".formatted(folderName, recipeId.getPath()));
+		AdvancementHolder advancementHolder = advancementBuilder.build(recipeId.withPrefix("recipes/" + folderName + "/"));
 
-		consumer.accept(new RecipeResult(this, advancementId));
+		recipeOutput.accept(recipeId, recipe, advancementHolder, conditions.toArray(ICondition[]::new));
 	}
 
 	private void validate() {
 		if (recipeId.getPath().equals("unknown")) throw new IllegalStateException("Invalid recipe id: " + recipeId);
 		if (ingredientStack == null) throw new IllegalStateException("No Ingredient was provided.");
-		if (advancement.getCriteria().isEmpty()) {
+		if (criteria.isEmpty()) {
 			throw new IllegalStateException("No way of obtaining recipe %s because Criteria are empty.".formatted(recipeId));
 		}
 
@@ -243,92 +218,6 @@ public final class DecomposingRecipeBuilder implements RecipeBuilder<Decomposing
 		}
 
 		return counter.getItemCounts().stream().mapToInt(countedItem -> Mth.ceil(countedItem.amount() / 64f)).sum();
-	}
-
-	public static class RecipeResult implements FinishedRecipe, WikiRecipe {
-
-		private final ResourceLocation id;
-		private final String group;
-		private final IngredientStack ingredientStack;
-		private final List<VariableOutput> outputs;
-		private final int craftingTime;
-		private final int craftingCost;
-		private final List<ICondition> conditions;
-		private final Advancement.Builder advancementBuilder;
-		private final ResourceLocation advancementId;
-
-		public RecipeResult(DecomposingRecipeBuilder builder, ResourceLocation advancementId) {
-			id = builder.recipeId;
-			group = builder.group == null ? "" : builder.group;
-			ingredientStack = builder.ingredientStack;
-			craftingTime = builder.craftingTimeTicks;
-			craftingCost = builder.craftingCostNutrients;
-			outputs = builder.outputs;
-			conditions = builder.conditions;
-
-			advancementBuilder = builder.advancement;
-			this.advancementId = advancementId;
-		}
-
-		@Override
-		public void serializeRecipeData(JsonObject json) {
-			if (!group.isEmpty()) {
-				json.addProperty(RecipeUtil.JsonKeys.GROUP, group);
-			}
-
-			json.add(RecipeUtil.JsonKeys.INGREDIENT, ingredientStack.toJson());
-
-			JsonArray jsonArray = new JsonArray();
-			for (VariableOutput output : outputs) {
-				jsonArray.add(output.serialize());
-			}
-			json.add(RecipeUtil.JsonKeys.RESULTS, jsonArray);
-
-			json.addProperty(RecipeUtil.JsonKeys.PROCESSING_TIME, craftingTime);
-			json.addProperty(RecipeUtil.JsonKeys.NUTRIENTS_COST, craftingCost);
-
-			if (!conditions.isEmpty()) {
-				JsonArray array = new JsonArray();
-				conditions.forEach(c -> array.add(CraftingHelper.serialize(c)));
-				json.add(RecipeUtil.JsonKeys.CONDITIONS, array);
-			}
-		}
-
-		@Override
-		public void serializeWikiRecipeData(Consumer<JsonElement> input, Consumer<JsonElement> output) {
-			input.accept(ingredientStack.toJson());
-
-			for (VariableOutput result : outputs) {
-				output.accept(result.serialize());
-			}
-		}
-
-		@Override
-		public RecipeSerializer<?> getType() {
-			return ModRecipes.DECOMPOSING_SERIALIZER.get();
-		}
-
-		@Override
-		public ResourceLocation getId() {
-			return id;
-		}
-
-		@Override
-		@Nullable
-		public JsonObject serializeAdvancement() {
-			if (conditions.isEmpty()) return advancementBuilder.serializeToJson();
-
-			ConditionalAdvancement.Builder conditionalBuilder = ConditionalAdvancement.builder();
-			conditions.forEach(conditionalBuilder::addCondition);
-			conditionalBuilder.addAdvancement(advancementBuilder);
-			return conditionalBuilder.write();
-		}
-
-		@Override
-		@Nullable
-		public ResourceLocation getAdvancementId() {
-			return advancementId;
-		}
 	}
 
 	public static class CraftingTimeUtil {
@@ -371,4 +260,3 @@ public final class DecomposingRecipeBuilder implements RecipeBuilder<Decomposing
 	}
 
 }
-
