@@ -1,6 +1,7 @@
 package com.github.elenterius.biomancy.item.weapon.gun;
 
 import net.minecraft.core.Holder;
+import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.client.render.item.impaler.ImpalerRenderer;
 import com.github.elenterius.biomancy.client.util.ClientTextUtil;
 import com.github.elenterius.biomancy.entity.projectile.ImpalerProjectile;
@@ -12,8 +13,6 @@ import com.github.elenterius.biomancy.item.ItemTooltipStyleProvider;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.github.elenterius.biomancy.util.animation.TriggerableAnimation;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.gui.screens.Screen;
@@ -22,20 +21,22 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
@@ -60,11 +61,11 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 
 	public static final float CHARGE_DURATION = 1.79f + 0.17f; //based on animation length of "charging_shot" + "holding_shot"
 
-	protected static final UUID BASE_MOVEMENT_SPEED_UUID = UUID.fromString("efc325ad-c747-4c0e-80c2-f3f0f4261e91");
+	protected static final ResourceLocation BASE_MOVEMENT_SPEED_ID = BiomancyMod.rl("impaler_movement_speed");
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-	private final Multimap<Attribute, AttributeModifier> defaultModifiers;
+	private final ItemAttributeModifiers defaultModifiers;
 
 	public ImpalerItem(int maxNutrients, Properties properties) {
 		super(maxNutrients, properties,
@@ -75,17 +76,17 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 						.build(),
 				ModProjectiles.IMPALER_PROJECTILE);
 
-		ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-		builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -3.5f, AttributeModifier.Operation.ADDITION));
-		builder.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(BASE_MOVEMENT_SPEED_UUID, "Weapon modifier", -0.125f, AttributeModifier.Operation.MULTIPLY_BASE));
-		defaultModifiers = builder.build();
+		defaultModifiers = ItemAttributeModifiers.builder()
+				.add(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, -3.5f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.HAND)
+				.add(Attributes.MOVEMENT_SPEED, new AttributeModifier(BASE_MOVEMENT_SPEED_ID, -0.125f, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.HAND)
+				.build().withTooltip(false);
 
 		GeoItem.registerSyncedAnimatable(this);
 	}
 
 	@Override
-	public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot) {
-		return slot.getType() == EquipmentSlot.Type.HAND ? defaultModifiers : ImmutableMultimap.of();
+	public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
+		return defaultModifiers;
 	}
 
 	@Override
@@ -110,7 +111,7 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 		if (level.isClientSide) return;
 		if (getGunState(stack) != GunState.SHOOTING_OR_CHARGING) return;
 
-		int elapsedTime = getUseDuration(stack) - remainingUseDuration;
+		int elapsedTime = getUseDuration(stack, shooter) - remainingUseDuration;
 		int delayBetweenShots = getDelayBetweenShots(stack);
 
 		if (elapsedTime % delayBetweenShots == 0) {
@@ -129,7 +130,7 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 
 	@Override
 	public void shoot(ServerLevel level, LivingEntity shooter, InteractionHand usedHand, ItemStack projectileWeapon) {
-		float elapsedDuration = (float) projectileWeapon.getUseDuration() - ((float) shooter.getUseItemRemainingTicks());
+		float elapsedDuration = (float) projectileWeapon.getUseDuration(shooter) - ((float) shooter.getUseItemRemainingTicks());
 		float maxChargeDuration = getDelayBetweenShots(projectileWeapon);
 		float chargePercentage = Mth.clamp(elapsedDuration / maxChargeDuration, 0.1f, 1f);
 
@@ -149,7 +150,7 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 		broadcastAnimation(level, shooter, projectileWeapon, Animations.SHOOT);
 		configuredProjectile.playShootSound(level, shooter, 1.5f, 0.8f + shooter.getRandom().nextFloat() * 0.3f);
 
-		projectileWeapon.hurtAndBreak(1, shooter, entity -> entity.broadcastBreakEvent(usedHand));
+		projectileWeapon.hurtAndBreak(1, shooter, LivingEntity.getSlotForHand(usedHand));
 		consumeAmmo(shooter, projectileWeapon, getAmmoCost(projectileWeapon));
 		consumeNutrients(projectileWeapon, getDurabilityCost(projectileWeapon));
 
@@ -196,11 +197,6 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 	}
 
 	@Override
-	public int getDefaultTooltipHideFlags(ItemStack stack) {
-		return ItemStack.TooltipPart.MODIFIERS.getMask();
-	}
-
-	@Override
 	public UseAnim getUseAnimation(ItemStack stack) {
 		return UseAnim.CUSTOM;
 	}
@@ -243,7 +239,7 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 			@Override
 			public boolean applyForgeHandTransform(PoseStack poseStack, LocalPlayer player, HumanoidArm arm, ItemStack itemInHand, float partialTick, float equipProcess, float swingProcess) {
 				if (player.isUsingItem() && player.getUseItemRemainingTicks() > 0 && isHandPartOfArm(player, arm, player.getUsedItemHand())) {
-					float elapsedDuration = (float) itemInHand.getUseDuration() - ((float) player.getUseItemRemainingTicks() - partialTick + 1f);
+					float elapsedDuration = (float) itemInHand.getUseDuration(player) - ((float) player.getUseItemRemainingTicks() - partialTick + 1f);
 					float maxChargeDuration = getDelayBetweenShots(itemInHand);
 					float aimProgress = elapsedDuration / maxChargeDuration;
 					if (aimProgress > 1f) {

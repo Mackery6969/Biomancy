@@ -1,17 +1,15 @@
 package com.github.elenterius.biomancy.init;
 
 import com.github.elenterius.biomancy.BiomancyMod;
-import com.github.elenterius.biomancy.entity.projectile.GrenadeProjectile;
 import com.github.elenterius.biomancy.integration.ModsCompatHandler;
 import com.github.elenterius.biomancy.item.extractor.ExtractorItem;
 import com.github.elenterius.biomancy.item.injector.InjectorItem;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
-import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.core.dispenser.ProjectileDispenseBehavior;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DispensibleContainerItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -49,10 +47,10 @@ public final class CommonSetupHandler {
 		DispenserBlock.registerBehavior(ModItems.ESSENCE_EXTRACTOR.get(), new OptionalDispenseItemBehavior() {
 			@Override
 			protected ItemStack execute(BlockSource source, ItemStack stack) {
-				BlockPos pos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
-				setSuccess(ExtractorItem.tryExtractEssence(source.getLevel(), pos, stack));
-				if (isSuccess() && stack.hurt(1, source.getLevel().getRandom(), null)) {
-					stack.setCount(0);
+				BlockPos pos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
+				setSuccess(ExtractorItem.tryExtractEssence(source.level(), pos, stack));
+				if (isSuccess()) {
+					stack.hurtAndBreak(1, source.level(), (LivingEntity) null, item -> {});
 				}
 				return stack;
 			}
@@ -61,10 +59,10 @@ public final class CommonSetupHandler {
 		DispenserBlock.registerBehavior(ModItems.INJECTOR.get(), new OptionalDispenseItemBehavior() {
 			@Override
 			protected ItemStack execute(BlockSource source, ItemStack stack) {
-				BlockPos pos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
-				setSuccess(InjectorItem.tryInjectLivingEntity(source.getLevel(), pos, stack));
-				if (isSuccess() && stack.hurt(1, source.getLevel().getRandom(), null)) {
-					stack.setCount(0);
+				BlockPos pos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
+				setSuccess(InjectorItem.tryInjectLivingEntity(source.level(), pos, stack));
+				if (isSuccess()) {
+					stack.hurtAndBreak(1, source.level(), (LivingEntity) null, item -> {});
 				}
 				return stack;
 			}
@@ -74,8 +72,8 @@ public final class CommonSetupHandler {
 			private final DefaultDispenseItemBehavior defaultDispenseItemBehavior = new DefaultDispenseItemBehavior();
 
 			public ItemStack execute(BlockSource source, ItemStack stack) {
-				BlockPos pos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
-				Level level = source.getLevel();
+				BlockPos pos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
+				Level level = source.level();
 
 				DispensibleContainerItem containerItem = (DispensibleContainerItem) stack.getItem();
 				if (containerItem.emptyContents(null, level, pos, null, stack)) {
@@ -88,34 +86,10 @@ public final class CommonSetupHandler {
 			}
 		});
 
-		DispenseItemBehavior grenadeDispenseBehavior = new DispenseItemBehavior() {
-			private final AbstractProjectileDispenseBehavior behavior = new AbstractProjectileDispenseBehavior() {
-
-				protected Projectile getProjectile(Level level, Position position, ItemStack stack) {
-					GrenadeProjectile grenade = new GrenadeProjectile(level, position.x(), position.y(), position.z());
-					grenade.setItem(stack);
-					return grenade;
-				}
-
-				protected float getUncertainty() {
-					return super.getUncertainty() * 0.5F;
-				}
-
-				protected float getPower() {
-					return super.getPower() * 1.25F;
-				}
-
-			};
-
-			public ItemStack dispense(BlockSource source, ItemStack itemStack) {
-				return behavior.dispense(source, itemStack);
-			}
-		};
-
-		DispenserBlock.registerBehavior(ModItems.TOXIN_GRENADE.get(), grenadeDispenseBehavior);
-		DispenserBlock.registerBehavior(ModItems.ACID_GRENADE.get(), grenadeDispenseBehavior);
-		DispenserBlock.registerBehavior(ModItems.DECAY_GRENADE.get(), grenadeDispenseBehavior);
-		DispenserBlock.registerBehavior(ModItems.INCENDIARY_GRENADE.get(), grenadeDispenseBehavior);
+		DispenserBlock.registerBehavior(ModItems.TOXIN_GRENADE.get(), new ProjectileDispenseBehavior(ModItems.TOXIN_GRENADE.get()));
+		DispenserBlock.registerBehavior(ModItems.ACID_GRENADE.get(), new ProjectileDispenseBehavior(ModItems.ACID_GRENADE.get()));
+		DispenserBlock.registerBehavior(ModItems.DECAY_GRENADE.get(), new ProjectileDispenseBehavior(ModItems.DECAY_GRENADE.get()));
+		DispenserBlock.registerBehavior(ModItems.INCENDIARY_GRENADE.get(), new ProjectileDispenseBehavior(ModItems.INCENDIARY_GRENADE.get()));
 	}
 
 }

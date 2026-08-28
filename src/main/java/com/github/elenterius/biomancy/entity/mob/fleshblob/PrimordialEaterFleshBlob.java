@@ -10,7 +10,7 @@ import com.github.elenterius.biomancy.util.MobUtil;
 import com.github.elenterius.biomancy.world.PrimordialEcosystem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -67,11 +67,11 @@ public class PrimordialEaterFleshBlob extends EaterFleshBlob implements Primordi
 	}
 
 	@Override
-	public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag) {
+	public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
 		if (!(spawnData instanceof FleshBlobSpawnData)) {
 			spawnData = new FleshBlobSpawnData.Tumors((byte) 0);
 		}
-		return super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
+		return super.finalizeSpawn(level, difficulty, reason, spawnData);
 	}
 
 	@Override
@@ -117,8 +117,8 @@ public class PrimordialEaterFleshBlob extends EaterFleshBlob implements Primordi
 
 	@Override
 	public boolean canBeAffected(MobEffectInstance effectInstance) {
-		MobEffect effect = effectInstance.getEffect();
-		if (effect == ModMobEffects.PRIMORDIAL_INFESTATION.get()) return false;
+		Holder<MobEffect> effect = effectInstance.getEffect();
+		if (effect == ModMobEffects.PRIMORDIAL_INFESTATION) return false;
 		if (ModMobEffectTags.forgeIsAcid(effect)) return false;
 		return super.canBeAffected(effectInstance);
 	}

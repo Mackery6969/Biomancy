@@ -20,7 +20,7 @@ public abstract class AbstractFleshBlobRenderer<T extends FleshBlob> extends Geo
 	}
 
 	@Override
-	public void preRender(PoseStack poseStack, T fleshBlob, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void preRender(PoseStack poseStack, T fleshBlob, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
 		shadowRadius = 0.65f * fleshBlob.getBlobScale();
 
 		AnimationProcessor<?> animationProcessor = getGeoModel().getAnimationProcessor();
@@ -31,7 +31,7 @@ public abstract class AbstractFleshBlobRenderer<T extends FleshBlob> extends Geo
 			tumor.setHidden(tumorFlag.isNotSet(flag));
 		}
 
-		super.preRender(poseStack, fleshBlob, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+		super.preRender(poseStack, fleshBlob, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
 	}
 
 	@Override

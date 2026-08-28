@@ -227,11 +227,6 @@ public abstract class LivingGunItem extends GunItem implements SimpleLivingTool 
 		return 0;
 	}
 
-	@Override
-	public boolean canBeDepleted() {
-		return false;
-	}
-
 	protected void playLocalSound(Player player, SoundEvent soundEvent) {
 		if (!player.level().isClientSide) return;
 		player.playSound(soundEvent, 0.8f, 0.8f + player.level().getRandom().nextFloat() * 0.4f);

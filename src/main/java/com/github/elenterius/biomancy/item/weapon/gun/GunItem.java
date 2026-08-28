@@ -25,6 +25,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -76,7 +77,7 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 
 		if (success) {
 			configuredProjectile.playShootSound(level, shooter);
-			projectileWeapon.hurtAndBreak(getDurabilityCost(projectileWeapon), shooter, entity -> entity.broadcastBreakEvent(usedHand));
+			projectileWeapon.hurtAndBreak(getDurabilityCost(projectileWeapon), shooter, LivingEntity.getSlotForHand(usedHand));
 			consumeAmmo(shooter, projectileWeapon, getAmmoCost(projectileWeapon));
 		}
 	}
@@ -111,9 +112,12 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 	}
 
 	@Override
-	public int getUseDuration(ItemStack stack) {
+	public int getUseDuration(ItemStack stack, LivingEntity entity) {
 		return ONE_HOUR_IN_TICKS;
 	}
+
+	@Override
+	protected void shootProjectile(LivingEntity shooter, Projectile projectile, int index, float velocity, float inaccuracy, float angle, @Nullable LivingEntity target) {}
 
 	@Override
 	public UseAnim getUseAnimation(ItemStack stack) {
@@ -157,7 +161,7 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 				return;
 			}
 
-			int elapsedTime = getUseDuration(stack) - remainingUseDuration;
+			int elapsedTime = getUseDuration(stack, shooter) - remainingUseDuration;
 			int delayBetweenShots = getDelayBetweenShots(stack);
 
 			//prevent right click spam attack by user
@@ -175,7 +179,7 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 
 			if (canShoot) {
 				shoot(serverLevel, shooter, shooter.getUsedItemHand(), stack);
-				stack.getOrCreateTag().putLong(SHOOT_TIMESTAMP_KEY, serverLevel.getGameTime());
+				updateTag(stack, tag -> tag.putLong(SHOOT_TIMESTAMP_KEY, serverLevel.getGameTime()));
 			}
 		}
 	}
@@ -184,18 +188,18 @@ public abstract class GunItem extends ProjectileWeaponItem implements Gun, KeyPr
 	public void releaseUsing(ItemStack stack, Level level, LivingEntity shooter, int remainingUseDuration) {
 
 		if (level instanceof ServerLevel serverLevel && gunProperties.shootBehavior().isOnRelease()) {
-			int elapsedTime = getUseDuration(stack) - remainingUseDuration;
+			int elapsedTime = getUseDuration(stack, shooter) - remainingUseDuration;
 			int delayBetweenShots = getDelayBetweenShots(stack);
 
 			switch (gunProperties.shootBehavior()) {
 				case ON_RELEASE_INSTANT -> {
 					shoot(serverLevel, shooter, shooter.getUsedItemHand(), stack);
-					stack.getOrCreateTag().putLong(SHOOT_TIMESTAMP_KEY, serverLevel.getGameTime());
+					updateTag(stack, tag -> tag.putLong(SHOOT_TIMESTAMP_KEY, serverLevel.getGameTime()));
 				}
 				case ON_RELEASE_WITH_FULL_CHARGE -> {
 					if (elapsedTime >= delayBetweenShots && serverLevel.getGameTime() - getShootTimestamp(stack) < delayBetweenShots) {
 						shoot(serverLevel, shooter, shooter.getUsedItemHand(), stack);
-						stack.getOrCreateTag().putLong(SHOOT_TIMESTAMP_KEY, serverLevel.getGameTime());
+						updateTag(stack, tag -> tag.putLong(SHOOT_TIMESTAMP_KEY, serverLevel.getGameTime()));
 					}
 				}
 				default -> {}

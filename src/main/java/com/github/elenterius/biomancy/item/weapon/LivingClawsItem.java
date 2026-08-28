@@ -135,11 +135,6 @@ public class LivingClawsItem extends SimpleClawsItem implements SpecialLivingToo
 	}
 
 	@Override
-	public boolean canBeDepleted() {
-		return false;
-	}
-
-	@Override
 	public boolean isFoil(ItemStack stack) {
 		return false;
 	}

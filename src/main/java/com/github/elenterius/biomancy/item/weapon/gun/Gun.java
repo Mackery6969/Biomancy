@@ -1,5 +1,7 @@
 package com.github.elenterius.biomancy.item.weapon.gun;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -10,9 +12,20 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 
+import java.util.function.Consumer;
+
 public interface Gun {
+
+	default CompoundTag getTag(ItemStack stack) {
+		return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+	}
+
+	default void updateTag(ItemStack stack, Consumer<CompoundTag> updater) {
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, updater);
+	}
 
 	int ONE_SECOND_IN_TICKS = 20;
 	int ONE_HOUR_IN_TICKS = 60 * 60 * 20;
@@ -24,7 +37,7 @@ public interface Gun {
 	String SHOOT_TIMESTAMP_KEY = "shoot_timestamp";
 
 	default long getShootTimestamp(ItemStack stack) {
-		return stack.getOrCreateTag().getLong(SHOOT_TIMESTAMP_KEY);
+		return getTag(stack).getLong(SHOOT_TIMESTAMP_KEY);
 	}
 
 	default int getDurabilityCost(ItemStack stack) {
@@ -45,21 +58,21 @@ public interface Gun {
 	void shoot(ServerLevel level, LivingEntity shooter, InteractionHand usedHand, ItemStack stack);
 
 	default GunState getGunState(ItemStack stack) {
-		return GunState.fromId(stack.getOrCreateTag().getByte(WEAPON_STATE_KEY));
+		return GunState.fromId(getTag(stack).getByte(WEAPON_STATE_KEY));
 	}
 
 	default void setGunState(ItemStack stack, GunState state) {
-		stack.getOrCreateTag().putByte(WEAPON_STATE_KEY, state.getId());
+		updateTag(stack, tag -> tag.putByte(WEAPON_STATE_KEY, state.getId()));
 	}
 
 	default long getReloadStartTime(ItemStack stack) {
-		return stack.getOrCreateTag().getLong(RELOAD_TIMESTAMP_KEY);
+		return getTag(stack).getLong(RELOAD_TIMESTAMP_KEY);
 	}
 
 	default void startReload(ItemStack stack, ServerLevel level, LivingEntity shooter) {
 		if (canReload(stack, shooter)) {
 			setGunState(stack, GunState.RELOADING);
-			stack.getOrCreateTag().putLong(RELOAD_TIMESTAMP_KEY, level.getGameTime());
+			updateTag(stack, tag -> tag.putLong(RELOAD_TIMESTAMP_KEY, level.getGameTime()));
 			onReloadStarted(stack, level, shooter);
 		}
 		else {
@@ -158,18 +171,16 @@ public interface Gun {
 	}
 
 	default int getAmmo(ItemStack stack) {
-		return stack.getOrCreateTag().getInt(AMMO_KEY);
+		return getTag(stack).getInt(AMMO_KEY);
 	}
 
 	default void setAmmo(ItemStack stack, int amount) {
-		CompoundTag nbt = stack.getOrCreateTag();
-		nbt.putInt(AMMO_KEY, Mth.clamp(amount, 0, getMaxAmmo(stack)));
+		updateTag(stack, tag -> tag.putInt(AMMO_KEY, Mth.clamp(amount, 0, getMaxAmmo(stack))));
 	}
 
 	default void addAmmo(ItemStack stack, int amount) {
 		if (amount == 0) return;
-		CompoundTag nbt = stack.getOrCreateTag();
-		nbt.putInt(AMMO_KEY, Math.max(0, nbt.getInt(AMMO_KEY) + amount));
+		updateTag(stack, tag -> tag.putInt(AMMO_KEY, Math.max(0, tag.getInt(AMMO_KEY) + amount)));
 	}
 
 	default void consumeAmmo(ItemStack stack, int amount) {
@@ -181,6 +192,11 @@ public interface Gun {
 	}
 
 	default void playSFX(Level level, LivingEntity shooter, SoundEvent soundEvent) {
+		SoundSource soundSource = shooter instanceof Player ? SoundSource.PLAYERS : SoundSource.HOSTILE;
+		level.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), soundEvent, soundSource, 1f, 1f / (shooter.getRandom().nextFloat() * 0.5f + 1f) + 0.2f);
+	}
+
+	default void playSFX(Level level, LivingEntity shooter, Holder<SoundEvent> soundEvent) {
 		SoundSource soundSource = shooter instanceof Player ? SoundSource.PLAYERS : SoundSource.HOSTILE;
 		level.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), soundEvent, soundSource, 1f, 1f / (shooter.getRandom().nextFloat() * 0.5f + 1f) + 0.2f);
 	}

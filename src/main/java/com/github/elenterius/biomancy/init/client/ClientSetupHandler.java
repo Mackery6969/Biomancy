@@ -53,7 +53,7 @@ import net.minecraft.world.item.BucketItem;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -189,7 +189,7 @@ public final class ClientSetupHandler {
 	@SubscribeEvent
 	public static void onItemColorRegistry(final RegisterColorHandlersEvent.Item event) {
 		event.register((stack, tintIndex) -> ModItems.ESSENCE.get().getColor(stack, tintIndex), ModItems.ESSENCE.get());
-		event.register((stack, index) -> index == 1 ? IClientFluidTypeExtensions.of(((BucketItem) stack.getItem()).getFluid()).getTintColor() : 0xFF_FFFFFF, ModItems.ACID_BUCKET.get());
+		event.register((stack, index) -> index == 1 ? IClientFluidTypeExtensions.of(((BucketItem) stack.getItem()).content).getTintColor() : 0xFF_FFFFFF, ModItems.ACID_BUCKET.get());
 		event.register(BiometricMembraneBlock::getTintColor, ModItems.BIOMETRIC_MEMBRANE.get());
 		event.register((stack, tintIndex) -> ModItems.POTION_SERUM.get().getTintColor(stack, tintIndex), ModItems.POTION_SERUM.get());
 	}
@@ -202,14 +202,14 @@ public final class ClientSetupHandler {
 	}
 
 	@SubscribeEvent
-	public static void registerGameOverlays(RegisterGuiOverlaysEvent event) {
-		event.registerAbove(VanillaGuiOverlay.VIGNETTE.id(), "frenzy", ScreenOverlays.FRENZY_OVERLAY);
-		event.registerBelow(VanillaGuiOverlay.VIGNETTE.id(), "inside_block", ScreenOverlays.INSIDE_BLOCK_OVERLAY);
+	public static void registerGameOverlays(RegisterGuiLayersEvent event) {
+		event.registerAboveAll(BiomancyMod.rl("frenzy"), ScreenOverlays.FRENZY_OVERLAY);
+		event.registerBelow(VanillaGuiLayers.CROSSHAIR, BiomancyMod.rl("inside_block"), ScreenOverlays.INSIDE_BLOCK_OVERLAY);
 
-		event.registerAbove(VanillaGuiOverlay.CROSSHAIR.id(), "injector", ScreenOverlays.INJECTOR_OVERLAY);
-		event.registerAbove(VanillaGuiOverlay.CROSSHAIR.id(), "charge_bar", ScreenOverlays.CHARGE_BAR_OVERLAY);
-		event.registerAbove(VanillaGuiOverlay.CROSSHAIR.id(), "gun", ScreenOverlays.GUN_OVERLAY);
-		event.registerAbove(VanillaGuiOverlay.CROSSHAIR.id(), "knowledge", ScreenOverlays.KNOWLEDGE_OVERLAY);
+		event.registerAbove(VanillaGuiLayers.CROSSHAIR, BiomancyMod.rl("injector"), ScreenOverlays.INJECTOR_OVERLAY);
+		event.registerAbove(VanillaGuiLayers.CROSSHAIR, BiomancyMod.rl("charge_bar"), ScreenOverlays.CHARGE_BAR_OVERLAY);
+		event.registerAbove(VanillaGuiLayers.CROSSHAIR, BiomancyMod.rl("gun"), ScreenOverlays.GUN_OVERLAY);
+		event.registerAbove(VanillaGuiLayers.CROSSHAIR, BiomancyMod.rl("knowledge"), ScreenOverlays.KNOWLEDGE_OVERLAY);
 	}
 
 	@SubscribeEvent

@@ -3,8 +3,6 @@ package com.github.elenterius.biomancy.item.weapon.gun;
 import com.github.elenterius.biomancy.init.ModDataComponents;
 import com.github.elenterius.biomancy.init.ModProjectiles;
 import com.github.elenterius.biomancy.item.weapon.BladeProperties;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -13,12 +11,13 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,8 +28,8 @@ import java.util.Locale;
 
 public abstract class GunbladeItem extends GunItem {
 
-	protected final Multimap<Attribute, AttributeModifier> defaultBladeModifiers;
-	protected final Multimap<Attribute, AttributeModifier> defaultGunModifiers;
+	protected final ItemAttributeModifiers defaultBladeModifiers;
+	protected final ItemAttributeModifiers defaultGunModifiers;
 
 	protected GunbladeItem(Properties itemProperties, BladeProperties bladeProperties, GunProperties gunProperties, ModProjectiles.ConfiguredProjectile<?> projectile) {
 		super(itemProperties, gunProperties, projectile);
@@ -97,26 +96,23 @@ public abstract class GunbladeItem extends GunItem {
 		}
 	}
 
-	protected Multimap<Attribute, AttributeModifier> createDefaultBladeModifiers(BladeProperties bladeProperties) {
-		ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-		builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", bladeProperties.attackDamageModifier(), AttributeModifier.Operation.ADDITION));
-		builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", bladeProperties.attackSpeedModifier(), AttributeModifier.Operation.ADDITION));
-		return builder.build();
+	protected ItemAttributeModifiers createDefaultBladeModifiers(BladeProperties bladeProperties) {
+		return ItemAttributeModifiers.builder()
+				.add(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, bladeProperties.attackDamageModifier(), AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+				.add(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, bladeProperties.attackSpeedModifier(), AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+				.build();
 	}
 
-	protected Multimap<Attribute, AttributeModifier> createDefaultGunModifiers(BladeProperties bladeProperties) {
-		ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-		builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", Math.max(bladeProperties.attackDamageModifier() - 2d, 0.5d), AttributeModifier.Operation.ADDITION));
-		builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", Math.max(bladeProperties.attackSpeedModifier() - 0.2d, -3.8d), AttributeModifier.Operation.ADDITION));
-		return builder.build();
+	protected ItemAttributeModifiers createDefaultGunModifiers(BladeProperties bladeProperties) {
+		return ItemAttributeModifiers.builder()
+				.add(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, Math.max(bladeProperties.attackDamageModifier() - 2d, 0.5d), AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+				.add(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, Math.max(bladeProperties.attackSpeedModifier() - 0.2d, -3.8d), AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+				.build();
 	}
 
 	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-		if (slot == EquipmentSlot.MAINHAND) {
-			return GunbladeMode.from(stack).isBlade() ? defaultBladeModifiers : defaultGunModifiers;
-		}
-		return ImmutableMultimap.of();
+	public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
+		return GunbladeMode.from(stack).isBlade() ? defaultBladeModifiers : defaultGunModifiers;
 	}
 
 	@Override
@@ -142,21 +138,21 @@ public abstract class GunbladeItem extends GunItem {
 
 	@Override
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-		stack.hurtAndBreak(2, attacker, livingEntity -> livingEntity.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+		stack.hurtAndBreak(2, attacker, EquipmentSlot.MAINHAND);
 		return true;
 	}
 
 	@Override
 	public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miningEntity) {
 		if (state.getDestroySpeed(level, pos) != 0f) {
-			stack.hurtAndBreak(2, miningEntity, livingEntity -> livingEntity.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+			stack.hurtAndBreak(2, miningEntity, EquipmentSlot.MAINHAND);
 		}
 
 		return true;
 	}
 
 	@Override
-	public boolean isCorrectToolForDrops(BlockState state) {
+	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
 		return state.is(Blocks.COBWEB);
 	}
 

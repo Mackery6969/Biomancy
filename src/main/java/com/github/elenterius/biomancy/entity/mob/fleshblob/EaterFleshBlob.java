@@ -2,6 +2,7 @@ package com.github.elenterius.biomancy.entity.mob.fleshblob;
 
 import com.github.elenterius.biomancy.entity.mob.FoodEater;
 import com.github.elenterius.biomancy.entity.mob.ai.goal.FindItemGoal;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -22,7 +23,6 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jspecify.annotations.Nullable;
 import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
@@ -34,7 +34,7 @@ import java.util.function.Predicate;
 
 public abstract class EaterFleshBlob extends FleshBlob implements FoodEater {
 
-	public static final Predicate<ItemEntity> ITEM_ENTITY_FILTER = itemEntity -> FindItemGoal.ITEM_ENTITY_FILTER.test(itemEntity) && itemEntity.getItem().isEdible();
+	public static final Predicate<ItemEntity> ITEM_ENTITY_FILTER = itemEntity -> FindItemGoal.ITEM_ENTITY_FILTER.test(itemEntity) && itemEntity.getItem().get(DataComponents.FOOD) != null;
 	protected static final EntityDataAccessor<Boolean> IS_EATING = SynchedEntityData.defineId(EaterFleshBlob.class, EntityDataSerializers.BOOLEAN);
 
 	protected EaterFleshBlob(EntityType<? extends EaterFleshBlob> entityType, Level level) {
@@ -53,19 +53,19 @@ public abstract class EaterFleshBlob extends FleshBlob implements FoodEater {
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(IS_EATING, false);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(IS_EATING, false);
 	}
 
 	protected float getFoodHealAmount(@Nullable FoodProperties food) {
 		if (food == null) return 0.5f;
-		return food.getNutrition() * (food.isMeat() ? 1.25f : 0.75f);
+		return food.nutrition() * 0.75f;
 	}
 
 	protected float getGrowChance(@Nullable FoodProperties food) {
 		if (food == null) return 0.4f;
-		return 0.4f + (food.getNutrition() * (food.isMeat() ? 0.5f : 0.25f)) / MAX_SIZE;
+		return 0.4f + (food.nutrition() * 0.25f) / MAX_SIZE;
 	}
 
 	@Override
@@ -73,12 +73,12 @@ public abstract class EaterFleshBlob extends FleshBlob implements FoodEater {
 		if (tickCount < 20 * 5) return false;
 
 		ItemStack heldStack = getFoodItem();
-		return (heldStack.isEmpty() || !heldStack.getItem().isEdible()) && super.canPickUpLoot();
+		return (heldStack.isEmpty() || heldStack.get(DataComponents.FOOD) == null) && super.canPickUpLoot();
 	}
 
 	@Override
 	public boolean canTakeItem(ItemStack stack) {
-		if (stack.getItem().isEdible()) {
+		if (stack.get(DataComponents.FOOD) != null) {
 			return getFoodItem().isEmpty() && canPickUpLoot();
 		}
 		return super.canTakeItem(stack);
@@ -87,7 +87,7 @@ public abstract class EaterFleshBlob extends FleshBlob implements FoodEater {
 	@Override
 	public boolean canHoldItem(ItemStack stack) {
 		ItemStack heldStack = getFoodItem();
-		return stack.isEdible() && (heldStack.isEmpty() || !heldStack.getItem().isEdible());
+		return stack.get(DataComponents.FOOD) != null && (heldStack.isEmpty() || heldStack.get(DataComponents.FOOD) == null);
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public abstract class EaterFleshBlob extends FleshBlob implements FoodEater {
 				spawnAtLocation(heldStack); //drop old item
 			}
 
-			setFoodItem(ItemHandlerHelper.copyStackWithSize(stack, 1));
+			setFoodItem(stack.copyWithCount(1));
 			if (!player.getAbilities().instabuild) stack.shrink(1);
 
 			if (!isSilent()) {
@@ -180,7 +180,7 @@ public abstract class EaterFleshBlob extends FleshBlob implements FoodEater {
 		float pitch = -getXRot() * Mth.DEG_TO_RAD;
 		float yaw = -getYRot() * Mth.DEG_TO_RAD;
 
-		double radius = getDimensions(getPose()).width / 2d;
+		double radius = getDimensions(getPose()).width() / 2d;
 		double x = getX() + getLookAngle().x * radius;
 		double y = getY();
 		double z = getZ() + getLookAngle().z * radius;

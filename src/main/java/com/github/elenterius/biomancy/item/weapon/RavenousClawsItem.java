@@ -15,19 +15,19 @@ import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.github.elenterius.biomancy.util.FormatUtil;
 import com.github.elenterius.biomancy.util.MobUtil;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
+import com.github.elenterius.biomancy.BiomancyMod;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -36,6 +36,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.ItemAbility;
@@ -51,23 +52,22 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.text.DecimalFormat;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 public class RavenousClawsItem extends LivingClawsItem implements GeoItem, ItemCharge, MeleeDamageSourceProviderItem {
-	protected static final UUID BASE_ATTACK_KNOCKBACK_UUID = UUID.fromString("6175525b-56dd-4f87-b035-86b892afe7b3");
-	private final Lazy<Multimap<Attribute, AttributeModifier>> brokenAttributes;
-	private final Lazy<Multimap<Attribute, AttributeModifier>> dormantAttributes;
-	private final Lazy<Multimap<Attribute, AttributeModifier>> awakenedAttributes;
+	protected static final ResourceLocation BASE_ATTACK_KNOCKBACK_ID = BiomancyMod.rl("ravenous_claws_attack_knockback");
+	private final Lazy<ItemAttributeModifiers> brokenAttributes;
+	private final Lazy<ItemAttributeModifiers> dormantAttributes;
+	private final Lazy<ItemAttributeModifiers> awakenedAttributes;
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	public RavenousClawsItem(Tier tier, float attackDamage, float attackSpeed, int maxNutrients, Properties properties) {
 		super(tier, 0, 0, 0, maxNutrients, properties);
 
-		float attackSpeedModifier = (float) (attackSpeed - Attributes.ATTACK_SPEED.getDefaultValue());
-		brokenAttributes = Lazy.of(() -> createDefaultAttributeModifiers(0, 0, -0.5f).build());
-		dormantAttributes = Lazy.of(() -> createDefaultAttributeModifiers(-1 + attackDamage, attackSpeedModifier, 0).build());
-		awakenedAttributes = Lazy.of(() -> createDefaultAttributeModifiers(-1 + attackDamage + 2.5f, attackSpeedModifier, 0.5f).build());
+		float attackSpeedModifier = (float) (attackSpeed - Attributes.ATTACK_SPEED.value().getDefaultValue());
+		brokenAttributes = Lazy.of(() -> createDefaultAttributeModifiers(0, 0, -0.5f));
+		dormantAttributes = Lazy.of(() -> createDefaultAttributeModifiers(-1 + attackDamage, attackSpeedModifier, 0));
+		awakenedAttributes = Lazy.of(() -> createDefaultAttributeModifiers(-1 + attackDamage + 2.5f, attackSpeedModifier, 0.5f));
 	}
 
 	private static void playClawSwipeFX(LivingEntity attacker) {
@@ -90,27 +90,18 @@ public class RavenousClawsItem extends LivingClawsItem implements GeoItem, ItemC
 	}
 
 	@Override
-	protected ImmutableMultimap.Builder<Attribute, AttributeModifier> createDefaultAttributeModifiers(float attackDamageModifier, float attackSpeedModifier, float attackRangeModifier) {
-		ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = super.createDefaultAttributeModifiers(attackDamageModifier, attackSpeedModifier, attackRangeModifier);
-		builder.put(Attributes.ATTACK_KNOCKBACK, new AttributeModifier(BASE_ATTACK_KNOCKBACK_UUID, "Weapon modifier", 0, AttributeModifier.Operation.MULTIPLY_TOTAL));
-		return builder;
+	protected ItemAttributeModifiers createDefaultAttributeModifiers(float attackDamageModifier, float attackSpeedModifier, float attackRangeModifier) {
+		ItemAttributeModifiers modifiers = super.createDefaultAttributeModifiers(attackDamageModifier, attackSpeedModifier, attackRangeModifier);
+		return modifiers.withModifierAdded(Attributes.ATTACK_KNOCKBACK, new AttributeModifier(BASE_ATTACK_KNOCKBACK_ID, 0, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL), EquipmentSlotGroup.MAINHAND);
 	}
 
 	@Override
-	public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot equipmentSlot) {
-		return equipmentSlot == EquipmentSlot.MAINHAND ? dormantAttributes.get() : ImmutableMultimap.of();
-	}
-
-	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-		if (slot == EquipmentSlot.MAINHAND) {
-			return switch (getLivingToolState(stack)) {
-				case BROKEN -> brokenAttributes.get();
-				case DORMANT -> dormantAttributes.get();
-				case AWAKENED -> awakenedAttributes.get();
-			};
-		}
-		return ImmutableMultimap.of();
+	public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
+		return switch (getLivingToolState(stack)) {
+			case BROKEN -> brokenAttributes.get();
+			case DORMANT -> dormantAttributes.get();
+			case AWAKENED -> awakenedAttributes.get();
+		};
 	}
 
 	@Override

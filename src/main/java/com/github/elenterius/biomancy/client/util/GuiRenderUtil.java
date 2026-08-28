@@ -115,28 +115,26 @@ public final class GuiRenderUtil {
 			maxY = n;
 		}
 
-		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-		bufferbuilder.vertex(matrix4f, minX, maxY, z).color(argbColor).endVertex();
-		bufferbuilder.vertex(matrix4f, maxX, maxY, z).color(argbColor).endVertex();
-		bufferbuilder.vertex(matrix4f, maxX, minY, z).color(argbColor).endVertex();
-		bufferbuilder.vertex(matrix4f, minX, minY, z).color(argbColor).endVertex();
-		BufferUploader.drawWithShader(bufferbuilder.end());
+		BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+		bufferbuilder.addVertex(matrix4f, minX, maxY, z).setColor(argbColor);
+		bufferbuilder.addVertex(matrix4f, maxX, maxY, z).setColor(argbColor);
+		bufferbuilder.addVertex(matrix4f, maxX, minY, z).setColor(argbColor);
+		bufferbuilder.addVertex(matrix4f, minX, minY, z).setColor(argbColor);
+		BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
 	}
 
 	public static void fill(GuiGraphics guiGraphics, float minX, float minY, float maxX, float maxY, int z, int colorARGB) {
 		Matrix4f matrix4f = guiGraphics.pose().last().pose();
 
-		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.setShader(GameRenderer::getPositionColorShader);
-		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-		bufferbuilder.vertex(matrix4f, minX, maxY, z).color(colorARGB).endVertex();
-		bufferbuilder.vertex(matrix4f, maxX, maxY, z).color(colorARGB).endVertex();
-		bufferbuilder.vertex(matrix4f, maxX, minY, z).color(colorARGB).endVertex();
-		bufferbuilder.vertex(matrix4f, minX, minY, z).color(colorARGB).endVertex();
-		BufferUploader.drawWithShader(bufferbuilder.end());
+		BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+		bufferbuilder.addVertex(matrix4f, minX, maxY, z).setColor(colorARGB);
+		bufferbuilder.addVertex(matrix4f, maxX, maxY, z).setColor(colorARGB);
+		bufferbuilder.addVertex(matrix4f, maxX, minY, z).setColor(colorARGB);
+		bufferbuilder.addVertex(matrix4f, minX, minY, z).setColor(colorARGB);
+		BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
 		RenderSystem.disableBlend();
 	}
 

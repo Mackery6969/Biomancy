@@ -1,15 +1,15 @@
 package com.github.elenterius.biomancy.item.weapon;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
+import com.github.elenterius.biomancy.BiomancyMod;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,30 +27,29 @@ import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.List;
-import java.util.UUID;
 
 public class ClawsItem extends TieredItem {
 
-	protected static final UUID BASE_ATTACK_RANGE_UUID = UUID.fromString("d76adb08-2bb3-4e88-997d-766a919f0f6b");
-	protected final Lazy<Multimap<Attribute, AttributeModifier>> defaultAttributeModifiers;
+	protected static final ResourceLocation BASE_ATTACK_RANGE_ID = BiomancyMod.rl("claws_attack_range");
+	protected final Lazy<ItemAttributeModifiers> defaultAttributeModifiers;
 
 	public ClawsItem(Tier tier, float baseAttackDamage, float attackSpeedModifier, float attackRangeModifier, Properties properties) {
 		super(tier, properties);
 		float attackDamageModifier = baseAttackDamage + tier.getAttackDamageBonus();
-		defaultAttributeModifiers = Lazy.of(() -> createDefaultAttributeModifiers(attackDamageModifier, attackSpeedModifier, attackRangeModifier).build());
+		defaultAttributeModifiers = Lazy.of(() -> createDefaultAttributeModifiers(attackDamageModifier, attackSpeedModifier, attackRangeModifier));
 	}
 
-	protected ImmutableMultimap.Builder<Attribute, AttributeModifier> createDefaultAttributeModifiers(float attackDamageModifier, float attackSpeedModifier, float attackRangeModifier) {
-		ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-		builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", attackDamageModifier, AttributeModifier.Operation.ADDITION));
-		builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", attackSpeedModifier, AttributeModifier.Operation.ADDITION));
-		builder.put(Attributes.ENTITY_INTERACTION_RANGE.value(), new AttributeModifier(BASE_ATTACK_RANGE_UUID, "Weapon modifier", attackRangeModifier, AttributeModifier.Operation.ADDITION));
-		return builder;
+	protected ItemAttributeModifiers createDefaultAttributeModifiers(float attackDamageModifier, float attackSpeedModifier, float attackRangeModifier) {
+		return ItemAttributeModifiers.builder()
+				.add(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, attackDamageModifier, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+				.add(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, attackSpeedModifier, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+				.add(Attributes.ENTITY_INTERACTION_RANGE, new AttributeModifier(BASE_ATTACK_RANGE_ID, attackRangeModifier, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+				.build();
 	}
 
 	@Override
-	public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot equipmentSlot) {
-		return equipmentSlot == EquipmentSlot.MAINHAND ? defaultAttributeModifiers.get() : super.getDefaultAttributeModifiers(equipmentSlot);
+	public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
+		return defaultAttributeModifiers.get();
 	}
 
 	@Override
@@ -69,20 +69,20 @@ public class ClawsItem extends TieredItem {
 
 	@Override
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-		stack.hurtAndBreak(1, attacker, livingEntity -> livingEntity.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+		stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
 		return true;
 	}
 
 	@Override
 	public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miningEntity) {
 		if (state.getDestroySpeed(level, pos) != 0f) {
-			stack.hurtAndBreak(2, miningEntity, livingEntity -> livingEntity.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+			stack.hurtAndBreak(2, miningEntity, EquipmentSlot.MAINHAND);
 		}
 		return true;
 	}
 
 	@Override
-	public boolean isCorrectToolForDrops(BlockState block) {
+	public boolean isCorrectToolForDrops(ItemStack stack, BlockState block) {
 		return block.is(Blocks.COBWEB) || block.is(BlockTags.LEAVES);
 	}
 
@@ -113,7 +113,7 @@ public class ClawsItem extends TieredItem {
 						itemEntity.setDeltaMovement(itemEntity.getDeltaMovement().add((rand.nextFloat() - rand.nextFloat()) * 0.1f, rand.nextFloat() * 0.05f, (rand.nextFloat() - rand.nextFloat()) * 0.1f));
 					}
 				});
-				stack.hurtAndBreak(1, targetEntity, entity -> entity.broadcastBreakEvent(usedHand));
+				stack.hurtAndBreak(1, targetEntity, LivingEntity.getSlotForHand(usedHand));
 			}
 			return true;
 		}

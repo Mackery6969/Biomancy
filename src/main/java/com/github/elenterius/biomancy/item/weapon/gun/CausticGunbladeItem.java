@@ -15,10 +15,9 @@ import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.github.elenterius.biomancy.util.animation.TriggerableAnimation;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -31,6 +30,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -43,6 +43,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
@@ -66,8 +68,8 @@ import java.util.function.Predicate;
 
 public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingTool, CriticalHitListener, MeleeDamageSourceProviderItem, ItemTooltipStyleProvider, GeoItem {
 
-	protected final Multimap<Attribute, AttributeModifier> disabledBladeModifiers;
-	protected final Multimap<Attribute, AttributeModifier> disabledGunModifiers;
+	protected final ItemAttributeModifiers disabledBladeModifiers;
+	protected final ItemAttributeModifiers disabledGunModifiers;
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -86,24 +88,30 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 
 		this.maxNutrients = maxNutrients;
 
-		disabledBladeModifiers = ImmutableMultimap.<Attribute, AttributeModifier>builder().putAll(Attributes.ATTACK_SPEED, defaultBladeModifiers.get(Attributes.ATTACK_SPEED)).build();
-		disabledGunModifiers = ImmutableMultimap.<Attribute, AttributeModifier>builder().putAll(Attributes.ATTACK_SPEED, defaultGunModifiers.get(Attributes.ATTACK_SPEED)).build();
+		disabledBladeModifiers = keepOnly(defaultBladeModifiers, Attributes.ATTACK_SPEED);
+		disabledGunModifiers = keepOnly(defaultGunModifiers, Attributes.ATTACK_SPEED);
 
 		SingletonGeoAnimatable.registerSyncedAnimatable(this);
 	}
 
-	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-		if (slot == EquipmentSlot.MAINHAND) {
-			boolean isMeleeMode = GunbladeMode.from(stack).isBlade();
-
-			if (hasNutrients(stack)) {
-				return isMeleeMode ? defaultBladeModifiers : defaultGunModifiers;
+	private static ItemAttributeModifiers keepOnly(ItemAttributeModifiers source, Holder<Attribute> attribute) {
+		ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
+		for (ItemAttributeModifiers.Entry entry : source.modifiers()) {
+			if (entry.attribute().equals(attribute)) {
+				builder.add(entry.attribute(), entry.modifier(), entry.slot());
 			}
-			return isMeleeMode ? disabledBladeModifiers : disabledGunModifiers;
 		}
+		return builder.build();
+	}
 
-		return ImmutableMultimap.of();
+	@Override
+	public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
+		boolean isMeleeMode = GunbladeMode.from(stack).isBlade();
+
+		if (hasNutrients(stack)) {
+			return isMeleeMode ? defaultBladeModifiers : defaultGunModifiers;
+		}
+		return isMeleeMode ? disabledBladeModifiers : disabledGunModifiers;
 	}
 
 	private static void playSwipeFX(LivingEntity attacker) {
@@ -126,11 +134,11 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 	}
 
 	protected long getLastUseTimestamp(ItemStack stack) {
-		return stack.getOrCreateTag().getLong(LAST_USE_TIMESTAMP_KEY);
+		return getTag(stack).getLong(LAST_USE_TIMESTAMP_KEY);
 	}
 
 	protected void setLastUseTimestamp(ItemStack stack, long timestamp) {
-		stack.getOrCreateTag().putLong(LAST_USE_TIMESTAMP_KEY, timestamp);
+		updateTag(stack, tag -> tag.putLong(LAST_USE_TIMESTAMP_KEY, timestamp));
 	}
 
 	@Override
@@ -246,8 +254,8 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 		if (GunbladeMode.from(stack) != GunbladeMode.MELEE) return;
 
 		if (Abilities.ACID_COAT.isActive(stack)) {
-			target.addEffect(new MobEffectInstance(ModMobEffects.CORROSIVE.get(), 3 * 20, 1));
-			target.addEffect(new MobEffectInstance(ModMobEffects.ARMOR_SHRED.get(), 4 * 20, 1));
+			target.addEffect(new MobEffectInstance(ModMobEffects.CORROSIVE, 3 * 20, 1));
+			target.addEffect(new MobEffectInstance(ModMobEffects.ARMOR_SHRED, 4 * 20, 1));
 		}
 	}
 
@@ -265,8 +273,8 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 			boolean isFullAttackStrength = !(attacker instanceof Player player) || player.getAttackStrengthScale(0.5f) >= 0.9f;
 			if (isFullAttackStrength) {
 				playSwipeFX(attacker);
-				target.addEffect(new MobEffectInstance(ModMobEffects.CORROSIVE.get(), 3 * 20, 0));
-				target.addEffect(new MobEffectInstance(ModMobEffects.ARMOR_SHRED.get(), 4 * 20, 0));
+				target.addEffect(new MobEffectInstance(ModMobEffects.CORROSIVE, 3 * 20, 0));
+				target.addEffect(new MobEffectInstance(ModMobEffects.ARMOR_SHRED, 4 * 20, 0));
 			}
 
 			Abilities.ACID_COAT.use(attacker.level(), stack, attacker);
@@ -406,11 +414,6 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 		return 0;
 	}
 
-	@Override
-	public boolean canBeDepleted() {
-		return false;
-	}
-
 	protected void playSound(Player player, SoundEvent soundEvent) {
 		player.playSound(soundEvent, 0.8f, 0.8f + player.level().getRandom().nextFloat() * 0.4f);
 	}
@@ -456,7 +459,7 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 		Animations.registerControllers(this, controllers);
 	}
 
-	public interface ItemAbility {
+	public interface Ability {
 		String name();
 
 		void setActive(ServerLevel level, ItemStack stack, LivingEntity itemOwner);
@@ -481,7 +484,16 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 	}
 
 	protected static final class Abilities {
-		public static final ItemAbility ACID_COAT = new ItemAbility() {
+
+		private static CompoundTag getTag(ItemStack stack) {
+			return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+		}
+
+		private static void updateTag(ItemStack stack, Consumer<CompoundTag> updater) {
+			CustomData.update(DataComponents.CUSTOM_DATA, stack, updater);
+		}
+
+		public static final Ability ACID_COAT = new Ability() {
 			static final String NAME = "acid_coat";
 			static final String KEY = BiomancyMod.rlStr(NAME);
 			static final String REMAINING_USES = "uses";
@@ -493,14 +505,16 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 
 			@Override
 			public boolean isActive(ItemStack stack) {
-				CompoundTag tag = stack.getTagElement(KEY);
-				return tag != null;
+				return getTag(stack).contains(KEY);
 			}
 
 			@Override
 			public void setActive(ServerLevel level, ItemStack stack, LivingEntity itemOwner) {
-				CompoundTag tag = stack.getOrCreateTagElement(KEY);
-				tag.putByte(REMAINING_USES, (byte) 2);
+				updateTag(stack, tag -> {
+					CompoundTag abilityTag = new CompoundTag();
+					abilityTag.putByte(REMAINING_USES, (byte) 2);
+					tag.put(KEY, abilityTag);
+				});
 			}
 
 			@Override
@@ -510,22 +524,24 @@ public class CausticGunbladeItem extends GunbladeItem implements SimpleLivingToo
 
 			@Override
 			public void use(Level level, ItemStack stack, LivingEntity itemOwner) {
-				CompoundTag tag = stack.getTagElement(KEY);
-				if (tag == null) return;
+				if (!getTag(stack).contains(KEY)) return;
 
-				int uses = tag.getByte(REMAINING_USES) - 1;
+				updateTag(stack, tag -> {
+					CompoundTag abilityTag = tag.getCompound(KEY);
+					int uses = abilityTag.getByte(REMAINING_USES) - 1;
 
-				if (uses > 0) {
-					tag.putByte(REMAINING_USES, (byte) uses);
-				}
-				else {
-					stack.removeTagKey(KEY);
-				}
+					if (uses > 0) {
+						abilityTag.putByte(REMAINING_USES, (byte) uses);
+					}
+					else {
+						tag.remove(KEY);
+					}
+				});
 			}
 
 			@Override
 			public void cancel(ServerLevel level, ItemStack stack, LivingEntity itemOwner) {
-				stack.removeTagKey(KEY);
+				updateTag(stack, tag -> tag.remove(KEY));
 			}
 		};
 	}

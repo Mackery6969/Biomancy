@@ -7,7 +7,8 @@ import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.mixin.accessor.SheepAccessor;
 import com.github.elenterius.biomancy.util.animation.MobAnimations;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -24,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.jspecify.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -86,7 +88,7 @@ public class FleshSheep extends Sheep implements GeoEntity {
 	}
 
 	@Override
-	public List<ItemStack> onSheared(@Nullable Player player, ItemStack item, Level world, BlockPos pos, int fortune) {
+	public List<ItemStack> onSheared(@Nullable Player player, ItemStack item, Level world, BlockPos pos) {
 		world.playSound(null, this, SoundEvents.SHEEP_SHEAR, player == null ? SoundSource.BLOCKS : SoundSource.PLAYERS, 1f, 1f);
 		gameEvent(GameEvent.SHEAR, player);
 
@@ -112,8 +114,8 @@ public class FleshSheep extends Sheep implements GeoEntity {
 	}
 
 	@Override
-	public ResourceLocation getDefaultLootTable() {
-		return isSheared() ? getType().getDefaultLootTable() : ModLoot.Entity.FLESH_SHEEP_UNSHORN;
+	public ResourceKey<LootTable> getDefaultLootTable() {
+		return isSheared() ? getType().getDefaultLootTable() : ResourceKey.create(Registries.LOOT_TABLE, ModLoot.Entity.FLESH_SHEEP_UNSHORN);
 	}
 
 	@Nullable

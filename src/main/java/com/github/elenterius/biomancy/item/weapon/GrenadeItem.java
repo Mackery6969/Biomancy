@@ -3,15 +3,19 @@ package com.github.elenterius.biomancy.item.weapon;
 import com.github.elenterius.biomancy.entity.projectile.GrenadeProjectile;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.item.SimpleItem;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Position;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ProjectileItem;
 import net.minecraft.world.level.Level;
 
-public class GrenadeItem extends SimpleItem {
+public class GrenadeItem extends SimpleItem implements ProjectileItem {
 
 	public GrenadeItem(Properties properties) {
 		super(properties);
@@ -37,6 +41,18 @@ public class GrenadeItem extends SimpleItem {
 		}
 
 		return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+	}
+
+	@Override
+	public Projectile asProjectile(Level level, Position pos, ItemStack stack, Direction direction) {
+		GrenadeProjectile grenade = new GrenadeProjectile(level, pos.x(), pos.y(), pos.z());
+		grenade.setItem(stack);
+		return grenade;
+	}
+
+	@Override
+	public DispenseConfig createDispenseConfig() {
+		return DispenseConfig.builder().uncertainty(3f).power(1.375f).build();
 	}
 
 }
