@@ -1,0 +1,12 @@
+{
+  "type": "biomancy:digesting",
+  "ingredient": {
+    "item": "minecraft:tall_grass"
+  },
+  "nutrientsCost": 2,
+  "processingTime": 332,
+  "result": {
+    "count": 2,
+    "id": "biomancy:nutrient_paste"
+  }
+}

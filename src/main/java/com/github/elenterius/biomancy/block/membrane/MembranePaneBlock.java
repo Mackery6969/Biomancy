@@ -61,10 +61,10 @@ public class MembranePaneBlock extends PaneBlock implements Membrane {
 	}
 
 	@Override
-	public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
+	protected boolean isPathfindable(BlockState state, PathComputationType type) {
 		return switch (type) {
 			case LAND, AIR -> true;
-			case WATER -> level.getFluidState(pos).is(FluidTags.WATER);
+			case WATER -> state.getFluidState().is(FluidTags.WATER);
 		};
 	}
 

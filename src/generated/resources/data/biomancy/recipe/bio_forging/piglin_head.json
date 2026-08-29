@@ -1,0 +1,45 @@
+{
+  "type": "biomancy:bio_forging",
+  "bio_forge_tab": "biomancy:components",
+  "ingredients": [
+    {
+      "item": "minecraft:skeleton_skull"
+    },
+    {
+      "type": "biomancy:essence",
+      "item": {
+        "components": {
+          "minecraft:custom_data": {
+            "colors": [
+              10051392,
+              16380836
+            ],
+            "essence_data": {
+              "entity_type": "minecraft:piglin",
+              "name": "entity.minecraft.piglin"
+            }
+          }
+        },
+        "id": "biomancy:essence"
+      },
+      "predicate_tag": {
+        "essence_data": {
+          "entity_type": "minecraft:piglin"
+        }
+      }
+    },
+    {
+      "count": 42,
+      "item": "biomancy:flesh_bits"
+    },
+    {
+      "count": 18,
+      "item": "biomancy:elastic_fibers"
+    }
+  ],
+  "nutrientsCost": 4,
+  "result": {
+    "count": 1,
+    "id": "minecraft:piglin_head"
+  }
+}

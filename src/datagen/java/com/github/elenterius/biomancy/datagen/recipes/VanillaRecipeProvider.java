@@ -1,9 +1,12 @@
 package com.github.elenterius.biomancy.datagen.recipes;
 
 import com.github.elenterius.biomancy.BiomancyMod;
+import com.github.elenterius.biomancy.crafting.recipe.AcolyteHelmetUpgradeRecipe;
+import com.github.elenterius.biomancy.crafting.recipe.BiometricMembraneRecipe;
+import com.github.elenterius.biomancy.crafting.recipe.CradleCleansingRecipe;
+import com.github.elenterius.biomancy.crafting.recipe.PlayerHeadRecipe;
 import com.github.elenterius.biomancy.datagen.recipes.builder.WorkbenchRecipeBuilder;
 import com.github.elenterius.biomancy.init.ModItems;
-import com.github.elenterius.biomancy.init.ModRecipes;
 import com.github.elenterius.biomancy.init.tags.ModItemTags;
 import com.github.elenterius.biomancy.item.SimpleBlockItem;
 import net.minecraft.data.PackOutput;
@@ -12,19 +15,23 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.HolderLookup;
 
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 public class VanillaRecipeProvider extends RecipeProvider {
 
-	protected VanillaRecipeProvider(PackOutput output) {
-		super(output);
+	protected VanillaRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+		super(output, registries);
 	}
 
 	protected static String hasName(ItemLike itemLike) {
@@ -37,20 +44,20 @@ public class VanillaRecipeProvider extends RecipeProvider {
 	}
 
 	@Override
-	protected void buildRecipes(Consumer<FinishedRecipe> consumer) {
-		buildPrimaryRecipes(consumer);
-		buildFleshBlockRecipes(consumer);
-		buildGellingAgentRecipes(consumer);
-		buildFoodRecipes(consumer);
-		buildMiscRecipes(consumer);
+	protected void buildRecipes(RecipeOutput recipeOutput) {
+		buildPrimaryRecipes(recipeOutput);
+		buildFleshBlockRecipes(recipeOutput);
+		buildGellingAgentRecipes(recipeOutput);
+		buildFoodRecipes(recipeOutput);
+		buildMiscRecipes(recipeOutput);
 
-		special(consumer, ModItems.BIOMETRIC_MEMBRANE.get(), ModRecipes.BIOMETRIC_MEMBRANE_CRAFTING_SERIALIZER.get());
-		special(consumer, Items.PLAYER_HEAD, ModRecipes.PLAYER_HEAD_SERIALIZER.get());
-		special(consumer, ModItems.PRIMORDIAL_CRADLE.get(), ModRecipes.CRADLE_CLEANSING_SERIALIZER.get());
-		special(consumer, ModItems.ACOLYTE_ARMOR_HELMET.get(), ModRecipes.ACOLYTE_HELMET_UPGRADE_SERIALIZER.get());
+		special(recipeOutput, ModItems.BIOMETRIC_MEMBRANE.get(), BiometricMembraneRecipe::new);
+		special(recipeOutput, Items.PLAYER_HEAD, PlayerHeadRecipe::new);
+		special(recipeOutput, ModItems.PRIMORDIAL_CRADLE.get(), CradleCleansingRecipe::new);
+		special(recipeOutput, ModItems.ACOLYTE_ARMOR_HELMET.get(), AcolyteHelmetUpgradeRecipe::new);
 	}
 
-	private void buildPrimaryRecipes(Consumer<FinishedRecipe> consumer) {
+	private void buildPrimaryRecipes(RecipeOutput recipeOutput) {
 		WorkbenchRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.PRIMORDIAL_CORE.get())
 				.pattern("PFB")
 				.pattern("#E#")
@@ -62,7 +69,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
 				.define('F', Items.ROTTEN_FLESH)
 				.define('E', Items.SPIDER_EYE)
 				.define('#', Items.ENDER_PEARL)
-				.unlockedBy(ModItems.PRIMORDIAL_CORE.get()).save(consumer);
+				.unlockedBy(ModItems.PRIMORDIAL_CORE.get()).save(recipeOutput);
 
 		WorkbenchRecipeBuilder.shaped(RecipeCategory.COMBAT, ModItems.DESPOIL_SICKLE.get())
 				.define('B', Tags.Items.BONES)
@@ -70,7 +77,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
 				.pattern("BBM")
 				.pattern(" MB")
 				.pattern(" BM")
-				.unlockedBy(ModItems.PRIMORDIAL_CORE.get()).save(consumer);
+				.unlockedBy(ModItems.PRIMORDIAL_CORE.get()).save(recipeOutput);
 
 		//		WorkbenchRecipeBuilder.shapeless(ModItems.GUIDE_BOOK.get())
 		//				.requires(ModItems.MOB_SINEW.get())
@@ -78,7 +85,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
 		//				.requires(ModTags.Items.RAW_MEATS)
 		//				.requires(ModItems.PRIMORDIAL_LIVING_OCULUS.get())
 		//				.requires(ModItems.MOB_FANG.get())
-		//				.unlockedBy(hasName(ModItems.PRIMORDIAL_LIVING_FLESH.get()), has(ModItems.PRIMORDIAL_LIVING_FLESH.get())).save(consumer);
+		//				.unlockedBy(hasName(ModItems.PRIMORDIAL_LIVING_FLESH.get()), has(ModItems.PRIMORDIAL_LIVING_FLESH.get())).save(recipeOutput);
 
 		// machines ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -89,7 +96,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
 				.pattern("F F")
 				.pattern("MEM")
 				.pattern("MMM")
-				.unlockedBy(ModItems.PRIMORDIAL_CORE.get()).save(consumer);
+				.unlockedBy(ModItems.PRIMORDIAL_CORE.get()).save(recipeOutput);
 
 		WorkbenchRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.DECOMPOSER.get())
 				.define('M', ModItemTags.FRESH_RAW_MEATS)
@@ -99,7 +106,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
 				.pattern("F F")
 				.pattern("MGM")
 				.pattern("MEM")
-				.unlockedBy(ModItems.LIVING_FLESH.get()).save(consumer);
+				.unlockedBy(ModItems.LIVING_FLESH.get()).save(recipeOutput);
 
 		WorkbenchRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BIO_FORGE.get())
 				.define('S', Items.SLIME_BALL)
@@ -109,18 +116,18 @@ public class VanillaRecipeProvider extends RecipeProvider {
 				.pattern("C C")
 				.pattern("MSM")
 				.pattern("MEM")
-				.unlockedBy(ModItems.LIVING_FLESH.get()).save(consumer);
+				.unlockedBy(ModItems.LIVING_FLESH.get()).save(recipeOutput);
 
 		// A recipe for converting between two versions of Flesh Door.
 		WorkbenchRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.FLESH_DOOR.get())
 				.requires(ModItems.FULL_FLESH_DOOR.get())
 				.unlockedBy(ModItems.FULL_FLESH_DOOR.get())
-				.save(consumer, getConversionRecipeId(ModItems.FLESH_DOOR.get(), ModItems.FULL_FLESH_DOOR.get()));
+				.save(recipeOutput, getConversionRecipeId(ModItems.FLESH_DOOR.get(), ModItems.FULL_FLESH_DOOR.get()));
 
 		WorkbenchRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.FULL_FLESH_DOOR.get())
 				.requires(ModItems.FLESH_DOOR.get())
 				.unlockedBy(ModItems.FLESH_DOOR.get())
-				.save(consumer, getConversionRecipeId(ModItems.FULL_FLESH_DOOR.get(), ModItems.FLESH_DOOR.get()));
+				.save(recipeOutput, getConversionRecipeId(ModItems.FULL_FLESH_DOOR.get(), ModItems.FLESH_DOOR.get()));
 
 		WorkbenchRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.PRIMORDIAL_BIO_LANTERN.get())
 				.define('B', ModItems.BLOOMBERRY.get())
@@ -130,7 +137,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
 				.pattern("VBV")
 				.pattern(" V ")
 				.unlockedBy(ModItems.BLOOMBERRY.get())
-				.save(consumer);
+				.save(recipeOutput);
 
 		WorkbenchRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BLOOMLIGHT.get(), 4)
 				.define('B', ModItems.BLOOMBERRY.get())
@@ -139,33 +146,33 @@ public class VanillaRecipeProvider extends RecipeProvider {
 				.pattern("VBV")
 				.pattern("BVB")
 				.unlockedBy(ModItems.BLOOMBERRY.get())
-				.save(consumer);
+				.save(recipeOutput);
 
-		membrane(consumer, ModItems.IMPERMEABLE_MEMBRANE_PANE.get(), ModItems.IMPERMEABLE_MEMBRANE.get());
-		membrane(consumer, ModItems.BABY_PERMEABLE_MEMBRANE_PANE.get(), ModItems.BABY_PERMEABLE_MEMBRANE.get());
-		membrane(consumer, ModItems.ADULT_PERMEABLE_MEMBRANE_PANE.get(), ModItems.ADULT_PERMEABLE_MEMBRANE.get());
-		membrane(consumer, ModItems.PRIMAL_PERMEABLE_MEMBRANE_PANE.get(), ModItems.PRIMAL_PERMEABLE_MEMBRANE.get());
-		membrane(consumer, ModItems.UNDEAD_PERMEABLE_MEMBRANE_PANE.get(), ModItems.UNDEAD_PERMEABLE_MEMBRANE.get());
+		membrane(recipeOutput, ModItems.IMPERMEABLE_MEMBRANE_PANE.get(), ModItems.IMPERMEABLE_MEMBRANE.get());
+		membrane(recipeOutput, ModItems.BABY_PERMEABLE_MEMBRANE_PANE.get(), ModItems.BABY_PERMEABLE_MEMBRANE.get());
+		membrane(recipeOutput, ModItems.ADULT_PERMEABLE_MEMBRANE_PANE.get(), ModItems.ADULT_PERMEABLE_MEMBRANE.get());
+		membrane(recipeOutput, ModItems.PRIMAL_PERMEABLE_MEMBRANE_PANE.get(), ModItems.PRIMAL_PERMEABLE_MEMBRANE.get());
+		membrane(recipeOutput, ModItems.UNDEAD_PERMEABLE_MEMBRANE_PANE.get(), ModItems.UNDEAD_PERMEABLE_MEMBRANE.get());
 	}
 
-	private void buildFoodRecipes(Consumer<FinishedRecipe> consumer) {
+	private void buildFoodRecipes(RecipeOutput recipeOutput) {
 		WorkbenchRecipeBuilder.shapeless(RecipeCategory.FOOD, ModItems.NUTRIENT_BAR.get())
 				.requires(ModItems.NUTRIENT_PASTE.get(), 9)
 				.unlockedBy(ModItems.NUTRIENT_PASTE.get())
-				.save(consumer);
+				.save(recipeOutput);
 
 		WorkbenchRecipeBuilder.shapeless(RecipeCategory.FOOD, ModItems.NUTRIENT_PASTE.get(), 9)
 				.requires(ModItems.NUTRIENT_BAR.get())
 				.unlockedBy(ModItems.NUTRIENT_PASTE.get())
-				.save(consumer, getConversionRecipeId(ModItems.NUTRIENT_PASTE.get(), ModItems.NUTRIENT_BAR.get()));
+				.save(recipeOutput, getConversionRecipeId(ModItems.NUTRIENT_PASTE.get(), ModItems.NUTRIENT_BAR.get()));
 	}
 
-	private void buildGellingAgentRecipes(Consumer<FinishedRecipe> consumer) {
+	private void buildGellingAgentRecipes(RecipeOutput recipeOutput) {
 		WorkbenchRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.GELLING_AGENT.get())
 				.requires(ModItems.BILE.get(), 4)
 				.requires(ModItems.ELASTIC_FIBERS.get(), 5)
 				.unlockedBy(ModItems.ELASTIC_FIBERS.get())
-				.save(consumer);
+				.save(recipeOutput);
 
 		WorkbenchRecipeBuilder.shapeless(RecipeCategory.MISC, Items.SLIME_BALL)
 				.requires(ModItems.GELLING_AGENT.get(), 1)
@@ -173,7 +180,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
 				.requires(ModItems.REGENERATIVE_FLUID.get(), 3)
 				.requires(Items.LIME_DYE, 1)
 				.unlockedBy(ModItems.GELLING_AGENT.get())
-				.save(consumer);
+				.save(recipeOutput);
 
 		WorkbenchRecipeBuilder.shapeless(RecipeCategory.MISC, Items.HONEY_BOTTLE)
 				.requires(ModItems.GELLING_AGENT.get(), 1)
@@ -183,37 +190,37 @@ public class VanillaRecipeProvider extends RecipeProvider {
 				.requires(Items.YELLOW_DYE, 1)
 				.requires(Items.GLASS_BOTTLE, 1)
 				.unlockedBy(ModItems.GELLING_AGENT.get())
-				.save(consumer);
+				.save(recipeOutput);
 
 		WorkbenchRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.WATER_GEL_BLOCK.get())
 				.requires(Items.WATER_BUCKET)
 				.requires(ModItems.GELLING_AGENT.get(), 2)
 				.unlockedBy(ModItems.GELLING_AGENT.get())
-				.save(consumer);
+				.save(recipeOutput);
 	}
 
-	private void buildMiscRecipes(Consumer<FinishedRecipe> consumer) {
+	private void buildMiscRecipes(RecipeOutput recipeOutput) {
 		SimpleCookingRecipeBuilder.blasting(Ingredient.of(ModItems.STONE_POWDER.get()), RecipeCategory.BUILDING_BLOCKS, Items.GLASS_PANE, 0.01f, 100)
-				.unlockedBy(hasName(ModItems.STONE_POWDER.get()), has(ModItems.STONE_POWDER.get())).save(consumer, getBlastingRecipeId(Items.GLASS_PANE));
+				.unlockedBy(hasName(ModItems.STONE_POWDER.get()), has(ModItems.STONE_POWDER.get())).save(recipeOutput, getBlastingRecipeId(Items.GLASS_PANE));
 
 		WorkbenchRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, Items.DIORITE)
 				.requires(Items.COBBLESTONE)
 				.requires(ModItems.MINERAL_FRAGMENT.get())
 				.requires(ModItems.STONE_POWDER.get())
 				.unlockedBy(ModItems.STONE_POWDER.get())
-				.save(consumer, getConversionRecipeId(Items.DIORITE, ModItems.STONE_POWDER.get()));
+				.save(recipeOutput, getConversionRecipeId(Items.DIORITE, ModItems.STONE_POWDER.get()));
 
 		WorkbenchRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, Items.GRANITE)
 				.requires(Items.DIORITE)
 				.requires(ModItems.MINERAL_FRAGMENT.get(), 2)
 				.unlockedBy(ModItems.MINERAL_FRAGMENT.get())
-				.save(consumer, getConversionRecipeId(Items.GRANITE, ModItems.MINERAL_FRAGMENT.get()));
+				.save(recipeOutput, getConversionRecipeId(Items.GRANITE, ModItems.MINERAL_FRAGMENT.get()));
 
 		WorkbenchRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, Items.RED_SAND)
 				.requires(Items.SAND)
 				.requires(ModItems.MINERAL_FRAGMENT.get(), 2)
 				.unlockedBy(ModItems.MINERAL_FRAGMENT.get())
-				.save(consumer, getConversionRecipeId(Items.RED_SAND, ModItems.MINERAL_FRAGMENT.get()));
+				.save(recipeOutput, getConversionRecipeId(Items.RED_SAND, ModItems.MINERAL_FRAGMENT.get()));
 
 		WorkbenchRecipeBuilder.shaped(RecipeCategory.MISC, Items.DIRT)
 				.define('P', ModItems.ORGANIC_MATTER.get())
@@ -222,7 +229,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
 				.pattern("PLP")
 				.pattern("LPL")
 				.unlockedBy(ModItems.ORGANIC_MATTER.get())
-				.save(consumer, getConversionRecipeId(Items.DIRT, ModItems.STONE_POWDER.get()));
+				.save(recipeOutput, getConversionRecipeId(Items.DIRT, ModItems.STONE_POWDER.get()));
 
 		WorkbenchRecipeBuilder.shaped(RecipeCategory.MISC, Items.SAND)
 				.define('M', ModItems.MINERAL_FRAGMENT.get())
@@ -231,20 +238,20 @@ public class VanillaRecipeProvider extends RecipeProvider {
 				.pattern("LML")
 				.pattern("LLL")
 				.unlockedBy(ModItems.STONE_POWDER.get())
-				.save(consumer, getConversionRecipeId(Items.SAND, ModItems.STONE_POWDER.get()));
+				.save(recipeOutput, getConversionRecipeId(Items.SAND, ModItems.STONE_POWDER.get()));
 
 		WorkbenchRecipeBuilder.shapeless(RecipeCategory.MISC, Items.CLAY_BALL)
 				.requires(Items.WATER_BUCKET)
 				.requires(ModItems.STONE_POWDER.get(), 8)
 				.unlockedBy(ModItems.STONE_POWDER.get())
-				.save(consumer, getConversionRecipeId(Items.CLAY_BALL, ModItems.STONE_POWDER.get()));
+				.save(recipeOutput, getConversionRecipeId(Items.CLAY_BALL, ModItems.STONE_POWDER.get()));
 
 		WorkbenchRecipeBuilder.shapeless(RecipeCategory.MISC, Items.GUNPOWDER)
 				.requires(Items.CHARCOAL)
 				.requires(ModItems.VOLATILE_FLUID.get())
 				.requires(Items.BLAZE_POWDER)
 				.unlockedBy(ModItems.VOLATILE_FLUID.get())
-				.save(consumer, getConversionRecipeId(Items.GUNPOWDER, ModItems.VOLATILE_FLUID.get()));
+				.save(recipeOutput, getConversionRecipeId(Items.GUNPOWDER, ModItems.VOLATILE_FLUID.get()));
 
 		WorkbenchRecipeBuilder.shaped(RecipeCategory.DECORATIONS, Items.GLOW_ITEM_FRAME)
 				.define('F', Items.ITEM_FRAME)
@@ -253,79 +260,79 @@ public class VanillaRecipeProvider extends RecipeProvider {
 				.pattern("LFL")
 				.pattern(" L ")
 				.unlockedBy(ModItems.BIO_LUMENS.get())
-				.save(consumer);
+				.save(recipeOutput);
 
 		WorkbenchRecipeBuilder.shapeless(RecipeCategory.MISC, Items.BONE_MEAL, 4)
 				.requires(ModItems.MOB_FANG.get())
 				.unlockedBy(ModItems.MOB_FANG.get())
-				.save(consumer);
+				.save(recipeOutput);
 
 		WorkbenchRecipeBuilder.shapeless(RecipeCategory.MISC, Items.GRAY_DYE, 4)
 				.requires(ModItems.MOB_CLAW.get())
 				.unlockedBy(ModItems.MOB_CLAW.get())
-				.save(consumer);
+				.save(recipeOutput);
 
 		WorkbenchRecipeBuilder.shapeless(RecipeCategory.MISC, Items.BONE_MEAL, 9)
 				.requires(ModItems.PRIMAL_BONE.get())
 				.unlockedBy(ModItems.PRIMAL_BONE.get())
-				.save(consumer, getConversionRecipeId(Items.BONE_MEAL, ModItems.PRIMAL_BONE.get()));
+				.save(recipeOutput, getConversionRecipeId(Items.BONE_MEAL, ModItems.PRIMAL_BONE.get()));
 	}
 
-	private void buildFleshBlockRecipes(Consumer<FinishedRecipe> consumer) {
-		stairs(consumer, ModItems.FLESH_STAIRS.get(), ModItems.FLESH_BLOCK.get());
-		slab(consumer, ModItems.FLESH_SLAB.get(), ModItems.FLESH_BLOCK.get());
-		wall(consumer, ModItems.FLESH_WALL.get(), ModItems.FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.FLESH_STAIRS.get(), ModItems.FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.FLESH_SLAB.get(), ModItems.FLESH_BLOCK.get(), 2);
-		stonecutting(consumer, ModItems.FLESH_WALL.get(), ModItems.FLESH_BLOCK.get());
+	private void buildFleshBlockRecipes(RecipeOutput recipeOutput) {
+		stairs(recipeOutput, ModItems.FLESH_STAIRS.get(), ModItems.FLESH_BLOCK.get());
+		slab(recipeOutput, ModItems.FLESH_SLAB.get(), ModItems.FLESH_BLOCK.get());
+		wall(recipeOutput, ModItems.FLESH_WALL.get(), ModItems.FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.FLESH_STAIRS.get(), ModItems.FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.FLESH_SLAB.get(), ModItems.FLESH_BLOCK.get(), 2);
+		stonecutting(recipeOutput, ModItems.FLESH_WALL.get(), ModItems.FLESH_BLOCK.get());
 
-		stairs(consumer, ModItems.PACKED_FLESH_STAIRS.get(), ModItems.PACKED_FLESH_BLOCK.get());
-		slab(consumer, ModItems.PACKED_FLESH_SLAB.get(), ModItems.PACKED_FLESH_BLOCK.get());
-		wall(consumer, ModItems.PACKED_FLESH_WALL.get(), ModItems.PACKED_FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.PACKED_FLESH_STAIRS.get(), ModItems.PACKED_FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.PACKED_FLESH_SLAB.get(), ModItems.PACKED_FLESH_BLOCK.get(), 2);
-		stonecutting(consumer, ModItems.PACKED_FLESH_WALL.get(), ModItems.PACKED_FLESH_BLOCK.get());
+		stairs(recipeOutput, ModItems.PACKED_FLESH_STAIRS.get(), ModItems.PACKED_FLESH_BLOCK.get());
+		slab(recipeOutput, ModItems.PACKED_FLESH_SLAB.get(), ModItems.PACKED_FLESH_BLOCK.get());
+		wall(recipeOutput, ModItems.PACKED_FLESH_WALL.get(), ModItems.PACKED_FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.PACKED_FLESH_STAIRS.get(), ModItems.PACKED_FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.PACKED_FLESH_SLAB.get(), ModItems.PACKED_FLESH_BLOCK.get(), 2);
+		stonecutting(recipeOutput, ModItems.PACKED_FLESH_WALL.get(), ModItems.PACKED_FLESH_BLOCK.get());
 
-		stairs(consumer, ModItems.FIBROUS_FLESH_STAIRS.get(), ModItems.FIBROUS_FLESH_BLOCK.get());
-		slab(consumer, ModItems.FIBROUS_FLESH_SLAB.get(), ModItems.FIBROUS_FLESH_BLOCK.get());
-		wall(consumer, ModItems.FIBROUS_FLESH_WALL.get(), ModItems.FIBROUS_FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.FIBROUS_FLESH_STAIRS.get(), ModItems.FIBROUS_FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.FIBROUS_FLESH_SLAB.get(), ModItems.FIBROUS_FLESH_BLOCK.get(), 2);
-		stonecutting(consumer, ModItems.FIBROUS_FLESH_WALL.get(), ModItems.FIBROUS_FLESH_BLOCK.get());
+		stairs(recipeOutput, ModItems.FIBROUS_FLESH_STAIRS.get(), ModItems.FIBROUS_FLESH_BLOCK.get());
+		slab(recipeOutput, ModItems.FIBROUS_FLESH_SLAB.get(), ModItems.FIBROUS_FLESH_BLOCK.get());
+		wall(recipeOutput, ModItems.FIBROUS_FLESH_WALL.get(), ModItems.FIBROUS_FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.FIBROUS_FLESH_STAIRS.get(), ModItems.FIBROUS_FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.FIBROUS_FLESH_SLAB.get(), ModItems.FIBROUS_FLESH_BLOCK.get(), 2);
+		stonecutting(recipeOutput, ModItems.FIBROUS_FLESH_WALL.get(), ModItems.FIBROUS_FLESH_BLOCK.get());
 
-		slab(consumer, ModItems.ORNATE_FLESH_SLAB.get(), ModItems.ORNATE_FLESH_BLOCK.get());
-		blockFromSlabs(consumer, ModItems.ORNATE_FLESH_BLOCK.get(), ModItems.ORNATE_FLESH_SLAB.get());
-		stonecutting(consumer, ModItems.ORNATE_FLESH_SLAB.get(), ModItems.ORNATE_FLESH_BLOCK.get(), 2);
+		slab(recipeOutput, ModItems.ORNATE_FLESH_SLAB.get(), ModItems.ORNATE_FLESH_BLOCK.get());
+		blockFromSlabs(recipeOutput, ModItems.ORNATE_FLESH_BLOCK.get(), ModItems.ORNATE_FLESH_SLAB.get());
+		stonecutting(recipeOutput, ModItems.ORNATE_FLESH_SLAB.get(), ModItems.ORNATE_FLESH_BLOCK.get(), 2);
 
-		stairs(consumer, ModItems.PRIMAL_FLESH_STAIRS.get(), ModItems.PRIMAL_FLESH_BLOCK.get());
-		slab(consumer, ModItems.PRIMAL_FLESH_SLAB.get(), ModItems.PRIMAL_FLESH_BLOCK.get());
-		blockFromSlabs(consumer, ModItems.PRIMAL_FLESH_BLOCK.get(), ModItems.PRIMAL_FLESH_SLAB.get());
-		wall(consumer, ModItems.PRIMAL_FLESH_WALL.get(), ModItems.PRIMAL_FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.PRIMAL_FLESH_WALL.get(), ModItems.PRIMAL_FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.PRIMAL_FLESH_STAIRS.get(), ModItems.PRIMAL_FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.PRIMAL_FLESH_SLAB.get(), ModItems.PRIMAL_FLESH_BLOCK.get(), 2);
+		stairs(recipeOutput, ModItems.PRIMAL_FLESH_STAIRS.get(), ModItems.PRIMAL_FLESH_BLOCK.get());
+		slab(recipeOutput, ModItems.PRIMAL_FLESH_SLAB.get(), ModItems.PRIMAL_FLESH_BLOCK.get());
+		blockFromSlabs(recipeOutput, ModItems.PRIMAL_FLESH_BLOCK.get(), ModItems.PRIMAL_FLESH_SLAB.get());
+		wall(recipeOutput, ModItems.PRIMAL_FLESH_WALL.get(), ModItems.PRIMAL_FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.PRIMAL_FLESH_WALL.get(), ModItems.PRIMAL_FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.PRIMAL_FLESH_STAIRS.get(), ModItems.PRIMAL_FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.PRIMAL_FLESH_SLAB.get(), ModItems.PRIMAL_FLESH_BLOCK.get(), 2);
 
-		polished(consumer, ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get(), ModItems.PRIMAL_FLESH_BLOCK.get());
-		stairs(consumer, ModItems.SMOOTH_PRIMAL_FLESH_STAIRS.get(), ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get());
-		slab(consumer, ModItems.SMOOTH_PRIMAL_FLESH_SLAB.get(), ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get());
-		blockFromSlabs(consumer, ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get(), ModItems.SMOOTH_PRIMAL_FLESH_SLAB.get());
-		wall(consumer, ModItems.SMOOTH_PRIMAL_FLESH_WALL.get(), ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get(), ModItems.PRIMAL_FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.SMOOTH_PRIMAL_FLESH_SLAB.get(), ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get(), 2);
-		stonecutting(consumer, ModItems.SMOOTH_PRIMAL_FLESH_STAIRS.get(), ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.SMOOTH_PRIMAL_FLESH_WALL.get(), ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get());
+		polished(recipeOutput, ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get(), ModItems.PRIMAL_FLESH_BLOCK.get());
+		stairs(recipeOutput, ModItems.SMOOTH_PRIMAL_FLESH_STAIRS.get(), ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get());
+		slab(recipeOutput, ModItems.SMOOTH_PRIMAL_FLESH_SLAB.get(), ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get());
+		blockFromSlabs(recipeOutput, ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get(), ModItems.SMOOTH_PRIMAL_FLESH_SLAB.get());
+		wall(recipeOutput, ModItems.SMOOTH_PRIMAL_FLESH_WALL.get(), ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get(), ModItems.PRIMAL_FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.SMOOTH_PRIMAL_FLESH_SLAB.get(), ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get(), 2);
+		stonecutting(recipeOutput, ModItems.SMOOTH_PRIMAL_FLESH_STAIRS.get(), ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.SMOOTH_PRIMAL_FLESH_WALL.get(), ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get());
 
 		WorkbenchRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get())
 				.requires(ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get())
 				.unlockedBy(ModItems.SMOOTH_PRIMAL_FLESH_BLOCK.get())
-				.save(consumer);
-		stairs(consumer, ModItems.FIBROUS_PRIMAL_FLESH_STAIRS.get(), ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get());
-		slab(consumer, ModItems.FIBROUS_PRIMAL_FLESH_SLAB.get(), ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get());
-		blockFromSlabs(consumer, ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get(), ModItems.FIBROUS_PRIMAL_FLESH_SLAB.get());
-		wall(consumer, ModItems.FIBROUS_PRIMAL_FLESH_WALL.get(), ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.FIBROUS_PRIMAL_FLESH_SLAB.get(), ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get(), 2);
-		stonecutting(consumer, ModItems.FIBROUS_PRIMAL_FLESH_STAIRS.get(), ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.FIBROUS_PRIMAL_FLESH_WALL.get(), ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get());
+				.save(recipeOutput);
+		stairs(recipeOutput, ModItems.FIBROUS_PRIMAL_FLESH_STAIRS.get(), ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get());
+		slab(recipeOutput, ModItems.FIBROUS_PRIMAL_FLESH_SLAB.get(), ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get());
+		blockFromSlabs(recipeOutput, ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get(), ModItems.FIBROUS_PRIMAL_FLESH_SLAB.get());
+		wall(recipeOutput, ModItems.FIBROUS_PRIMAL_FLESH_WALL.get(), ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.FIBROUS_PRIMAL_FLESH_SLAB.get(), ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get(), 2);
+		stonecutting(recipeOutput, ModItems.FIBROUS_PRIMAL_FLESH_STAIRS.get(), ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.FIBROUS_PRIMAL_FLESH_WALL.get(), ModItems.FIBROUS_PRIMAL_FLESH_BLOCK.get());
 
 		WorkbenchRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModItems.POROUS_PRIMAL_FLESH_BLOCK.get(), 4)
 				.define('M', ModItems.MALIGNANT_FLESH_BLOCK.get())
@@ -333,22 +340,22 @@ public class VanillaRecipeProvider extends RecipeProvider {
 				.pattern("PM")
 				.pattern("MP")
 				.unlockedBy(ModItems.PRIMAL_FLESH_BLOCK.get())
-				.save(consumer);
-		stairs(consumer, ModItems.POROUS_PRIMAL_FLESH_STAIRS.get(), ModItems.POROUS_PRIMAL_FLESH_BLOCK.get());
-		slab(consumer, ModItems.POROUS_PRIMAL_FLESH_SLAB.get(), ModItems.POROUS_PRIMAL_FLESH_BLOCK.get());
-		blockFromSlabs(consumer, ModItems.POROUS_PRIMAL_FLESH_BLOCK.get(), ModItems.POROUS_PRIMAL_FLESH_SLAB.get());
-		wall(consumer, ModItems.POROUS_PRIMAL_FLESH_WALL.get(), ModItems.POROUS_PRIMAL_FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.POROUS_PRIMAL_FLESH_WALL.get(), ModItems.POROUS_PRIMAL_FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.POROUS_PRIMAL_FLESH_STAIRS.get(), ModItems.POROUS_PRIMAL_FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.POROUS_PRIMAL_FLESH_SLAB.get(), ModItems.POROUS_PRIMAL_FLESH_BLOCK.get(), 2);
+				.save(recipeOutput);
+		stairs(recipeOutput, ModItems.POROUS_PRIMAL_FLESH_STAIRS.get(), ModItems.POROUS_PRIMAL_FLESH_BLOCK.get());
+		slab(recipeOutput, ModItems.POROUS_PRIMAL_FLESH_SLAB.get(), ModItems.POROUS_PRIMAL_FLESH_BLOCK.get());
+		blockFromSlabs(recipeOutput, ModItems.POROUS_PRIMAL_FLESH_BLOCK.get(), ModItems.POROUS_PRIMAL_FLESH_SLAB.get());
+		wall(recipeOutput, ModItems.POROUS_PRIMAL_FLESH_WALL.get(), ModItems.POROUS_PRIMAL_FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.POROUS_PRIMAL_FLESH_WALL.get(), ModItems.POROUS_PRIMAL_FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.POROUS_PRIMAL_FLESH_STAIRS.get(), ModItems.POROUS_PRIMAL_FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.POROUS_PRIMAL_FLESH_SLAB.get(), ModItems.POROUS_PRIMAL_FLESH_BLOCK.get(), 2);
 
-		stairs(consumer, ModItems.MALIGNANT_FLESH_STAIRS.get(), ModItems.MALIGNANT_FLESH_BLOCK.get());
-		slab(consumer, ModItems.MALIGNANT_FLESH_SLAB.get(), ModItems.MALIGNANT_FLESH_BLOCK.get());
-		blockFromSlabs(consumer, ModItems.MALIGNANT_FLESH_BLOCK.get(), ModItems.MALIGNANT_FLESH_SLAB.get());
-		wall(consumer, ModItems.MALIGNANT_FLESH_WALL.get(), ModItems.MALIGNANT_FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.MALIGNANT_FLESH_WALL.get(), ModItems.MALIGNANT_FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.MALIGNANT_FLESH_STAIRS.get(), ModItems.MALIGNANT_FLESH_BLOCK.get());
-		stonecutting(consumer, ModItems.MALIGNANT_FLESH_SLAB.get(), ModItems.MALIGNANT_FLESH_BLOCK.get(), 2);
+		stairs(recipeOutput, ModItems.MALIGNANT_FLESH_STAIRS.get(), ModItems.MALIGNANT_FLESH_BLOCK.get());
+		slab(recipeOutput, ModItems.MALIGNANT_FLESH_SLAB.get(), ModItems.MALIGNANT_FLESH_BLOCK.get());
+		blockFromSlabs(recipeOutput, ModItems.MALIGNANT_FLESH_BLOCK.get(), ModItems.MALIGNANT_FLESH_SLAB.get());
+		wall(recipeOutput, ModItems.MALIGNANT_FLESH_WALL.get(), ModItems.MALIGNANT_FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.MALIGNANT_FLESH_WALL.get(), ModItems.MALIGNANT_FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.MALIGNANT_FLESH_STAIRS.get(), ModItems.MALIGNANT_FLESH_BLOCK.get());
+		stonecutting(recipeOutput, ModItems.MALIGNANT_FLESH_SLAB.get(), ModItems.MALIGNANT_FLESH_BLOCK.get(), 2);
 
 		WorkbenchRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.MALIGNANT_FLESH_BLOCK.get())
 				.define('F', ModItems.FLESH_BITS.get())
@@ -357,7 +364,7 @@ public class VanillaRecipeProvider extends RecipeProvider {
 				.pattern("VFV")
 				.pattern("VVV")
 				.unlockedBy(ModItems.MALIGNANT_FLESH_VEINS.get())
-				.save(consumer);
+				.save(recipeOutput);
 
 		WorkbenchRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.PRIMAL_FLESH_BLOCK.get())
 				.define('F', ModItems.FLESH_BITS.get())
@@ -366,21 +373,21 @@ public class VanillaRecipeProvider extends RecipeProvider {
 				.pattern("VFV")
 				.pattern("VVV")
 				.unlockedBy(ModItems.MALIGNANT_FLESH_BLOCK.get())
-				.save(consumer);
+				.save(recipeOutput);
 	}
 
-	private void membrane(Consumer<FinishedRecipe> consumer, SimpleBlockItem pane, SimpleBlockItem membrane) {
+	private void membrane(RecipeOutput recipeOutput, SimpleBlockItem pane, SimpleBlockItem membrane) {
 		WorkbenchRecipeBuilder.shapeless(RecipeCategory.MISC, pane, 2)
 				.requires(membrane)
 				.unlockedBy(membrane)
-				.save(consumer, getConversionRecipeId(pane, membrane));
+				.save(recipeOutput, getConversionRecipeId(pane, membrane));
 
 		WorkbenchRecipeBuilder.shaped(RecipeCategory.MISC, membrane)
 				.define('P', pane)
 				.pattern("P")
 				.pattern("P")
 				.unlockedBy(pane)
-				.save(consumer, getConversionRecipeId(membrane, pane));
+				.save(recipeOutput, getConversionRecipeId(membrane, pane));
 	}
 
 	protected ResourceLocation getSpecialCraftingRecipeId(ItemLike itemLike) {
@@ -411,43 +418,43 @@ public class VanillaRecipeProvider extends RecipeProvider {
 		return BiomancyMod.rl("blasting/" + getItemName(itemLike));
 	}
 
-	protected void special(Consumer<FinishedRecipe> consumer, ItemLike result, RecipeSerializer<? extends CraftingRecipe> serializer) {
-		SpecialRecipeBuilder.special(serializer).save(consumer, getSpecialCraftingRecipeId(result).toString());
+	protected void special(RecipeOutput recipeOutput, ItemLike result, Function<CraftingBookCategory, Recipe<?>> factory) {
+		SpecialRecipeBuilder.special(factory).save(recipeOutput, getSpecialCraftingRecipeId(result).toString());
 	}
 
-	protected void polished(Consumer<FinishedRecipe> consumer, ItemLike result, ItemLike ingredient) {
-		WorkbenchRecipeBuilder.polished(RecipeCategory.BUILDING_BLOCKS, result, ingredient).save(consumer);
+	protected void polished(RecipeOutput recipeOutput, ItemLike result, ItemLike ingredient) {
+		WorkbenchRecipeBuilder.polished(RecipeCategory.BUILDING_BLOCKS, result, ingredient).save(recipeOutput);
 	}
 
-	protected void slab(Consumer<FinishedRecipe> consumer, BlockItem result, BlockItem ingredient) {
-		WorkbenchRecipeBuilder.slab(RecipeCategory.BUILDING_BLOCKS, result, ingredient).save(consumer);
+	protected void slab(RecipeOutput recipeOutput, BlockItem result, BlockItem ingredient) {
+		WorkbenchRecipeBuilder.slab(RecipeCategory.BUILDING_BLOCKS, result, ingredient).save(recipeOutput);
 	}
 
-	protected void wall(Consumer<FinishedRecipe> consumer, BlockItem result, BlockItem ingredient) {
-		WorkbenchRecipeBuilder.wall(RecipeCategory.BUILDING_BLOCKS, result, ingredient).save(consumer);
+	protected void wall(RecipeOutput recipeOutput, BlockItem result, BlockItem ingredient) {
+		WorkbenchRecipeBuilder.wall(RecipeCategory.BUILDING_BLOCKS, result, ingredient).save(recipeOutput);
 	}
 
-	protected void stairs(Consumer<FinishedRecipe> consumer, ItemLike result, ItemLike ingredient) {
-		WorkbenchRecipeBuilder.stairs(RecipeCategory.BUILDING_BLOCKS, result, ingredient).save(consumer);
+	protected void stairs(RecipeOutput recipeOutput, ItemLike result, ItemLike ingredient) {
+		WorkbenchRecipeBuilder.stairs(RecipeCategory.BUILDING_BLOCKS, result, ingredient).save(recipeOutput);
 	}
 
-	protected void stonecutting(Consumer<FinishedRecipe> consumer, ItemLike result, ItemLike ingredient) {
-		stonecutting(consumer, result, ingredient, 1);
+	protected void stonecutting(RecipeOutput recipeOutput, ItemLike result, ItemLike ingredient) {
+		stonecutting(recipeOutput, result, ingredient, 1);
 	}
 
-	protected void stonecutting(Consumer<FinishedRecipe> consumer, ItemLike result, ItemLike ingredient, int count) {
+	protected void stonecutting(RecipeOutput recipeOutput, ItemLike result, ItemLike ingredient, int count) {
 		SingleItemRecipeBuilder builder = SingleItemRecipeBuilder.stonecutting(Ingredient.of(ingredient), RecipeCategory.BUILDING_BLOCKS, result, count).unlockedBy(getHasName(ingredient), has(ingredient));
 		ResourceLocation recipeName = getStoneCuttingRecipeId(result, ingredient);
-		builder.save(consumer, recipeName);
+		builder.save(recipeOutput, recipeName);
 	}
 
-	protected void blockFromSlabs(Consumer<FinishedRecipe> consumer, Item result, Item slab) {
+	protected void blockFromSlabs(RecipeOutput recipeOutput, Item result, Item slab) {
 		WorkbenchRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, result)
 				.define('S', slab)
 				.pattern(" S ")
 				.pattern(" S ")
 				.unlockedBy(slab)
-				.save(consumer, getRecipeId(result).withSuffix("_from_slabs"));
+				.save(recipeOutput, getRecipeId(result).withSuffix("_from_slabs"));
 	}
 
 }

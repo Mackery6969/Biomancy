@@ -9,7 +9,10 @@ import com.github.elenterius.biomancy.util.FormatUtil;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import com.github.elenterius.biomancy.world.mound.MoundShape;
 import com.github.elenterius.spatialdb.SpatialDBManager;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -19,11 +22,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -81,8 +85,15 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 	).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 	protected static final VoxelShape AABB = Shapes.join(OUTSIDE_AABB, INSIDE_AABB, BooleanOp.ONLY_FIRST);
 
+	public static final MapCodec<PrimordialCradleBlock> CODEC = simpleCodec(PrimordialCradleBlock::new);
+
 	public PrimordialCradleBlock(Properties properties) {
 		super(properties);
+	}
+
+	@Override
+	protected MapCodec<? extends PrimordialCradleBlock> codec() {
+		return CODEC;
 	}
 
 	public static float getYRotation(BlockState state) {
@@ -140,10 +151,8 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		ItemStack stack = player.getItemInHand(hand);
-
-		if (increaseFillLevel(player, level, pos, ItemHandlerHelper.copyStackWithSize(stack, 1))) {
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		if (increaseFillLevel(player, level, pos, stack.copyWithCount(1))) {
 			if (!level.isClientSide) {
 				boolean isPotion = stack.getItem() instanceof PotionItem;
 
@@ -159,13 +168,13 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 				}
 
 			}
-			return InteractionResult.SUCCESS;
+			return ItemInteractionResult.SUCCESS;
 		}
 		if (!level.isClientSide) {
 			SoundUtil.Server.playBlockSound((ServerLevel) level, pos, ModSoundEvents.CRADLE_NO);
 		}
 
-		return InteractionResult.CONSUME;
+		return ItemInteractionResult.CONSUME;
 	}
 
 	@Override
@@ -194,10 +203,10 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 		if (stack.isEmpty()) return false;
 		if (CANNOT_BE_SACRIFICED.test(stack)) return false;
 
-		ItemStack copyOfStack = ItemHandlerHelper.copyStackWithSize(stack, 1); //cradle#insertItem modifies the stack which may lead to it being empty
+		ItemStack copyOfStack = stack.copyWithCount(1); //cradle#insertItem modifies the stack which may lead to it being empty
 		if (level.getBlockEntity(pos) instanceof PrimordialCradleBlockEntity cradle && !cradle.isFull() && cradle.insertItem(stack)) {
 			if (player instanceof ServerPlayer serverPlayer) {
-				ModTriggers.SACRIFICED_ITEM_TRIGGER.trigger(serverPlayer, copyOfStack);
+				ModTriggers.SACRIFICED_ITEM_TRIGGER.get().trigger(serverPlayer, copyOfStack);
 			}
 			SoundEvent soundEvent = cradle.isFull() ? ModSoundEvents.CRADLE_BECAME_FULL.get() : ModSoundEvents.CRADLE_EAT.get();
 			SoundUtil.Server.playBlockSound((ServerLevel) level, pos, soundEvent);
@@ -222,11 +231,9 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 		if (random.nextInt(4) == 0 && level.getBlockEntity(pos) instanceof PrimordialCradleBlockEntity creator && creator.isFull()) {
 			int particleAmount = random.nextInt(2, 8);
 			int color = 0x9f4576; //magenta haze
-			double r = (color >> 16 & 255) / 255d;
-			double g = (color >> 8 & 255) / 255d;
-			double b = (color & 255) / 255d;
+			ColorParticleOption particleOption = ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0xFF000000 | color);
 			for (int i = 0; i < particleAmount; i++) {
-				level.addParticle(ParticleTypes.ENTITY_EFFECT, pos.getX() + ((random.nextFloat() * 0.60625) + 0.13125f), pos.getY() + 0.5f, pos.getZ() + ((random.nextFloat() * 0.60625) + 0.13125f), r, g, b);
+				level.addParticle(particleOption, pos.getX() + ((random.nextFloat() * 0.60625) + 0.13125f), pos.getY() + 0.5f, pos.getZ() + ((random.nextFloat() * 0.60625) + 0.13125f), 0d, 0d, 0d);
 			}
 			if (random.nextInt(3) == 0) {
 				SoundUtil.Client.playBlockSound(level, pos, ModSoundEvents.CRADLE_CRAFTING_RANDOM, 0.85f);
@@ -235,9 +242,10 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
-		CompoundTag tag = BlockItem.getBlockEntityData(stack);
-		if (tag == null) return;
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+		CustomData customData = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY);
+		if (customData.isEmpty()) return;
+		CompoundTag tag = customData.copyTag();
 
 		DecimalFormat df = FormatUtil.getIntegerFormatter();
 

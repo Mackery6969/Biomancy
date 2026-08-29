@@ -9,7 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -49,7 +49,7 @@ public class FleshDoorBlock extends DoorBlock {
 	protected static final VoxelShape[] Z_POS_AABB = createClosedAndOpenShape(0, 0, 16d - THICKNESS, 16, 16, 16);
 
 	public FleshDoorBlock(Properties properties) {
-		super(properties, ModBlockSetTypes.FLESH_SET_TYPE.get());
+		super(ModBlockSetTypes.FLESH_SET_TYPE.get(), properties);
 		registerDefaultState(defaultBlockState().setValue(ORIENTATION, Orientation.X_MIDDLE));
 	}
 
@@ -109,12 +109,12 @@ public class FleshDoorBlock extends DoorBlock {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		BlockState newState = state.cycle(OPEN);
 		level.setBlock(pos, newState, USE_UPDATE_FLAG);
 		triggerOpenCloseEvent(player, level, pos, isOpen(newState));
 
-		return InteractionResult.sidedSuccess(level.isClientSide);
+		return ItemInteractionResult.sidedSuccess(level.isClientSide);
 	}
 
 	@Override
@@ -216,7 +216,7 @@ public class FleshDoorBlock extends DoorBlock {
 	}
 
 	@Override
-	public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
+	protected boolean isPathfindable(BlockState state, PathComputationType type) {
 		return switch (type) {
 			case LAND, AIR -> isOpen(state);
 			case WATER -> false;

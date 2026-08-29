@@ -95,7 +95,7 @@ public class FleshPig extends Animal implements Enemy, GeoEntity {
 
 	@Override
 	public boolean canPickUpLoot() {
-		return !isInLove() && !hasEffect(ModMobEffects.FRENZY.get()) && super.canPickUpLoot();
+		return !isInLove() && !hasEffect(ModMobEffects.FRENZY) && super.canPickUpLoot();
 	}
 
 	@Override
@@ -124,7 +124,7 @@ public class FleshPig extends Animal implements Enemy, GeoEntity {
 			}
 
 			if (isPork) {
-				addEffect(new MobEffectInstance(ModMobEffects.FRENZY.get(), 20 * 60, 0));
+				addEffect(new MobEffectInstance(ModMobEffects.FRENZY, 20 * 60, 0));
 			}
 			else if (getHealth() < getMaxHealth()) {
 				heal(foodNutrition * 0.5f);
@@ -140,10 +140,8 @@ public class FleshPig extends Animal implements Enemy, GeoEntity {
 	}
 
 	protected int getFoodNutrition(ItemStack stack) {
-		if (!stack.isEdible()) return 0;
-
 		FoodProperties foodProperties = stack.getFoodProperties(this);
-		return foodProperties == null ? 0 : foodProperties.getNutrition();
+		return foodProperties == null ? 0 : foodProperties.nutrition();
 	}
 
 	public void setInLove(@Nullable Player player) {

@@ -5,13 +5,16 @@ import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.EntityBlock;
@@ -55,8 +58,10 @@ public class BiometricMembraneBlock extends MembraneBlock implements EntityBlock
 	}
 
 	public static int getTintColor(ItemStack stack, int tintIndex) {
-		CompoundTag compoundTag = BlockItem.getBlockEntityData(stack);
-		if (compoundTag == null || !compoundTag.contains(BiometricMembraneBlockEntity.MEMBRANE_KEY)) return 0xFFFF_FFFF;
+		CustomData customData = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY);
+		if (customData.isEmpty()) return 0xFFFF_FFFF;
+		CompoundTag compoundTag = customData.copyTag();
+		if (!compoundTag.contains(BiometricMembraneBlockEntity.MEMBRANE_KEY)) return 0xFFFF_FFFF;
 		CompoundTag tag = compoundTag.getCompound(BiometricMembraneBlockEntity.MEMBRANE_KEY);
 
 		if (tag.contains(BiometricMembraneBlockEntity.ENTITY_COLORS_KEY, Tag.TAG_INT_ARRAY)) {
@@ -83,11 +88,13 @@ public class BiometricMembraneBlock extends MembraneBlock implements EntityBlock
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
-		super.appendHoverText(stack, level, tooltip, flag);
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+		super.appendHoverText(stack, context, tooltip, flag);
 
-		CompoundTag compoundTag = BlockItem.getBlockEntityData(stack);
-		if (compoundTag == null || !compoundTag.contains(BiometricMembraneBlockEntity.MEMBRANE_KEY)) return;
+		CustomData customData = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY);
+		if (customData.isEmpty()) return;
+		CompoundTag compoundTag = customData.copyTag();
+		if (!compoundTag.contains(BiometricMembraneBlockEntity.MEMBRANE_KEY)) return;
 		CompoundTag tag = compoundTag.getCompound(BiometricMembraneBlockEntity.MEMBRANE_KEY);
 
 		if (tag.hasUUID(BiometricMembraneBlockEntity.ENTITY_UUID_KEY)) {

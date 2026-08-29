@@ -1,6 +1,7 @@
 package com.github.elenterius.biomancy.integration.pehkui;
 
 import com.github.elenterius.biomancy.BiomancyMod;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -8,14 +9,13 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import virtuoel.pehkui.api.*;
 
-import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 public final class PehkuiIntegration {
 
-	private static final UUID HEALTH_MODIFIER_UUID = UUID.fromString("e345db7b-2296-401e-aeb4-546de2c7651f");
+	private static final ResourceLocation HEALTH_MODIFIER_ID = BiomancyMod.rl("scaled_mob_health");
 	private static final float DEFAULT_SCALE = 1f;
 
 	private PehkuiIntegration() {}
@@ -51,11 +51,11 @@ public final class PehkuiIntegration {
 	private static void updateMaxHealth(LivingEntity livingEntity, float targetScale) {
 		AttributeInstance healthAttribute = livingEntity.getAttribute(Attributes.MAX_HEALTH);
 		if (healthAttribute != null) {
-			healthAttribute.removeModifier(HEALTH_MODIFIER_UUID);
+			healthAttribute.removeModifier(HEALTH_MODIFIER_ID);
 
 			float modifierAmount = targetScale - DEFAULT_SCALE;
 			if (modifierAmount != 0f) {
-				healthAttribute.addTransientModifier(new AttributeModifier(HEALTH_MODIFIER_UUID, "biomancy_scaled_mob", modifierAmount, AttributeModifier.Operation.MULTIPLY_BASE));
+				healthAttribute.addTransientModifier(new AttributeModifier(HEALTH_MODIFIER_ID, modifierAmount, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
 
 				float maxHealth = livingEntity.getMaxHealth();
 				if (livingEntity.getHealth() > maxHealth) {

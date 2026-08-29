@@ -1,0 +1,13 @@
+{
+  "type": "biomancy:bio_forging",
+  "bio_forge_tab": "biomancy:tools",
+  "ingredients": [
+    {
+      "item": "biomancy:elastic_fibers"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "biomancy:vial"
+  }
+}

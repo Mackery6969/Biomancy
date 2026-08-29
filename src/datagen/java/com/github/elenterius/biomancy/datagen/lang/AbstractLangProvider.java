@@ -156,12 +156,8 @@ public abstract class AbstractLangProvider implements DataProvider, LangProvider
 		add(stack.getDescriptionId(), name);
 	}
 
-	public void addEnchantment(Supplier<? extends Enchantment> supplier, String name) {
-		add(supplier.get(), name);
-	}
-
-	public void add(Enchantment enchantment, String name) {
-		add(enchantment.getDescriptionId(), name);
+	public void addEnchantment(ResourceKey<Enchantment> key, String name) {
+		add(Util.makeDescriptionId("enchantment", key.location()), name);
 	}
 
 	public void addEffect(Supplier<? extends MobEffect> supplier, String name) {
@@ -196,16 +192,15 @@ public abstract class AbstractLangProvider implements DataProvider, LangProvider
 		add(translatableContents.getKey(), translation);
 	}
 
-	public void addPainting(DeferredHolder<PaintingVariant, PaintingVariant> supplier, String title, String author) {
-		ResourceLocation id = supplier.getId();
-		assert id != null;
+	public void addPainting(ResourceKey<PaintingVariant> key, String title, String author) {
+		ResourceLocation id = key.location();
 		add(id.toLanguageKey("painting", "title"), title);
 		add(id.toLanguageKey("painting", "author"), author);
 	}
 
 	@SuppressWarnings("deprecation")
-	public void addBannerPattern(DeferredHolder<BannerPattern, BannerPattern> supplier, String name) {
-		ResourceLocation rl = new ResourceLocation(supplier.getId().toShortLanguageKey());
+	public void addBannerPattern(ResourceKey<BannerPattern> key, String name) {
+		ResourceLocation rl = ResourceLocation.parse(key.location().toShortLanguageKey());
 		for (DyeColor dyeColor : DyeColor.values()) {
 			String dyeColorName = WordUtils.capitalize(dyeColor.getName().replace("_", " "));
 			add("block.%s.banner.%s.%s".formatted(rl.getNamespace(), rl.getPath(), dyeColor.getName()), dyeColorName + " " + name);

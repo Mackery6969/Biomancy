@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sons_of_sins"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_bloody_bone": {
+      "conditions": {
+        "items": [
+          {
+            "items": "sons_of_sins:bloody_bone"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "biomancy:decomposing/bloody_bone"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_bloody_bone"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "biomancy:decomposing/bloody_bone"
+    ]
+  }
+}

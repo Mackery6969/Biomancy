@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "farmersdelight"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_melon_juice": {
+      "conditions": {
+        "items": [
+          {
+            "items": "farmersdelight:melon_juice"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "biomancy:digesting/nutrient_paste_from_melon_juice"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_melon_juice"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "biomancy:digesting/nutrient_paste_from_melon_juice"
+    ]
+  }
+}

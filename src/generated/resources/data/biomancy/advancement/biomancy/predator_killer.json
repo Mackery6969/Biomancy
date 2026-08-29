@@ -1,0 +1,48 @@
+{
+  "parent": "biomancy:biomancy/greedy_butcher",
+  "criteria": {
+    "has_mob_claw": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomancy:mob_claw"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_mob_fang": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomancy:mob_fang"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.biomancy.predator_killer.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "biomancy:mob_fang"
+    },
+    "title": {
+      "translate": "advancements.biomancy.predator_killer.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_mob_fang"
+    ],
+    [
+      "has_mob_claw"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

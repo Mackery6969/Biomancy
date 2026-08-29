@@ -13,14 +13,14 @@ public class FrenzyAttackableTargetGoal<T extends LivingEntity> extends NearestA
 
 	@Override
 	public boolean canUse() {
-		if (!mob.hasEffect(ModMobEffects.FRENZY.get())) return false;
+		if (!mob.hasEffect(ModMobEffects.FRENZY)) return false;
 
 		return super.canUse();
 	}
 
 	@Override
 	public boolean canContinueToUse() {
-		if (!mob.hasEffect(ModMobEffects.FRENZY.get())) {
+		if (!mob.hasEffect(ModMobEffects.FRENZY)) {
 			stop();
 			return false;
 		}

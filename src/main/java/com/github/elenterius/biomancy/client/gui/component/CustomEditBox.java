@@ -31,30 +31,25 @@ public class CustomEditBox extends EditBox {
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-		if (visible) {
-			if (!isFocused() && getValue().isEmpty()) {
-				guiGraphics.drawString(font, hint, getX() + 4, getY() + (height - 8) / 2, 0xff_ffffff);
-			}
-			else super.render(guiGraphics, mouseX, mouseY, partialTick);
-		}
-	}
-
-	@Override
 	public int getInnerWidth() {
 		return width - 8;
 	}
 
 	@Override
-	protected boolean isBordered() {
+	public boolean isBordered() {
 		return !isBackgroundDisabled;
 	}
 
 	@Override
 	public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-		isBackgroundDisabled = true;
-		super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-		isBackgroundDisabled = false;
+		if (!isFocused() && getValue().isEmpty()) {
+			guiGraphics.drawString(font, hint, getX() + 4, getY() + (height - 8) / 2, 0xff_ffffff);
+		}
+		else {
+			isBackgroundDisabled = true;
+			super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
+			isBackgroundDisabled = false;
+		}
 	}
 
 }

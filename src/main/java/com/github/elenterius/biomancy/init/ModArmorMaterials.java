@@ -35,7 +35,7 @@ public final class ModArmorMaterials {
 
 	private static DeferredHolder<ArmorMaterial, ArmorMaterial> register(String name, EnumMap<ArmorItem.Type, Integer> defense, int enchantmentValue, DeferredHolder<SoundEvent, SoundEvent> equipSound, float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredient) {
 		List<ArmorMaterial.Layer> layers = List.of(new ArmorMaterial.Layer(BiomancyMod.rl(name)));
-		return ARMOR_MATERIALS.register(name, () -> new ArmorMaterial(defense, enchantmentValue, Holder.direct(equipSound.get()), repairIngredient, layers, toughness, knockbackResistance));
+		return ARMOR_MATERIALS.register(name, () -> new ArmorMaterial(defense, enchantmentValue, equipSound, repairIngredient, layers, toughness, knockbackResistance));
 	}
 
 }

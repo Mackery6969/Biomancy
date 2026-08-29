@@ -1,0 +1,35 @@
+{
+  "parent": "biomancy:biomancy/bio_forge",
+  "criteria": {
+    "has_digester": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomancy:digester"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.biomancy.digester.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "biomancy:digester"
+    },
+    "title": {
+      "translate": "advancements.biomancy.digester.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_digester"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

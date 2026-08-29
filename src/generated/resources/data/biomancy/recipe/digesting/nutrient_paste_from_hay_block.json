@@ -1,0 +1,12 @@
+{
+  "type": "biomancy:digesting",
+  "ingredient": {
+    "item": "minecraft:hay_block"
+  },
+  "nutrientsCost": 2,
+  "processingTime": 658,
+  "result": {
+    "count": 9,
+    "id": "biomancy:nutrient_paste"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "type": "biomancy:bio_forging",
+  "bio_forge_tab": "biomancy:components",
+  "ingredients": [
+    {
+      "item": "minecraft:skeleton_skull"
+    },
+    {
+      "type": "biomancy:essence",
+      "item": {
+        "components": {
+          "minecraft:custom_data": {
+            "colors": [
+              44975,
+              4602533
+            ],
+            "essence_data": {
+              "entity_type": "minecraft:player",
+              "name": "entity.minecraft.player"
+            }
+          }
+        },
+        "id": "biomancy:essence"
+      },
+      "predicate_tag": {
+        "essence_data": {
+          "entity_type": "minecraft:player"
+        }
+      }
+    },
+    {
+      "count": 38,
+      "item": "biomancy:flesh_bits"
+    },
+    {
+      "count": 15,
+      "item": "biomancy:elastic_fibers"
+    }
+  ],
+  "nutrientsCost": 4,
+  "result": {
+    "count": 1,
+    "id": "minecraft:player_head"
+  }
+}

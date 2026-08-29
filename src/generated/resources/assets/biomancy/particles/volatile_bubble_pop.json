@@ -1,6 +1,9 @@
 {
   "textures": [
-    "biomancy:volatile_bubble_pop_0", "biomancy:volatile_bubble_pop_1", "biomancy:volatile_bubble_pop_2", "biomancy:volatile_bubble_pop_3",
+    "biomancy:volatile_bubble_pop_0",
+    "biomancy:volatile_bubble_pop_1",
+    "biomancy:volatile_bubble_pop_2",
+    "biomancy:volatile_bubble_pop_3",
     "biomancy:volatile_bubble_pop_4"
   ]
 }

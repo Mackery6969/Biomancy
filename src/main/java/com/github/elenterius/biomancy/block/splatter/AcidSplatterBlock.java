@@ -2,6 +2,7 @@ package com.github.elenterius.biomancy.block.splatter;
 
 import com.github.elenterius.biomancy.init.AcidInteractions;
 import com.github.elenterius.biomancy.init.ModParticleTypes;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -20,8 +21,15 @@ import java.util.List;
 
 public class AcidSplatterBlock extends SplatterBlock {
 
+	public static final MapCodec<AcidSplatterBlock> CODEC = simpleCodec(AcidSplatterBlock::new);
+
 	public AcidSplatterBlock(Properties properties) {
 		super(properties);
+	}
+
+	@Override
+	protected MapCodec<? extends AcidSplatterBlock> codec() {
+		return CODEC;
 	}
 
 	@Override

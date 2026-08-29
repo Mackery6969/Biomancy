@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "overweight_farming"
+    }
+  ],
+  "type": "biomancy:decomposing",
+  "ingredient": {
+    "item": "overweight_farming:overweight_apple_block"
+  },
+  "processingTime": 400,
+  "results": [
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 20,
+        "min": 10
+      },
+      "item": "biomancy:organic_matter"
+    }
+  ]
+}

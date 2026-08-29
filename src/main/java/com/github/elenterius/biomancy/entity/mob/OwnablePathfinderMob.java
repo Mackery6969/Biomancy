@@ -15,7 +15,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.scores.Team;
+import net.minecraft.world.scores.PlayerTeam;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
@@ -31,9 +31,9 @@ public abstract class OwnablePathfinderMob extends PathfinderMob implements Owna
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(OWNER_UNIQUE_ID, Optional.empty());
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(OWNER_UNIQUE_ID, Optional.empty());
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public abstract class OwnablePathfinderMob extends PathfinderMob implements Owna
 	}
 
 	@Override
-	public Team getTeam() {
+	public PlayerTeam getTeam() {
 		return getOwnerAsPlayer().map(Entity::getTeam).orElseGet(super::getTeam);
 	}
 
@@ -103,8 +103,8 @@ public abstract class OwnablePathfinderMob extends PathfinderMob implements Owna
 	}
 
 	@Override
-	public boolean canBeLeashed(Player player) {
-		return !isLeashed() && player == getOwnerAsPlayer().orElse(null);
+	public boolean canBeLeashed() {
+		return true;
 	}
 
 	@Nullable

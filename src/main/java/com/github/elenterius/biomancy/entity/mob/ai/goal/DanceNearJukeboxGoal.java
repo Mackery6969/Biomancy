@@ -34,7 +34,7 @@ public class DanceNearJukeboxGoal<T extends PathfinderMob & JukeboxDancer> exten
 	public void start() {
 		BlockPos pos = mob.getJukeboxPos();
 		if (pos != null) {
-			float radius = GameEvent.JUKEBOX_PLAY.getNotificationRadius() * 0.45f;
+			float radius = GameEvent.JUKEBOX_PLAY.value().notificationRadius() * 0.45f;
 			double distanceSqr = pos.distToCenterSqr(mob.position());
 
 			PathNavigation navigation = mob.getNavigation();

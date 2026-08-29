@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "overweight_farming"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "biomancy:digesting/nutrient_paste_from_vegetable_peels"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_vegetable_peels": {
+      "conditions": {
+        "items": [
+          {
+            "items": "overweight_farming:vegetable_peels"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_vegetable_peels"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "biomancy:digesting/nutrient_paste_from_vegetable_peels"
+    ]
+  }
+}

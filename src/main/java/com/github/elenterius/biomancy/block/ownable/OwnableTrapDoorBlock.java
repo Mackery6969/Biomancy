@@ -16,10 +16,11 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -54,8 +55,8 @@ public class OwnableTrapDoorBlock extends TrapDoorBlock implements OwnableEntity
 	protected static final AABB INFLATED_AABB_VOLUME = new AABB(-0.125d, -0.25d, -0.125d, 1.125d, 1.25d, 1.125d);
 	protected static final VoxelShape BOTTOM_COLLISION_SHAPE = Block.box(0d, 0.1d, 0d, 16d, 3d, 16d);
 
-	public OwnableTrapDoorBlock(Properties properties, BlockSetType type) {
-		super(properties, type);
+	public OwnableTrapDoorBlock(BlockSetType type, Properties properties) {
+		super(type, properties);
 		registerDefaultState(defaultBlockState().setValue(SENSITIVITY, UserSensitivity.NONE));
 	}
 
@@ -85,24 +86,23 @@ public class OwnableTrapDoorBlock extends TrapDoorBlock implements OwnableEntity
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (level.getBlockEntity(pos) instanceof IRestrictedInteraction restrictedBlock && restrictedBlock.isActionAllowed(player, Actions.USE_BLOCK)) {
 
-			ItemStack stack = player.getItemInHand(hand);
 			if (stack.getItem() instanceof EssenceItem essenceItem) {
-				if (level.isClientSide) return InteractionResult.SUCCESS;
+				if (level.isClientSide) return ItemInteractionResult.SUCCESS;
 
 				if (restrictedBlock.isActionAllowed(player, Actions.CONFIGURE)) {
 					boolean success = essenceItem.getEntityUUID(stack).map(restrictedBlock::addUser).orElse(false);
 					if (success) {
 						stack.shrink(1);
 						level.playSound(null, pos, ModSoundEvents.FLESHKIN_EAT.get(), SoundSource.BLOCKS, 1f, level.random.nextFloat() * 0.1f + 0.9f);
-						return InteractionResult.SUCCESS;
+						return ItemInteractionResult.SUCCESS;
 					}
 				}
 
 				level.playSound(null, pos, ModSoundEvents.FLESHKIN_NO.get(), SoundSource.BLOCKS, 1f, level.random.nextFloat() * 0.1f + 0.9f);
-				return InteractionResult.CONSUME;
+				return ItemInteractionResult.CONSUME;
 			}
 
 			if (player.isShiftKeyDown()) {
@@ -111,7 +111,7 @@ public class OwnableTrapDoorBlock extends TrapDoorBlock implements OwnableEntity
 				if (isWaterlogged(state)) {
 					level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 				}
-				return InteractionResult.sidedSuccess(level.isClientSide);
+				return ItemInteractionResult.sidedSuccess(level.isClientSide);
 			}
 
 			state = state.cycle(OPEN);
@@ -120,18 +120,18 @@ public class OwnableTrapDoorBlock extends TrapDoorBlock implements OwnableEntity
 				level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 			}
 			playSound(player, level, pos, isOpen(state));
-			return InteractionResult.sidedSuccess(level.isClientSide);
+			return ItemInteractionResult.sidedSuccess(level.isClientSide);
 		}
 
 		if (isWaterlogged(state)) {
 			level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 		}
-		return InteractionResult.PASS;
+		return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	@Override
 	protected void playSound(@Nullable Player player, Level level, BlockPos pos, boolean isOpened) {
-		level.playSound(player, pos, isOpened ? type.trapdoorOpen() : type.trapdoorClose(), SoundSource.BLOCKS, 1f, level.getRandom().nextFloat() * 0.1F + 0.9F);
+		level.playSound(player, pos, isOpened ? getType().trapdoorOpen() : getType().trapdoorClose(), SoundSource.BLOCKS, 1f, level.getRandom().nextFloat() * 0.1F + 0.9F);
 	}
 
 	@Override
@@ -290,8 +290,8 @@ public class OwnableTrapDoorBlock extends TrapDoorBlock implements OwnableEntity
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
-		super.appendHoverText(stack, level, tooltip, flag);
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+		super.appendHoverText(stack, context, tooltip, flag);
 		OwnableEntityBlock.appendUserListToTooltip(stack, tooltip);
 	}
 

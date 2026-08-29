@@ -1,6 +1,10 @@
 {
   "textures": [
-    "biomancy:decay_explosion_1", "biomancy:decay_explosion_2", "biomancy:decay_explosion_3", "biomancy:decay_explosion_4", "biomancy:decay_explosion_5",
+    "biomancy:decay_explosion_1",
+    "biomancy:decay_explosion_2",
+    "biomancy:decay_explosion_3",
+    "biomancy:decay_explosion_4",
+    "biomancy:decay_explosion_5",
     "biomancy:decay_explosion_6"
   ]
 }

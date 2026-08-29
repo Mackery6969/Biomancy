@@ -1,0 +1,27 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "overweight_farming"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "farmersdelight"
+    }
+  ],
+  "type": "biomancy:decomposing",
+  "ingredient": {
+    "item": "overweight_farming:overweight_cabbage_block"
+  },
+  "processingTime": 400,
+  "results": [
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 20,
+        "min": 10
+      },
+      "item": "biomancy:organic_matter"
+    }
+  ]
+}

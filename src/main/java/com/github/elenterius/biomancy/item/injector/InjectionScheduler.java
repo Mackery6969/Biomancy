@@ -4,6 +4,7 @@ import com.github.elenterius.biomancy.api.serum.Serum;
 import com.github.elenterius.biomancy.init.ModEnchantments;
 import com.github.elenterius.biomancy.item.armor.AcolyteArmorItem;
 import com.github.elenterius.biomancy.util.CombatUtil;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 
 final class InjectionScheduler {
 
@@ -28,21 +30,25 @@ final class InjectionScheduler {
 
 		injector.setInjectionSuccess(stack, CombatUtil.canPierceThroughArmor(stack, target, player)); //precompute injection success
 
-		CompoundTag tag = stack.getOrCreateTag();
-		tag.putInt(DELAY_KEY, delayInTicks);
-		tag.putLong(TIMESTAMP_KEY, player.level().getGameTime());
+		long gameTime = player.level().getGameTime();
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> {
+			tag.putInt(DELAY_KEY, delayInTicks);
+			tag.putLong(TIMESTAMP_KEY, gameTime);
+		});
 	}
 
 	public static void tick(ServerLevel level, InjectorItem injector, ItemStack stack, ServerPlayer player) {
-		CompoundTag tag = stack.getOrCreateTag();
+		CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 		if (!tag.contains(TIMESTAMP_KEY)) return;
 
 		long delayInTicks = tag.getLong(DELAY_KEY);
 		long starTimestamp = tag.getLong(TIMESTAMP_KEY);
 		if (player.level().getGameTime() - starTimestamp > delayInTicks) {
 			performScheduledSerumInjection(level, injector, stack, player);
-			tag.remove(DELAY_KEY);
-			tag.remove(TIMESTAMP_KEY);
+			CustomData.update(DataComponents.CUSTOM_DATA, stack, updatedTag -> {
+				updatedTag.remove(DELAY_KEY);
+				updatedTag.remove(TIMESTAMP_KEY);
+			});
 		}
 	}
 
@@ -56,8 +62,8 @@ final class InjectionScheduler {
 
 		if (victim instanceof LivingEntity target) {
 			if (!injectionSuccess) {
-				stack.hurtAndBreak(2, player, p -> {});
-				player.broadcastBreakEvent(EquipmentSlot.MAINHAND); //break needle
+				stack.hurtAndBreak(2, level, player, item -> {});
+				player.onEquippedItemBroken(injector, EquipmentSlot.MAINHAND); //break needle
 				injector.broadcastAnimation(level, player, stack, InjectorItem.InjectorAnimation.REGROW_NEEDLE);
 				player.getCooldowns().addCooldown(stack.getItem(), InjectorItem.COOL_DOWN_TICKS * 2);
 				return;
@@ -85,7 +91,7 @@ final class InjectionScheduler {
 			}
 
 			injector.consumeSerum(stack, player);
-			stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+			stack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
 		}
 	}
 }

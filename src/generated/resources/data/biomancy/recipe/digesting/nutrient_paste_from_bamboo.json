@@ -1,0 +1,12 @@
+{
+  "type": "biomancy:digesting",
+  "ingredient": {
+    "item": "minecraft:bamboo"
+  },
+  "nutrientsCost": 2,
+  "processingTime": 260,
+  "result": {
+    "count": 1,
+    "id": "biomancy:nutrient_paste"
+  }
+}

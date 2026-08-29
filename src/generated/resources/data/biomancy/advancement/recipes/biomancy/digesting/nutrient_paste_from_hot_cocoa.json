@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "farmersdelight"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_hot_cocoa": {
+      "conditions": {
+        "items": [
+          {
+            "items": "farmersdelight:hot_cocoa"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "biomancy:digesting/nutrient_paste_from_hot_cocoa"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_hot_cocoa"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "biomancy:digesting/nutrient_paste_from_hot_cocoa"
+    ]
+  }
+}

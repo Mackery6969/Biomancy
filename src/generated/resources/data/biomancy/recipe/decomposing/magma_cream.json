@@ -1,0 +1,41 @@
+{
+  "type": "biomancy:decomposing",
+  "ingredient": {
+    "item": "minecraft:magma_cream"
+  },
+  "processingTime": 246,
+  "results": [
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 2,
+        "min": 1
+      },
+      "item": "biomancy:regenerative_fluid"
+    },
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 3,
+        "min": 1
+      },
+      "item": "biomancy:bile"
+    },
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 3,
+        "min": 1
+      },
+      "item": "biomancy:bio_lumens"
+    },
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 2,
+        "min": 0
+      },
+      "item": "biomancy:volatile_fluid"
+    }
+  ]
+}

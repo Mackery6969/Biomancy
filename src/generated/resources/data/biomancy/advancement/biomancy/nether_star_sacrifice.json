@@ -1,0 +1,32 @@
+{
+  "parent": "biomancy:biomancy/healing_activator_sacrifice",
+  "criteria": {
+    "has_sacrificed_nether_star": {
+      "conditions": {
+        "item": {
+          "items": "minecraft:nether_star"
+        }
+      },
+      "trigger": "biomancy:sacrificed_item"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.biomancy.nether_star_sacrifice.description"
+    },
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "minecraft:nether_star"
+    },
+    "title": {
+      "translate": "advancements.biomancy.nether_star_sacrifice.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_sacrificed_nether_star"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

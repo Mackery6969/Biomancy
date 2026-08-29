@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "biomancy:copy_block_entity_data",
+              "keys": [
+                "OwnerUUID",
+                "UserList"
+              ]
+            }
+          ],
+          "name": "biomancy:fleshkin_pressure_plate"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "biomancy:blocks/fleshkin_pressure_plate"
+}

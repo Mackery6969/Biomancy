@@ -1,0 +1,17 @@
+{
+  "type": "biomancy:decomposing",
+  "ingredient": {
+    "item": "biomancy:porous_primal_flesh_stairs"
+  },
+  "processingTime": 18,
+  "results": [
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 1,
+        "min": 0
+      },
+      "item": "biomancy:flesh_bits"
+    }
+  ]
+}

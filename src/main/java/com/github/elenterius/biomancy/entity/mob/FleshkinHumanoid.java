@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.entity.mob;
 
+import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.entity.mob.ai.goal.controllable.FollowOwnerGoal;
 import com.github.elenterius.biomancy.entity.mob.ai.goal.controllable.*;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
@@ -29,7 +30,6 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Deprecated
 public class FleshkinHumanoid extends OwnableMonster implements ControllableMob<FleshkinHumanoid> {
@@ -39,8 +39,7 @@ public class FleshkinHumanoid extends OwnableMonster implements ControllableMob<
 	private static final EntityDataAccessor<Byte> BEHAVIOR_COMMAND = SynchedEntityData.defineId(FleshkinHumanoid.class, EntityDataSerializers.BYTE);
 	private static final EntityDataAccessor<Boolean> IS_CHARGING_CROSSBOW = SynchedEntityData.defineId(FleshkinHumanoid.class, EntityDataSerializers.BOOLEAN);
 
-	private static final UUID SPEED_BOOST_UUID = UUID.fromString("7ac9f8fa-3d7c-48e5-9690-fa7025723b04");
-	private static final AttributeModifier SPEED_MODIFIER = new AttributeModifier(SPEED_BOOST_UUID, "speed boost", 0.2F, AttributeModifier.Operation.MULTIPLY_BASE);
+	private static final AttributeModifier SPEED_MODIFIER = new AttributeModifier(BiomancyMod.rl("speed_boost"), 0.2F, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 
 	public FleshkinHumanoid(EntityType<? extends Monster> type, Level level) {
 		super(type, level);
@@ -57,11 +56,11 @@ public class FleshkinHumanoid extends OwnableMonster implements ControllableMob<
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(IS_CHILD, true);
-		entityData.define(BEHAVIOR_COMMAND, Command.DEFEND_OWNER.serialize());
-		entityData.define(IS_CHARGING_CROSSBOW, false);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(IS_CHILD, true);
+		builder.define(BEHAVIOR_COMMAND, Command.DEFEND_OWNER.serialize());
+		builder.define(IS_CHARGING_CROSSBOW, false);
 	}
 
 	@Override
@@ -202,8 +201,8 @@ public class FleshkinHumanoid extends OwnableMonster implements ControllableMob<
 	}
 
 	@Override
-	protected float getStandingEyeHeight(Pose poseIn, EntityDimensions dim) {
-		return isBaby() ? 0.93f : 1.74f;
+	protected EntityDimensions getDefaultDimensions(Pose pose) {
+		return super.getDefaultDimensions(pose).withEyeHeight(isBaby() ? 0.93f : 1.74f);
 	}
 
 	@Override

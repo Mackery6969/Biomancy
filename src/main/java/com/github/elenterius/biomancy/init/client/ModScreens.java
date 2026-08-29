@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 
@@ -15,17 +16,17 @@ public final class ModScreens {
 
 	private ModScreens() {}
 
-	static void registerMenuScreens() {
-		registerMenuScreen(ModMenuTypes.DECOMPOSER, DecomposerScreen::new);
-		registerMenuScreen(ModMenuTypes.BIO_LAB, BioLabScreen::new);
-		registerMenuScreen(ModMenuTypes.STORAGE_SAC, StorageSacScreen::new);
-		registerMenuScreen(ModMenuTypes.FLESHKIN_CHEST, FleshkinChestScreen::new);
-		registerMenuScreen(ModMenuTypes.DIGESTER, DigesterScreen::new);
-		registerMenuScreen(ModMenuTypes.BIO_FORGE, BioForgeScreen::new);
+	static void registerMenuScreens(RegisterMenuScreensEvent event) {
+		registerMenuScreen(event, ModMenuTypes.DECOMPOSER, DecomposerScreen::new);
+		registerMenuScreen(event, ModMenuTypes.BIO_LAB, BioLabScreen::new);
+		registerMenuScreen(event, ModMenuTypes.STORAGE_SAC, StorageSacScreen::new);
+		registerMenuScreen(event, ModMenuTypes.FLESHKIN_CHEST, FleshkinChestScreen::new);
+		registerMenuScreen(event, ModMenuTypes.DIGESTER, DigesterScreen::new);
+		registerMenuScreen(event, ModMenuTypes.BIO_FORGE, BioForgeScreen::new);
 	}
 
-	private static <M extends AbstractContainerMenu, U extends Screen & MenuAccess<M>> void registerMenuScreen(DeferredHolder<MenuType<?>, MenuType<M>> registryObject, MenuScreens.ScreenConstructor<M, U> factory) {
-		MenuScreens.register(registryObject.get(), factory);
+	private static <M extends AbstractContainerMenu, U extends Screen & MenuAccess<M>> void registerMenuScreen(RegisterMenuScreensEvent event, DeferredHolder<MenuType<?>, MenuType<M>> registryObject, MenuScreens.ScreenConstructor<M, U> factory) {
+		event.register(registryObject.get(), factory);
 	}
 
 }

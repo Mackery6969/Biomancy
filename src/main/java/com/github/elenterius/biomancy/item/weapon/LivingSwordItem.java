@@ -39,7 +39,7 @@ public class LivingSwordItem extends SwordItem implements ItemTooltipStyleProvid
 	private final int maxNutrients;
 
 	public LivingSwordItem(Tier tier, int damageModifier, float attackSpeedModifier, int maxNutrients, Properties properties) {
-		super(tier, damageModifier, attackSpeedModifier, properties);
+		super(tier, properties.attributes(SwordItem.createAttributes(tier, damageModifier, attackSpeedModifier)));
 		this.maxNutrients = maxNutrients;
 	}
 
@@ -133,11 +133,6 @@ public class LivingSwordItem extends SwordItem implements ItemTooltipStyleProvid
 
 	@Override
 	public boolean isDamageable(ItemStack stack) {
-		return false;
-	}
-
-	@Override
-	public boolean canBeDepleted() {
 		return false;
 	}
 

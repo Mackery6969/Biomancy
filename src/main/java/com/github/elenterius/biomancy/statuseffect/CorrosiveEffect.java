@@ -13,7 +13,8 @@ import net.minecraft.world.entity.animal.horse.ZombieHorse;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.block.LevelEvent;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.LivingConversionEvent;
 
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ public class CorrosiveEffect extends StatusEffect {
 	}
 
 	@Override
-	public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
+	public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
 		int effectLevel = amplifier + 1;
 		boolean isWet = livingEntity.isInWaterRainOrBubble();
 		float conversionProbability = 0.1f + 0.05f * effectLevel + (isWet ? 0.15f : 0);
@@ -36,7 +37,7 @@ public class CorrosiveEffect extends StatusEffect {
 			}
 		}
 
-		if (!livingEntity.isAlive()) return;
+		if (!livingEntity.isAlive()) return true;
 
 		float damage = 2 * effectLevel + (isWet ? 0.5f : 0);
 		CombatUtil.hurtWithAcid(livingEntity, damage);
@@ -46,27 +47,29 @@ public class CorrosiveEffect extends StatusEffect {
 			float y = livingEntity.getBbHeight() * 0.25f;
 			serverLevel.sendParticles(ModParticleTypes.FALLING_ACID.get(), livingEntity.getX(), livingEntity.getY(0.5f), livingEntity.getZ(), 4, xz, y, xz, 0);
 		}
+
+		return true;
 	}
 
 	@Override
-	public boolean isDurationEffectTick(int duration, int amplifier) {
+	public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
 		return (duration + 1) % 8 == 0;
 	}
 
 	private boolean convertZombieToSkeleton(ServerLevel level, LivingEntity livingEntity) {
-		if (livingEntity instanceof Zombie zombie && ForgeEventFactory.canLivingConvert(zombie, EntityType.SKELETON, timer -> {})) {
+		if (livingEntity instanceof Zombie zombie && !NeoForge.EVENT_BUS.post(new LivingConversionEvent.Pre(zombie, EntityType.SKELETON, timer -> {})).isCanceled()) {
 			Skeleton skeleton = zombie.convertTo(EntityType.SKELETON, true); // create new entity with same settings & equipment and remove old entity
 			if (skeleton != null) {
 				//skeleton.finalizeSpawn(level, level.getCurrentDifficultyAt(zombie.blockPosition()), MobSpawnType.CONVERSION, null, null);
 				skeleton.invulnerableTime = 60;
-				ForgeEventFactory.onLivingConvert(zombie, skeleton);
+				NeoForge.EVENT_BUS.post(new LivingConversionEvent.Post(zombie, skeleton));
 				if (!zombie.isSilent()) {
 					level.levelEvent(null, LevelEvent.SOUND_ZOMBIE_INFECTED, zombie.blockPosition(), 0);
 				}
 				return true;
 			}
 		}
-		else if (livingEntity instanceof ZombieHorse zombieHorse && ForgeEventFactory.canLivingConvert(zombieHorse, EntityType.SKELETON_HORSE, timer -> {})) {
+		else if (livingEntity instanceof ZombieHorse zombieHorse && !NeoForge.EVENT_BUS.post(new LivingConversionEvent.Pre(zombieHorse, EntityType.SKELETON_HORSE, timer -> {})).isCanceled()) {
 			SkeletonHorse horse = zombieHorse.convertTo(EntityType.SKELETON_HORSE, true); // create new entity with same settings & equipment and remove old entity
 			if (horse != null) {
 				//horse.finalizeSpawn(level, level.getCurrentDifficultyAt(zombieHorse.blockPosition()), MobSpawnType.CONVERSION, null, null);
@@ -76,7 +79,7 @@ public class CorrosiveEffect extends StatusEffect {
 					horse.setOwnerUUID(owner);
 				}
 				horse.setTamed(zombieHorse.isTamed());
-				ForgeEventFactory.onLivingConvert(zombieHorse, horse);
+				NeoForge.EVENT_BUS.post(new LivingConversionEvent.Post(zombieHorse, horse));
 				if (!zombieHorse.isSilent()) {
 					level.levelEvent(null, LevelEvent.SOUND_ZOMBIE_INFECTED, zombieHorse.blockPosition(), 0);
 				}

@@ -1,0 +1,12 @@
+{
+  "type": "biomancy:digesting",
+  "ingredient": {
+    "item": "minecraft:cake"
+  },
+  "nutrientsCost": 2,
+  "processingTime": 673,
+  "result": {
+    "count": 12,
+    "id": "biomancy:nutrient_paste"
+  }
+}

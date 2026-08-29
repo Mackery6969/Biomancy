@@ -23,7 +23,7 @@ public abstract class SignBlockEntityMixin {
 			require = 0 // allow it to fail as a fallback
 	)
 	private Style onSetMessagesModifyStyle(Style originalStyle, Player player, List<FilteredText> filteredText, SignText text) {
-		if (player.hasEffect(ModMobEffects.PRIMORDIAL_INFESTATION.get())) {
+		if (player.hasEffect(ModMobEffects.PRIMORDIAL_INFESTATION)) {
 			return originalStyle.withFont(Fonts.PrimordialRunes.getId());
 		}
 

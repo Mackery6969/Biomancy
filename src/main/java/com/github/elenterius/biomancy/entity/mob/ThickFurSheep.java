@@ -29,9 +29,9 @@ public class ThickFurSheep extends Sheep {
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(WOOL_SIZE, (byte) 1);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(WOOL_SIZE, (byte) 1);
 	}
 
 	@Override
@@ -47,15 +47,15 @@ public class ThickFurSheep extends Sheep {
 	}
 
 	@Override
-	public EntityDimensions getDimensions(Pose pose) {
+	protected EntityDimensions getDefaultDimensions(Pose pose) {
 		float widthFactor = 1f + ((float) getWoolSize() / MAX_WOOL_SIZE) * 0.5f;
-		return super.getDimensions(pose).scale(widthFactor, 1f);
+		return super.getDefaultDimensions(pose).scale(widthFactor, 1f);
 	}
 
 	@Nullable
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData data, @Nullable CompoundTag compound) {
-		SpawnGroupData spawnData = super.finalizeSpawn(level, difficulty, spawnType, data, compound);
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData data) {
+		SpawnGroupData spawnData = super.finalizeSpawn(level, difficulty, spawnType, data);
 		setWoolSize(!isSheared() ? (byte) 1 : (byte) 0);
 		return spawnData;
 	}
@@ -72,7 +72,7 @@ public class ThickFurSheep extends Sheep {
 
 		double pct = (double) size / MAX_WOOL_SIZE;
 		getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.23d - 0.16d * pct);
-		getAttribute(Attributes.GRAVITY.value()).setBaseValue(0.08d + 0.16d * pct);
+		getAttribute(Attributes.GRAVITY).setBaseValue(0.08d + 0.16d * pct);
 		getAttribute(Attributes.ARMOR).setBaseValue(Mth.clamp(16d * pct - 1.6d, 0d, 16d));
 		getAttribute(Attributes.ARMOR_TOUGHNESS).setBaseValue(Mth.clamp(3d * pct - 1d, 0d, 16d));
 	}
@@ -117,7 +117,7 @@ public class ThickFurSheep extends Sheep {
 	@Nullable
 	@Override
 	public Sheep getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
-		float p = (hasEffect(ModMobEffects.LIBIDO.get()) ? 0.1f : 0f) + (otherParent.hasEffect(ModMobEffects.LIBIDO.get()) ? 0.1f : 0f);
+		float p = (hasEffect(ModMobEffects.LIBIDO) ? 0.1f : 0f) + (otherParent.hasEffect(ModMobEffects.LIBIDO) ? 0.1f : 0f);
 		if (p > 0 && random.nextFloat() < p) {
 			return ModEntityTypes.FLESH_SHEEP.get().create(level);
 		}

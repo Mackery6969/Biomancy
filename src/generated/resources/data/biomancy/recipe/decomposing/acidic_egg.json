@@ -1,0 +1,24 @@
+{
+  "type": "biomancy:decomposing",
+  "ingredient": {
+    "item": "biomancy:acidic_egg"
+  },
+  "results": [
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 1,
+        "min": -2
+      },
+      "item": "biomancy:acid_extract"
+    },
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 4,
+        "min": 2
+      },
+      "item": "biomancy:bile"
+    }
+  ]
+}

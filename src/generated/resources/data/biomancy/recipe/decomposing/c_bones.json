@@ -1,0 +1,17 @@
+{
+  "type": "biomancy:decomposing",
+  "ingredient": {
+    "tag": "c:bones"
+  },
+  "processingTime": 150,
+  "results": [
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 6,
+        "min": 3
+      },
+      "item": "biomancy:bone_fragments"
+    }
+  ]
+}

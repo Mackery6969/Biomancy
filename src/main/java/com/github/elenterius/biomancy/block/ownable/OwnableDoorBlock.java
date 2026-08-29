@@ -14,10 +14,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -44,8 +45,8 @@ public class OwnableDoorBlock extends DoorBlock implements OwnableEntityBlock {
 
 	public static final int UPDATE_FLAGS = Block.UPDATE_CLIENTS | Block.UPDATE_IMMEDIATE; //10
 
-	public OwnableDoorBlock(Properties properties, BlockSetType type) {
-		super(properties, type);
+	public OwnableDoorBlock(BlockSetType type, Properties properties) {
+		super(type, properties);
 	}
 
 	@Nullable
@@ -80,26 +81,25 @@ public class OwnableDoorBlock extends DoorBlock implements OwnableEntityBlock {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level level, final BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, final BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 
-		if (!(getCorrectBlockEntity(state, level, pos) instanceof IRestrictedInteraction restrictedBlock)) return InteractionResult.PASS;
-		if (!restrictedBlock.isActionAllowed(player, Actions.USE_BLOCK)) return InteractionResult.PASS;
+		if (!(getCorrectBlockEntity(state, level, pos) instanceof IRestrictedInteraction restrictedBlock)) return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+		if (!restrictedBlock.isActionAllowed(player, Actions.USE_BLOCK)) return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
 
-		ItemStack stack = player.getItemInHand(hand);
 		if (stack.getItem() instanceof EssenceItem essenceItem) {
-			if (level.isClientSide) return InteractionResult.SUCCESS;
+			if (level.isClientSide) return ItemInteractionResult.SUCCESS;
 
 			if (restrictedBlock.isActionAllowed(player, Actions.CONFIGURE)) {
 				boolean success = essenceItem.getEntityUUID(stack).map(restrictedBlock::addUser).orElse(false);
 				if (success) {
 					stack.shrink(1);
 					level.playSound(null, pos, ModSoundEvents.FLESHKIN_EAT.get(), SoundSource.BLOCKS, 1f, level.random.nextFloat() * 0.1f + 0.9f);
-					return InteractionResult.SUCCESS;
+					return ItemInteractionResult.SUCCESS;
 				}
 			}
 
 			level.playSound(null, pos, ModSoundEvents.FLESHKIN_NO.get(), SoundSource.BLOCKS, 1f, level.random.nextFloat() * 0.1f + 0.9f);
-			return InteractionResult.CONSUME;
+			return ItemInteractionResult.CONSUME;
 		}
 
 		state = state.cycle(OPEN);
@@ -128,7 +128,7 @@ public class OwnableDoorBlock extends DoorBlock implements OwnableEntityBlock {
 			}
 		}
 
-		return InteractionResult.sidedSuccess(level.isClientSide);
+		return ItemInteractionResult.sidedSuccess(level.isClientSide);
 	}
 
 	@Override
@@ -214,8 +214,8 @@ public class OwnableDoorBlock extends DoorBlock implements OwnableEntityBlock {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
-		super.appendHoverText(stack, level, tooltip, flag);
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+		super.appendHoverText(stack, context, tooltip, flag);
 		OwnableEntityBlock.appendUserListToTooltip(stack, tooltip);
 	}
 
@@ -233,10 +233,10 @@ public class OwnableDoorBlock extends DoorBlock implements OwnableEntityBlock {
 	}
 
 	@Override
-	public void playerWillDestroy(Level level, final BlockPos posIn, BlockState state, Player player) {
+	public BlockState playerWillDestroy(Level level, final BlockPos posIn, BlockState state, Player player) {
 //		BlockPos pos = state.getValue(HALF) == DoubleBlockHalf.UPPER ? posIn.below() : posIn;
 //		dropForCreativePlayer(level, this, pos, player);
-		super.playerWillDestroy(level, posIn, state, player);
+		return super.playerWillDestroy(level, posIn, state, player);
 	}
 
 	@Override

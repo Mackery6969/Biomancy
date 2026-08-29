@@ -57,7 +57,7 @@ public abstract class SimpleContainerBlockEntity extends BlockEntity implements 
 	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		super.saveAdditional(tag, registries);
 		if (name != null) {
-			tag.putString("CustomName", Component.Serializer.toJson(name));
+			tag.putString("CustomName", Component.Serializer.toJson(name, registries));
 		}
 	}
 
@@ -65,7 +65,7 @@ public abstract class SimpleContainerBlockEntity extends BlockEntity implements 
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		super.loadAdditional(tag, registries);
 		if (tag.contains("CustomName", Tag.TAG_STRING)) {
-			name = Component.Serializer.fromJson(tag.getString("CustomName"));
+			name = Component.Serializer.fromJson(tag.getString("CustomName"), registries);
 		}
 	}
 

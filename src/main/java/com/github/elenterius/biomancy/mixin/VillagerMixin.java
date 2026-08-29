@@ -14,7 +14,7 @@ public abstract class VillagerMixin {
 	private void onCanBreed(CallbackInfoReturnable<Boolean> cir) {
 		Villager thisVillager = (Villager) (Object) this;
 
-		if (thisVillager.hasEffect(ModMobEffects.LIBIDO.get()) && !thisVillager.isSleeping() && thisVillager.getAge() == 0) {
+		if (thisVillager.hasEffect(ModMobEffects.LIBIDO) && !thisVillager.isSleeping() && thisVillager.getAge() == 0) {
 			cir.setReturnValue(true);
 		}
 	}

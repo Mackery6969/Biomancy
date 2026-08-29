@@ -2,10 +2,13 @@ package com.github.elenterius.biomancy.init;
 
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.loot.CatMorningGiftLootModifier;
+import com.github.elenterius.biomancy.loot.CopyBlockEntityDataFunction;
 import com.github.elenterius.biomancy.loot.DespoilLootModifier;
 import com.google.common.collect.Sets;
 import com.mojang.serialization.MapCodec;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -21,6 +24,9 @@ public final class ModLoot {
 	public static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> GLOBAL_MODIFIERS = DeferredRegister.create(NeoForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, BiomancyMod.MOD_ID);
 	public static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<? extends IGlobalLootModifier>> DESPOIL_SERIALIZER = GLOBAL_MODIFIERS.register("despoil", DespoilLootModifier.CODEC);
 	public static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<? extends IGlobalLootModifier>> CAT_MORNING_GIFT_SERIALIZER = GLOBAL_MODIFIERS.register("cat_morning_gift", CatMorningGiftLootModifier.CODEC);
+
+	public static final DeferredRegister<LootItemFunctionType<?>> LOOT_FUNCTION_TYPES = DeferredRegister.create(Registries.LOOT_FUNCTION_TYPE, BiomancyMod.MOD_ID);
+	public static final DeferredHolder<LootItemFunctionType<?>, LootItemFunctionType<CopyBlockEntityDataFunction>> COPY_BLOCK_ENTITY_DATA = LOOT_FUNCTION_TYPES.register("copy_block_entity_data", () -> new LootItemFunctionType<>(CopyBlockEntityDataFunction.CODEC));
 
 	private ModLoot() {}
 

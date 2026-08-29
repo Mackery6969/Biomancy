@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sons_of_sins"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_charged_creeper_ribs": {
+      "conditions": {
+        "items": [
+          {
+            "items": "sons_of_sins:charged_creeper_ribs"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "biomancy:decomposing/charged_creeper_ribs"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_charged_creeper_ribs"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "biomancy:decomposing/charged_creeper_ribs"
+    ]
+  }
+}

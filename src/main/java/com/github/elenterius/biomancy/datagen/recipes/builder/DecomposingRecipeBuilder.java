@@ -118,7 +118,7 @@ public final class DecomposingRecipeBuilder implements RecipeBuilder<Decomposing
 	}
 
 	public DecomposingRecipeBuilder setIngredient(DatagenIngredient ingredient) {
-		setIngredient(ingredient, 1, BiomancyMod.rl(ingredient.resourceLocation.getNamespace() + "_" + ingredient.resourceLocation.getPath()));
+		setIngredient(ingredient.ingredient, 1, BiomancyMod.rl(ingredient.recipeName()));
 		return this;
 	}
 

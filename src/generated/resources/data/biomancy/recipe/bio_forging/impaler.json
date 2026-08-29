@@ -1,0 +1,36 @@
+{
+  "type": "biomancy:bio_forging",
+  "bio_forge_tab": "biomancy:tools",
+  "ingredients": [
+    {
+      "count": 4,
+      "item": "biomancy:living_flesh"
+    },
+    {
+      "count": 32,
+      "item": "biomancy:flesh_bits"
+    },
+    {
+      "count": 32,
+      "item": "biomancy:elastic_fibers"
+    },
+    {
+      "count": 16,
+      "item": "biomancy:bone_fragments"
+    },
+    {
+      "count": 4,
+      "item": "biomancy:volatile_gland"
+    }
+  ],
+  "nutrientsCost": 200,
+  "result": {
+    "components": {
+      "minecraft:custom_data": {
+        "biomancy:nutrients": 200
+      }
+    },
+    "count": 1,
+    "id": "biomancy:impaler"
+  }
+}

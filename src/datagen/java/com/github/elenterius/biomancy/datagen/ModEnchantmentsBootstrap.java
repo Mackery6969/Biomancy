@@ -4,7 +4,7 @@ import com.github.elenterius.biomancy.init.ModEnchantments;
 import com.github.elenterius.biomancy.init.tags.ModItemTags;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.item.Item;
@@ -15,7 +15,7 @@ public final class ModEnchantmentsBootstrap {
 	private ModEnchantmentsBootstrap() {
 	}
 
-	public static void bootstrap(BootstapContext<Enchantment> ctx) {
+	public static void bootstrap(BootstrapContext<Enchantment> ctx) {
 		HolderGetter<Item> items = ctx.lookup(Registries.ITEM);
 
 		register(ctx, ModEnchantments.DESPOIL, Enchantment.enchantment(
@@ -44,7 +44,7 @@ public final class ModEnchantmentsBootstrap {
 						EquipmentSlotGroup.ANY)));
 	}
 
-	private static void register(BootstapContext<Enchantment> ctx, ResourceKey<Enchantment> key,
+	private static void register(BootstrapContext<Enchantment> ctx, ResourceKey<Enchantment> key,
 			Enchantment.Builder builder) {
 		ctx.register(key, builder.build(key.location()));
 	}

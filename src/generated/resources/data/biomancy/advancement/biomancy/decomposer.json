@@ -1,0 +1,34 @@
+{
+  "parent": "biomancy:biomancy/living_flesh",
+  "criteria": {
+    "has_decomposer": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomancy:decomposer"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.biomancy.decomposer.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "biomancy:decomposer"
+    },
+    "title": {
+      "translate": "advancements.biomancy.decomposer.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_decomposer"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

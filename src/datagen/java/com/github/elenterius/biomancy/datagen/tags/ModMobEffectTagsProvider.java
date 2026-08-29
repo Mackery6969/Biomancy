@@ -21,11 +21,11 @@ import java.util.concurrent.CompletableFuture;
 public class ModMobEffectTagsProvider extends IntrinsicHolderTagsProvider<MobEffect> {
 
 	public ModMobEffectTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-		super(output, Registries.MOB_EFFECT, lookupProvider, mobEffect -> BuiltInRegistries.MOB_EFFECT.getDelegateOrThrow(mobEffect).key(), BiomancyMod.MOD_ID, existingFileHelper);
+		super(output, Registries.MOB_EFFECT, lookupProvider, mobEffect -> BuiltInRegistries.MOB_EFFECT.getResourceKey(mobEffect).orElseThrow(), BiomancyMod.MOD_ID, existingFileHelper);
 	}
 
 	private static TagKey<MobEffect> forgeTag(String path) {
-		return TagKey.create(Registries.MOB_EFFECT, new ResourceLocation("forge", path));
+		return TagKey.create(Registries.MOB_EFFECT, ResourceLocation.fromNamespaceAndPath("forge", path));
 	}
 
 	@Override
@@ -51,38 +51,38 @@ public class ModMobEffectTagsProvider extends IntrinsicHolderTagsProvider<MobEff
 		);
 
 		tag(ModMobEffectTags.CRADLE_LIFE_ENERGY_SOURCE).add(
-				MobEffects.HEAL,
-				MobEffects.REGENERATION,
-				MobEffects.HEALTH_BOOST,
-				MobEffects.ABSORPTION
+				MobEffects.HEAL.value(),
+				MobEffects.REGENERATION.value(),
+				MobEffects.HEALTH_BOOST.value(),
+				MobEffects.ABSORPTION.value()
 		);
 
 		tag(ModMobEffectTags.CRADLE_DISEASE_SOURCE).add(
-				MobEffects.WEAKNESS,
-				MobEffects.WITHER,
-				MobEffects.POISON,
+				MobEffects.WEAKNESS.value(),
+				MobEffects.WITHER.value(),
+				MobEffects.POISON.value(),
 				ModMobEffects.BLEED.get()
 		);
 
 		tag(ModMobEffectTags.CRADLE_SUCCESS_SOURCE).add(
-				MobEffects.LUCK,
-				MobEffects.SATURATION,
+				MobEffects.LUCK.value(),
+				MobEffects.SATURATION.value(),
 				ModMobEffects.LIBIDO.get()
 		);
 
 		tag(ModMobEffectTags.CRADLE_HOSTILITY_SOURCE).add(
-				MobEffects.HUNGER,
-				MobEffects.CONFUSION,
-				MobEffects.BLINDNESS,
-				MobEffects.HARM,
-				MobEffects.WITHER,
-				MobEffects.POISON,
+				MobEffects.HUNGER.value(),
+				MobEffects.CONFUSION.value(),
+				MobEffects.BLINDNESS.value(),
+				MobEffects.HARM.value(),
+				MobEffects.WITHER.value(),
+				MobEffects.POISON.value(),
 				ModMobEffects.BLEED.get()
 		);
 
 		tag(ModMobEffectTags.CRADLE_ANOMALY_SOURCE).add(
-				MobEffects.BAD_OMEN,
-				MobEffects.DARKNESS,
+				MobEffects.BAD_OMEN.value(),
+				MobEffects.DARKNESS.value(),
 				ModMobEffects.CORROSIVE.get(),
 				ModMobEffects.PRIMORDIAL_INFESTATION.get()
 		);

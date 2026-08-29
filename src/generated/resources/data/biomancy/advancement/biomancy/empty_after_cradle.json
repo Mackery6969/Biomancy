@@ -1,0 +1,25 @@
+{
+  "parent": "biomancy:biomancy/cradle",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": "",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "minecraft:barrier"
+    },
+    "show_toast": false,
+    "title": ""
+  },
+  "requirements": [
+    [
+      "impossible"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

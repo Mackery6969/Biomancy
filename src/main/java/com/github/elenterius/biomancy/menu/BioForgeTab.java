@@ -10,6 +10,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
@@ -21,15 +23,15 @@ public final class BioForgeTab {
 	public static final StreamCodec<RegistryFriendlyByteBuf, BioForgeTab> STREAM_CODEC = StreamCodec.of((buf, value) -> value.toNetwork(buf), BioForgeTab::fromNetwork);
 
 	private final int sortPriority;
-	private final Item iconItem;
+	private final Supplier<? extends Item> iconItem;
 
-	public BioForgeTab(int sortPriority, Item iconItem) {
+	public BioForgeTab(int sortPriority, Supplier<? extends Item> iconItem) {
 		this.sortPriority = sortPriority;
 		this.iconItem = iconItem;
 	}
 
-	public BioForgeTab(Item itemSupplier) {
-		this(0, itemSupplier);
+	public BioForgeTab(Supplier<? extends Item> iconItem) {
+		this(0, iconItem);
 	}
 
 	@Nullable
@@ -56,7 +58,7 @@ public final class BioForgeTab {
 	}
 
 	public ItemStack getIcon() {
-		return new ItemStack(iconItem);
+		return new ItemStack(iconItem.get());
 	}
 
 	public String enumId() {

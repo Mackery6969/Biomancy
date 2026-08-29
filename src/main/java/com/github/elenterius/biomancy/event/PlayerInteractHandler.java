@@ -14,8 +14,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.entity.PartEntity;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.fml.common.EventBusSubscriber;
 
 @EventBusSubscriber(modid = BiomancyMod.MOD_ID)
@@ -43,7 +43,7 @@ public final class PlayerInteractHandler {
 	@SubscribeEvent
 	public static void onPlayerInteractWithBlock(final PlayerInteractEvent.RightClickBlock event) {
 		if (event.getItemStack().getItem() instanceof SerumContainer && event.getLevel().getBlockState(event.getPos()).getBlock() instanceof VialHolderBlock) {
-			event.setUseBlock(Event.Result.ALLOW);
+			event.setUseBlock(TriState.TRUE);
 		}
 	}
 

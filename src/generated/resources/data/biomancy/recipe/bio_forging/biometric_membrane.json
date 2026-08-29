@@ -1,0 +1,24 @@
+{
+  "type": "biomancy:bio_forging",
+  "bio_forge_tab": "biomancy:misc",
+  "ingredients": [
+    {
+      "item": "biomancy:impermeable_membrane"
+    },
+    {
+      "count": 4,
+      "item": "biomancy:bile"
+    },
+    {
+      "count": 2,
+      "item": "biomancy:gem_fragments"
+    },
+    {
+      "item": "biomancy:living_flesh"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "biomancy:biometric_membrane"
+  }
+}

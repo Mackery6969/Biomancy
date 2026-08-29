@@ -43,7 +43,7 @@ public enum MobSoundType implements StringRepresentable {
 	public SoundEvent getSound(CompoundTag tag) {
 		ResourceLocation soundId = ResourceLocation.tryParse(tag.getString(name));
 		if (soundId != null) {
-			return BuiltInRegistries.SOUND_EVENT.getValue(soundId);
+			return BuiltInRegistries.SOUND_EVENT.get(soundId);
 		}
 		return null;
 	}

@@ -1,0 +1,25 @@
+{
+  "type": "biomancy:decomposing",
+  "ingredient": {
+    "item": "minecraft:ink_sac"
+  },
+  "processingTime": 60,
+  "results": [
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 2,
+        "min": 1
+      },
+      "item": "biomancy:bile"
+    },
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 2,
+        "min": 1
+      },
+      "item": "biomancy:elastic_fibers"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "overweight_farming"
+    }
+  ],
+  "type": "biomancy:digesting",
+  "ingredient": {
+    "item": "overweight_farming:overweight_poisonous_potato_block"
+  },
+  "nutrientsCost": 3,
+  "processingTime": 800,
+  "result": {
+    "count": 20,
+    "id": "biomancy:nutrient_paste"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "biomancy:digesting",
+  "ingredient": {
+    "item": "minecraft:turtle_egg"
+  },
+  "nutrientsCost": 2,
+  "processingTime": 332,
+  "result": {
+    "count": 2,
+    "id": "biomancy:nutrient_paste"
+  }
+}

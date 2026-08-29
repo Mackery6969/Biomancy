@@ -67,8 +67,6 @@ public final class ClientSetupHandler {
 
 	@SubscribeEvent
 	public static void onSetup(final FMLClientSetupEvent event) {
-		ModScreens.registerMenuScreens();
-
 		setBlockRenderLayers();
 
 		event.enqueueWork(ClientSetupHandler::onPostSetup);
@@ -76,6 +74,11 @@ public final class ClientSetupHandler {
 		TransliterationUtil.init();
 
 		ModsCompatHandler.onBiomancyClientSetup(event);
+	}
+
+	@SubscribeEvent
+	public static void onRegisterMenuScreens(final RegisterMenuScreensEvent event) {
+		ModScreens.registerMenuScreens(event);
 	}
 
 	private static void onPostSetup() {

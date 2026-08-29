@@ -1,0 +1,31 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sons_of_sins"
+    }
+  ],
+  "type": "biomancy:decomposing",
+  "ingredient": {
+    "item": "sons_of_sins:flesh_of_demise"
+  },
+  "processingTime": 168,
+  "results": [
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 6,
+        "min": 3
+      },
+      "item": "biomancy:bone_fragments"
+    },
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 1,
+        "min": -1
+      },
+      "item": "biomancy:flesh_bits"
+    }
+  ]
+}

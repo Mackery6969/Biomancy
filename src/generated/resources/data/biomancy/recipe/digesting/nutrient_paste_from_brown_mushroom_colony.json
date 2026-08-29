@@ -1,0 +1,18 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "farmersdelight"
+    }
+  ],
+  "type": "biomancy:digesting",
+  "ingredient": {
+    "item": "farmersdelight:brown_mushroom_colony"
+  },
+  "nutrientsCost": 2,
+  "processingTime": 715,
+  "result": {
+    "count": 15,
+    "id": "biomancy:nutrient_paste"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "biomancy:biomancy/cradle",
+  "criteria": {
+    "has_sacrificed_cooked_meat": {
+      "conditions": {
+        "item": {
+          "items": "#biomancy:cooked_meats"
+        }
+      },
+      "trigger": "biomancy:sacrificed_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.biomancy.cooked_meat_sacrifice.description"
+    },
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "minecraft:cooked_beef"
+    },
+    "title": {
+      "translate": "advancements.biomancy.cooked_meat_sacrifice.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_sacrificed_cooked_meat"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

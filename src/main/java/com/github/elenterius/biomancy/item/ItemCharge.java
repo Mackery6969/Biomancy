@@ -1,7 +1,9 @@
 package com.github.elenterius.biomancy.item;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 
 public interface ItemCharge {
 	String CHARGE_KEY = "Charge";
@@ -26,7 +28,7 @@ public interface ItemCharge {
 	void onChargeChanged(ItemStack container, int oldValue, int newValue);
 
 	default int getCharge(ItemStack container) {
-		return container.getOrCreateTag().getInt(CHARGE_KEY);
+		return container.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getInt(CHARGE_KEY);
 	}
 
 	default boolean hasCharge(ItemStack container) {
@@ -37,7 +39,7 @@ public interface ItemCharge {
 		int maxCharge = getMaxCharge(container);
 		int oldValue = getCharge(container);
 		int newValue = Mth.clamp(amount, 0, maxCharge);
-		container.getOrCreateTag().putInt(CHARGE_KEY, newValue);
+		CustomData.update(DataComponents.CUSTOM_DATA, container, tag -> tag.putInt(CHARGE_KEY, newValue));
 		onChargeChanged(container, oldValue, newValue);
 	}
 

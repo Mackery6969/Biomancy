@@ -8,6 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -33,7 +34,7 @@ import java.util.function.Predicate;
 
 public class FleshChicken extends Chicken implements RangedAttackMob, GeoEntity {
 
-	public static final Predicate<LivingEntity> TARGET_SELECTOR = livingEntity -> livingEntity.getMobType() == MobType.UNDEAD;
+	public static final Predicate<LivingEntity> TARGET_SELECTOR = livingEntity -> livingEntity.getType().is(EntityTypeTags.UNDEAD);
 
 	protected final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 

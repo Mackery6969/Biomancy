@@ -12,6 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 import net.neoforged.neoforge.client.model.generators.CustomLoaderBuilder;
 import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
+import net.neoforged.neoforge.client.model.generators.loaders.DynamicFluidContainerModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.loaders.ItemLayerModelBuilder;
@@ -135,8 +136,8 @@ public class ModItemModelProvider extends ItemModelProvider {
 		getBuilder(registryKey.toString())
 				.parent(new ModelFile.UncheckedModelFile("item/generated"))
 				.customLoader(ItemLayerModelBuilder::begin).emissive(0xf, 0xf, 1).end()
-				.texture(LAYER_0_TEXTURE, new ResourceLocation(registryKey.getNamespace(), ITEM_FOLDER + "/" + registryKey.getPath()))
-				.texture(LAYER_1_TEXTURE, new ResourceLocation(registryKey.getNamespace(), ITEM_FOLDER + "/" + registryKey.getPath() + "_emissive"));
+				.texture(LAYER_0_TEXTURE, ResourceLocation.fromNamespaceAndPath(registryKey.getNamespace(), ITEM_FOLDER + "/" + registryKey.getPath()))
+				.texture(LAYER_1_TEXTURE, ResourceLocation.fromNamespaceAndPath(registryKey.getNamespace(), ITEM_FOLDER + "/" + registryKey.getPath() + "_emissive"));
 	}
 
 	public <T extends DespoilingSwordItem> void fleshPlunderer(DeferredHolder<Item, T> registryObject) {
@@ -144,8 +145,8 @@ public class ModItemModelProvider extends ItemModelProvider {
 		getBuilder(registryKey.toString())
 				.parent(new ModelFile.UncheckedModelFile("item/handheld"))
 				.customLoader(ItemLayerModelBuilder::begin).emissive(0xf, 0xf, 1).end()
-				.texture(LAYER_0_TEXTURE, new ResourceLocation(registryKey.getNamespace(), ITEM_FOLDER + "/weapon/" + registryKey.getPath()))
-				.texture(LAYER_1_TEXTURE, new ResourceLocation(registryKey.getNamespace(), ITEM_FOLDER + "/weapon/" + registryKey.getPath() + "_emissive"));
+				.texture(LAYER_0_TEXTURE, ResourceLocation.fromNamespaceAndPath(registryKey.getNamespace(), ITEM_FOLDER + "/weapon/" + registryKey.getPath()))
+				.texture(LAYER_1_TEXTURE, ResourceLocation.fromNamespaceAndPath(registryKey.getNamespace(), ITEM_FOLDER + "/weapon/" + registryKey.getPath() + "_emissive"));
 	}
 
 	public <T extends Item> ItemModelBuilder basicItem(DeferredHolder<Item, T> registryObject) {
@@ -215,7 +216,7 @@ public class ModItemModelProvider extends ItemModelProvider {
 	public ItemModelBuilder basicItem(ResourceLocation registryKey, String subfolder) {
 		return getBuilder(registryKey.toString())
 				.parent(new ModelFile.UncheckedModelFile("item/generated"))
-				.texture(LAYER_0_TEXTURE, new ResourceLocation(registryKey.getNamespace(), ITEM_FOLDER + "/" + subfolder + "/" + registryKey.getPath()));
+				.texture(LAYER_0_TEXTURE, ResourceLocation.fromNamespaceAndPath(registryKey.getNamespace(), ITEM_FOLDER + "/" + subfolder + "/" + registryKey.getPath()));
 	}
 
 	public ItemModelBuilder overlayItem(Item item) {
@@ -228,12 +229,12 @@ public class ModItemModelProvider extends ItemModelProvider {
 
 	public ItemModelBuilder overlayItem(ResourceLocation registryKey) {
 		String texturePath = ITEM_FOLDER + "/" + registryKey.getPath() + "_overlay";
-		return basicItem(registryKey).texture(LAYER_1_TEXTURE, new ResourceLocation(registryKey.getNamespace(), texturePath));
+		return basicItem(registryKey).texture(LAYER_1_TEXTURE, ResourceLocation.fromNamespaceAndPath(registryKey.getNamespace(), texturePath));
 	}
 
 	public ItemModelBuilder overlayItem(ResourceLocation registryKey, String subfolder) {
 		String texturePath = ITEM_FOLDER + "/" + subfolder + "/" + registryKey.getPath() + "_overlay";
-		return basicItem(registryKey, subfolder).texture(LAYER_1_TEXTURE, new ResourceLocation(registryKey.getNamespace(), texturePath));
+		return basicItem(registryKey, subfolder).texture(LAYER_1_TEXTURE, ResourceLocation.fromNamespaceAndPath(registryKey.getNamespace(), texturePath));
 	}
 
 	public ItemModelBuilder handheldItem(Item item) {
@@ -247,13 +248,13 @@ public class ModItemModelProvider extends ItemModelProvider {
 	public ItemModelBuilder handheldItem(ResourceLocation registryKey) {
 		return getBuilder(registryKey.toString())
 				.parent(new ModelFile.UncheckedModelFile("item/handheld"))
-				.texture(LAYER_0_TEXTURE, new ResourceLocation(registryKey.getNamespace(), ITEM_FOLDER + "/" + registryKey.getPath()));
+				.texture(LAYER_0_TEXTURE, ResourceLocation.fromNamespaceAndPath(registryKey.getNamespace(), ITEM_FOLDER + "/" + registryKey.getPath()));
 	}
 
 	public ItemModelBuilder handheldItem(ResourceLocation registryKey, String subfolder) {
 		return getBuilder(registryKey.toString())
 				.parent(new ModelFile.UncheckedModelFile("item/handheld"))
-				.texture(LAYER_0_TEXTURE, new ResourceLocation(registryKey.getNamespace(), ITEM_FOLDER + "/" + subfolder + "/" + registryKey.getPath()));
+				.texture(LAYER_0_TEXTURE, ResourceLocation.fromNamespaceAndPath(registryKey.getNamespace(), ITEM_FOLDER + "/" + subfolder + "/" + registryKey.getPath()));
 	}
 
 	public <T extends BlockItem> ItemModelBuilder flatBlockItem(DeferredHolder<Item, T> registryObject) {
@@ -267,7 +268,7 @@ public class ModItemModelProvider extends ItemModelProvider {
 	public ItemModelBuilder flatBlockItem(ResourceLocation registryKey) {
 		return getBuilder(registryKey.toString())
 				.parent(new ModelFile.UncheckedModelFile("item/generated"))
-				.texture(LAYER_0_TEXTURE, new ResourceLocation(registryKey.getNamespace(), BLOCK_FOLDER + "/" + registryKey.getPath()));
+				.texture(LAYER_0_TEXTURE, ResourceLocation.fromNamespaceAndPath(registryKey.getNamespace(), BLOCK_FOLDER + "/" + registryKey.getPath()));
 	}
 
 	public <T extends BlockItem> ItemModelBuilder flatBlockItem(DeferredHolder<Item, T> registryObject, String suffix) {
@@ -281,24 +282,17 @@ public class ModItemModelProvider extends ItemModelProvider {
 	public ItemModelBuilder flatBlockItem(ResourceLocation registryKey, String suffix) {
 		return getBuilder(registryKey.toString())
 				.parent(new ModelFile.UncheckedModelFile("item/generated"))
-				.texture(LAYER_0_TEXTURE, new ResourceLocation(registryKey.getNamespace(), BLOCK_FOLDER + "/" + registryKey.getPath() + suffix));
+				.texture(LAYER_0_TEXTURE, ResourceLocation.fromNamespaceAndPath(registryKey.getNamespace(), BLOCK_FOLDER + "/" + registryKey.getPath() + suffix));
 	}
 
 	public ItemModelBuilder dynamicBucket(BucketItem item) {
 		ResourceLocation itemKey = registryKey(item);
-		ResourceLocation fluidKey = Objects.requireNonNull(BuiltInRegistries.FLUID.getKey(item.getFluid()));
-		ResourceLocation loaderKey = new ResourceLocation("forge", "fluid_container");
-		ResourceLocation bucketModelKey = new ResourceLocation("forge", "item/bucket");
+		ResourceLocation bucketModelKey = ResourceLocation.fromNamespaceAndPath("neoforge", "item/bucket");
 
 		return getBuilder(itemKey.toString())
 				.parent(getExistingFile(bucketModelKey))
-				.customLoader((builder, existingFileHelper) -> new CustomLoaderBuilder<ItemModelBuilder>(loaderKey, builder, existingFileHelper) {
-					@Override
-					public JsonObject toJson(JsonObject json) {
-						JsonObject json1 = super.toJson(json);
-						json1.addProperty("fluid", fluidKey.toString());
-						return json1;
-					}
-				}).end();
+				.customLoader(DynamicFluidContainerModelBuilder::begin)
+				.fluid(item.content)
+				.end();
 	}
 }

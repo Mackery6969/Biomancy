@@ -80,7 +80,7 @@ public class VialHolderBlockEntity extends SimpleSyncedBlockEntity {
 	}
 
 	@Override
-	protected void saveForSyncToClient(CompoundTag tag) {
+	protected void saveForSyncToClient(CompoundTag tag, HolderLookup.Provider registries) {
 		tag.put(INVENTORY_TAG, inventory.serializeNBT(registries));
 	}
 

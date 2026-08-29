@@ -21,6 +21,7 @@ import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import org.apache.logging.log4j.MarkerManager;
 import org.jspecify.annotations.Nullable;
@@ -34,7 +35,7 @@ public class BioForgeMenu extends PlayerContainerMenu {
 	private int playerInvChanges;
 	private final ItemStackCounter itemCounter = new ItemStackCounter();
 	@Nullable
-	private BioForgingRecipe selectedRecipe;
+	private RecipeHolder<BioForgingRecipe> selectedRecipeHolder;
 
 	protected BioForgeMenu(int id, Inventory playerInventory, @Nullable BioForgeBlockEntity bioforge) {
 		super(ModMenuTypes.BIO_FORGE.get(), id, playerInventory, 124, 137, 195);
@@ -104,7 +105,8 @@ public class BioForgeMenu extends PlayerContainerMenu {
 		ItemStack resultStack = ItemStack.EMPTY;
 
 		BioForgingRecipe recipe = getSelectedRecipe();
-		if (recipe != null && resultContainer.setRecipeUsed(serverPlayer.level(), serverPlayer, recipe) && canCraft(recipe)) {
+		if (recipe != null && canCraft(recipe)) {
+			resultContainer.setRecipeUsed(selectedRecipeHolder);
 			resultStack = recipe.getResultItem(serverPlayer.level().registryAccess()).copy();
 		}
 
@@ -116,11 +118,11 @@ public class BioForgeMenu extends PlayerContainerMenu {
 
 	@Nullable
 	public BioForgingRecipe getSelectedRecipe() {
-		return selectedRecipe;
+		return selectedRecipeHolder != null ? selectedRecipeHolder.value() : null;
 	}
 
-	public void setSelectedRecipe(@Nullable BioForgingRecipe recipe, ServerPlayer serverPlayer) {
-		selectedRecipe = recipe;
+	public void setSelectedRecipe(@Nullable RecipeHolder<BioForgingRecipe> recipeHolder, ServerPlayer serverPlayer) {
+		selectedRecipeHolder = recipeHolder;
 		countPlayerInvItems(serverPlayer, serverPlayer.getInventory());
 		updateResultSlot(serverPlayer);
 	}

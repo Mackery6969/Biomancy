@@ -144,11 +144,6 @@ public class LivingShieldItem extends SimpleShieldItem implements SimpleLivingTo
 	}
 
 	@Override
-	public boolean canBeDepleted() {
-		return false;
-	}
-
-	@Override
 	public boolean isEnchantable(ItemStack stack) {
 		return false;
 	}

@@ -1,0 +1,35 @@
+{
+  "parent": "biomancy:biomancy/bio_forge",
+  "criteria": {
+    "has_bio_lab": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomancy:bio_lab"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.biomancy.bio_lab.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "biomancy:bio_lab"
+    },
+    "title": {
+      "translate": "advancements.biomancy.bio_lab.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_bio_lab"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

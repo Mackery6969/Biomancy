@@ -1,0 +1,17 @@
+{
+  "type": "biomancy:decomposing",
+  "ingredient": {
+    "tag": "c:seeds"
+  },
+  "processingTime": 40,
+  "results": [
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 2,
+        "min": 1
+      },
+      "item": "biomancy:organic_matter"
+    }
+  ]
+}

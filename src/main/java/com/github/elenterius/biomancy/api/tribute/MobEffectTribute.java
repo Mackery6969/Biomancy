@@ -2,12 +2,12 @@ package com.github.elenterius.biomancy.api.tribute;
 
 import com.github.elenterius.biomancy.init.tags.ModMobEffectTags;
 import com.github.elenterius.biomancy.item.PotionSerumItem;
-import com.github.elenterius.biomancy.mixin.accessor.SuspiciousStewItemAccessor;
 import com.github.elenterius.biomancy.serum.PotionSerum;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.component.SuspiciousStewEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
@@ -49,7 +49,10 @@ public record MobEffectTribute(int lifeEnergy, int successModifier, int diseaseM
 		}
 
 		if (isSuspiciousStewItem) {
-			SuspiciousStewItemAccessor.biomancy$ListPotionEffects(stack, effectInstance -> builder.addEffect(effectInstance, 1.2f));
+			SuspiciousStewEffects stewEffects = stack.getOrDefault(DataComponents.SUSPICIOUS_STEW_EFFECTS, SuspiciousStewEffects.EMPTY);
+			for (SuspiciousStewEffects.Entry entry : stewEffects.effects()) {
+				builder.addEffect(entry.createEffectInstance(), 1.2f);
+			}
 		}
 
 		if (isFoodItem) {

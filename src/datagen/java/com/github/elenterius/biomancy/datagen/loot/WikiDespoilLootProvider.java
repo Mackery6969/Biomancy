@@ -1,6 +1,7 @@
 package com.github.elenterius.biomancy.datagen.loot;
 
 import net.minecraft.Util;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -22,14 +23,16 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.github.elenterius.biomancy.BiomancyMod.LOGGER;
+
 public class WikiDespoilLootProvider implements DataProvider {
 
-	private final ModDespoilLoot despoilLootProvider;
+	private final CompletableFuture<HolderLookup.Provider> registries;
 	private final Path baseInputPath;
 	private final Path baseOutputPath;
 
-	public WikiDespoilLootProvider(PackOutput output, ModDespoilLoot despoilLootProvider) {
-		this.despoilLootProvider = despoilLootProvider;
+	public WikiDespoilLootProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+		this.registries = registries;
 		baseInputPath = Paths.get(System.getProperty("wiki.docs")).resolve(".content");
 		baseOutputPath = Paths.get(System.getProperty("wiki.docs")).resolve(".content");
 //		baseOutputPath = output.getOutputFolder().resolve(".wiki_content");
@@ -37,6 +40,11 @@ public class WikiDespoilLootProvider implements DataProvider {
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput output) {
+		return registries.thenCompose(provider -> run(output, provider));
+	}
+
+	private CompletableFuture<?> run(CachedOutput output, HolderLookup.Provider provider) {
+		ModDespoilLoot despoilLootProvider = new ModDespoilLoot(provider);
 		despoilLootProvider.generate();
 		Map<String, String> mobTokens = new HashMap<>();
 

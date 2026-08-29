@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import java.util.function.Supplier;
 
 public final class ModBlockSetTypes {
-	public static final Supplier<BlockSetType> FLESH_SET_TYPE = () -> new BlockSetType("flesh", true, ModSoundTypes.FLESH_BLOCK,
+	public static final Supplier<BlockSetType> FLESH_SET_TYPE = () -> new BlockSetType("flesh", true, true, true, BlockSetType.PressurePlateSensitivity.EVERYTHING, ModSoundTypes.FLESH_BLOCK,
 			ModSoundEvents.FLESH_DOOR_CLOSE.get(), ModSoundEvents.FLESH_DOOR_OPEN.get(),
 			ModSoundEvents.FLESH_DOOR_CLOSE.get(), ModSoundEvents.FLESH_DOOR_OPEN.get(),
 			SoundEvents.WOODEN_PRESSURE_PLATE_CLICK_OFF, SoundEvents.WOODEN_PRESSURE_PLATE_CLICK_ON,

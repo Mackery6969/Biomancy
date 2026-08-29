@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.contents.DataSource;
 import net.minecraft.network.chat.contents.SelectorContents;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraftforge.client.ForgeHooksClient;
+import net.neoforged.neoforge.client.ClientHooks;
 import org.jspecify.annotations.Nullable;
 
 import java.text.BreakIterator;
@@ -101,7 +101,7 @@ public final class ComponentUtil {
 		/**
 		 * This is a component for {@link CommonComponents#EMPTY}
 		 * <br><br>
-		 * When tooltip text is too wide it is wrapped around by forge ({@link ForgeHooksClient#gatherTooltipComponents}) to the next line and {@link CommonComponents#EMPTY}
+		 * When tooltip text is too wide it is wrapped around by neoforge ({@link ClientHooks#gatherTooltipComponents}) to the next line and {@link CommonComponents#EMPTY}
 		 * components (empty strings) are discarded by minecraft's {@link net.minecraft.client.StringSplitter#splitLines StringSplitter#splitLines} method.<br>
 		 */
 		static final Component EMPTY_LINE_COMPONENT = wrap(new EmptyLineTooltipComponent());

@@ -2,8 +2,10 @@ package com.github.elenterius.biomancy.block.chrysalis;
 
 import com.github.elenterius.biomancy.block.base.WaterloggedFacingEntityBlock;
 import com.github.elenterius.biomancy.util.VoxelShapeUtil;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +25,8 @@ import java.util.stream.Stream;
 
 public class ChrysalisBlock extends WaterloggedFacingEntityBlock {
 
+	public static final MapCodec<ChrysalisBlock> CODEC = simpleCodec(ChrysalisBlock::new);
+
 	public static final VoxelShape SHAPE_UP = createShape(Direction.UP);
 	public static final VoxelShape SHAPE_DOWN = createShape(Direction.DOWN);
 	public static final VoxelShape SHAPE_NORTH = createShape(Direction.NORTH);
@@ -32,6 +36,11 @@ public class ChrysalisBlock extends WaterloggedFacingEntityBlock {
 
 	public ChrysalisBlock(Properties properties) {
 		super(properties);
+	}
+
+	@Override
+	protected MapCodec<? extends ChrysalisBlock> codec() {
+		return CODEC;
 	}
 
 	private static VoxelShape createShape(Direction direction) {
@@ -50,28 +59,27 @@ public class ChrysalisBlock extends WaterloggedFacingEntityBlock {
 
 	@Override
 	public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-		if (level.getBlockEntity(pos) instanceof ChrysalisBlockEntity blockEntity && stack.hasCustomHoverName()) {
+		if (level.getBlockEntity(pos) instanceof ChrysalisBlockEntity blockEntity && stack.has(DataComponents.CUSTOM_NAME)) {
 			blockEntity.setCustomName(stack.getHoverName());
 		}
 	}
 
 	@Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
 		if (level.isClientSide) {
-			super.playerWillDestroy(level, pos, state, player);
-			return;
+			return super.playerWillDestroy(level, pos, state, player);
 		}
 
 		if (player.isCreative() && level.getBlockEntity(pos) instanceof ChrysalisBlockEntity chrysalis && !chrysalis.isEmpty()) {
 			ItemStack stack = new ItemStack(this);
-			chrysalis.saveToItem(stack);
-			if (chrysalis.hasCustomName()) stack.setHoverName(chrysalis.getCustomName());
+			chrysalis.saveToItem(stack, level.registryAccess());
+			if (chrysalis.hasCustomName()) stack.set(DataComponents.CUSTOM_NAME, chrysalis.getCustomName());
 			ItemEntity itemEntity = new ItemEntity(level, pos.getX() + 0.5d, pos.getY() + 0.5D, pos.getZ() + 0.5d, stack);
 			itemEntity.setDefaultPickUpDelay();
 			level.addFreshEntity(itemEntity);
 		}
 
-		super.playerWillDestroy(level, pos, state, player);
+		return super.playerWillDestroy(level, pos, state, player);
 	}
 
 	@Override

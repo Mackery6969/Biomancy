@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dramaticdoors"
+    }
+  ],
+  "type": "biomancy:bio_forging",
+  "bio_forge_tab": "biomancy:misc",
+  "ingredients": [
+    {
+      "count": 9,
+      "item": "biomancy:flesh_bits"
+    },
+    {
+      "count": 9,
+      "item": "biomancy:bone_fragments"
+    },
+    {
+      "count": 6,
+      "item": "biomancy:elastic_fibers"
+    },
+    {
+      "count": 3,
+      "item": "biomancy:tough_fibers"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "dramaticdoors:tall_full_flesh_door"
+  }
+}

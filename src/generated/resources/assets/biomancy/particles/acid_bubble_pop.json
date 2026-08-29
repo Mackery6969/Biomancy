@@ -1,5 +1,9 @@
 {
   "textures": [
-    "biomancy:acid_bubble_pop_0", "biomancy:acid_bubble_pop_1", "biomancy:acid_bubble_pop_2", "biomancy:acid_bubble_pop_3", "biomancy:acid_bubble_pop_4"
+    "biomancy:acid_bubble_pop_0",
+    "biomancy:acid_bubble_pop_1",
+    "biomancy:acid_bubble_pop_2",
+    "biomancy:acid_bubble_pop_3",
+    "biomancy:acid_bubble_pop_4"
   ]
 }

@@ -1,0 +1,34 @@
+{
+  "criteria": {
+    "has_raw_meats": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#biomancy:raw_meats"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "biomancy:textures/block/smooth_primal_flesh.png",
+    "description": {
+      "translate": "advancements.biomancy.root.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "biomancy:flesh_bits"
+    },
+    "title": {
+      "translate": "advancements.biomancy.root.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_raw_meats"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

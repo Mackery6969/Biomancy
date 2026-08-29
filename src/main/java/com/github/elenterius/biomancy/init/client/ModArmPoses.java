@@ -1,15 +1,15 @@
 package com.github.elenterius.biomancy.init.client;
 
-import com.github.elenterius.biomancy.BiomancyMod;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
+import net.neoforged.fml.common.asm.enumextension.EnumProxy;
 import net.neoforged.neoforge.client.IArmPoseTransformer;
 
 public final class ModArmPoses {
 
-	public static HumanoidModel.ArmPose HOLD_AND_AIM_GUN_TWO_HANDED = create("hold_and_aim_gun_two_handed", true, (model, livingEntity, arm) -> {
+	public static final EnumProxy<HumanoidModel.ArmPose> HOLD_AND_AIM_GUN_TWO_HANDED_PROXY = new EnumProxy<>(HumanoidModel.ArmPose.class, true, (IArmPoseTransformer) (model, livingEntity, arm) -> {
 		//based on AnimationUtils#animateCrossbowHold
 
 		boolean rightHanded = arm == HumanoidArm.RIGHT;
@@ -36,9 +36,5 @@ public final class ModArmPoses {
 	private ModArmPoses() {}
 
 	static void init() {}
-
-	private static HumanoidModel.ArmPose create(String name, boolean twoHanded, IArmPoseTransformer poseTransformer) {
-		return HumanoidModel.ArmPose.create(BiomancyMod.MOD_ID + "_" + name, twoHanded, poseTransformer);
-	}
 
 }

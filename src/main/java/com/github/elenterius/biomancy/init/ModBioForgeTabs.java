@@ -27,11 +27,11 @@ public final class ModBioForgeTabs {
 	private ModBioForgeTabs() {}
 
 	private static DeferredHolder<BioForgeTab, BioForgeTab> register(String name, Supplier<? extends Item> itemSupplier) {
-		return BIO_FORGE_TABS.register(name, () -> new BioForgeTab(itemSupplier.get()));
+		return BIO_FORGE_TABS.register(name, () -> new BioForgeTab(itemSupplier));
 	}
 
 	private static DeferredHolder<BioForgeTab, BioForgeTab> register(String name, int sortPriority, Supplier<? extends Item> itemSupplier) {
-		return BIO_FORGE_TABS.register(name, () -> new BioForgeTab(sortPriority, itemSupplier.get()));
+		return BIO_FORGE_TABS.register(name, () -> new BioForgeTab(sortPriority, itemSupplier));
 	}
 
 }

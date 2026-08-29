@@ -21,9 +21,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -44,16 +47,16 @@ public class ChrysalisBlockItem extends SimpleBlockItem {
 	public void onDestroyed(ItemEntity itemEntity) {
 		if (itemEntity.level().isClientSide) return;
 
-		CompoundTag compoundTag = BlockItem.getBlockEntityData(itemEntity.getItem());
-		if (compoundTag == null || !compoundTag.contains(ENTITY_KEY)) return;
+		CustomData customData = itemEntity.getItem().getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY);
+		if (customData.isEmpty() || !customData.contains(ENTITY_KEY)) return;
 
-		CompoundTag entityTag = compoundTag.getCompound(ENTITY_KEY);
+		CompoundTag entityTag = customData.copyTag().getCompound(ENTITY_KEY);
 		Chrysalis.spawnEntity((ServerLevel) itemEntity.level(), itemEntity.getEyePosition(), entityTag);
 	}
 
 	public boolean isEmpty(ItemStack stack) {
-		CompoundTag compoundTag = BlockItem.getBlockEntityData(stack);
-		return compoundTag == null || !compoundTag.contains(ENTITY_KEY);
+		CustomData customData = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY);
+		return customData.isEmpty() || !customData.contains(ENTITY_KEY);
 	}
 
 	@Override
@@ -115,14 +118,15 @@ public class ChrysalisBlockItem extends SimpleBlockItem {
 		Player player = context.getPlayer();
 		if (player == null || !player.isSecondaryUseActive()) return InteractionResult.PASS;
 
-		CompoundTag compoundTag = BlockItem.getBlockEntityData(stack);
-		if (compoundTag == null || !compoundTag.contains(ENTITY_KEY)) return InteractionResult.PASS;
+		CustomData customData = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY);
+		if (customData.isEmpty() || !customData.contains(ENTITY_KEY)) return InteractionResult.PASS;
 
 		Level level = context.getLevel();
 		if (level.isClientSide()) return InteractionResult.SUCCESS;
 
 		if (level.mayInteract(player, context.getClickedPos()) && player.mayUseItemAt(context.getClickedPos(), context.getClickedFace(), stack)) {
 
+			CompoundTag compoundTag = customData.copyTag();
 			CompoundTag entityTag = compoundTag.getCompound(ENTITY_KEY);
 
 			if (spawnEntity((ServerLevel) level, context, entityTag)) {
@@ -188,13 +192,13 @@ public class ChrysalisBlockItem extends SimpleBlockItem {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 		super.appendHoverText(stack, context, tooltip, flag);
 
-		CompoundTag compoundTag = BlockItem.getBlockEntityData(stack);
-		if (compoundTag == null || !compoundTag.contains(ENTITY_KEY)) return;
+		CustomData customData = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY);
+		if (customData.isEmpty() || !customData.contains(ENTITY_KEY)) return;
 
-		CompoundTag tag = compoundTag.getCompound(ENTITY_KEY);
+		CompoundTag tag = customData.copyTag().getCompound(ENTITY_KEY);
 		MutableComponent entityName = ComponentUtil.translatable(tag.getString(ENTITY_NAME_KEY));
 
 		tooltip.add(ComponentUtil.EMPTY_LINE);
@@ -218,10 +222,10 @@ public class ChrysalisBlockItem extends SimpleBlockItem {
 
 	@Nullable
 	private MutableComponent getEntityTypeName(ItemStack stack) {
-		CompoundTag compoundTag = BlockItem.getBlockEntityData(stack);
-		if (compoundTag == null || !compoundTag.contains(ENTITY_KEY)) return null;
+		CustomData customData = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY);
+		if (customData.isEmpty() || !customData.contains(ENTITY_KEY)) return null;
 
-		CompoundTag tag = compoundTag.getCompound(ENTITY_KEY);
+		CompoundTag tag = customData.copyTag().getCompound(ENTITY_KEY);
 		return ComponentUtil.translatable(tag.getString(ENTITY_NAME_KEY));
 	}
 

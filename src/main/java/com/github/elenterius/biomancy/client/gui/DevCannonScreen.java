@@ -208,18 +208,17 @@ public class DevCannonScreen extends Screen {
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
-		BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
-		bufferBuilder.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
+		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
 
 		float innerRadius = Math.max(radius - 16, 0);
-		bufferBuilder.vertex(matrix4f, x + innerRadius * Mth.cos(startAngle), y + innerRadius * Mth.sin(startAngle), z).color(argbColor).endVertex();
-		bufferBuilder.vertex(matrix4f, x + innerRadius * Mth.cos(endAngle), y + innerRadius * Mth.sin(endAngle), z).color(argbColor).endVertex();
+		bufferBuilder.addVertex(matrix4f, x + innerRadius * Mth.cos(startAngle), y + innerRadius * Mth.sin(startAngle), z).setColor(argbColor);
+		bufferBuilder.addVertex(matrix4f, x + innerRadius * Mth.cos(endAngle), y + innerRadius * Mth.sin(endAngle), z).setColor(argbColor);
 
 		float outerRadius = radius + 16;
-		bufferBuilder.vertex(matrix4f, x + outerRadius * Mth.cos(endAngle), y + outerRadius * Mth.sin(endAngle), z).color(argbColor).endVertex();
-		bufferBuilder.vertex(matrix4f, x + outerRadius * Mth.cos(startAngle), y + outerRadius * Mth.sin(startAngle), z).color(argbColor).endVertex();
+		bufferBuilder.addVertex(matrix4f, x + outerRadius * Mth.cos(endAngle), y + outerRadius * Mth.sin(endAngle), z).setColor(argbColor);
+		bufferBuilder.addVertex(matrix4f, x + outerRadius * Mth.cos(startAngle), y + outerRadius * Mth.sin(startAngle), z).setColor(argbColor);
 
-		BufferUploader.draw(bufferBuilder.end());
+		BufferUploader.draw(bufferBuilder.buildOrThrow());
 
 		//		RenderSystem.enableTexture();
 		RenderSystem.disableBlend();

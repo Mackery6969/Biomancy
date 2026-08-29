@@ -39,7 +39,7 @@ public interface FuelHandler {
 		if (consumeCount > 0) {
 			int amount = Mth.clamp(currFuelAmount + fuelValue * consumeCount, 0, getMaxFuelAmount());
 			setFuelAmount(amount);
-			return ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - consumeCount);
+			return stack.copyWithCount(stack.getCount() - consumeCount);
 		}
 		return stack;
 	}

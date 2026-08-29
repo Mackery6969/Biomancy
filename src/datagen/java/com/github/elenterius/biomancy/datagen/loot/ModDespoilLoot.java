@@ -16,7 +16,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.functions.LootingEnchantFunction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.world.level.storage.loot.functions.EnchantedCountIncreaseFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
@@ -28,6 +29,12 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class ModDespoilLoot extends DespoilLootProvider {
+
+	protected final HolderLookup.Provider registries;
+
+	public ModDespoilLoot(HolderLookup.Provider registries) {
+		this.registries = registries;
+	}
 
 	protected static final Set<EntityType<?>> BONE_MARROW_MOBS = Set.of(
 			EntityType.SKELETON_HORSE, EntityType.SKELETON, EntityType.STRAY,
@@ -95,7 +102,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 		Predicate<EntityType<?>> validEntityType = entityType -> entityType.getCategory() != MobCategory.MISC; //excludes Players & Villagers as well
 		Predicate<EntityType<?>> ignoreEntityType = entityType -> entityType != EntityType.WARDEN;
 
-		BuiltInRegistries.ENTITY_TYPE.getValues().stream()
+		BuiltInRegistries.ENTITY_TYPE.stream()
 				.filter(allowedNamespace)
 				.filter(validEntityType)
 				.filter(ignoreEntityType)
@@ -158,7 +165,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 			builder.add(
 					LootItem.lootTableItem(ModItems.MOB_FANG.get()).setWeight(144)
 							.apply(SetItemCountFunction.setCount(countProvider))
-							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
+							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(registries, UniformGenerator.between(0, 1)))
 			);
 
 			despoilDropSources.computeIfAbsent(ModItems.MOB_FANG.get(), k -> new HashSet<>()).add(entityType);
@@ -178,7 +185,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 			builder.add(
 					LootItem.lootTableItem(ModItems.MOB_CLAW.get()).setWeight(150)
 							.apply(SetItemCountFunction.setCount(countProvider))
-							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
+							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(registries, UniformGenerator.between(0, 1)))
 			);
 
 			despoilDropSources.computeIfAbsent(ModItems.MOB_CLAW.get(), k -> new HashSet<>()).add(entityType);
@@ -193,7 +200,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 			builder.add(
 					LootItem.lootTableItem(ModItems.MOB_SINEW.get()).setWeight(50)
 							.apply(SetItemCountFunction.setCount(countProvider))
-							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
+							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(registries, UniformGenerator.between(0, 1)))
 			);
 
 			despoilDropSources.computeIfAbsent(ModItems.MOB_SINEW.get(), k -> new HashSet<>()).add(entityType);
@@ -214,7 +221,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 			builder.add(
 					LootItem.lootTableItem(ModItems.GENERIC_MOB_GLAND.get()).setWeight(weight)
 							.apply(SetItemCountFunction.setCount(countProvider))
-//							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
+//							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(registries, UniformGenerator.between(0, 1)))
 			);
 
 			despoilDropSources.computeIfAbsent(ModItems.GENERIC_MOB_GLAND.get(), k -> new HashSet<>()).add(entityType);
@@ -229,7 +236,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 			builder.add(
 					LootItem.lootTableItem(ModItems.MOB_MARROW.get()).setWeight(45)
 							.apply(SetItemCountFunction.setCount(countProvider))
-							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
+							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(registries, UniformGenerator.between(0, 1)))
 			);
 
 			despoilDropSources.computeIfAbsent(ModItems.MOB_MARROW.get(), k -> new HashSet<>()).add(entityType);
@@ -260,7 +267,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 			builder.add(
 					LootItem.lootTableItem(ModItems.TOXIN_GLAND.get()).setWeight(75)
 							.apply(SetItemCountFunction.setCount(countProvider))
-//							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
+//							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(registries, UniformGenerator.between(0, 1)))
 			);
 
 			despoilDropSources.computeIfAbsent(ModItems.TOXIN_GLAND.get(), k -> new HashSet<>()).add(entityType);
@@ -275,7 +282,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 			builder.add(
 					LootItem.lootTableItem(ModItems.VOLATILE_GLAND.get()).setWeight(50)
 							.apply(SetItemCountFunction.setCount(countProvider))
-//							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
+//							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(registries, UniformGenerator.between(0, 1)))
 			);
 
 			despoilDropSources.computeIfAbsent(ModItems.VOLATILE_GLAND.get(), k -> new HashSet<>()).add(entityType);
@@ -290,7 +297,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 			builder.add(
 					LootItem.lootTableItem(ModItems.WITHERED_MOB_MARROW.get()).setWeight(65)
 							.apply(SetItemCountFunction.setCount(countProvider))
-							.apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
+							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(registries, UniformGenerator.between(0, 1)))
 			);
 
 			despoilDropSources.computeIfAbsent(ModItems.WITHERED_MOB_MARROW.get(), k -> new HashSet<>()).add(entityType);

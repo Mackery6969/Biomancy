@@ -1,0 +1,22 @@
+{
+  "type": "biomancy:bio_brewing",
+  "ingredients": [
+    {
+      "item": "biomancy:nutrient_paste"
+    },
+    {
+      "item": "biomancy:mineral_fragment"
+    },
+    {
+      "item": "biomancy:decaying_additive"
+    }
+  ],
+  "processingTime": 120,
+  "reactant": {
+    "item": "biomancy:genetic_compound"
+  },
+  "result": {
+    "count": 1,
+    "id": "biomancy:ageing_serum"
+  }
+}

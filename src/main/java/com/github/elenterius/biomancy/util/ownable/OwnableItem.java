@@ -1,7 +1,9 @@
 package com.github.elenterius.biomancy.util.ownable;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -10,7 +12,7 @@ public interface OwnableItem {
 	String NBT_KEY = "OwnerUUID";
 
 	default Optional<UUID> getOwner(ItemStack stack) {
-		CompoundTag nbt = stack.getOrCreateTag();
+		CompoundTag nbt = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 		if (nbt.hasUUID(NBT_KEY)) {
 			return Optional.of(nbt.getUUID(NBT_KEY));
 		}
@@ -18,15 +20,15 @@ public interface OwnableItem {
 	}
 
 	default void setOwner(ItemStack stack, UUID uuid) {
-		stack.getOrCreateTag().putUUID(NBT_KEY, uuid);
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putUUID(NBT_KEY, uuid));
 	}
 
 	default void removeOwner(ItemStack stack) {
-		stack.getOrCreateTag().remove(NBT_KEY);
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.remove(NBT_KEY));
 	}
 
 	default boolean hasOwner(ItemStack stack) {
-		return stack.getOrCreateTag().hasUUID(NBT_KEY);
+		return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().hasUUID(NBT_KEY);
 	}
 
 	default boolean isOwner(ItemStack stack, UUID uuid) {

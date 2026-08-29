@@ -30,19 +30,19 @@ public class TongueRenderer extends CustomGeoBlockRenderer<TongueBlockEntity> {
 	}
 
 	@Override
-	public void preRender(PoseStack poseStack, TongueBlockEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void preRender(PoseStack poseStack, TongueBlockEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
 		heldItemStack = animatable.getHeldItem();
-		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
 	}
 
 	@Override
-	public void renderRecursively(PoseStack poseStack, TongueBlockEntity animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderRecursively(PoseStack poseStack, TongueBlockEntity animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
 		if (bone.getName().equals("_item") && !heldItemStack.isEmpty()) {
 			int itemCount = Math.min(heldItemStack.getCount(), 3);
 			int seed = Item.getId(heldItemStack.getItem()) + heldItemStack.getDamageValue();
 			renderItems(poseStack, bufferSource, packedLight, packedOverlay, itemCount, seed);
 		}
-		super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+		super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
 	}
 
 

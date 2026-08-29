@@ -233,7 +233,7 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 			@Override
 			public HumanoidModel.ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
 				//	getUseAnimation(ItemStack stack) needs to return NONE or CUSTOM for this method to be called
-				return ModArmPoses.HOLD_AND_AIM_GUN_TWO_HANDED;
+				return ModArmPoses.HOLD_AND_AIM_GUN_TWO_HANDED_PROXY.getValue();
 			}
 
 			@Override

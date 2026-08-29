@@ -16,15 +16,16 @@ public class FrenzyEffect extends AttackDamageEffect implements StackingStatusEf
 	}
 
 	@Override
-	public boolean isDurationEffectTick(int duration, int amplifier) {
+	public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
 		return duration % 20 == 0;
 	}
 
 	@Override
-	public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
+	public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
 		if (livingEntity instanceof Player player) {
 			player.causeFoodExhaustion(0.15f * (amplifier + 1f));
 		}
+		return true;
 	}
 
 }

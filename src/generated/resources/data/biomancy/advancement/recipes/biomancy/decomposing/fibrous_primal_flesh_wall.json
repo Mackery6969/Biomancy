@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_fibrous_primal_flesh_wall": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomancy:fibrous_primal_flesh_wall"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "biomancy:decomposing/fibrous_primal_flesh_wall"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_fibrous_primal_flesh_wall"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "biomancy:decomposing/fibrous_primal_flesh_wall"
+    ]
+  }
+}

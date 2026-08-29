@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sons_of_sins"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ravager_muscle": {
+      "conditions": {
+        "items": [
+          {
+            "items": "sons_of_sins:ravager_muscle"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "biomancy:decomposing/ravager_muscle"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ravager_muscle"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "biomancy:decomposing/ravager_muscle"
+    ]
+  }
+}

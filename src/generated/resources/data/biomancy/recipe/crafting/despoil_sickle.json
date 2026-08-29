@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "tag": "c:bones"
+    },
+    "M": {
+      "tag": "biomancy:raw_meats"
+    }
+  },
+  "pattern": [
+    "BBM",
+    " MB",
+    " BM"
+  ],
+  "result": {
+    "count": 1,
+    "id": "biomancy:despoil_sickle"
+  }
+}

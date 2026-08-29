@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "type": "biomancy:decomposing",
+  "ingredient": {
+    "tag": "biomancy:compat/biomesoplenty/hair"
+  },
+  "processingTime": 40,
+  "results": [
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 1,
+        "min": -1
+      },
+      "item": "biomancy:mineral_fragment"
+    }
+  ]
+}

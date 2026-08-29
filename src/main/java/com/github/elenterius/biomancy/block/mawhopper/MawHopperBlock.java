@@ -4,12 +4,14 @@ import com.github.elenterius.biomancy.block.property.DirectedConnection;
 import com.github.elenterius.biomancy.block.property.VertexType;
 import com.github.elenterius.biomancy.init.ModBlockEntities;
 import com.github.elenterius.biomancy.init.ModBlockProperties;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -38,10 +40,17 @@ public class MawHopperBlock extends BaseEntityBlock implements SimpleWaterlogged
 	public static final EnumProperty<VertexType> VERTEX_TYPE = ModBlockProperties.VERTEX_TYPE;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
+	public static final MapCodec<MawHopperBlock> CODEC = simpleCodec(MawHopperBlock::new);
+
 	public MawHopperBlock(Properties properties) {
 		super(properties);
 		registerDefaultState(defaultBlockState().setValue(CONNECTION, DirectedConnection.UP_DOWN).setValue(VERTEX_TYPE, VertexType.SOURCE).setValue(WATERLOGGED, false));
 		MawHopperShapes.computePossibleShapes(stateDefinition.getPossibleStates());
+	}
+
+	@Override
+	protected MapCodec<? extends MawHopperBlock> codec() {
+		return CODEC;
 	}
 
 	public static DirectedConnection getConnection(BlockState state) {
@@ -198,17 +207,17 @@ public class MawHopperBlock extends BaseEntityBlock implements SimpleWaterlogged
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (player.getItemInHand(hand).isEmpty() && level.getBlockEntity(pos) instanceof MawHopperBlockEntity blockEntity) {
-			if (level.isClientSide) return InteractionResult.SUCCESS;
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		if (stack.isEmpty() && level.getBlockEntity(pos) instanceof MawHopperBlockEntity blockEntity) {
+			if (level.isClientSide) return ItemInteractionResult.SUCCESS;
 			blockEntity.giveInventoryContentsTo(level, pos, player);
-			return InteractionResult.CONSUME;
+			return ItemInteractionResult.CONSUME;
 		}
-		return super.use(state, level, pos, player, hand, hit);
+		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	@Override
-	public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
+	protected boolean isPathfindable(BlockState state, PathComputationType type) {
 		return false;
 	}
 

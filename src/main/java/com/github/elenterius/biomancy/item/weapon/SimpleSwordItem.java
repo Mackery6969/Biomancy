@@ -15,7 +15,7 @@ import java.util.List;
 public class SimpleSwordItem extends SwordItem implements ItemTooltipStyleProvider {
 
 	public SimpleSwordItem(Tier tier, int attackDamageModifier, float attackSpeedModifier, Properties properties) {
-		super(tier, attackDamageModifier, attackSpeedModifier, properties);
+		super(tier, properties.attributes(SwordItem.createAttributes(tier, attackDamageModifier, attackSpeedModifier)));
 	}
 
 	@Override

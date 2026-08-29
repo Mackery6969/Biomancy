@@ -130,7 +130,7 @@ public abstract class ParticleSpriteProvider implements DataProvider {
 	private boolean validate(final ResourceLocation particleId, final ParticleSprite particleSprite) {
 		boolean isValid = true;
 		for (String sprite : particleSprite.spriteFrames) {
-			ResourceLocation spriteResource = new ResourceLocation(sprite);
+			ResourceLocation spriteResource = ResourceLocation.parse(sprite);
 			boolean valid = fileHelper.exists(spriteResource, PackType.CLIENT_RESOURCES, ".png", "textures/particle");
 			if (!valid) {
 				final String path = "%s:textures/particle/%s.png".formatted(spriteResource.getNamespace(), spriteResource.getPath());
@@ -145,7 +145,7 @@ public abstract class ParticleSpriteProvider implements DataProvider {
 	protected record ParticleSprite(ResourceLocation texture, int frameCount, String[] spriteFrames) {
 
 		public static ParticleSprite create(String texture) {
-			ResourceLocation rl = new ResourceLocation(texture);
+			ResourceLocation rl = ResourceLocation.parse(texture);
 			return new ParticleSprite(rl, 1, new String[]{rl.toString()});
 		}
 

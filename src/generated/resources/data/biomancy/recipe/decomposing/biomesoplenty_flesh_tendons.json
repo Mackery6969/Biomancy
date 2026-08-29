@@ -1,0 +1,31 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "type": "biomancy:decomposing",
+  "ingredient": {
+    "tag": "biomancy:compat/biomesoplenty/flesh_tendons"
+  },
+  "processingTime": 98,
+  "results": [
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 8,
+        "min": 4
+      },
+      "item": "biomancy:elastic_fibers"
+    },
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 1,
+        "min": 0
+      },
+      "item": "biomancy:flesh_bits"
+    }
+  ]
+}

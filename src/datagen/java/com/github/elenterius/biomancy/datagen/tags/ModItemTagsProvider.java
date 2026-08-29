@@ -1,6 +1,7 @@
 package com.github.elenterius.biomancy.datagen.tags;
 
 import com.github.elenterius.biomancy.BiomancyMod;
+import com.github.elenterius.biomancy.datagen.recipes.builder.DatagenIngredient;
 import com.github.elenterius.biomancy.api.livingtool.LivingTool;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.tags.ModItemTags;
@@ -30,6 +31,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static net.minecraft.world.item.Items.*;
@@ -39,6 +41,16 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 	public ModItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagsProvider.TagLookup<Block>> blockTagLookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
 		super(output, lookupProvider, blockTagLookupProvider, BiomancyMod.MOD_ID, existingFileHelper);
 	}
+
+	private static final List<String> COMPAT_ITEMS = List.of(
+			"biomesoplenty:flesh_tendons",
+			"biomesoplenty:flesh_tendons_strand",
+			"biomesoplenty:flesh",
+			"biomesoplenty:porous_flesh",
+			"biomesoplenty:hair",
+			"biomesoplenty:eyebulb",
+			"biomesoplenty:pus_bubble"
+	);
 
 	private static TagKey<Item> forgeTag(String path) {
 		return ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", path));
@@ -62,6 +74,14 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 		addMinecraftTags();
 		addForgeTags();
 		addConventionalTags();
+		addCompatTags();
+	}
+
+	private void addCompatTags() {
+		for (String itemKey : COMPAT_ITEMS) {
+			DatagenIngredient ingredient = new DatagenIngredient(itemKey);
+			createTag(ingredient.tagKey).addOptional(itemKey);
+		}
 	}
 
 	private void addBiomancyTags() {
@@ -88,7 +108,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 		createTag(ModItemTags.CANNOT_BE_EATEN_BY_CRADLE)
 				.add(DRAGON_EGG, SPAWNER, HEART_OF_THE_SEA)
 				.add(NAME_TAG, BUNDLE)
-				.addTag(ItemTags.MUSIC_DISCS)
+				.addTag(Tags.Items.MUSIC_DISCS)
 				.add(ELYTRA)
 				.addTag(Tags.Items.ARMORS, Tags.Items.TOOLS)
 				.addTag(Tags.Items.ORES_NETHERITE_SCRAP, Tags.Items.INGOTS_NETHERITE, Tags.Items.STORAGE_BLOCKS_NETHERITE)
@@ -245,7 +265,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 	}
 
 	private void addForgeTags() {
-		createTag(Tags.Items.STRING)
+		createTag(Tags.Items.STRINGS)
 				.add(ModItems.MOB_SINEW.get());
 
 		//		tag(ModItemTags.FORGE_TOOLS_KNIVES);
@@ -260,7 +280,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 		createTag(ItemTags.SWORDS)
 				.add(ModItems.DESPOIL_SICKLE.get());
 
-		createTag(Tags.Items.TOOLS_SHIELDS)
+		createTag(Tags.Items.TOOLS_SHIELD)
 				.add(ModItems.THORN_SHIELD.get());
 
 		createTag(Tags.Items.TOOLS)

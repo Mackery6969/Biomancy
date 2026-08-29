@@ -50,6 +50,10 @@ public final class InventoryHandler<T extends SerializableItemHandler> implement
 		return recipeWrapper;
 	}
 
+	public ItemHandlerContainer getContainer() {
+		return new ItemHandlerContainer(itemHandler);
+	}
+
 	@Override
 	public void setStackInSlot(int slot, ItemStack stack) {
 		itemHandler.setStackInSlot(slot, stack);

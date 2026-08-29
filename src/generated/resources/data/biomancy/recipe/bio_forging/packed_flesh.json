@@ -1,0 +1,18 @@
+{
+  "type": "biomancy:bio_forging",
+  "bio_forge_tab": "biomancy:blocks",
+  "ingredients": [
+    {
+      "count": 8,
+      "item": "biomancy:flesh_bits"
+    },
+    {
+      "count": 4,
+      "item": "biomancy:tough_fibers"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "biomancy:packed_flesh"
+  }
+}

@@ -63,7 +63,7 @@ public interface Chrysalis {
 			tag.putString(ENTITY_NAME_KEY, entity.getType().getDescriptionId());
 
 			EntityDimensions dimensions = entity.getDimensions(entity.getPose());
-			float volume = dimensions.width * dimensions.height * dimensions.width;
+			float volume = dimensions.width() * dimensions.height() * dimensions.width();
 			tag.putFloat(ENTITY_VOLUME_KEY, volume);
 
 			compoundTag.put(ENTITY_KEY, tag);

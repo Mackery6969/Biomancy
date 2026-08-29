@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Explosion;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -35,8 +36,8 @@ public final class ModNetworkHandler {
 		PacketDistributor.sendToServer(new KeyPressMessage(slotIndex, flag));
 	}
 
-	public static void sendBioForgeRecipeToServer(int containerId, BioForgingRecipe recipe) {
-		PacketDistributor.sendToServer(new BioForgeRecipeMessage(containerId, recipe.getId()));
+	public static void sendBioForgeRecipeToServer(int containerId, RecipeHolder<BioForgingRecipe> recipeHolder) {
+		PacketDistributor.sendToServer(new BioForgeRecipeMessage(containerId, recipeHolder.id()));
 	}
 
 	public static void sendBioLabFilterToClient(ServerPlayer player, int containerId, ItemStackFilterList filters) {

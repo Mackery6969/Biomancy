@@ -1,12 +1,13 @@
 package com.github.elenterius.biomancy.api.nutrients;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.minecraft.world.item.component.CustomData;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Predicate;
@@ -47,7 +48,7 @@ public interface NutrientsContainerItem {
 	void onNutrientsChanged(ItemStack container, int oldValue, int newValue);
 
 	default int getNutrients(ItemStack container) {
-		return container.getOrCreateTag().getInt(NUTRIENTS_TAG_KEY);
+		return container.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getInt(NUTRIENTS_TAG_KEY);
 	}
 
 	default boolean hasNutrients(ItemStack container) {
@@ -58,7 +59,7 @@ public interface NutrientsContainerItem {
 		int maxNutrients = getMaxNutrients(container);
 		int oldValue = getNutrients(container);
 		int newValue = Mth.clamp(amount, 0, maxNutrients);
-		container.getOrCreateTag().putInt(NUTRIENTS_TAG_KEY, newValue);
+		CustomData.update(DataComponents.CUSTOM_DATA, container, tag -> tag.putInt(NUTRIENTS_TAG_KEY, newValue));
 		onNutrientsChanged(container, oldValue, newValue);
 	}
 
@@ -84,7 +85,7 @@ public interface NutrientsContainerItem {
 		int neededAmount = Mth.floor(Math.max(0, maxNutrients - nutrients) / (float) resourceValue);
 		if (neededAmount > 0) {
 			setNutrients(container, nutrients + resourceValue);
-			return ItemHandlerHelper.copyStackWithSize(resource, resource.getCount() - 1);
+			return resource.copyWithCount(resource.getCount() - 1);
 		}
 
 		return resource;

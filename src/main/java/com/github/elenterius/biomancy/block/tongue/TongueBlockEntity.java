@@ -127,7 +127,7 @@ public class TongueBlockEntity extends SimpleSyncedBlockEntity implements GeoBlo
 	}
 
 	@Override
-	protected void saveForSyncToClient(CompoundTag tag) {
+	protected void saveForSyncToClient(CompoundTag tag, HolderLookup.Provider registries) {
 		tag.put(INVENTORY_TAG, inventory.serializeNBT(registries));
 	}
 

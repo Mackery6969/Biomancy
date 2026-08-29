@@ -92,7 +92,7 @@ public class BiometricMembraneBlockEntity extends SimpleSyncedBlockEntity implem
 	}
 
 	@Override
-	protected void saveForSyncToClient(CompoundTag compoundTag) {
+	protected void saveForSyncToClient(CompoundTag compoundTag, HolderLookup.Provider registries) {
 		save(compoundTag);
 	}
 

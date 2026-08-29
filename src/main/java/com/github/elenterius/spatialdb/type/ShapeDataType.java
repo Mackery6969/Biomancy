@@ -37,7 +37,7 @@ public class ShapeDataType extends BasicDataType<Shape> {
 		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 
 		try (DataInputStream inputStream = new DataInputStream(new GZIPInputStream(byteArrayInputStream))) {
-			return NbtIo.read(inputStream, NbtAccounter.UNLIMITED);
+			return NbtIo.read(inputStream, NbtAccounter.unlimitedHeap());
 		}
 		catch (IOException e) {
 			return new CompoundTag();

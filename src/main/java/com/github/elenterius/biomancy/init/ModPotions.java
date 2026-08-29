@@ -15,11 +15,11 @@ public final class ModPotions {
 	public static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(BuiltInRegistries.POTION, BiomancyMod.MOD_ID);
 
 	public static final DeferredHolder<Potion, Potion> PRIMORDIAL_INFESTATION = register("primordial_infestation", () -> new MobEffectInstance[]{
-			new MobEffectInstance(ModMobEffects.PRIMORDIAL_INFESTATION.get(), 20 * 90, 0),
+			new MobEffectInstance(ModMobEffects.PRIMORDIAL_INFESTATION, 20 * 90, 0),
 	});
 
 	public static final DeferredHolder<Potion, Potion> LONG_PRIMORDIAL_INFESTATION = register("primordial_infestation", PotionVariant.LONG, () -> new MobEffectInstance[]{
-			new MobEffectInstance(ModMobEffects.PRIMORDIAL_INFESTATION.get(), 20 * 240, 0),
+			new MobEffectInstance(ModMobEffects.PRIMORDIAL_INFESTATION, 20 * 240, 0),
 	});
 
 	private ModPotions() {}

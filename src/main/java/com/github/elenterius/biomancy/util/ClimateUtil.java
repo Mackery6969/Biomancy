@@ -23,7 +23,7 @@ public class ClimateUtil {
 	}
 
 	public static float getTemperature(Level level, BlockPos pos) {
-		Biome biome = level.getBiome(pos).get();
+		Biome biome = level.getBiome(pos).value();
 		return getTemperature(biome, pos);
 	}
 

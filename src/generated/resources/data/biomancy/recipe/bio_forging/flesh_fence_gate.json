@@ -1,0 +1,22 @@
+{
+  "type": "biomancy:bio_forging",
+  "bio_forge_tab": "biomancy:misc",
+  "ingredients": [
+    {
+      "count": 8,
+      "item": "biomancy:flesh_bits"
+    },
+    {
+      "count": 16,
+      "item": "biomancy:bone_fragments"
+    },
+    {
+      "count": 4,
+      "item": "biomancy:mineral_fragment"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "biomancy:flesh_fence_gate"
+  }
+}

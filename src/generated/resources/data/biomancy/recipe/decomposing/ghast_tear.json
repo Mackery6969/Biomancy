@@ -1,0 +1,33 @@
+{
+  "type": "biomancy:decomposing",
+  "ingredient": {
+    "item": "minecraft:ghast_tear"
+  },
+  "processingTime": 300,
+  "results": [
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 8,
+        "min": 4
+      },
+      "item": "biomancy:hormone_secretion"
+    },
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 2,
+        "min": 1
+      },
+      "item": "biomancy:bile"
+    },
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 2,
+        "min": 1
+      },
+      "item": "biomancy:exotic_dust"
+    }
+  ]
+}

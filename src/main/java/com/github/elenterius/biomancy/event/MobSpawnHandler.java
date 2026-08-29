@@ -17,7 +17,6 @@ import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.animal.Sheep;
 import net.neoforged.neoforge.event.entity.living.BabyEntitySpawnEvent;
 import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
-import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
@@ -30,8 +29,6 @@ public final class MobSpawnHandler {
 
 	//TODO: re-enable this
 	public static void onCheckSpawn(final MobSpawnEvent.PositionCheck event) {
-		if (event.isCanceled()) return;
-
 		if (event.getLevel() instanceof ServerLevel serverLevel) {
 			MobSpawnType spawnReason = event.getSpawnType();
 
@@ -50,7 +47,7 @@ public final class MobSpawnHandler {
 				if (denySpawn) {
 					//TODO: chamber specific mob spawn filters? --> e.g. chamber only allows creepers spawns
 					//MoundChamber chamber = moundShape.getChamberAt(pos.getX(), pos.getY(), pos.getZ());
-					event.setResult(Event.Result.DENY);
+					event.setResult(MobSpawnEvent.PositionCheck.Result.FAIL);
 				}
 			}
 		}
@@ -63,25 +60,25 @@ public final class MobSpawnHandler {
 		AgeableMob child = event.getChild();
 
 		if (child instanceof Pig) {
-			float p = (parentA.hasEffect(ModMobEffects.LIBIDO.get()) ? 0.1f : 0f) + (parentB.hasEffect(ModMobEffects.LIBIDO.get()) ? 0.1f : 0f);
+			float p = (parentA.hasEffect(ModMobEffects.LIBIDO) ? 0.1f : 0f) + (parentB.hasEffect(ModMobEffects.LIBIDO) ? 0.1f : 0f);
 			if (p > 0f && parentA.getRandom().nextFloat() < p) {
 				event.setChild(ModEntityTypes.FLESH_PIG.get().create(parentA.level()));
 			}
 		}
 		else if (child instanceof Cow) {
-			float p = (parentA.hasEffect(ModMobEffects.LIBIDO.get()) ? 0.1f : 0f) + (parentB.hasEffect(ModMobEffects.LIBIDO.get()) ? 0.1f : 0f);
+			float p = (parentA.hasEffect(ModMobEffects.LIBIDO) ? 0.1f : 0f) + (parentB.hasEffect(ModMobEffects.LIBIDO) ? 0.1f : 0f);
 			if (p > 0f && parentA.getRandom().nextFloat() < p) {
 				event.setChild(ModEntityTypes.FLESH_COW.get().create(parentA.level()));
 			}
 		}
 		else if (child instanceof Chicken) {
-			float p = (parentA.hasEffect(ModMobEffects.LIBIDO.get()) ? 0.1f : 0f) + (parentB.hasEffect(ModMobEffects.LIBIDO.get()) ? 0.1f : 0f);
+			float p = (parentA.hasEffect(ModMobEffects.LIBIDO) ? 0.1f : 0f) + (parentB.hasEffect(ModMobEffects.LIBIDO) ? 0.1f : 0f);
 			if (p > 0f && parentA.getRandom().nextFloat() < p) {
 				event.setChild(ModEntityTypes.FLESH_CHICKEN.get().create(parentA.level()));
 			}
 		}
 		else if (child instanceof Sheep) {
-			float p = (parentA.hasEffect(ModMobEffects.LIBIDO.get()) ? 0.1f : 0f) + (parentB.hasEffect(ModMobEffects.LIBIDO.get()) ? 0.1f : 0f);
+			float p = (parentA.hasEffect(ModMobEffects.LIBIDO) ? 0.1f : 0f) + (parentB.hasEffect(ModMobEffects.LIBIDO) ? 0.1f : 0f);
 			if (p > 0f) {
 				if (parentA.getRandom().nextFloat() < p) {
 					event.setChild(ModEntityTypes.FLESH_SHEEP.get().create(parentA.level()));

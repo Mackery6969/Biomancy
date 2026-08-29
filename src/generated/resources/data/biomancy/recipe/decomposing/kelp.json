@@ -1,0 +1,17 @@
+{
+  "type": "biomancy:decomposing",
+  "ingredient": {
+    "item": "minecraft:kelp"
+  },
+  "processingTime": 20,
+  "results": [
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 1,
+        "min": -1
+      },
+      "item": "biomancy:organic_matter"
+    }
+  ]
+}

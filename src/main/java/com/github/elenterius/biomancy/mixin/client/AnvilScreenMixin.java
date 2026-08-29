@@ -28,7 +28,7 @@ public abstract class AnvilScreenMixin extends ItemCombinerScreen<AnvilMenu> {
 
 	@ModifyVariable(method = "onNameChanged", at = @At(value = "HEAD"), argsOnly = true)
 	private String onNameChanged(String text) {
-		if (menu.getSlot(0).hasItem() && player.hasEffect(ModMobEffects.PRIMORDIAL_INFESTATION.get())) {
+		if (menu.getSlot(0).hasItem() && player.hasEffect(ModMobEffects.PRIMORDIAL_INFESTATION)) {
 			return TransliterationUtil.transliterate(text);
 		}
 

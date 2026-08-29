@@ -16,7 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.scores.Team;
+import net.minecraft.world.scores.PlayerTeam;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -30,9 +30,9 @@ public abstract class OwnableMonster extends Monster implements OwnableMob {
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(OWNER_UNIQUE_ID, Optional.empty());
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(OWNER_UNIQUE_ID, Optional.empty());
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public abstract class OwnableMonster extends Monster implements OwnableMob {
 	}
 
 	@Override
-	public Team getTeam() {
+	public PlayerTeam getTeam() {
 		Optional<Player> optional = getOwnerAsPlayer();
 		if (optional.isPresent()) {
 			return optional.get().getTeam();
@@ -121,8 +121,8 @@ public abstract class OwnableMonster extends Monster implements OwnableMob {
 	}
 
 	@Override
-	public boolean canBeLeashed(Player player) {
-		return !isLeashed() && player == getOwnerAsPlayer().orElse(null);
+	public boolean canBeLeashed() {
+		return true;
 	}
 
 }

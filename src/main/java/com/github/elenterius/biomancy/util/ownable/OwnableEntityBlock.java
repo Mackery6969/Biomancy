@@ -8,6 +8,7 @@ import com.github.elenterius.biomancy.util.permission.UserType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -15,8 +16,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -35,8 +36,8 @@ public interface OwnableEntityBlock extends EntityBlock {
 	static void setBlockEntityOwner(Level level, Ownable ownable, @Nullable LivingEntity placer, ItemStack stack) {
 		if (placer == null) return;
 
-		CompoundTag entityData = BlockItem.getBlockEntityData(stack);
-		boolean containsOwner = entityData != null && entityData.hasUUID(OwnableEntityBlock.NBT_KEY_OWNER);
+		CustomData customData = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY);
+		boolean containsOwner = !customData.isEmpty() && customData.copyTag().hasUUID(OwnableEntityBlock.NBT_KEY_OWNER);
 		if (!containsOwner && !ownable.hasOwner()) { //make sure we don't overwrite the previous owner
 			ownable.setOwner(placer.getUUID());
 		}
@@ -47,8 +48,8 @@ public interface OwnableEntityBlock extends EntityBlock {
 			if (worldIn.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
 				if (worldIn.getBlockEntity(pos) instanceof OwnableBlockEntity blockEntity) {
 					ItemStack stack = new ItemStack(block);
-					blockEntity.saveToItem(stack);
-					if (stack.hasTag()) {
+					blockEntity.saveToItem(stack, worldIn.registryAccess());
+					if (stack.has(DataComponents.BLOCK_ENTITY_DATA)) {
 						ItemEntity itemEntity = new ItemEntity(worldIn, pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d, stack);
 						itemEntity.setDefaultPickUpDelay();
 						worldIn.addFreshEntity(itemEntity);
@@ -59,10 +60,10 @@ public interface OwnableEntityBlock extends EntityBlock {
 	}
 
 	static void appendUserListToTooltip(ItemStack stack, List<Component> tooltip) {
-		CompoundTag entityData = BlockItem.getBlockEntityData(stack);
-		if (entityData == null) return;
+		CustomData customData = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY);
+		if (customData.isEmpty()) return;
 
-		appendUserListToTooltip(entityData, tooltip);
+		appendUserListToTooltip(customData.copyTag(), tooltip);
 	}
 
 	static void appendUserListToTooltip(CompoundTag entityData, List<Component> tooltip) {

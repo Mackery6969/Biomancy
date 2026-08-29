@@ -64,7 +64,7 @@ public final class ModBlocks {
 	public static final DeferredHolder<Block, TongueBlock> TONGUE = register("tongue", TongueBlock::new);
 	public static final DeferredHolder<Block, MawHopperBlock> MAW_HOPPER = register("maw_hopper", MawHopperBlock::new);
 	public static final DeferredHolder<Block, FleshkinChestBlock> FLESHKIN_CHEST = register("fleshkin_chest", properties -> new FleshkinChestBlock(properties, FLESH_DESTROY_SPEED));
-	public static final DeferredHolder<Block, OwnablePressurePlateBlock> FLESHKIN_PRESSURE_PLATE = register("fleshkin_pressure_plate", properties -> new OwnablePressurePlateBlock(properties, ModBlockSetTypes.FLESH_SET_TYPE.get()));
+	public static final DeferredHolder<Block, OwnablePressurePlateBlock> FLESHKIN_PRESSURE_PLATE = register("fleshkin_pressure_plate", properties -> new OwnablePressurePlateBlock(ModBlockSetTypes.FLESH_SET_TYPE.get(), properties));
 	public static final DeferredHolder<Block, ChrysalisBlock> CHRYSALIS = register("chrysalis", ChrysalisBlock::new);
 
 	//## Building Materials

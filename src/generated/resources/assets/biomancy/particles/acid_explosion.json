@@ -1,6 +1,10 @@
 {
   "textures": [
-    "biomancy:acid_explosion_1", "biomancy:acid_explosion_2", "biomancy:acid_explosion_3", "biomancy:acid_explosion_4", "biomancy:acid_explosion_5",
+    "biomancy:acid_explosion_1",
+    "biomancy:acid_explosion_2",
+    "biomancy:acid_explosion_3",
+    "biomancy:acid_explosion_4",
+    "biomancy:acid_explosion_5",
     "biomancy:acid_explosion_6"
   ]
 }

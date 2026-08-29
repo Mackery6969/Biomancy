@@ -2,6 +2,7 @@ package com.github.elenterius.biomancy.item.armor;
 
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -14,6 +15,7 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 
 import java.util.*;
 
@@ -29,17 +31,16 @@ public final class AdaptiveDamageResistanceHandler {
 	private static final String TAG_PREFIX = "is_";
 
 	public static DamageTypeResistanceTracker getResistanceTracker(ItemStack stack) {
-		CompoundTag tag = stack.getOrCreateTag().getCompound("damage_resistance_tracker");
+		CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getCompound("damage_resistance_tracker");
 		return DamageTypeResistanceTracker.fromNBT(tag);
 	}
 
 	public static void saveResistanceTracker(DamageTypeResistanceTracker resistanceTracker, ItemStack stack) {
-		CompoundTag compoundTag = stack.getOrCreateTag();
-		compoundTag.put("damage_resistance_tracker", resistanceTracker.toNBT());
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.put("damage_resistance_tracker", resistanceTracker.toNBT()));
 	}
 
 	public static float absorbDamage(LivingEntity livingEntity, DamageSource damageSource, float damage, ArmorItem armor, ItemStack stack) {
-		List<TagKey<DamageType>> rootDamageTypes = damageSource.typeHolder().getTagKeys()
+		List<TagKey<DamageType>> rootDamageTypes = damageSource.typeHolder().tags()
 				.filter(tagKey -> VALID_NAMESPACES.contains(tagKey.location().getNamespace()) && tagKey.location().getPath().startsWith(TAG_PREFIX))
 				.toList();
 

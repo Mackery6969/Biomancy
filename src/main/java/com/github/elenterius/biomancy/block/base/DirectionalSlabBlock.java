@@ -6,6 +6,7 @@ import com.github.elenterius.biomancy.util.VoxelShapeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -65,8 +66,8 @@ public class DirectionalSlabBlock extends Block implements SimpleWaterloggedBloc
 	}
 
 	@Override
-	public boolean canPlaceLiquid(BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
-		return state.getValue(TYPE) != DirectionalSlabType.FULL && SimpleWaterloggedBlock.super.canPlaceLiquid(level, pos, state, fluid);
+	public boolean canPlaceLiquid(@Nullable Player player, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
+		return state.getValue(TYPE) != DirectionalSlabType.FULL && SimpleWaterloggedBlock.super.canPlaceLiquid(player, level, pos, state, fluid);
 	}
 
 	@Nullable
@@ -155,10 +156,10 @@ public class DirectionalSlabBlock extends Block implements SimpleWaterloggedBloc
 	}
 
 	@Override
-	public boolean isPathfindable(BlockState pState, BlockGetter plevel, BlockPos pos, PathComputationType type) {
+	protected boolean isPathfindable(BlockState state, PathComputationType type) {
 		return switch (type) {
 			case LAND, AIR -> false;
-			case WATER -> plevel.getFluidState(pos).is(FluidTags.WATER);
+			case WATER -> state.getFluidState().is(FluidTags.WATER);
 		};
 	}
 

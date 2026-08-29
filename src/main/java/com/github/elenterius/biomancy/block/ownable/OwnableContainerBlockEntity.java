@@ -100,7 +100,7 @@ public abstract class OwnableContainerBlockEntity extends SimpleContainerBlockEn
 	}
 
 	@Override
-	public CompoundTag getUpdateTag() {
+	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
 		CompoundTag tag = new CompoundTag();
 		saveForSyncToClient(tag);
 		return tag;

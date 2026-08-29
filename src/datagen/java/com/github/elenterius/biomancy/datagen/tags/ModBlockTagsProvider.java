@@ -33,7 +33,7 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 	}
 
 	private static TagKey<Block> tagKey(String modId, String path) {
-		return BlockTags.create(new ResourceLocation(modId, path));
+		return BlockTags.create(ResourceLocation.fromNamespaceAndPath(modId, path));
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 		addQuarkTags();
 
 		enhancedTag(ModBlockTags.FLESH_REPLACEABLE)
-				.add(Blocks.CLAY).addTag(BlockTags.SAND).addTag(Tags.Blocks.GRAVEL)
+				.add(Blocks.CLAY).addTag(BlockTags.SAND).addTag(Tags.Blocks.GRAVELS)
 				.add(Blocks.ICE, Blocks.FROSTED_ICE)
 				.addTag(BlockTags.SNOW)
 				.addTag(BlockTags.LEAVES)
@@ -110,7 +110,7 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 				.addTag(BlockTags.FLOWERS)
 				.addTag(BlockTags.CROPS)
 				.addTag(BlockTags.CAVE_VINES)
-				.add(Blocks.GRASS, Blocks.FERN, Blocks.DEAD_BUSH, Blocks.VINE, Blocks.GLOW_LICHEN, Blocks.TALL_GRASS, Blocks.LARGE_FERN, Blocks.HANGING_ROOTS)
+				.add(Blocks.SHORT_GRASS, Blocks.FERN, Blocks.DEAD_BUSH, Blocks.VINE, Blocks.GLOW_LICHEN, Blocks.TALL_GRASS, Blocks.LARGE_FERN, Blocks.HANGING_ROOTS)
 				.add(Blocks.MOSS_BLOCK, Blocks.MOSS_CARPET, Blocks.SPORE_BLOSSOM)
 				.add(Blocks.PUMPKIN, Blocks.CARVED_PUMPKIN, Blocks.JACK_O_LANTERN, Blocks.MELON, Blocks.ATTACHED_PUMPKIN_STEM, Blocks.ATTACHED_MELON_STEM)
 				.add(Blocks.SUGAR_CANE, Blocks.COCOA, Blocks.SWEET_BERRY_BUSH)

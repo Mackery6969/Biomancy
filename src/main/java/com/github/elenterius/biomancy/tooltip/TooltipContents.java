@@ -1,6 +1,7 @@
 package com.github.elenterius.biomancy.tooltip;
 
 import com.github.elenterius.biomancy.client.gui.tooltip.TooltipHandler;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
@@ -13,6 +14,17 @@ import net.minecraft.world.item.Item;
  * This allows easy insertion of TooltipComponents inside of {@link Item#appendHoverText}
  */
 public record TooltipContents(TooltipComponent component) implements ComponentContents {
+
+	public static final ComponentContents.Type<TooltipContents> TYPE = new ComponentContents.Type<>(
+			MapCodec.unit(() -> { throw new UnsupportedOperationException("TooltipContents is a transient placeholder and must not be serialized"); }),
+			"biomancy_tooltip"
+	);
+
+	@Override
+	public ComponentContents.Type<?> type() {
+		return TYPE;
+	}
+
 	@Override
 	public String toString() {
 		return "tooltip{" + component + "}";

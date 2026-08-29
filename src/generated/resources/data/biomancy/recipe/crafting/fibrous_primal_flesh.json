@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "biomancy:smooth_primal_flesh"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "biomancy:fibrous_primal_flesh"
+  }
+}

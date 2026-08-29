@@ -3,6 +3,7 @@ package com.github.elenterius.biomancy.mixin;
 import com.github.elenterius.biomancy.init.ModMobEffects;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.protocol.game.ServerboundRenameItemPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -23,15 +24,15 @@ public abstract class ServerGamePacketListenerImplMixin {
 
 	@Inject(method = "handleRenameItem(Lnet/minecraft/network/protocol/game/ServerboundRenameItemPacket;)V", at = @At(value = "INVOKE", target = "net/minecraft/world/inventory/AnvilMenu.setItemName(Ljava/lang/String;)Z", shift = At.Shift.AFTER))
 	private void onHandleRenameItem(ServerboundRenameItemPacket packet, CallbackInfo ci) {
-		if (player.hasEffect(ModMobEffects.PRIMORDIAL_INFESTATION.get())) {
+		if (player.hasEffect(ModMobEffects.PRIMORDIAL_INFESTATION)) {
 			if (player.containerMenu instanceof AnvilMenu menu) {
 				Slot slot = menu.getSlot(2);
 				if (!slot.hasItem()) return;
 
 				ItemStack stack = slot.getItem();
-				if (!stack.hasCustomHoverName()) return;
+				if (!stack.has(DataComponents.CUSTOM_NAME)) return;
 
-				stack.setHoverName(ComponentUtil.setStyles(stack.getHoverName(), TextStyles.PRIMORDIAL_RUNES));
+				stack.set(DataComponents.CUSTOM_NAME, ComponentUtil.setStyles(stack.getHoverName(), TextStyles.PRIMORDIAL_RUNES));
 			}
 		}
 	}

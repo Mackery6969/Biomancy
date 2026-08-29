@@ -141,7 +141,7 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 			int range = 256;
 			float volume = range / 16f;
 			level.playSound(null, player, ModSoundEvents.ARMOR_IMPOSING_ROAR.get(), SoundSource.PLAYERS, volume, 0.9f + player.getRandom().nextFloat() * 0.2f);
-			player.gameEvent(GameEvent.ENTITY_ROAR);
+			player.gameEvent(GameEvent.ENTITY_ACTION);
 		}
 	}
 
@@ -159,7 +159,7 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 			if (livingEntity instanceof ServerPlayer player) {
 				int cost = getBulletJumpCost(player, stack);
 				if (getNutrients(stack) >= cost) {
-					if (bulletJump(player)) {
+					if (bulletJump(player, stack)) {
 						consumeNutrients(stack, cost);
 						increaseBulletJumpCost(player, stack);
 						return true;
@@ -235,7 +235,7 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 		}
 	}
 
-	protected boolean bulletJump(ServerPlayer player) {
+	protected boolean bulletJump(ServerPlayer player, ItemStack stack) {
 		Vec3 lookVec = player.getLookAngle();
 		Vec3 velocity = player.getDeltaMovement();
 
@@ -283,7 +283,7 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 					velocity.z + jumpDirection.z * power
 			);
 
-			player.startAutoSpinAttack(20); //note: we can't pick longer duration because auto spin ticks don't reset when the player collides with the ground
+			player.startAutoSpinAttack(20, 0f, stack); //note: we can't pick longer duration because auto spin ticks don't reset when the player collides with the ground
 			if (player.onGround()) {
 				//hack to allow consecutive execution of spin attacks when the user holds down shift continuously
 				player.move(MoverType.SELF, new Vec3(0d, 1.1999999f, 0d));

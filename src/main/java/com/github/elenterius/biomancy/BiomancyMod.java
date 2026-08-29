@@ -27,10 +27,10 @@ public final class BiomancyMod {
 	public static final String DEV_MODE_PROPERTY_KEY = "biomancy.dev_mode";
 
 	public BiomancyMod(IEventBus modEventBus, ModContainer modContainer) {
-		ModBannerPatterns.BANNERS.register(modEventBus);
 
 		ModDataComponents.DATA_COMPONENT_TYPES.register(modEventBus);
 
+		ModArmorMaterials.ARMOR_MATERIALS.register(modEventBus);
 		ModBlocks.BLOCKS.register(modEventBus);
 		ModItems.ITEMS.register(modEventBus);
 		ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
@@ -49,7 +49,6 @@ public final class BiomancyMod {
 		ModMobEffects.EFFECTS.register(modEventBus);
 		ModSerums.SERUMS.register(modEventBus);
 		ModPotions.POTIONS.register(modEventBus);
-		ModPaintings.PAINTINGS.register(modEventBus);
 
 		ModMenuTypes.MENUS.register(modEventBus);
 
@@ -57,8 +56,11 @@ public final class BiomancyMod {
 		ModRecipes.RECIPE_SERIALIZERS.register(modEventBus);
 		ModIngredientTypes.INGREDIENT_TYPES.register(modEventBus);
 		ModBioForgeTabs.BIO_FORGE_TABS.register(modEventBus);
+		ModPredicates.ITEM_SUB_PREDICATE_TYPES.register(modEventBus);
 
 		ModLoot.GLOBAL_MODIFIERS.register(modEventBus);
+		ModLoot.LOOT_FUNCTION_TYPES.register(modEventBus);
+		ModTriggers.TRIGGER_TYPES.register(modEventBus);
 
 		ModSoundEvents.SOUND_EVENTS.register(modEventBus);
 		ModParticleTypes.PARTICLE_TYPES.register(modEventBus);

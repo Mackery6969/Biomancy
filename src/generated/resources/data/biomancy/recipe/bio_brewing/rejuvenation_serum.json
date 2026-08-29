@@ -1,0 +1,22 @@
+{
+  "type": "biomancy:bio_brewing",
+  "ingredients": [
+    {
+      "item": "biomancy:healing_additive"
+    },
+    {
+      "item": "biomancy:nutrient_paste"
+    },
+    {
+      "item": "biomancy:decaying_additive"
+    }
+  ],
+  "processingTime": 160,
+  "reactant": {
+    "item": "biomancy:genetic_compound"
+  },
+  "result": {
+    "count": 1,
+    "id": "biomancy:rejuvenation_serum"
+  }
+}

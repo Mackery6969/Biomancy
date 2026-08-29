@@ -1,0 +1,19 @@
+{
+  "type": "biomancy:bio_brewing",
+  "ingredients": [
+    {
+      "item": "biomancy:hormone_secretion"
+    },
+    {
+      "item": "biomancy:nutrient_paste"
+    }
+  ],
+  "processingTime": 80,
+  "reactant": {
+    "item": "biomancy:organic_compound"
+  },
+  "result": {
+    "count": 1,
+    "id": "biomancy:genetic_compound"
+  }
+}

@@ -89,7 +89,7 @@ public class OwnableBlockEntity extends SimpleSyncedBlockEntity implements Ownab
 	}
 
 	@Override
-	protected void saveForSyncToClient(CompoundTag tag) {
+	protected void saveForSyncToClient(CompoundTag tag, HolderLookup.Provider registries) {
 		if (ownerId != null) tag.putUUID("OwnerUUID", ownerId);
 
 		if (users.size() > 0) {

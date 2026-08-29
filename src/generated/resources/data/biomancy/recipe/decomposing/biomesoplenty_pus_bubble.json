@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "type": "biomancy:decomposing",
+  "ingredient": {
+    "tag": "biomancy:compat/biomesoplenty/pus_bubble"
+  },
+  "processingTime": 120,
+  "results": [
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 6,
+        "min": 4
+      },
+      "item": "biomancy:bile"
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.ModPlantTypes;
 import com.github.elenterius.biomancy.init.ModProjectiles;
 import com.github.elenterius.biomancy.util.EnhancedIntegerProperty;
+import com.github.elenterius.biomancy.util.IPlantable;
 import com.github.elenterius.biomancy.util.VectorUtil;
 import com.github.elenterius.biomancy.world.PrimordialEcosystem;
 import net.minecraft.core.BlockPos;
@@ -17,7 +18,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.*;
@@ -35,8 +37,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.CommonHooks;
-import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.common.PlantType;
+import net.neoforged.neoforge.common.util.TriState;
 
 public class BloomBlock extends WaterloggedFacingBlock implements IPlantable {
 
@@ -93,7 +94,7 @@ public class BloomBlock extends WaterloggedFacingBlock implements IPlantable {
 	}
 
 	public boolean hasUnobstructedAim(BlockGetter level, BlockPos origin, BlockPos target) {
-		return level.clip(new ClipContext(Vec3.atCenterOf(origin), Vec3.atCenterOf(target), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getType() == HitResult.Type.MISS;
+		return level.clip(new ClipContext(Vec3.atCenterOf(origin), Vec3.atCenterOf(target), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, (Entity) null)).getType() == HitResult.Type.MISS;
 	}
 
 	@Override
@@ -138,9 +139,9 @@ public class BloomBlock extends WaterloggedFacingBlock implements IPlantable {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		int age = AGE.getValue(state);
-		if (age > 5 && player.getItemInHand(hand).isEmpty()) {
+		if (age > 5 && stack.isEmpty()) {
 			if (!level.isClientSide) {
 				int count = 1 + (age > 6 ? level.random.nextInt(2) : 0);
 				popResource(level, pos, new ItemStack(ModItems.BLOOMBERRY.get(), count));
@@ -153,21 +154,14 @@ public class BloomBlock extends WaterloggedFacingBlock implements IPlantable {
 				level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, blockState));
 			}
 
-			return InteractionResult.sidedSuccess(level.isClientSide);
+			return ItemInteractionResult.sidedSuccess(level.isClientSide);
 		}
 
-		return super.use(state, level, pos, player, hand, hit);
+		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	@Override
-	public BlockState getPlant(BlockGetter level, BlockPos pos) {
-		BlockState state = level.getBlockState(pos);
-		if (state.getBlock() != this) return defaultBlockState();
-		return state;
-	}
-
-	@Override
-	public PlantType getPlantType(BlockGetter level, BlockPos pos) {
+	public ModPlantTypes getPlantType() {
 		return ModPlantTypes.PRIMAL_FLESH;
 	}
 
@@ -177,7 +171,8 @@ public class BloomBlock extends WaterloggedFacingBlock implements IPlantable {
 	}
 
 	public boolean mayPlaceOn(BlockGetter level, BlockPos pos, BlockState state, Direction facing) {
-		return state.canSustainPlant(level, pos, facing, this);
+		TriState soilDecision = state.canSustainPlant(level, pos, facing, defaultBlockState());
+		return soilDecision.isTrue();
 	}
 
 	@Override

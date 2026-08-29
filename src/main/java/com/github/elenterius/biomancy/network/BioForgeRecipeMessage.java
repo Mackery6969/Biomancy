@@ -9,6 +9,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -31,8 +32,11 @@ public record BioForgeRecipeMessage(int containerId, ResourceLocation id) implem
 	public static void handle(BioForgeRecipeMessage packet, IPayloadContext context) {
 		if (context.player() instanceof ServerPlayer sender && !sender.isSpectator() && sender.containerMenu instanceof BioForgeMenu menu && menu.containerId == packet.containerId) {
 			RecipeManager recipeManager = sender.level().getRecipeManager();
-			BioForgingRecipe recipe = recipeManager.byKey(packet.id).map(holder -> holder.value() instanceof BioForgingRecipe r ? r : null).orElse(null);
-			menu.setSelectedRecipe(recipe, sender);
+			RecipeHolder<BioForgingRecipe> recipeHolder = recipeManager.byKey(packet.id)
+					.filter(holder -> holder.value() instanceof BioForgingRecipe)
+					.map(holder -> new RecipeHolder<>(holder.id(), (BioForgingRecipe) holder.value()))
+					.orElse(null);
+			menu.setSelectedRecipe(recipeHolder, sender);
 		}
 	}
 

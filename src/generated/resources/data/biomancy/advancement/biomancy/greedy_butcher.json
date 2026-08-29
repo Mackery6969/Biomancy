@@ -1,0 +1,34 @@
+{
+  "parent": "biomancy:biomancy/primal_vision",
+  "criteria": {
+    "has_despoil_sickle": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomancy:despoil_sickle"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.biomancy.greedy_butcher.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "biomancy:despoil_sickle"
+    },
+    "title": {
+      "translate": "advancements.biomancy.greedy_butcher.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_despoil_sickle"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

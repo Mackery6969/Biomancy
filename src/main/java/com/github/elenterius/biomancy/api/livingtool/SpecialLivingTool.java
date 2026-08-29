@@ -4,10 +4,12 @@ import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.neoforged.neoforge.common.ItemAbility;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -17,11 +19,11 @@ import java.util.List;
 public interface SpecialLivingTool extends LivingTool {
 
 	default LivingToolState getLivingToolState(ItemStack livingTool) {
-		return LivingToolState.deserialize(livingTool.getOrCreateTag());
+		return LivingToolState.deserialize(livingTool.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag());
 	}
 
 	default void setLivingToolState(ItemStack livingTool, LivingToolState state) {
-		state.serialize(livingTool.getOrCreateTag());
+		CustomData.update(DataComponents.CUSTOM_DATA, livingTool, state::serialize);
 	}
 
 	default void updateLivingToolState(ItemStack livingTool, ServerLevel level, Player player) {

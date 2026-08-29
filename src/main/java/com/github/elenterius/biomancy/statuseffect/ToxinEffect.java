@@ -2,12 +2,12 @@ package com.github.elenterius.biomancy.statuseffect;
 
 import com.github.elenterius.biomancy.init.ModDamageSources;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.common.EffectCure;
+import net.neoforged.neoforge.common.EffectCures;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 public class ToxinEffect extends StatusEffect {
 
@@ -16,12 +16,13 @@ public class ToxinEffect extends StatusEffect {
 	}
 
 	@Override
-	public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
+	public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
 		livingEntity.hurt(ModDamageSources.toxin(livingEntity.level(), null), 1f);
+		return true;
 	}
 
 	@Override
-	public boolean isDurationEffectTick(int duration, int amplifier) {
+	public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
 		int tick = 25 >> amplifier;
 		if (tick > 0) {
 			return duration % tick == 0;
@@ -31,10 +32,8 @@ public class ToxinEffect extends StatusEffect {
 	}
 
 	@Override
-	public List<ItemStack> getCurativeItems() {
-		ArrayList<ItemStack> stacks = new ArrayList<>();
-		stacks.add(new ItemStack(Items.HONEY_BOTTLE));
-		return stacks;
+	public void fillEffectCures(Set<EffectCure> cures, MobEffectInstance effectInstance) {
+		cures.add(EffectCures.HONEY);
 	}
 
 }

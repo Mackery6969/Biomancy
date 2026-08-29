@@ -34,7 +34,7 @@ public final class Fonts {
 
 		/// needs to be called on the client side
 		public static void updateTranslatable(Player player) {
-			isTranslatable = player.hasEffect(ModMobEffects.PRIMORDIAL_INFESTATION.get()) || KnowledgeReader.canTranslatePrimordialRunes(player, EquipmentSlot.HEAD);
+			isTranslatable = player.hasEffect(ModMobEffects.PRIMORDIAL_INFESTATION) || KnowledgeReader.canTranslatePrimordialRunes(player, EquipmentSlot.HEAD);
 		}
 
 	}

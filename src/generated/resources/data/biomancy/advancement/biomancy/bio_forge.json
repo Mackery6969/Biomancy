@@ -1,0 +1,34 @@
+{
+  "parent": "biomancy:biomancy/living_flesh",
+  "criteria": {
+    "has_bio_forge": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomancy:bio_forge"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.biomancy.bio_forge.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "biomancy:bio_forge"
+    },
+    "title": {
+      "translate": "advancements.biomancy.bio_forge.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_bio_forge"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

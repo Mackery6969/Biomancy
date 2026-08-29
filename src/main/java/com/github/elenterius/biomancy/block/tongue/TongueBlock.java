@@ -2,11 +2,13 @@ package com.github.elenterius.biomancy.block.tongue;
 
 import com.github.elenterius.biomancy.init.ModBlockEntities;
 import com.github.elenterius.biomancy.util.VoxelShapeUtil;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -32,8 +34,15 @@ public class TongueBlock extends HorizontalDirectionalBlock implements EntityBlo
 	public static final VoxelShape SHAPE_WEST = createVoxelShape(Direction.WEST);
 	public static final VoxelShape SHAPE_EAST = createVoxelShape(Direction.EAST);
 
+	public static final MapCodec<TongueBlock> CODEC = simpleCodec(TongueBlock::new);
+
 	public TongueBlock(Properties properties) {
 		super(properties);
+	}
+
+	@Override
+	protected MapCodec<? extends TongueBlock> codec() {
+		return CODEC;
 	}
 
 	private static VoxelShape createVoxelShape(Direction direction) {
@@ -81,16 +90,16 @@ public class TongueBlock extends HorizontalDirectionalBlock implements EntityBlo
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (!player.getItemInHand(hand).isEmpty()) return InteractionResult.PASS;
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		if (!stack.isEmpty()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
 		if (level.getBlockEntity(pos) instanceof TongueBlockEntity blockEntity) {
-			if (level.isClientSide) return InteractionResult.SUCCESS;
+			if (level.isClientSide) return ItemInteractionResult.SUCCESS;
 			blockEntity.giveInventoryContentsTo(level, pos, player);
-			return InteractionResult.CONSUME;
+			return ItemInteractionResult.CONSUME;
 		}
 
-		return InteractionResult.PASS;
+		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	@Override

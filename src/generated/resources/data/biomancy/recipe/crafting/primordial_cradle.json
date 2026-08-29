@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "biomancy:primordial_core"
+    },
+    "F": {
+      "tag": "c:fangs"
+    },
+    "M": {
+      "tag": "biomancy:raw_meats"
+    }
+  },
+  "pattern": [
+    "F F",
+    "MEM",
+    "MMM"
+  ],
+  "result": {
+    "count": 1,
+    "id": "biomancy:primordial_cradle"
+  }
+}

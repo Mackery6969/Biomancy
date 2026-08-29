@@ -1,0 +1,23 @@
+{
+  "type": "biomancy:bio_forging",
+  "bio_forge_tab": "biomancy:components",
+  "ingredients": [
+    {
+      "count": 54,
+      "item": "biomancy:bone_fragments"
+    },
+    {
+      "count": 13,
+      "item": "biomancy:mineral_fragment"
+    },
+    {
+      "count": 20,
+      "item": "biomancy:withering_ooze"
+    }
+  ],
+  "nutrientsCost": 4,
+  "result": {
+    "count": 1,
+    "id": "minecraft:wither_skeleton_skull"
+  }
+}

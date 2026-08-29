@@ -14,10 +14,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -42,8 +43,8 @@ public class OwnablePressurePlateBlock extends PressurePlateBlock implements Own
 	public static final EnumProperty<UserSensitivity> USER_SENSITIVITY = ModBlockProperties.USER_SENSITIVITY;
 	public static final Predicate<Entity> ENTITY_SELECTOR = entity -> !entity.isSpectator() && !entity.isIgnoringBlockTriggers();
 
-	public OwnablePressurePlateBlock(Properties properties, BlockSetType type) {
-		super(Sensitivity.MOBS, properties, type);
+	public OwnablePressurePlateBlock(BlockSetType type, Properties properties) {
+		super(type, properties);
 		registerDefaultState(defaultBlockState().setValue(USER_SENSITIVITY, UserSensitivity.FRIENDLY));
 	}
 
@@ -73,34 +74,33 @@ public class OwnablePressurePlateBlock extends PressurePlateBlock implements Own
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (level.getBlockEntity(pos) instanceof IRestrictedInteraction restrictedBlock && restrictedBlock.isActionAllowed(player, Actions.USE_BLOCK)) {
 
-			ItemStack stack = player.getItemInHand(hand);
 			if (stack.getItem() instanceof EssenceItem essenceItem) {
-				if (level.isClientSide) return InteractionResult.SUCCESS;
+				if (level.isClientSide) return ItemInteractionResult.SUCCESS;
 
 				if (restrictedBlock.isActionAllowed(player, Actions.CONFIGURE)) {
 					boolean success = essenceItem.getEntityUUID(stack).map(restrictedBlock::addUser).orElse(false);
 					if (success) {
 						stack.shrink(1);
 						level.playSound(null, pos, ModSoundEvents.FLESHKIN_EAT.get(), SoundSource.BLOCKS, 1f, level.random.nextFloat() * 0.1f + 0.9f);
-						return InteractionResult.SUCCESS;
+						return ItemInteractionResult.SUCCESS;
 					}
 				}
 
 				level.playSound(null, pos, ModSoundEvents.FLESHKIN_NO.get(), SoundSource.BLOCKS, 1f, level.random.nextFloat() * 0.1f + 0.9f);
-				return InteractionResult.CONSUME;
+				return ItemInteractionResult.CONSUME;
 			}
 
 			if (player.isShiftKeyDown()) {
 				state = state.setValue(USER_SENSITIVITY, state.getValue(USER_SENSITIVITY).cycle());
 				level.setBlock(pos, state, Block.UPDATE_CLIENTS);
-				return InteractionResult.sidedSuccess(level.isClientSide);
+				return ItemInteractionResult.sidedSuccess(level.isClientSide);
 			}
 		}
 
-		return InteractionResult.PASS;
+		return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	@Override
@@ -153,8 +153,8 @@ public class OwnablePressurePlateBlock extends PressurePlateBlock implements Own
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable BlockGetter pLevel, List<Component> tooltip, TooltipFlag flag) {
-		super.appendHoverText(stack, pLevel, tooltip, flag);
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+		super.appendHoverText(stack, context, tooltip, flag);
 		OwnableEntityBlock.appendUserListToTooltip(stack, tooltip);
 	}
 

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_shroomlight": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:shroomlight"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "biomancy:decomposing/nutrient_paste"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_shroomlight"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "biomancy:decomposing/nutrient_paste"
+    ]
+  }
+}

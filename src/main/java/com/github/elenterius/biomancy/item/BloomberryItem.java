@@ -7,8 +7,6 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.Level;
 import net.minecraft.core.registries.BuiltInRegistries;
 
-import java.util.Collection;
-
 public class BloomberryItem extends SimpleItem {
 
 	public BloomberryItem(Properties properties) {
@@ -17,8 +15,8 @@ public class BloomberryItem extends SimpleItem {
 
 	private static void applyPotion(LivingEntity livingEntity, Potion potion) {
 		for (MobEffectInstance effectInstance : potion.getEffects()) {
-			if (effectInstance.getEffect().isInstantenous()) {
-				effectInstance.getEffect().applyInstantenousEffect(livingEntity, livingEntity, livingEntity, effectInstance.getAmplifier(), 1);
+			if (effectInstance.getEffect().value().isInstantenous()) {
+				effectInstance.getEffect().value().applyInstantenousEffect(livingEntity, livingEntity, livingEntity, effectInstance.getAmplifier(), 1);
 			}
 			else {
 				livingEntity.addEffect(new MobEffectInstance(effectInstance));
@@ -31,8 +29,7 @@ public class BloomberryItem extends SimpleItem {
 		ItemStack result = livingEntity.eat(level, stack);
 
 		if (!level.isClientSide) {
-			Collection<Potion> potions = BuiltInRegistries.POTION.getValues();
-			potions.stream().skip(level.random.nextInt(potions.size())).findFirst().ifPresent(potion -> applyPotion(livingEntity, potion));
+			BuiltInRegistries.POTION.stream().skip(level.random.nextInt(BuiltInRegistries.POTION.size())).findFirst().ifPresent(potion -> applyPotion(livingEntity, potion));
 		}
 
 		return result;

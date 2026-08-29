@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.inventory;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -13,7 +14,7 @@ public class FixedSizeItemStackHandler extends ItemStackHandler implements Seria
 	}
 
 	@Override
-	public CompoundTag serializeNBT() {
+	public CompoundTag serializeNBT(HolderLookup.Provider provider) {
 		ListTag list = new ListTag();
 
 		for (int i = 0; i < stacks.size(); i++) {
@@ -21,7 +22,7 @@ public class FixedSizeItemStackHandler extends ItemStackHandler implements Seria
 
 			CompoundTag itemTag = new CompoundTag();
 			itemTag.putInt("Slot", i);
-			stacks.get(i).save(itemTag);
+			itemTag.merge((CompoundTag) stacks.get(i).save(provider));
 			list.add(itemTag);
 		}
 
@@ -31,7 +32,7 @@ public class FixedSizeItemStackHandler extends ItemStackHandler implements Seria
 	}
 
 	@Override
-	public void deserializeNBT(CompoundTag tag) {
+	public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
 		setSize(stacks.size()); //fixed size
 
 		ListTag list = tag.getList("Items", Tag.TAG_COMPOUND);
@@ -41,7 +42,7 @@ public class FixedSizeItemStackHandler extends ItemStackHandler implements Seria
 			int slotIndex = itemTag.getInt("Slot");
 
 			if (slotIndex >= 0 && slotIndex < stacks.size()) {
-				stacks.set(slotIndex, ItemStack.of(itemTag));
+				stacks.set(slotIndex, ItemStack.parseOptional(provider, itemTag));
 			}
 		}
 

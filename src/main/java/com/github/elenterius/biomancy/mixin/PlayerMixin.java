@@ -92,7 +92,7 @@ public abstract class PlayerMixin extends LivingEntity {
 		return source;
 	}
 
-	@Inject(method = "hurtCurrentlyUsedShield", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;hurtAndBreak(ILnet/minecraft/world/entity/LivingEntity;Ljava/util/function/Consumer;)V"), cancellable = true)
+	@Inject(method = "hurtCurrentlyUsedShield", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;hurtAndBreak(ILnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;Ljava/util/function/Consumer;)V"), cancellable = true)
 	private void onHurtCurrentlyUsedShield(float damage, CallbackInfo ci) {
 		if (level().isClientSide()) return;
 

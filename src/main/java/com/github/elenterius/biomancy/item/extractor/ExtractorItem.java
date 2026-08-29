@@ -69,7 +69,7 @@ public class ExtractorItem extends Item implements KeyPressListener, ItemTooltip
 	}
 
 	private static boolean extractEssence(ItemStack stack, @Nullable Player player, LivingEntity targetEntity) {
-		if (targetEntity.isAlive() && !targetEntity.hasEffect(ModMobEffects.ESSENCE_ANEMIA.get())) {
+		if (targetEntity.isAlive() && !targetEntity.hasEffect(ModMobEffects.ESSENCE_ANEMIA)) {
 			if (CombatUtil.canPierceThroughArmor(stack, targetEntity, player)) {
 				int lootingLevel = stack.getEnchantmentLevel(ModEnchantments.getHolder(Enchantments.LOOTING, targetEntity.level()));
 				int surgicalPrecisionLevel = stack.getEnchantmentLevel(ModEnchantments.getHolder(ModEnchantments.SURGICAL_PRECISION, targetEntity.level()));
@@ -81,7 +81,7 @@ public class ExtractorItem extends Item implements KeyPressListener, ItemTooltip
 						if (!player.addItem(essenceStack)) {
 							player.drop(essenceStack, false);
 						}
-						stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+						stack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
 					}
 					else {
 						Containers.dropItemStack(targetEntity.level(), targetEntity.getX(), targetEntity.getY(), targetEntity.getZ(), essenceStack);
@@ -107,13 +107,13 @@ public class ExtractorItem extends Item implements KeyPressListener, ItemTooltip
 					float durationReduction = Mth.lerp((float) surgicalPrecisionLevel / surgicalPrecisionMaxLevel, 1f, 0.5f);
 					int duration = Math.round(baseDuration * durationPenalty * durationReduction);
 
-					targetEntity.addEffect(new MobEffectInstance(ModMobEffects.ESSENCE_ANEMIA.get(), duration));
+					targetEntity.addEffect(new MobEffectInstance(ModMobEffects.ESSENCE_ANEMIA, duration));
 
 					return true;
 				}
 			}
 			else if (player != null) {
-				stack.hurtAndBreak(2, player, p -> p.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+				stack.hurtAndBreak(2, player, EquipmentSlot.MAINHAND);
 			}
 		}
 		return false;
@@ -150,7 +150,7 @@ public class ExtractorItem extends Item implements KeyPressListener, ItemTooltip
 	}
 
 	public boolean interactWithPlayerSelf(ItemStack stack, Player player) {
-		if (player.hasEffect(ModMobEffects.ESSENCE_ANEMIA.get())) return false;
+		if (player.hasEffect(ModMobEffects.ESSENCE_ANEMIA)) return false;
 		if (player.level().isClientSide()) return true;
 
 		if (extractEssence(stack, player, player)) {

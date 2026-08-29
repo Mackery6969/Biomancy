@@ -22,7 +22,7 @@ public final class ChatMessageHandler {
 
 	@SubscribeEvent
 	public static void onServerReceiveChatMessageFromClient(final ServerChatEvent event) {
-		if (event.getPlayer().hasEffect(ModMobEffects.PRIMORDIAL_INFESTATION.get())) {
+		if (event.getPlayer().hasEffect(ModMobEffects.PRIMORDIAL_INFESTATION)) {
 			HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, event.getMessage().copy());
 			event.setMessage(ComponentUtil.setStyles(event.getMessage(), TextStyles.PRIMORDIAL_RUNES.withHoverEvent(hoverEvent)));
 		}
@@ -31,7 +31,7 @@ public final class ChatMessageHandler {
 	@SubscribeEvent
 	public static void onClientSendChatMessageToServer(final ClientChatEvent event) {
 		LocalPlayer player = Minecraft.getInstance().player;
-		if (player != null && player.hasEffect(ModMobEffects.PRIMORDIAL_INFESTATION.get())) {
+		if (player != null && player.hasEffect(ModMobEffects.PRIMORDIAL_INFESTATION)) {
 			String transliterated = TransliterationUtil.transliterate(event.getMessage());
 			String abbreviated = StringUtils.abbreviate(transliterated, SharedConstants.MAX_CHAT_LENGTH);
 			event.setMessage(abbreviated);

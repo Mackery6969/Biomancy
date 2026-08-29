@@ -5,6 +5,7 @@ import com.github.elenterius.biomancy.init.ModBlockEntities;
 import com.github.elenterius.biomancy.init.ModBlockProperties;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.util.ComponentUtil;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,8 +13,9 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -48,6 +50,8 @@ public class ModularLarynxBlock extends BaseEntityBlock {
 
 	protected static final VoxelShape SHAPE = createShape();
 
+	public static final MapCodec<ModularLarynxBlock> CODEC = simpleCodec(ModularLarynxBlock::new);
+
 	public ModularLarynxBlock(Properties properties) {
 		super(properties);
 		registerDefaultState(getStateDefinition().any()
@@ -55,6 +59,11 @@ public class ModularLarynxBlock extends BaseEntityBlock {
 				.setValue(POWERED, Boolean.FALSE)
 				.setValue(MOB_SOUND_TYPE, MobSoundType.AMBIENT)
 		);
+	}
+
+	@Override
+	protected MapCodec<? extends ModularLarynxBlock> codec() {
+		return CODEC;
 	}
 
 	private static VoxelShape createShape() {
@@ -82,25 +91,24 @@ public class ModularLarynxBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (level.isClientSide) return InteractionResult.SUCCESS;
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		if (level.isClientSide) return ItemInteractionResult.SUCCESS;
 
-		ItemStack heldStack = player.getItemInHand(hand);
-		if (!heldStack.isEmpty()) {
+		if (!stack.isEmpty()) {
 			if (level.getBlockEntity(pos) instanceof ModularLarynxBlockEntity larynx) {
-				ItemStack remainder = larynx.insertItemStack(heldStack.copy());
-				if (remainder.getCount() != heldStack.getCount()) {
+				ItemStack remainder = larynx.insertItemStack(stack.copy());
+				if (remainder.getCount() != stack.getCount()) {
 					if (!player.isCreative()) {
 						player.setItemInHand(hand, remainder);
 					}
-					return InteractionResult.CONSUME;
+					return ItemInteractionResult.CONSUME;
 				}
 			}
 		}
 		else if (player.isShiftKeyDown() && level.getBlockEntity(pos) instanceof ModularLarynxBlockEntity larynx) {
 			if (!larynx.isInventoryEmpty()) {
 				larynx.dropInventoryContents(level, pos);
-				return InteractionResult.CONSUME;
+				return ItemInteractionResult.CONSUME;
 			}
 		}
 
@@ -108,7 +116,7 @@ public class ModularLarynxBlock extends BaseEntityBlock {
 		level.setBlock(pos, state, Block.UPDATE_ALL);
 		playSound(state, level, pos);
 
-		return InteractionResult.CONSUME;
+		return ItemInteractionResult.CONSUME;
 	}
 
 	@Override
@@ -187,8 +195,8 @@ public class ModularLarynxBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
-		super.appendHoverText(stack, level, tooltip, flag);
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+		super.appendHoverText(stack, context, tooltip, flag);
 
 		tooltip.add(ComponentUtil.EMPTY_LINE);
 		tooltip.add(getExtraTooltip(this, "1").withStyle(ChatFormatting.GRAY));

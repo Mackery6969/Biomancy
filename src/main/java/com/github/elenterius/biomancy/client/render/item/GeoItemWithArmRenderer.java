@@ -54,12 +54,12 @@ public class GeoItemWithArmRenderer<T extends Item & GeoAnimatable> extends GeoI
 		armSleeveModel.setRotation(0f, 0f, 0f);
 		armSleeveModel.setPos(0f, 0f, 0f);
 
-		armModel.render(poseStack, buffer.getBuffer(RenderType.entityCutoutNoCull(player.getSkinTextureLocation())), packedLight, OverlayTexture.NO_OVERLAY); //use a render type with no culling because the left had is flipped with a negative scale
-		armSleeveModel.render(poseStack, buffer.getBuffer(RenderType.entityTranslucent(player.getSkinTextureLocation())), packedLight, OverlayTexture.NO_OVERLAY);
+		armModel.render(poseStack, buffer.getBuffer(RenderType.entityCutoutNoCull(player.getSkin().texture())), packedLight, OverlayTexture.NO_OVERLAY); //use a render type with no culling because the left had is flipped with a negative scale
+		armSleeveModel.render(poseStack, buffer.getBuffer(RenderType.entityTranslucent(player.getSkin().texture())), packedLight, OverlayTexture.NO_OVERLAY);
 	}
 
 	@Override
-	public void renderRecursively(PoseStack poseStack, T animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderRecursively(PoseStack poseStack, T animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
 		if (bone.getName().equals("arm_placeholder")) {
 			LocalPlayer player = Minecraft.getInstance().player;
 			if (renderPerspective.firstPerson() && player != null && !player.isInvisible()) {
@@ -74,7 +74,7 @@ public class GeoItemWithArmRenderer<T extends Item & GeoAnimatable> extends GeoI
 			}
 		}
 		else {
-			super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+			super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
 		}
 	}
 

@@ -36,7 +36,7 @@ public abstract class AbstractSignEditScreenMixin extends Screen {
 	private void onRemoved(CallbackInfo ci) {
 		if (minecraft == null) return;
 		if (minecraft.player == null) return;
-		if (!minecraft.player.hasEffect(ModMobEffects.PRIMORDIAL_INFESTATION.get())) return;
+		if (!minecraft.player.hasEffect(ModMobEffects.PRIMORDIAL_INFESTATION)) return;
 
 		int maxWidth = biomancy$approximateMaxLineWidth();
 		for (int i = 0; i < messages.length; i++) {

@@ -5,14 +5,14 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraft.core.Registry;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-public record EnhancedTagAppender<T>(IntrinsicHolderTagsProvider.IntrinsicTagAppender<T> delegate, IForgeRegistry<T> forgeRegistry) {
+public record EnhancedTagAppender<T>(IntrinsicHolderTagsProvider.IntrinsicTagAppender<T> delegate, Registry<T> forgeRegistry) {
 
 	public EnhancedTagAppender<T> addTag(TagKey<T> tagKey) {
 		if (isValidNamespace(tagKey.location().getNamespace())) {
@@ -94,7 +94,7 @@ public record EnhancedTagAppender<T>(IntrinsicHolderTagsProvider.IntrinsicTagApp
 
 	public EnhancedTagAppender<T> addOptional(String... resourceLocations) {
 		for (String resourceLocation : resourceLocations) {
-			delegate.addOptional(new ResourceLocation(resourceLocation));
+			delegate.addOptional(ResourceLocation.parse(resourceLocation));
 		}
 		return this;
 	}
@@ -120,7 +120,7 @@ public record EnhancedTagAppender<T>(IntrinsicHolderTagsProvider.IntrinsicTagApp
 
 	public EnhancedTagAppender<T> addOptionalTag(String... resourceLocations) {
 		for (String resourceLocation : resourceLocations) {
-			delegate.addOptionalTag(new ResourceLocation(resourceLocation));
+			delegate.addOptionalTag(ResourceLocation.parse(resourceLocation));
 		}
 		return this;
 	}

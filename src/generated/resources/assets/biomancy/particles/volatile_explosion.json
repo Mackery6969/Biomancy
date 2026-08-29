@@ -1,6 +1,10 @@
 {
   "textures": [
-    "biomancy:volatile_explosion_1", "biomancy:volatile_explosion_2", "biomancy:volatile_explosion_3", "biomancy:volatile_explosion_4",
-    "biomancy:volatile_explosion_5", "biomancy:volatile_explosion_6"
+    "biomancy:volatile_explosion_1",
+    "biomancy:volatile_explosion_2",
+    "biomancy:volatile_explosion_3",
+    "biomancy:volatile_explosion_4",
+    "biomancy:volatile_explosion_5",
+    "biomancy:volatile_explosion_6"
   ]
 }

@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "overweight_farming"
+    }
+  ],
+  "type": "biomancy:decomposing",
+  "ingredient": {
+    "item": "overweight_farming:peeled_overweight_cocoa_block"
+  },
+  "processingTime": 720,
+  "results": [
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 36,
+        "min": 18
+      },
+      "item": "biomancy:organic_matter"
+    }
+  ]
+}

@@ -2,16 +2,22 @@ package com.github.elenterius.biomancy.init;
 
 import com.github.elenterius.biomancy.BiomancyMod;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.decoration.PaintingVariant;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
 public final class ModPaintings {
 
-	public static final DeferredRegister<PaintingVariant> PAINTINGS = DeferredRegister.create(Registries.PAINTING_VARIANT, BiomancyMod.MOD_ID);
-
-	public static final DeferredHolder<PaintingVariant, PaintingVariant> JERRY_PROVIDES = PAINTINGS.register("jerry_provides", () -> new PaintingVariant(16, 16, BiomancyMod.rl("jerry_provides")));
+	public static final ResourceKey<PaintingVariant> JERRY_PROVIDES = key("jerry_provides");
 
 	private ModPaintings() {}
+
+	private static ResourceKey<PaintingVariant> key(String name) {
+		return ResourceKey.create(Registries.PAINTING_VARIANT, BiomancyMod.rl(name));
+	}
+
+	public static void bootstrap(BootstrapContext<PaintingVariant> ctx) {
+		ctx.register(JERRY_PROVIDES, new PaintingVariant(16, 16, BiomancyMod.rl("jerry_provides")));
+	}
 
 }

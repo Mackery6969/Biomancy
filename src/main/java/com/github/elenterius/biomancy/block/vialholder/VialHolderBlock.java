@@ -8,8 +8,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -49,6 +50,8 @@ public class VialHolderBlock extends BaseEntityBlock {
 
 	protected static final BooleanProperty[] VIAL_PROPERTIES = {VIAL_0, VIAL_1, VIAL_2, VIAL_3, VIAL_4};
 
+	public static final MapCodec<VialHolderBlock> CODEC = simpleCodec(VialHolderBlock::new);
+
 	public VialHolderBlock(Properties properties) {
 		super(properties);
 
@@ -57,6 +60,11 @@ public class VialHolderBlock extends BaseEntityBlock {
 			defaultState = defaultState.setValue(vialProperty, false);
 		}
 		registerDefaultState(defaultState.setValue(FACING, Direction.NORTH));
+	}
+
+	@Override
+	protected MapCodec<? extends VialHolderBlock> codec() {
+		return CODEC;
 	}
 
 	public static VoxelShape createShape(Direction direction) {
@@ -118,10 +126,9 @@ public class VialHolderBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected ItemInteractionResult useItemOn(ItemStack stackInHand, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 
 		if (level.getBlockEntity(pos) instanceof VialHolderBlockEntity vialHolder) {
-			ItemStack stackInHand = player.getItemInHand(hand);
 			boolean isHandEmpty = stackInHand.isEmpty();
 
 			if (player.isSecondaryUseActive()) {
@@ -134,7 +141,7 @@ public class VialHolderBlock extends BaseEntityBlock {
 						player.setItemInHand(hand, remainder);
 					}
 				}
-				return InteractionResult.sidedSuccess(level.isClientSide);
+				return ItemInteractionResult.sidedSuccess(level.isClientSide);
 			}
 
 			Direction facing = getFacing(state);
@@ -160,17 +167,17 @@ public class VialHolderBlock extends BaseEntityBlock {
 				index = maxIndex - index;
 			}
 
-			if (!vialHolder.isValidSlotIndex(index)) return InteractionResult.FAIL;
+			if (!vialHolder.isValidSlotIndex(index)) return ItemInteractionResult.FAIL;
 
 			boolean isVialSlotEmpty = !vialHolder.hasVial(index);
 
 			if (isHandEmpty) {
-				if (isVialSlotEmpty) return InteractionResult.FAIL;
+				if (isVialSlotEmpty) return ItemInteractionResult.FAIL;
 
 				if (!level.isClientSide) vialHolder.extractVial(player, index);
 			}
 			else {
-				if (!isVialSlotEmpty) return InteractionResult.FAIL;
+				if (!isVialSlotEmpty) return ItemInteractionResult.FAIL;
 
 				if (!level.isClientSide) {
 					ItemStack remainder = vialHolder.insertVial(stackInHand, index);
@@ -178,10 +185,10 @@ public class VialHolderBlock extends BaseEntityBlock {
 				}
 			}
 
-			return InteractionResult.sidedSuccess(level.isClientSide);
+			return ItemInteractionResult.sidedSuccess(level.isClientSide);
 		}
 
-		return InteractionResult.PASS;
+		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	@Override

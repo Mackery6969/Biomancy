@@ -110,7 +110,7 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 			if (serum.canAffectEntity(dataTag, null, target)) {
 				serum.affectEntity(level, dataTag, null, target);
 				injectorItem.consumeSerum(injectorStack, null);
-				injectorStack.hurt(1, level.getRandom(), null);
+				injectorStack.hurtAndBreak(1, level, (ServerPlayer) null, item -> {});
 
 				float damagePct = 1f;
 				for (ItemStack itemStack : target.getArmorSlots()) {
@@ -129,7 +129,7 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 			}
 		}
 		else {
-			injectorStack.hurt(2, level.getRandom(), null);
+			injectorStack.hurtAndBreak(2, level, (ServerPlayer) null, item -> {});
 			level.playSound(null, pos, SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 0.5f, 1f / (level.random.nextFloat() * 0.5f + 1f) + 0.2f);
 		}
 		return false;

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "biomancy:decomposing/tubular_flesh"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tubular_flesh": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomancy:tubular_flesh"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tubular_flesh"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "biomancy:decomposing/tubular_flesh"
+    ]
+  }
+}

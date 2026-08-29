@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraftforge.common.IPlantable;
 
 import java.util.Optional;
 
@@ -54,7 +53,7 @@ public class FertilizerItem extends SimpleItem {
 		else if (PillarPlantUtil.isPillarPlant(block)) {
 			return PillarPlantUtil.applyMegaGrowthBoost(level, pos, state, block);
 		}
-		else if (block instanceof IPlantable) { //e.g. nether wart
+		else if (BlockPropertyUtil.getAgeProperty(state).isPresent() || state.isRandomlyTicking()) { //e.g. nether wart
 			return growPlantableBlock(level, pos, state, block);
 		}
 
@@ -180,15 +179,15 @@ public class FertilizerItem extends SimpleItem {
 			if (age < maxAge) {
 				if (!level.isClientSide()) {
 					level.setBlock(pos, state.setValue(ageProperty, maxAge), Block.UPDATE_CLIENTS);
-					level.levelEvent(LevelEvent.PARTICLES_PLANT_GROWTH, pos, 5);
+					level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, pos, 5);
 				}
 				return true;
 			}
 		}
-		else if (block.isRandomlyTicking(state)) {
+		else if (state.isRandomlyTicking()) {
 			if (!level.isClientSide() && !level.getBlockTicks().willTickThisTick(pos, block)) {
 				level.scheduleTick(pos, block, 2);
-				level.levelEvent(LevelEvent.PARTICLES_PLANT_GROWTH, pos, 5);
+				level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, pos, 5);
 			}
 			return true;
 		}
@@ -197,7 +196,7 @@ public class FertilizerItem extends SimpleItem {
 	}
 
 	private static boolean growBonmealableBlock(Level level, BlockPos pos, BlockState state, BonemealableBlock block) {
-		if (!block.isValidBonemealTarget(level, pos, state, level.isClientSide)) return false;
+		if (!block.isValidBonemealTarget(level, pos, state)) return false;
 		if (!(level instanceof ServerLevel serverLevel)) return true;
 
 		final BlockState prevState = state;
@@ -222,7 +221,7 @@ public class FertilizerItem extends SimpleItem {
 		}
 		block.performBonemeal(serverLevel, serverLevel.random, pos, state);
 
-		serverLevel.levelEvent(LevelEvent.PARTICLES_PLANT_GROWTH, pos, 5);
+		serverLevel.levelEvent(LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, pos, 5);
 
 		return true;
 	}
@@ -230,7 +229,7 @@ public class FertilizerItem extends SimpleItem {
 	private static boolean growOverweightCrop(Level level, BlockPos pos, BlockState state) {
 		if (level instanceof ServerLevel serverLevel) {
 			ModsCompatHandler.getOverweightFarmingHelper().growOverweight(serverLevel, pos, state, serverLevel.random);
-			serverLevel.levelEvent(LevelEvent.PARTICLES_PLANT_GROWTH, pos, 5);
+			serverLevel.levelEvent(LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, pos, 5);
 		}
 
 		return true;

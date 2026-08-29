@@ -63,21 +63,21 @@ public class ModBlockStateProvider extends BlockStateProvider {
 	}
 
 	protected ResourceLocation blockAsset(ResourceLocation registryKey) {
-		return new ResourceLocation(registryKey.getNamespace(), ModelProvider.BLOCK_FOLDER + "/" + registryKey.getPath());
+		return ResourceLocation.fromNamespaceAndPath(registryKey.getNamespace(), ModelProvider.BLOCK_FOLDER + "/" + registryKey.getPath());
 	}
 
 	protected ResourceLocation blockAsset(Block block) {
 		ResourceLocation registryKey = registryKey(block);
-		return new ResourceLocation(registryKey.getNamespace(), ModelProvider.BLOCK_FOLDER + "/" + registryKey.getPath());
+		return ResourceLocation.fromNamespaceAndPath(registryKey.getNamespace(), ModelProvider.BLOCK_FOLDER + "/" + registryKey.getPath());
 	}
 
 	protected ResourceLocation blockAsset(Block block, String suffix) {
 		ResourceLocation registryKey = registryKey(block);
-		return new ResourceLocation(registryKey.getNamespace(), ModelProvider.BLOCK_FOLDER + "/" + registryKey.getPath() + suffix);
+		return ResourceLocation.fromNamespaceAndPath(registryKey.getNamespace(), ModelProvider.BLOCK_FOLDER + "/" + registryKey.getPath() + suffix);
 	}
 
 	protected ResourceLocation extend(ResourceLocation resourceLocation, String suffix) {
-		return new ResourceLocation(resourceLocation.getNamespace(), resourceLocation.getPath() + suffix);
+		return ResourceLocation.fromNamespaceAndPath(resourceLocation.getNamespace(), resourceLocation.getPath() + suffix);
 	}
 
 	@Override
@@ -191,9 +191,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		TextureMapping textureMapping = TextureMapping.cauldron(fluidTexture);
 		TextureSlot[] texturesSlots = {TextureSlot.CONTENT, TextureSlot.INSIDE, TextureSlot.TOP, TextureSlot.BOTTOM, TextureSlot.SIDE, TextureSlot.PARTICLE};
 
-		ModelFile modelLevel1 = getTemplateModelWithTextures(path + "_level_1", new ResourceLocation("minecraft:block/template_cauldron_level1"), texturesSlots, textureMapping).renderType("translucent");
-		ModelFile modelLevel2 = getTemplateModelWithTextures(path + "_level_2", new ResourceLocation("minecraft:block/template_cauldron_level2"), texturesSlots, textureMapping).renderType("translucent");
-		ModelFile modelFull = getTemplateModelWithTextures(path + "_full", new ResourceLocation("minecraft:block/template_cauldron_full"), texturesSlots, textureMapping).renderType("translucent");
+		ModelFile modelLevel1 = getTemplateModelWithTextures(path + "_level_1", ResourceLocation.parse("minecraft:block/template_cauldron_level1"), texturesSlots, textureMapping).renderType("translucent");
+		ModelFile modelLevel2 = getTemplateModelWithTextures(path + "_level_2", ResourceLocation.parse("minecraft:block/template_cauldron_level2"), texturesSlots, textureMapping).renderType("translucent");
+		ModelFile modelFull = getTemplateModelWithTextures(path + "_full", ResourceLocation.parse("minecraft:block/template_cauldron_full"), texturesSlots, textureMapping).renderType("translucent");
 
 		getVariantBuilder(block)
 				.partialState().with(LayeredCauldronBlock.LEVEL, 1).modelForState().modelFile(modelLevel1).addModel()
@@ -534,7 +534,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		int scaleHead = 1;
 		float translation3P = 2.5f;
 
-		itemModels().getBuilder(path).parent(new ModelFile.UncheckedModelFile(new ResourceLocation("builtin/entity")))
+		itemModels().getBuilder(path).parent(new ModelFile.UncheckedModelFile(ResourceLocation.parse("builtin/entity")))
 				.transforms()
 				.transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND).rotation(0, 45, 0).translation(0, (1 - yPct) * 6.5f, 0).scale(scale1P * scaleMultiplier).end()
 				.transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND).rotation(0, 225, 0).translation(0, (1 - yPct) * 6.5f, 0).scale(scale1P * scaleMultiplier).end()

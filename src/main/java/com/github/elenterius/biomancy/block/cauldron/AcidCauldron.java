@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -24,7 +24,7 @@ import net.minecraft.world.phys.BlockHitResult;
 public class AcidCauldron extends LayeredCauldronBlock {
 
 	public AcidCauldron(Properties properties) {
-		super(properties, precipitation -> false, AcidInteractions.ACID_CAULDRON);
+		super(Biome.Precipitation.NONE, AcidInteractions.ACID_CAULDRON, properties);
 	}
 
 	@Override
@@ -41,19 +41,12 @@ public class AcidCauldron extends LayeredCauldronBlock {
 	}
 
 	@Override
-	protected void handleEntityOnFireInside(BlockState state, Level level, BlockPos pos) {
-		//do nothing
-	}
-
-	@Override
 	public void handlePrecipitation(BlockState state, Level level, BlockPos pos, Biome.Precipitation precipitation) {
 		//do nothing
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		ItemStack stack = player.getItemInHand(hand);
-
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (stack.getItem() instanceof BlockItem blockItem) {
 			Block block = blockItem.getBlock();
 			Block convertedBlock = AcidInteractions.convertBlock(block);
@@ -67,10 +60,10 @@ public class AcidCauldron extends LayeredCauldronBlock {
 					level.levelEvent(LevelEvent.LAVA_FIZZ, pos, 0);
 				}
 
-				return InteractionResult.sidedSuccess(level.isClientSide());
+				return ItemInteractionResult.sidedSuccess(level.isClientSide());
 			}
 		}
 
-		return super.use(state, level, pos, player, hand, hit);
+		return super.useItemOn(stack, state, level, pos, player, hand, hit);
 	}
 }

@@ -1,9 +1,10 @@
 package com.github.elenterius.biomancy.item;
 
 import com.github.elenterius.biomancy.block.membrane.BiometricMembraneBlockEntity;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.Block;
 
 public class BiometricMembraneBlockItem extends SimpleBlockItem {
@@ -14,8 +15,8 @@ public class BiometricMembraneBlockItem extends SimpleBlockItem {
 
 	@Override
 	public String getDescriptionId(ItemStack stack) {
-		CompoundTag compoundTag = BlockItem.getBlockEntityData(stack);
-		if (compoundTag == null || !compoundTag.contains(BiometricMembraneBlockEntity.MEMBRANE_KEY)) {
+		CompoundTag compoundTag = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
+		if (!compoundTag.contains(BiometricMembraneBlockEntity.MEMBRANE_KEY)) {
 			return getDescriptionId();
 		}
 

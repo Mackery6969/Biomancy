@@ -7,7 +7,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 public class SingleItemStackHandler implements SerializableItemHandler, IItemHandlerModifiable, INBTSerializable<CompoundTag> {
 
@@ -115,11 +114,11 @@ public class SingleItemStackHandler implements SerializableItemHandler, IItemHan
 
 		if (!simulate) {
 			int insertAmount = overflow > 0 ? insertGoal - overflow : insertGoal;
-			if (cachedStack.isEmpty()) cachedStack = ItemHandlerHelper.copyStackWithSize(stackIn, insertAmount);
+			if (cachedStack.isEmpty()) cachedStack = stackIn.copyWithCount(insertAmount);
 			else cachedStack.grow(insertAmount);
 		}
 
-		return overflow > 0 ? ItemHandlerHelper.copyStackWithSize(stackIn, overflow) : ItemStack.EMPTY;
+		return overflow > 0 ? stackIn.copyWithCount(overflow) : ItemStack.EMPTY;
 	}
 
 	public ItemStack extractItem(int amount, boolean simulate) {
@@ -154,7 +153,7 @@ public class SingleItemStackHandler implements SerializableItemHandler, IItemHan
 			if (!simulate) {
 				cachedStack.grow(-extractGoal);
 			}
-			return ItemHandlerHelper.copyStackWithSize(cachedStack, extractGoal);
+			return cachedStack.copyWithCount(extractGoal);
 		}
 	}
 

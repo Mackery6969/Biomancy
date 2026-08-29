@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.crafting.recipe;
 
+import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.crafting.AnyFoodIngredient;
 import com.github.elenterius.biomancy.init.ModItems;
 import com.github.elenterius.biomancy.init.ModRecipes;
@@ -8,11 +9,15 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Mth;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -124,6 +129,25 @@ public class FoodDigestingRecipe extends DynamicProcessingRecipe implements Dige
 		@Override
 		public StreamCodec<RegistryFriendlyByteBuf, FoodDigestingRecipe> streamCodec() {
 			return STREAM_CODEC;
+		}
+	}
+
+	public static class RecipeBuilder {
+
+		private RecipeBuilder() {}
+
+		public static void save(RecipeOutput recipeOutput, int multiplier, Item item) {
+			save(recipeOutput, multiplier, new ItemStack(item));
+		}
+
+		public static void save(RecipeOutput recipeOutput, int multiplier, ItemStack stack) {
+			ResourceLocation key = BuiltInRegistries.ITEM.getKey(stack.getItem());
+			String subFolder = ModRecipes.DIGESTING_RECIPE_TYPE.getId().getPath();
+			save(recipeOutput, multiplier, stack, BiomancyMod.rl(subFolder + "/" + key.getPath() + "_from_digesting_dynamic_food"));
+		}
+
+		public static void save(RecipeOutput recipeOutput, int multiplier, ItemStack stack, ResourceLocation id) {
+			recipeOutput.accept(id, new FoodDigestingRecipe(multiplier, stack), null);
 		}
 	}
 

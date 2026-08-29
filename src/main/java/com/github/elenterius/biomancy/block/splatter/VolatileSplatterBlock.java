@@ -2,6 +2,7 @@ package com.github.elenterius.biomancy.block.splatter;
 
 import com.github.elenterius.biomancy.init.ModMobEffects;
 import com.github.elenterius.biomancy.init.ModParticleTypes;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -17,14 +18,21 @@ import java.util.List;
 
 public class VolatileSplatterBlock extends SplatterBlock {
 
+	public static final MapCodec<VolatileSplatterBlock> CODEC = simpleCodec(VolatileSplatterBlock::new);
+
 	public VolatileSplatterBlock(Properties properties) {
 		super(properties);
 	}
 
 	@Override
+	protected MapCodec<? extends VolatileSplatterBlock> codec() {
+		return CODEC;
+	}
+
+	@Override
 	protected void entityInsideBoundingBox(Level level, BlockPos pos, BlockState state, Entity entity) {
 		if (!level.isClientSide && entity instanceof LivingEntity livingEntity) {
-			livingEntity.addEffect(new MobEffectInstance(ModMobEffects.VOLATILE.get(), (60 + 30) * 20));
+			livingEntity.addEffect(new MobEffectInstance(ModMobEffects.VOLATILE, (60 + 30) * 20));
 			if (livingEntity.tickCount % 20 == 0) {
 				reduceSplatter(state, level, pos, level.random);
 			}

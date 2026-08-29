@@ -12,14 +12,14 @@ public class FrenzyMeleeAttackGoal extends MeleeAttackGoal {
 
 	@Override
 	public boolean canUse() {
-		if (!mob.hasEffect(ModMobEffects.FRENZY.get())) return false;
+		if (!mob.hasEffect(ModMobEffects.FRENZY)) return false;
 
 		return super.canUse();
 	}
 
 	@Override
 	public boolean canContinueToUse() {
-		if (!mob.hasEffect(ModMobEffects.FRENZY.get())) return false;
+		if (!mob.hasEffect(ModMobEffects.FRENZY)) return false;
 
 		return super.canContinueToUse();
 	}

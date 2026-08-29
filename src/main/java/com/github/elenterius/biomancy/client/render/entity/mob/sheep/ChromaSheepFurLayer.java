@@ -35,7 +35,7 @@ public class ChromaSheepFurLayer extends RenderLayer<ChromaSheep, SheepModel<Chr
 		model.prepareMobModel(livingEntity, limbSwing, limbSwingAmount, partialTicks);
 		model.setupAnim(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		VertexConsumer vertexconsumer = buffer.getBuffer(getRenderType(TEXTURE));
-		model.renderToBuffer(poseStack, vertexconsumer, packedLight, LivingEntityRenderer.getOverlayCoords(livingEntity, 0f), 1f, 1f, 1f, 1f);
+		model.renderToBuffer(poseStack, vertexconsumer, packedLight, LivingEntityRenderer.getOverlayCoords(livingEntity, 0f), -1);
 	}
 
 	protected RenderType getRenderType(ResourceLocation texture) {

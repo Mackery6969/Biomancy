@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "biomancy:crafting/undead_permeable_membrane_pane_from_undead_permeable_membrane"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_undead_permeable_membrane": {
+      "conditions": {
+        "items": [
+          {
+            "items": "biomancy:undead_permeable_membrane"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_undead_permeable_membrane"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "biomancy:crafting/undead_permeable_membrane_pane_from_undead_permeable_membrane"
+    ]
+  }
+}

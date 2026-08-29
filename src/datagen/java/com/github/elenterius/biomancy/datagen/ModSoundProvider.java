@@ -4,6 +4,7 @@ import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.init.ModSoundEvents;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -85,7 +86,7 @@ public class ModSoundProvider extends SoundDefinitionsProvider {
 		addSimpleRedirect(ModSoundEvents.CRADLE_EAT, SoundEvents.GOAT_SCREAMING_EAT, 1f, 0.25f);
 		addSimpleRedirect(ModSoundEvents.CRADLE_NO, SoundEvents.VILLAGER_NO, 0.75f, 0.3f);
 
-		addSimpleRedirect(ModSoundEvents.UI_BUTTON_CLICK, SoundEvents.UI_BUTTON_CLICK.get());
+		addSimpleRedirect(ModSoundEvents.UI_BUTTON_CLICK, SoundEvents.UI_BUTTON_CLICK);
 		addSimpleSound(ModSoundEvents.UI_MENU_OPEN);
 		addSimpleRedirect(ModSoundEvents.UI_RADIAL_MENU_OPEN, SoundEvents.SHULKER_BOX_OPEN, 0.5f, 1f);
 
@@ -136,11 +137,11 @@ public class ModSoundProvider extends SoundDefinitionsProvider {
 	}
 
 	public ResourceLocation extend(ResourceLocation rl, String suffix) {
-		return new ResourceLocation(rl.getNamespace(), rl.getPath() + "_" + suffix);
+		return ResourceLocation.fromNamespaceAndPath(rl.getNamespace(), rl.getPath() + "_" + suffix);
 	}
 
 	public ResourceLocation extend(ResourceLocation rl, int variant) {
-		return new ResourceLocation(rl.getNamespace(), rl.getPath() + variant);
+		return ResourceLocation.fromNamespaceAndPath(rl.getNamespace(), rl.getPath() + variant);
 	}
 
 	protected void addSimpleSounds(DeferredHolder<SoundEvent, SoundEvent> soundHolder, int variants) {
@@ -209,6 +210,14 @@ public class ModSoundProvider extends SoundDefinitionsProvider {
 				.subtitle(translationKey(soundHolder))
 				.with(sound(redirectTarget.getId(), SoundDefinition.SoundType.EVENT).volume(volume).pitch(pitch))
 		);
+	}
+
+	protected void addSimpleRedirect(DeferredHolder<SoundEvent, SoundEvent> soundHolder, Holder<SoundEvent> redirectTarget) {
+		addSimpleRedirect(soundHolder, redirectTarget.value());
+	}
+
+	protected void addSimpleRedirect(DeferredHolder<SoundEvent, SoundEvent> soundHolder, Holder<SoundEvent> redirectTarget, float volume, float pitch) {
+		addSimpleRedirect(soundHolder, redirectTarget.value(), volume, pitch);
 	}
 
 	protected void addSimpleRedirects(DeferredHolder<SoundEvent, SoundEvent> soundHolder, SoundEvent... redirectTargets) {

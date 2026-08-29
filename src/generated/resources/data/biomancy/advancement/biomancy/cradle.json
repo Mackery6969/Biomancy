@@ -1,0 +1,35 @@
+{
+  "parent": "biomancy:biomancy/primal_vision",
+  "criteria": {
+    "has_placed_cradle": {
+      "conditions": {
+        "location": [
+          {
+            "block": "biomancy:primordial_cradle",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
+      },
+      "trigger": "minecraft:placed_block"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.biomancy.cradle.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "biomancy:primordial_cradle"
+    },
+    "title": {
+      "translate": "advancements.biomancy.cradle.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_placed_cradle"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

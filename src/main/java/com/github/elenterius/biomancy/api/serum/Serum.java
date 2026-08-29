@@ -1,6 +1,7 @@
 package com.github.elenterius.biomancy.api.serum;
 
 import com.github.elenterius.biomancy.util.ComponentUtil;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -11,11 +12,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 @ApiStatus.Experimental
 public interface Serum {
@@ -64,20 +67,23 @@ public interface Serum {
 	};
 
 	static CompoundTag getDataTag(ItemStack stack) {
-		CompoundTag tag = stack.getTagElement(DATA_TAG_KEY);
-		return tag != null ? tag : new CompoundTag();
+		return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getCompound(DATA_TAG_KEY);
 	}
 
-	static CompoundTag getOrCreateDataTag(ItemStack stack) {
-		return stack.getOrCreateTagElement(DATA_TAG_KEY);
+	static void updateDataTag(ItemStack stack, Consumer<CompoundTag> updater) {
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, fullTag -> {
+			CompoundTag tag = fullTag.getCompound(DATA_TAG_KEY);
+			updater.accept(tag);
+			fullTag.put(DATA_TAG_KEY, tag);
+		});
 	}
 
 	static void setDataTag(ItemStack stack, CompoundTag tag) {
-		stack.getOrCreateTag().put(DATA_TAG_KEY, tag);
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, fullTag -> fullTag.put(DATA_TAG_KEY, tag));
 	}
 
 	static void removeDataTag(ItemStack stack) {
-		stack.removeTagKey(DATA_TAG_KEY);
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, fullTag -> fullTag.remove(DATA_TAG_KEY));
 	}
 
 	//	static void copyDataTag(CompoundTag fromTag, CompoundTag toTag) {

@@ -1,0 +1,16 @@
+{
+  "type": "biomancy:bio_brewing",
+  "ingredients": [
+    {
+      "item": "biomancy:volatile_fluid"
+    }
+  ],
+  "processingTime": 80,
+  "reactant": {
+    "item": "biomancy:organic_compound"
+  },
+  "result": {
+    "count": 1,
+    "id": "biomancy:unstable_compound"
+  }
+}

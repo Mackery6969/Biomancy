@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sons_of_sins"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_enderman_muscle": {
+      "conditions": {
+        "items": [
+          {
+            "items": "sons_of_sins:enderman_muscle"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "biomancy:decomposing/enderman_muscle"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_enderman_muscle"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "biomancy:decomposing/enderman_muscle"
+    ]
+  }
+}

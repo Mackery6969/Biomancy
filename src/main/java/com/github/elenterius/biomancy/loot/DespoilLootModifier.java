@@ -10,6 +10,8 @@ import net.minecraft.advancements.critereon.EntityFlagsPredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -47,7 +49,7 @@ public class DespoilLootModifier extends LootModifier {
 				//Can't use MatchTool, because the tool is missing for Entity Kills (1.18.2, 1.19.2)
 				//only apply the loot modifier to adult mobs killed by a player
 				new LootItemCondition[]{
-						LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setIsBaby(false).build())).build(),
+						LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setIsBaby(false))).build(),
 						LootItemKilledByPlayerCondition.killedByPlayer().build()
 				});
 	}
@@ -66,7 +68,7 @@ public class DespoilLootModifier extends LootModifier {
 	}
 
 	protected static int getDespoilLevel(LootContext lootContext) {
-		Entity killer = lootContext.getParamOrNull(LootContextParams.KILLER_ENTITY);
+		Entity killer = lootContext.getParamOrNull(LootContextParams.ATTACKING_ENTITY);
 		if (killer instanceof LivingEntity livingEntity) {
 			Holder<Enchantment> despoil = ModEnchantments.getHolder(ModEnchantments.DESPOIL, livingEntity.level());
 
@@ -75,7 +77,7 @@ public class DespoilLootModifier extends LootModifier {
 					.max()
 					.orElse(0);
 
-			MobEffectInstance effectInstance = livingEntity.getEffect(ModMobEffects.DESPOIL.get());
+			MobEffectInstance effectInstance = livingEntity.getEffect(ModMobEffects.DESPOIL);
 			int effectDespoilLevel = effectInstance != null ? effectInstance.getAmplifier() + 1 : 0;
 
 			return Math.max(itemDespoilLevel, effectDespoilLevel);
@@ -89,7 +91,7 @@ public class DespoilLootModifier extends LootModifier {
 	}
 
 	protected static boolean isUsingTool(LootContext lootContext) {
-		Entity killer = lootContext.getParamOrNull(LootContextParams.KILLER_ENTITY);
+		Entity killer = lootContext.getParamOrNull(LootContextParams.ATTACKING_ENTITY);
 
 		if (killer instanceof LivingEntity livingEntity) {
 			ItemStack stack = livingEntity.getMainHandItem();
@@ -141,7 +143,7 @@ public class DespoilLootModifier extends LootModifier {
 
 	protected LootTable getLootTable(ServerLevel level, Entity entity) {
 		ResourceLocation lootTableId = getLootTableId(entity.getType());
-		return level.getServer().getLootData().getLootTable(lootTableId);
+		return level.getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, lootTableId));
 	}
 
 	protected LootParams createLootParams(LootContext context) {
@@ -149,8 +151,8 @@ public class DespoilLootModifier extends LootModifier {
 				.withParameter(LootContextParams.THIS_ENTITY, context.getParam(LootContextParams.THIS_ENTITY))
 				.withParameter(LootContextParams.ORIGIN, context.getParam(LootContextParams.ORIGIN))
 				.withParameter(LootContextParams.DAMAGE_SOURCE, context.getParam(LootContextParams.DAMAGE_SOURCE))
-				.withOptionalParameter(LootContextParams.KILLER_ENTITY, context.getParamOrNull(LootContextParams.KILLER_ENTITY))
-				.withOptionalParameter(LootContextParams.DIRECT_KILLER_ENTITY, context.getParamOrNull(LootContextParams.DIRECT_KILLER_ENTITY));
+				.withOptionalParameter(LootContextParams.ATTACKING_ENTITY, context.getParamOrNull(LootContextParams.ATTACKING_ENTITY))
+				.withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, context.getParamOrNull(LootContextParams.DIRECT_ATTACKING_ENTITY));
 
 		if (context.hasParam(LootContextParams.LAST_DAMAGE_PLAYER)) {
 			Player player = context.getParam(LootContextParams.LAST_DAMAGE_PLAYER);

@@ -34,8 +34,8 @@ public class BloomberryProjectile extends BaseProjectile implements GeoEntity {
 	}
 
 	@Override
-	public float getGravity() {
-		return 0.025f;
+	protected double getDefaultGravity() {
+		return 0.025d;
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class BloomberryProjectile extends BaseProjectile implements GeoEntity {
 		super.onHitEntity(result);
 		if (level() instanceof ServerLevel serverLevel) {
 			if (result.getEntity() instanceof LivingEntity livingEntity) {
-				livingEntity.addEffect(new MobEffectInstance(ModMobEffects.PRIMORDIAL_INFESTATION.get(), 20 * 60), this);
+				livingEntity.addEffect(new MobEffectInstance(ModMobEffects.PRIMORDIAL_INFESTATION, 20 * 60), this);
 			}
 			else {
 				Direction direction = Direction.orderedByNearest(this)[0];

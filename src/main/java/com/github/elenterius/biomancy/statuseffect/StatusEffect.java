@@ -1,16 +1,20 @@
 package com.github.elenterius.biomancy.statuseffect;
 
+import com.github.elenterius.biomancy.BiomancyMod;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.EffectCure;
+import net.neoforged.neoforge.common.EffectCures;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 public class StatusEffect extends MobEffect {
 
@@ -25,14 +29,18 @@ public class StatusEffect extends MobEffect {
 		this.isCurable = isCurable;
 	}
 
-	public <E extends StatusEffect> E addModifier(Attribute attribute, String uuid, double amount, AttributeModifier.Operation operation) {
+	public <E extends StatusEffect> E addModifier(Holder<Attribute> attribute, String uuid, double amount, AttributeModifier.Operation operation) {
 		//noinspection unchecked
-		return (E) addAttributeModifier(attribute, uuid, amount, operation);
+		return (E) addAttributeModifier(attribute, BiomancyMod.rl(uuid), amount, operation);
+	}
+
+	public Holder<MobEffect> asHolder() {
+		return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(this);
 	}
 
 	@Override
-	public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
-		//do nothing
+	public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+		return true; //do nothing, keep the effect active
 	}
 
 	@Override
@@ -41,13 +49,13 @@ public class StatusEffect extends MobEffect {
 	}
 
 	@Override
-	public boolean isDurationEffectTick(int duration, int amplifier) {
+	public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
 		return false;
 	}
 
 	@Override
-	public List<ItemStack> getCurativeItems() {
-		return isCurable ? super.getCurativeItems() : Collections.emptyList();
+	public void fillEffectCures(Set<EffectCure> cures, MobEffectInstance effectInstance) {
+		if (isCurable) cures.addAll(EffectCures.DEFAULT_CURES);
 	}
 
 }

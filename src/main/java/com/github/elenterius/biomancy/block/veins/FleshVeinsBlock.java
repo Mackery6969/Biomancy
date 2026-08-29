@@ -16,10 +16,12 @@ import com.github.elenterius.biomancy.world.mound.MoundShape;
 import com.github.elenterius.biomancy.world.mound.decorator.ChamberDecorator;
 import com.github.elenterius.biomancy.world.mound.decorator.ChamberSpecialDecorator;
 import com.github.elenterius.spatialdb.SpatialDBManager;
+import com.mojang.serialization.MapCodec;
 import com.github.elenterius.spatialdb.geometry.HasRadius;
 import com.github.elenterius.spatialdb.geometry.Shape;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -54,6 +56,8 @@ import java.util.function.Predicate;
 
 public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterloggedBlock {
 
+	public static final MapCodec<FleshVeinsBlock> CODEC = simpleCodec(FleshVeinsBlock::new);
+
 	public static final Predicate<BlockState> BLOCKS_TO_AVOID_PREDICATE = blockState -> blockState.is(ModBlocks.PRIMAL_BLOOM.get());
 	protected static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	protected static final EnhancedIntegerProperty CHARGE = ModBlockProperties.CHARGE;
@@ -62,6 +66,11 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 	public FleshVeinsBlock(Properties properties) {
 		super(properties.randomTicks().ignitedByLava());
 		registerDefaultState(defaultBlockState().setValue(WATERLOGGED, false).setValue(CHARGE.get(), CHARGE.getMin()));
+	}
+
+	@Override
+	protected MapCodec<? extends FleshVeinsBlock> codec() {
+		return CODEC;
 	}
 
 	public static boolean convert(BlockState state, ServerLevel level, BlockPos pos, int directNeighbors, @Nullable MoundShape mound, float nearBoundingCenterPct, @Nullable PrimalEnergyHandler energyHandler) {
@@ -507,9 +516,8 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 	}
 
 	static int getRawMeatNutrition(ItemStack itemStack) {
-		if (!itemStack.isEdible()) return 0;
-		FoodProperties food = itemStack.getFoodProperties(null);
-		return food != null && food.isMeat() && itemStack.is(ModItemTags.FRESH_RAW_MEATS) ? food.getNutrition() : 0;
+		FoodProperties food = itemStack.get(DataComponents.FOOD);
+		return food != null && itemStack.is(ModItemTags.FRESH_RAW_MEATS) ? food.nutrition() : 0;
 	}
 
 	@Override
@@ -525,7 +533,7 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 			mound = moundShape;
 
 			BlockPos origin = mound.getOrigin();
-			BlockEntity existingBlockEntity = level.getExistingBlockEntity(origin);
+			BlockEntity existingBlockEntity = level.getBlockEntity(origin);
 			if (existingBlockEntity instanceof PrimalEnergyHandler peh) {
 				energyHandler = peh;
 			}

@@ -53,13 +53,12 @@ public class TintedFluidType extends FluidType {
 		float depth = -0.5f;
 
 		Matrix4f matrix4f = poseStack.last().pose();
-		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferbuilder.vertex(matrix4f, -1f, -1f, depth).uv(4f + uOffset, 4f + vOffset).endVertex();
-		bufferbuilder.vertex(matrix4f, 1f, -1f, depth).uv(uOffset, 4f + vOffset).endVertex();
-		bufferbuilder.vertex(matrix4f, 1f, 1f, depth).uv(uOffset, vOffset).endVertex();
-		bufferbuilder.vertex(matrix4f, -1f, 1f, depth).uv(4f + uOffset, vOffset).endVertex();
-		BufferUploader.drawWithShader(bufferbuilder.end());
+		BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		bufferbuilder.addVertex(matrix4f, -1f, -1f, depth).setUv(4f + uOffset, 4f + vOffset);
+		bufferbuilder.addVertex(matrix4f, 1f, -1f, depth).setUv(uOffset, 4f + vOffset);
+		bufferbuilder.addVertex(matrix4f, 1f, 1f, depth).setUv(uOffset, vOffset);
+		bufferbuilder.addVertex(matrix4f, -1f, 1f, depth).setUv(4f + uOffset, vOffset);
+		BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
 
 		RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		RenderSystem.disableBlend();

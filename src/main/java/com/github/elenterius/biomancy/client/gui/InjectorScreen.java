@@ -13,6 +13,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import net.minecraft.core.component.DataComponents;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
@@ -225,7 +226,7 @@ public class InjectorScreen extends Screen {
 		}
 		else {
 			text = ComponentUtil.mutable().append(stack.getHighlightTip(stack.getHoverName()));
-			if (stack.hasCustomHoverName()) text.withStyle(ChatFormatting.ITALIC);
+			if (stack.has(DataComponents.CUSTOM_NAME)) text.withStyle(ChatFormatting.ITALIC);
 		}
 
 		int textRadius = radius + 16 + 8 + 2;
@@ -266,18 +267,17 @@ public class InjectorScreen extends Screen {
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
-		BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
-		bufferBuilder.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
+		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
 
 		float innerRadius = Math.max(radius - 16, 0);
-		bufferBuilder.vertex(matrix4f, x + innerRadius * Mth.cos(startAngle), y + innerRadius * Mth.sin(startAngle), blitOffset).color(argbColor).endVertex();
-		bufferBuilder.vertex(matrix4f, x + innerRadius * Mth.cos(endAngle), y + innerRadius * Mth.sin(endAngle), blitOffset).color(argbColor).endVertex();
+		bufferBuilder.addVertex(matrix4f, x + innerRadius * Mth.cos(startAngle), y + innerRadius * Mth.sin(startAngle), blitOffset).setColor(argbColor);
+		bufferBuilder.addVertex(matrix4f, x + innerRadius * Mth.cos(endAngle), y + innerRadius * Mth.sin(endAngle), blitOffset).setColor(argbColor);
 
 		float outerRadius = radius + 16;
-		bufferBuilder.vertex(matrix4f, x + outerRadius * Mth.cos(endAngle), y + outerRadius * Mth.sin(endAngle), blitOffset).color(argbColor).endVertex();
-		bufferBuilder.vertex(matrix4f, x + outerRadius * Mth.cos(startAngle), y + outerRadius * Mth.sin(startAngle), blitOffset).color(argbColor).endVertex();
+		bufferBuilder.addVertex(matrix4f, x + outerRadius * Mth.cos(endAngle), y + outerRadius * Mth.sin(endAngle), blitOffset).setColor(argbColor);
+		bufferBuilder.addVertex(matrix4f, x + outerRadius * Mth.cos(startAngle), y + outerRadius * Mth.sin(startAngle), blitOffset).setColor(argbColor);
 
-		BufferUploader.drawWithShader(bufferBuilder.end());
+		BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
 
 		RenderSystem.disableBlend();
 	}

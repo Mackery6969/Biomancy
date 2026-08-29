@@ -14,7 +14,7 @@ public class LibidoEffect extends StatusEffect {
 	}
 
 	@Override
-	public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
+	public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
 		if (livingEntity instanceof Animal animal && !animal.isBaby() && animal.canFallInLove()) {
 			int age = animal.getAge();
 			if (age >= 0) {
@@ -29,10 +29,11 @@ public class LibidoEffect extends StatusEffect {
 				villager.setAge(VILLAGER_BREED_DELAY); //growing age has to be 0 for villagers to be able to breed
 			}
 		}
+		return true;
 	}
 
 	@Override
-	public boolean isDurationEffectTick(int duration, int amplifier) {
+	public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
 		return duration % 40 == 0;
 	}
 

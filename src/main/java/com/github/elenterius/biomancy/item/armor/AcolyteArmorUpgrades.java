@@ -4,10 +4,12 @@ import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
@@ -35,13 +37,13 @@ public final class AcolyteArmorUpgrades {
 	}
 
 	public static ItemStack addUpgrade(ItemStack stack, Upgrade upgrade) {
-		stack.getOrCreateTag().putBoolean(upgrade.id.toString(), true);
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putBoolean(upgrade.id.toString(), true));
 		return stack;
 	}
 
 	public static boolean hasUpgrade(ItemStack stack, Upgrade upgrade) {
-		CompoundTag tag = stack.getTag();
-		return tag != null && tag.contains(upgrade.id.toString());
+		CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+		return tag.contains(upgrade.id.toString());
 	}
 
 	public static void appendHoverText(ItemStack stack, List<Component> tooltip) {

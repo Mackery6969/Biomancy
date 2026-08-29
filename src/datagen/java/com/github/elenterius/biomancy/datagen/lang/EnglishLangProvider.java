@@ -16,6 +16,8 @@ import com.github.elenterius.biomancy.styles.TextComponentUtil;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.*;
+import net.minecraft.Util;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -142,10 +144,10 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		itemsToTranslate.remove(item);
 	}
 
-	private <T extends Enchantment> void addEnchantment(Supplier<T> supplier, String name, String tooltip) {
-		T enchantment = supplier.get();
-		add(enchantment.getDescriptionId(), name);
-		add(enchantment.getDescriptionId() + ".desc", tooltip);
+	private void addEnchantment(ResourceKey<Enchantment> key, String name, String tooltip) {
+		String descriptionId = Util.makeDescriptionId("enchantment", key.location());
+		add(descriptionId, name);
+		add(descriptionId + ".desc", tooltip);
 	}
 
 	@Override

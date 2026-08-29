@@ -19,6 +19,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import com.github.elenterius.biomancy.init.ModEnchantments;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -31,6 +32,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
@@ -92,7 +94,8 @@ public class DevArmCannonItem extends Item implements GeoItem, IArmPoseProvider,
 		if (flags < 0 || flags >= ModProjectiles.PRECONFIGURED_PROJECTILES.size()) {
 			flags = 0;
 		}
-		stack.getOrCreateTag().putByte("ProjectileIndex", flags);
+		byte index = flags;
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putByte("ProjectileIndex", index));
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -109,10 +112,10 @@ public class DevArmCannonItem extends Item implements GeoItem, IArmPoseProvider,
 		if (!level.isClientSide) {
 			ItemStack stack = player.getItemInHand(usedHand);
 
-			byte index = stack.getOrCreateTag().getByte("ProjectileIndex");
+			byte index = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getByte("ProjectileIndex");
 			if (index < 0 || index >= ModProjectiles.PRECONFIGURED_PROJECTILES.size()) {
 				index = 0;
-				stack.getOrCreateTag().putByte("ProjectileIndex", (byte) 0);
+				CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putByte("ProjectileIndex", (byte) 0));
 			}
 
 			ModProjectiles.ConfiguredProjectile<? extends BaseProjectile> configuredProjectile = ModProjectiles.PRECONFIGURED_PROJECTILES.get(index);
@@ -168,7 +171,7 @@ public class DevArmCannonItem extends Item implements GeoItem, IArmPoseProvider,
 		tooltip.add(ComponentUtil.literal("The quick brown fox jumps over the lazy dog.").withStyle(TextStyles.PRIMORDIAL_RUNES_GRAY));
 
 		tooltip.add(ComponentUtil.EMPTY_LINE);
-		byte index = stack.getOrCreateTag().getByte("ProjectileIndex");
+		byte index = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getByte("ProjectileIndex");
 		if (index < 0 || index >= ModProjectiles.PRECONFIGURED_PROJECTILES.size()) {
 			index = 0;
 		}
@@ -182,7 +185,7 @@ public class DevArmCannonItem extends Item implements GeoItem, IArmPoseProvider,
 
 	@Override
 	public Component getHighlightTip(ItemStack stack, Component displayName) {
-		byte index = stack.getOrCreateTag().getByte("ProjectileIndex");
+		byte index = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getByte("ProjectileIndex");
 		if (index < 0 || index >= ModProjectiles.PRECONFIGURED_PROJECTILES.size()) {
 			index = 0;
 		}

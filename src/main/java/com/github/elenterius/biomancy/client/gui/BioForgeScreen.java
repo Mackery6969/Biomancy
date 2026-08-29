@@ -27,6 +27,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
@@ -67,7 +68,6 @@ public class BioForgeScreen extends AbstractContainerScreen<BioForgeMenu> implem
 
 	@Override
 	protected void containerTick() {
-		searchInput.tick();
 		recipeBook.tick();
 	}
 
@@ -179,7 +179,7 @@ public class BioForgeScreen extends AbstractContainerScreen<BioForgeMenu> implem
 			time += partialTick;
 		}
 
-		renderBackground(guiGraphics);
+		renderBackground(guiGraphics, mouseX, mouseY, partialTick);
 		super.render(guiGraphics, mouseX, mouseY, partialTick);
 		renderTooltip(guiGraphics, mouseX, mouseY);
 	}
@@ -216,16 +216,16 @@ public class BioForgeScreen extends AbstractContainerScreen<BioForgeMenu> implem
 		//TODO: refactor - move into the loop below
 		if (recipeBook.hasSelectedRecipe() && recipeBook.isSelectedRecipeVisible()) {
 			int gridIndex = recipeBook.getGridIndexOfSelectedRecipe();
-			BioForgingRecipe recipe = recipeBook.getRecipeByGrid(gridIndex);
-			boolean isCraftable = recipeBook.getRecipeCollectionByGrid(gridIndex).isCraftable(recipe);
+			RecipeHolder<BioForgingRecipe> recipeHolder = recipeBook.getRecipeHolderByGrid(gridIndex);
+			boolean isCraftable = recipeBook.getRecipeCollectionByGrid(gridIndex).isCraftable(recipeHolder);
 			renderTileSelection(guiGraphics, gridIndex, isCraftable);
 		}
 
 		int maxRecipes = recipeBook.getMaxRecipesOnGrid();
 		for (int gridIndex = 0; gridIndex < maxRecipes; gridIndex++) {
-			BioForgingRecipe recipe = recipeBook.getRecipeByGrid(gridIndex);
-			boolean isCraftable = recipeBook.getRecipeCollectionByGrid(gridIndex).isCraftable(recipe);
-			renderRecipeTile(guiGraphics, gridIndex, isCraftable, recipe.getResultItem(minecraft.level.registryAccess()));
+			RecipeHolder<BioForgingRecipe> recipeHolder = recipeBook.getRecipeHolderByGrid(gridIndex);
+			boolean isCraftable = recipeBook.getRecipeCollectionByGrid(gridIndex).isCraftable(recipeHolder);
+			renderRecipeTile(guiGraphics, gridIndex, isCraftable, recipeHolder.value().getResultItem(minecraft.level.registryAccess()));
 		}
 
 		renderPagination(guiGraphics);

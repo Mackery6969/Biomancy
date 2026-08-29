@@ -33,7 +33,7 @@ public class BreedingSerum extends BasicSerum {
 	@Override
 	public void affectEntity(ServerLevel level, CompoundTag tag, @Nullable LivingEntity source, LivingEntity target) {
 		if (isMatureAnimal(target) || isMatureVillager(target)) {
-			target.addEffect(new MobEffectInstance(ModMobEffects.LIBIDO.get(), 14 * 20, 1, false, true));
+			target.addEffect(new MobEffectInstance(ModMobEffects.LIBIDO, 14 * 20, 1, false, true));
 		}
 	}
 

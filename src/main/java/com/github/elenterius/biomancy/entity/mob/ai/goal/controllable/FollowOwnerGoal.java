@@ -13,8 +13,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+import net.minecraft.world.level.pathfinder.PathType;
 
 import java.util.EnumSet;
 import java.util.Optional;
@@ -79,15 +79,15 @@ public class FollowOwnerGoal<T extends Mob & OwnableMob & ControllableMob> exten
 	@Override
 	public void start() {
 		pathingDelay = 0;
-		oldWaterCost = entity.getPathfindingMalus(BlockPathTypes.WATER);
-		entity.setPathfindingMalus(BlockPathTypes.WATER, 0f);
+		oldWaterCost = entity.getPathfindingMalus(PathType.WATER);
+		entity.setPathfindingMalus(PathType.WATER, 0f);
 	}
 
 	@Override
 	public void stop() {
 		entityOwner = null;
 		navigator.stop();
-		entity.setPathfindingMalus(BlockPathTypes.WATER, oldWaterCost);
+		entity.setPathfindingMalus(PathType.WATER, oldWaterCost);
 	}
 
 	@Override
@@ -133,8 +133,8 @@ public class FollowOwnerGoal<T extends Mob & OwnableMob & ControllableMob> exten
 	}
 
 	private boolean isTeleportFriendlyBlock(BlockPos pos) {
-		BlockPathTypes pathTypes = WalkNodeEvaluator.getBlockPathTypeStatic(world, pos.mutable());
-		if (pathTypes != BlockPathTypes.WALKABLE) {
+		PathType pathTypes = WalkNodeEvaluator.getPathTypeStatic(entity, pos);
+		if (pathTypes != PathType.WALKABLE) {
 			return false;
 		}
 

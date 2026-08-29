@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sons_of_sins"
+    }
+  ],
+  "type": "biomancy:decomposing",
+  "ingredient": {
+    "item": "sons_of_sins:ether_ashes"
+  },
+  "results": [
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 2,
+        "min": 0
+      },
+      "item": "biomancy:exotic_dust"
+    }
+  ]
+}

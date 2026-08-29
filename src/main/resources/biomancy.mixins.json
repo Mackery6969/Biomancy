@@ -13,7 +13,6 @@
     "ArrowMixin",
     "ExplosionMixin",
     "FlowingFluidMixin",
-    "HoneyBottleItemMixin",
     "ItemEntityMixin",
     "LivingEntityMixin",
     "MobEffectInstanceMixin",
@@ -24,7 +23,6 @@
     "ServerLevelMixin",
     "SignBlockEntityMixin",
     "ThrownPotionMixin",
-    "UnbreakingEnchantmentMixin",
     "VillagerMakeLoveMixin",
     "VillagerMixin",
     "WallBlockMixin",
@@ -42,14 +40,11 @@
     "accessor.LivingEntityAccessor",
     "accessor.MobEffectInstanceAccessor",
     "accessor.MobEntityAccessor",
-    "accessor.PigAccessor",
     "accessor.PotionBrewingAccessor",
     "accessor.ServerLevelAccessor",
     "accessor.SheepAccessor",
     "accessor.SlimeAccessor",
     "accessor.StructureTemplateAccessor",
-    "accessor.SuspiciousStewItemAccessor",
-    "accessor.SwordItemMixinAccessor",
     "accessor.TadpoleAccessor",
     "accessor.TextDisplayAccessor",
     "accessor.TextureSlotAccessor",
@@ -76,5 +71,5 @@
     "geckolibextras.ItemRendererMixin",
     "geckolibextras.ThrownItemRendererMixin"
   ],
-  "server": [ ]
+  "server": []
 }

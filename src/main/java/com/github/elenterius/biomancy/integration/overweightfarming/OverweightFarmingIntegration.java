@@ -47,12 +47,12 @@ public final class OverweightFarmingIntegration {
 
 	private static Block getBlock(String name) {
 		ResourceLocation id = ResourceLocation.fromNamespaceAndPath("overweight_farming", name);
-		return Objects.requireNonNull(BuiltInRegistries.BLOCK.getValue(id));
+		return Objects.requireNonNull(BuiltInRegistries.BLOCK.get(id));
 	}
 
 	private static Item getItem(String name) {
 		ResourceLocation id = ResourceLocation.fromNamespaceAndPath("overweight_farming", name);
-		return Objects.requireNonNull(BuiltInRegistries.ITEM.getValue(id));
+		return Objects.requireNonNull(BuiltInRegistries.ITEM.get(id));
 	}
 
 	static final class OverweightFarmingHelperImpl implements OverweightFarmingHelper {

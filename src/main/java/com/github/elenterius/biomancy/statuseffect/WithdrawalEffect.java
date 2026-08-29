@@ -15,7 +15,7 @@ public class WithdrawalEffect extends AttackDamageEffect {
 	}
 
 	@Override
-	public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
+	public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
 		if (livingEntity instanceof Player player) {
 
 			if (livingEntity.getRandom().nextFloat() < 0.09f) {
@@ -43,10 +43,11 @@ public class WithdrawalEffect extends AttackDamageEffect {
 				player.awardStat(Stats.CUSTOM.get(Stats.TIME_SINCE_REST), 20 * 2); //increase insomnia counter
 			}
 		}
+		return true;
 	}
 
 	@Override
-	public boolean isDurationEffectTick(int duration, int amplifier) {
+	public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
 		return duration % 20 == 0;
 	}
 

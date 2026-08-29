@@ -23,7 +23,7 @@ public final class MoundGenerator {
 	}
 
 	public static MoundShape constructShape(Level level, BlockPos blockOrigin, long seed) {
-		Biome biome = level.getBiome(blockOrigin).get();
+		Biome biome = level.getBiome(blockOrigin).value();
 		MoundShape.ProcGenValues procGenValues = new MoundShape.ProcGenValues(
 				seed,
 				(byte) -21,

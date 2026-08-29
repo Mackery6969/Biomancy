@@ -6,20 +6,23 @@ import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.github.elenterius.biomancy.util.FormatUtil;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -52,8 +55,15 @@ public class BioForgeBlock extends BaseEntityBlock {
 		return Shapes.join(base, outer, BooleanOp.OR);
 	}
 
+	public static final MapCodec<BioForgeBlock> CODEC = simpleCodec(BioForgeBlock::new);
+
 	public BioForgeBlock(Properties properties) {
 		super(properties);
+	}
+
+	@Override
+	protected MapCodec<? extends BioForgeBlock> codec() {
+		return CODEC;
 	}
 
 	@Override
@@ -88,16 +98,16 @@ public class BioForgeBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (level.getBlockEntity(pos) instanceof BioForgeBlockEntity bioForge && bioForge.canPlayerInteract(player)) {
 			if (!level.isClientSide) {
 				((ServerPlayer) player).openMenu(bioForge, pos);
 				SoundUtil.Server.playBlockSound((ServerLevel) level, pos, ModSoundEvents.UI_BIO_FORGE_OPEN);
 			}
-			return InteractionResult.SUCCESS;
+			return ItemInteractionResult.SUCCESS;
 		}
 
-		return InteractionResult.CONSUME;
+		return ItemInteractionResult.CONSUME;
 	}
 
 	@Override
@@ -136,7 +146,7 @@ public class BioForgeBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
 		int fuelAmount = getFuelAmount(stack);
 		if (fuelAmount > 0) {
 			tooltip.add(ComponentUtil.EMPTY_LINE);
@@ -147,7 +157,9 @@ public class BioForgeBlock extends BaseEntityBlock {
 	}
 
 	public static int getFuelAmount(ItemStack stack) {
-		CompoundTag tag = BlockItem.getBlockEntityData(stack);
-		return tag != null && tag.contains("Fuel") ? tag.getShort("Fuel") : 0;
+		CustomData customData = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY);
+		if (customData.isEmpty()) return 0;
+		CompoundTag tag = customData.copyTag();
+		return tag.contains("Fuel") ? tag.getShort("Fuel") : 0;
 	}
 }

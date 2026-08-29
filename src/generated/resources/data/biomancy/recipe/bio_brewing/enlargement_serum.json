@@ -1,0 +1,25 @@
+{
+  "type": "biomancy:bio_brewing",
+  "ingredients": [
+    {
+      "item": "biomancy:nutrient_paste"
+    },
+    {
+      "item": "biomancy:hormone_secretion"
+    },
+    {
+      "item": "biomancy:healing_additive"
+    },
+    {
+      "item": "biomancy:mineral_fragment"
+    }
+  ],
+  "processingTime": 120,
+  "reactant": {
+    "item": "biomancy:genetic_compound"
+  },
+  "result": {
+    "count": 1,
+    "id": "biomancy:enlargement_serum"
+  }
+}

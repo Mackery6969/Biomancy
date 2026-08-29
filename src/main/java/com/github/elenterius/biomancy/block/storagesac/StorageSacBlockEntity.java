@@ -12,11 +12,13 @@ import com.github.elenterius.biomancy.util.PlayerInteractionPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -83,10 +85,10 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 		if (lootTableId == null) return;
 		if (!(level instanceof ServerLevel serverLevel)) return;
 
-		LootTable lootTable = serverLevel.getServer().getLootData().getLootTable(lootTableId);
+		LootTable lootTable = serverLevel.getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, lootTableId));
 
 		if (player instanceof ServerPlayer) {
-			CriteriaTriggers.GENERATE_LOOT.trigger((ServerPlayer) player, lootTableId);
+			CriteriaTriggers.GENERATE_LOOT.trigger((ServerPlayer) player, ResourceKey.create(Registries.LOOT_TABLE, lootTableId));
 		}
 
 		lootTableId = null;
@@ -95,7 +97,7 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 			builder.withLuck(player.getLuck()).withParameter(LootContextParams.THIS_ENTITY, player);
 		}
 
-		lootTable.fill(inventory.getRecipeWrapper(), builder.create(LootContextParamSets.CHEST), lootTableSeed);
+		lootTable.fill(inventory.getContainer(), builder.create(LootContextParamSets.CHEST), lootTableSeed);
 	}
 
 	public void setLootTable(ResourceLocation lootTableId, long lootTableSeed) {
@@ -153,7 +155,7 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
 		//serialize data for sync to client
 		CompoundTag tag = new CompoundTag();
-		tag.put(TOP5_BY_COUNT_KEY, serializeTop5());
+		tag.put(TOP5_BY_COUNT_KEY, serializeTop5(registries));
 		return tag;
 	}
 
@@ -190,16 +192,16 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 		}
 
 		if (tag.contains(TOP5_BY_COUNT_KEY)) {
-			top5ItemsByCount = deserializeTop5(tag.getCompound(TOP5_BY_COUNT_KEY));
+			top5ItemsByCount = deserializeTop5(registries, tag.getCompound(TOP5_BY_COUNT_KEY));
 		}
 	}
 
-	public List<ItemStackCounter.CountedItem> deserializeTop5(CompoundTag store) {
+	public List<ItemStackCounter.CountedItem> deserializeTop5(HolderLookup.Provider registries, CompoundTag store) {
 		List<ItemStackCounter.CountedItem> items = new ArrayList<>();
 		ListTag list = store.getList("Items", Tag.TAG_COMPOUND);
 		for (int i = 0; i < list.size(); i++) {
 			CompoundTag itemTag = list.getCompound(i);
-			ItemStack stack = ItemStack.of(itemTag);
+			ItemStack stack = ItemStack.parseOptional(registries, itemTag);
 			if (!stack.isEmpty()) {
 				int amount = itemTag.getInt("Amount");
 				stack.setCount(Mth.clamp(amount, 1, 3));
@@ -209,12 +211,11 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 		return items;
 	}
 
-	public CompoundTag serializeTop5() {
+	public CompoundTag serializeTop5(HolderLookup.Provider registries) {
 		ListTag list = new ListTag();
 
 		for (ItemStackCounter.CountedItem countedItem : top5ItemsByCount) {
-			CompoundTag tag = new CompoundTag();
-			countedItem.stack().save(tag);
+			CompoundTag tag = (CompoundTag) countedItem.stack().save(registries);
 			tag.putInt("Amount", countedItem.amount());
 			list.add(tag);
 		}

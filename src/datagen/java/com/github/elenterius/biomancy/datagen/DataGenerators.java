@@ -3,15 +3,14 @@ package com.github.elenterius.biomancy.datagen;
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.datagen.advancements.ModAdvancementProvider;
 import com.github.elenterius.biomancy.datagen.lang.EnglishLangProvider;
-import com.github.elenterius.biomancy.datagen.loot.ModDespoilLoot;
 import com.github.elenterius.biomancy.datagen.loot.ModGlobalLootModifierProvider;
 import com.github.elenterius.biomancy.datagen.loot.ModLootTableProvider;
 import com.github.elenterius.biomancy.datagen.loot.WikiDespoilLootProvider;
 import com.github.elenterius.biomancy.datagen.models.ModBlockStateProvider;
 import com.github.elenterius.biomancy.datagen.models.ModItemModelProvider;
 import com.github.elenterius.biomancy.datagen.particles.ModParticleSpriteProvider;
+import com.github.elenterius.biomancy.datagen.recipes.ForeignResultRecipeProvider;
 import com.github.elenterius.biomancy.datagen.recipes.ModRecipeProvider;
-import com.github.elenterius.biomancy.datagen.recipes.WikiRecipesProvider;
 import com.github.elenterius.biomancy.datagen.tags.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -53,14 +52,13 @@ public final class DataGenerators {
 		generator.addProvider(includeServer, new ModPaintingTagsProvider(packOutput, lookupProvider, existingFileHelper));
 
 		//recipes
-		ModRecipeProvider recipeProvider = new ModRecipeProvider(packOutput);
-		generator.addProvider(includeServer, recipeProvider);
-		generator.addProvider(includeServer, new WikiRecipesProvider(packOutput, recipeProvider));
+		generator.addProvider(includeServer, new ModRecipeProvider(packOutput, lookupProvider));
+		generator.addProvider(includeServer, new ForeignResultRecipeProvider(packOutput));
 
 		//loot
-		generator.addProvider(includeServer, new ModLootTableProvider(packOutput));
+		generator.addProvider(includeServer, new ModLootTableProvider(packOutput, lookupProvider));
 		generator.addProvider(includeServer, new ModGlobalLootModifierProvider(packOutput, lookupProvider));
-		generator.addProvider(includeServer, new WikiDespoilLootProvider(packOutput, new ModDespoilLoot()));
+		generator.addProvider(includeServer, new WikiDespoilLootProvider(packOutput, lookupProvider));
 
 		//models & block states
 		generator.addProvider(includeServer, new ModBlockStateProvider(packOutput, existingFileHelper));

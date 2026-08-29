@@ -27,7 +27,7 @@ public class BioForgeTabBuilder extends BuilderBase<BioForgeTab> {
 
 	@Override
 	public BioForgeTab createObject() {
-		return new BioForgeTab(sortPriority, iconItem);
+		return new BioForgeTab(sortPriority, () -> iconItem);
 	}
 
 }

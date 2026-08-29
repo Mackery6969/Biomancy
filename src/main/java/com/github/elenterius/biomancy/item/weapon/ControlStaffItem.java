@@ -10,6 +10,7 @@ import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.github.elenterius.biomancy.util.ownable.OwnableMob;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -21,6 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
@@ -76,11 +78,11 @@ public class ControlStaffItem extends Item implements KeyPressListener, ItemTool
 	}
 
 	public ControllableMob.Command getCommand(ItemStack stack) {
-		return ControllableMob.Command.deserialize(stack.getOrCreateTag().getByte("Command"));
+		return ControllableMob.Command.deserialize(stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getByte("Command"));
 	}
 
 	public void setCommand(ItemStack stack, ControllableMob.Command command) {
-		stack.getOrCreateTag().putByte("Command", command.serialize());
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putByte("Command", command.serialize()));
 	}
 
 	@Override

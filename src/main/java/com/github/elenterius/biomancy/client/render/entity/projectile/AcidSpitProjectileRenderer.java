@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 
 public class AcidSpitProjectileRenderer extends EntityRenderer<AcidSpitProjectile> {
@@ -32,10 +33,8 @@ public class AcidSpitProjectileRenderer extends EntityRenderer<AcidSpitProjectil
 		poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTick, entity.xRotO, entity.getXRot())));
 
 		int rgb = ModMobEffects.CORROSIVE.get().getColor();
-		float r = (rgb >> 16 & 255) / 255f;
-		float g = (rgb >> 8 & 255) / 255f;
-		float b = (rgb & 255) / 255f;
-		model.renderToBuffer(poseStack, buffer.getBuffer(model.renderType(TEXTURE)), packedLight, OverlayTexture.NO_OVERLAY, r, g, b, 1);
+		int color = FastColor.ARGB32.opaque(rgb);
+		model.renderToBuffer(poseStack, buffer.getBuffer(model.renderType(TEXTURE)), packedLight, OverlayTexture.NO_OVERLAY, color);
 
 		poseStack.popPose();
 

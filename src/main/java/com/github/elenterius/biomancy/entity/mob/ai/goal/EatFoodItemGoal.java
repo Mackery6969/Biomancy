@@ -1,6 +1,7 @@
 package com.github.elenterius.biomancy.entity.mob.ai.goal;
 
 import com.github.elenterius.biomancy.entity.mob.FoodEater;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.food.FoodProperties;
@@ -32,7 +33,7 @@ public class EatFoodItemGoal<T extends PathfinderMob & FoodEater> extends Goal {
 	}
 
 	protected boolean hasEdibleFood() {
-		return mob.getFoodItem().isEdible();
+		return mob.getFoodItem().get(DataComponents.FOOD) != null;
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class EatFoodItemGoal<T extends PathfinderMob & FoodEater> extends Goal {
 
 	@Override
 	public void start() {
-		eatTimer = adjustedTickDelay(mob.getFoodItem().getUseDuration() * 2);
+		eatTimer = adjustedTickDelay(mob.getFoodItem().getUseDuration(mob) * 2);
 		mob.getNavigation().stop();
 		mob.setEating(true);
 	}

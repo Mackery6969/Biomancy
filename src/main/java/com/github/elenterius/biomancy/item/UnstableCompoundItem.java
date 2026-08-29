@@ -70,7 +70,7 @@ public class UnstableCompoundItem extends SimpleItem {
 				context.getItemInHand().shrink(1);
 				level.setBlock(pos, Blocks.LAVA.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
 			}
-			level.playSound(context.getPlayer(), pos, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 2f, (1f + (level.random.nextFloat() - level.random.nextFloat()) * 0.2f) * 0.7f);
+			level.playSound(context.getPlayer(), pos, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 2f, (1f + (level.random.nextFloat() - level.random.nextFloat()) * 0.2f) * 0.7f);
 			return InteractionResult.sidedSuccess(level.isClientSide);
 		}
 

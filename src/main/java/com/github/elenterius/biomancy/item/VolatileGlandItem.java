@@ -45,7 +45,7 @@ public class VolatileGlandItem extends SimpleItem {
 			ExplosionUtil.explodeIncendiary(level, livingEntity, explosionRadius, Level.ExplosionInteraction.MOB);
 		}
 		else {
-			livingEntity.addEffect(new MobEffectInstance(ModMobEffects.VOLATILE.get(), (60 + 30) * 20));
+			livingEntity.addEffect(new MobEffectInstance(ModMobEffects.VOLATILE, (60 + 30) * 20));
 		}
 
 		if (!livingEntity.isDeadOrDying()) {

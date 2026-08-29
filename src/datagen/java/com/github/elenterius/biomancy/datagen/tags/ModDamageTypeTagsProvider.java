@@ -1,10 +1,10 @@
 package com.github.elenterius.biomancy.datagen.tags;
 
-import com.github.alexmodguy.alexscaves.server.misc.ACDamageTypes;
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.init.ModDamageTypes;
 import com.github.elenterius.biomancy.init.tags.ModDamageTypeTags;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.DamageTypeTagsProvider;
 import net.minecraft.tags.DamageTypeTags;
@@ -93,7 +93,7 @@ public class ModDamageTypeTagsProvider extends DamageTypeTagsProvider {
 						ModDamageTypes.CORROSIVE_ACID
 				)
 				.addOptionalTag(
-						ACDamageTypes.ACID.location()
+						ResourceLocation.fromNamespaceAndPath("alexscaves", "acid")
 				);
 
 		tag(ModDamageTypeTags.FORGE_IS_POISON).add(

@@ -19,15 +19,14 @@ public class BleedEffect extends StatusEffect implements StackingStatusEffect {
 	}
 
 	@Override
-	public boolean isDurationEffectTick(int duration, int amplifier) {
+	public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
 		return (duration + 1) % 40 == 0;
 	}
 
 	@Override
-	public void applyEffectTick(LivingEntity livingEntity, int amplifier) {
+	public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
 		if (livingEntity.hasEffect(MobEffects.REGENERATION) || livingEntity.hasEffect(MobEffects.HEAL)) {
-			livingEntity.removeEffect(this);
-			return;
+			return false;
 		}
 
 		if (livingEntity.isSprinting()) {
@@ -45,29 +44,31 @@ public class BleedEffect extends StatusEffect implements StackingStatusEffect {
 			float y = livingEntity.getBbHeight() * 0.25f;
 			serverLevel.sendParticles(ModParticleTypes.FALLING_BLOOD.get(), livingEntity.getX(), livingEntity.getY(0.5f), livingEntity.getZ(), 4, xz, y, xz, 0);
 		}
+
+		return true;
 	}
 
 	private void reduceEffectDurationBy(LivingEntity livingEntity, int ticks) {
-		MobEffectInstance effectInstance = livingEntity.getEffect(this);
+		MobEffectInstance effectInstance = livingEntity.getEffect(asHolder());
 		if (effectInstance == null) return;
 
 		int reducedDuration = effectInstance.getDuration() - ticks;
 		if (reducedDuration > 0) {
 			((MobEffectInstanceAccessor) effectInstance).biomancy$setDuration(reducedDuration);
-			((MobEffectInstanceAccessor) effectInstance).biomancy$getFactorData().ifPresent(factorData -> factorData.tick(effectInstance));
+			effectInstance.skipBlending();
 		}
 		else {
-			livingEntity.removeEffect(this);
+			livingEntity.removeEffect(asHolder());
 		}
 	}
 
 	private void increaseEffectDurationBy(LivingEntity livingEntity, int ticks) {
-		MobEffectInstance effectInstance = livingEntity.getEffect(this);
+		MobEffectInstance effectInstance = livingEntity.getEffect(asHolder());
 		if (effectInstance == null) return;
 
 		int increasedDuration = effectInstance.getDuration() + ticks;
 		((MobEffectInstanceAccessor) effectInstance).biomancy$setDuration(increasedDuration);
-		((MobEffectInstanceAccessor) effectInstance).biomancy$getFactorData().ifPresent(factorData -> factorData.tick(effectInstance));
+		effectInstance.skipBlending();
 	}
 
 	@Override

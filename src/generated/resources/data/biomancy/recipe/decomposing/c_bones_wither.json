@@ -1,0 +1,25 @@
+{
+  "type": "biomancy:decomposing",
+  "ingredient": {
+    "tag": "c:bones/wither"
+  },
+  "processingTime": 275,
+  "results": [
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 6,
+        "min": 3
+      },
+      "item": "biomancy:bone_fragments"
+    },
+    {
+      "countRange": {
+        "type": "uniform",
+        "max": 5,
+        "min": 3
+      },
+      "item": "biomancy:withering_ooze"
+    }
+  ]
+}

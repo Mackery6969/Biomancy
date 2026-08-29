@@ -29,7 +29,7 @@ public class PrimordialCradleRenderer extends CustomGeoBlockRenderer<PrimordialC
 	}
 
 	@Override
-	public void preRender(PoseStack poseStack, PrimordialCradleBlockEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void preRender(PoseStack poseStack, PrimordialCradleBlockEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
 		AnimationProcessor<?> processor = getGeoModel().getAnimationProcessor();
 		GeoBone boneFillLevel = processor.getBone("_fill_level");
 		GeoBone boneToppings = processor.getBone("_toppings");
@@ -49,29 +49,29 @@ public class PrimordialCradleRenderer extends CustomGeoBlockRenderer<PrimordialC
 		lifeEnergyPct = Math.min(animatable.getLifeEnergyPct(), 1f);
 		mbs = bufferSource;
 
-		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+		super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
 	}
 
 	@Override
-	public void renderCubesOfBone(PoseStack stack, GeoBone bone, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderCubesOfBone(PoseStack stack, GeoBone bone, VertexConsumer buffer, int packedLight, int packedOverlay, int colour) {
 		if (bone.getName().equals("_eye_overlay")) {
 			if (lifeEnergyPct > 0) {
 				isSpecialCube = true;
 				if (!bone.isHidden()) {
 					for (GeoCube cube : bone.getCubes()) {
 						stack.pushPose();
-						renderCube(stack, cube, mbs.getBuffer(RenderType.eyes(getTextureLocation(animatable))), 0xf000f0, OverlayTexture.NO_OVERLAY, red, green, blue, alpha);
+						renderCube(stack, cube, mbs.getBuffer(RenderType.eyes(getTextureLocation(animatable))), 0xf000f0, OverlayTexture.NO_OVERLAY, colour);
 						stack.popPose();
 					}
 				}
 				isSpecialCube = false;
 			}
 		}
-		else super.renderCubesOfBone(stack, bone, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+		else super.renderCubesOfBone(stack, bone, buffer, packedLight, packedOverlay, colour);
 	}
 
 	@Override
-	public void createVerticesOfQuad(GeoQuad quad, Matrix4f matrix4f, Vector3f normal, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void createVerticesOfQuad(GeoQuad quad, Matrix4f matrix4f, Vector3f normal, VertexConsumer buffer, int packedLight, int packedOverlay, int colour) {
 		GeoVertex[] vertices = quad.vertices();
 
 		if (isSpecialCube && quad.direction() == Direction.NORTH) {
@@ -86,34 +86,34 @@ public class PrimordialCradleRenderer extends CustomGeoBlockRenderer<PrimordialC
 			for (GeoVertex vertex : vertices) {
 				boolean isTopVertex = (vertex == topLeft || vertex == topRight);
 				if (isTopVertex) {
-					createVertex(matrix4f, normal, buffer, packedLight, packedOverlay, red, green, blue, alpha, vertex, textureV, positionY);
+					createVertex(matrix4f, normal, buffer, packedLight, packedOverlay, colour, vertex, textureV, positionY);
 				}
 				else {
-					createVertex(matrix4f, normal, buffer, packedLight, packedOverlay, red, green, blue, alpha, vertex);
+					createVertex(matrix4f, normal, buffer, packedLight, packedOverlay, colour, vertex);
 				}
 			}
 		}
 		else {
 			for (GeoVertex vertex : vertices) {
-				createVertex(matrix4f, normal, buffer, packedLight, packedOverlay, red, green, blue, alpha, vertex);
+				createVertex(matrix4f, normal, buffer, packedLight, packedOverlay, colour, vertex);
 			}
 		}
 	}
 
-	private void createVertex(Matrix4f matrix4f, Vector3f normal, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha, GeoVertex geoVertex) {
+	private void createVertex(Matrix4f matrix4f, Vector3f normal, VertexConsumer buffer, int packedLight, int packedOverlay, int colour, GeoVertex geoVertex) {
 		vertexPosition.set(geoVertex.position().x(), geoVertex.position().y(), geoVertex.position().z(), 1);
 		matrix4f.transform(vertexPosition);
-		buffer.vertex(
-				vertexPosition.x(), vertexPosition.y(), vertexPosition.z(), red, green, blue, alpha,
+		buffer.addVertex(
+				vertexPosition.x(), vertexPosition.y(), vertexPosition.z(), colour,
 				geoVertex.texU(), geoVertex.texV(), packedOverlay, packedLight, normal.x(), normal.y(), normal.z()
 		);
 	}
 
-	private void createVertex(Matrix4f matrix4f, Vector3f normal, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha, GeoVertex geoVertex, float v, float y) {
+	private void createVertex(Matrix4f matrix4f, Vector3f normal, VertexConsumer buffer, int packedLight, int packedOverlay, int colour, GeoVertex geoVertex, float v, float y) {
 		vertexPosition.set(geoVertex.position().x(), y, geoVertex.position().z(), 1);
 		matrix4f.transform(vertexPosition);
-		buffer.vertex(
-				vertexPosition.x(), vertexPosition.y(), vertexPosition.z(), red, green, blue, alpha,
+		buffer.addVertex(
+				vertexPosition.x(), vertexPosition.y(), vertexPosition.z(), colour,
 				geoVertex.texU(), v, packedOverlay, packedLight, normal.x(), normal.y(), normal.z()
 		);
 	}

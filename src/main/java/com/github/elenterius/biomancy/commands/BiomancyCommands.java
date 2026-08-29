@@ -23,7 +23,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.EntityType;
@@ -36,9 +38,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.StructureMode;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
-import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -82,7 +84,7 @@ public class BiomancyCommands {
 	private static void placeAllStructures(CommandContext<CommandSourceStack> ctx, BlockPos origin) {
 		ServerLevel level = ctx.getSource().getLevel();
 		StructureTemplateManager structureManager = level.getServer().getStructureManager();
-		LootDataManager lootManager = level.getServer().getLootData();
+		ReloadableServerRegistries.Holder lootManager = level.getServer().reloadableRegistries();
 
 		List<ResourceLocation> templateIds = structureManager.listTemplates()
 				.filter(id -> id.getNamespace().equals(BiomancyMod.MOD_ID))
@@ -121,7 +123,7 @@ public class BiomancyCommands {
 				Vec3i templateSize = template.getSize();
 
 				BlockPos secondPos = cursor.offset(1 + templateSize.getX(), 1 + templateSize.getY(), 1 + templateSize.getZ());
-				List<Display> displays = level.getEntitiesOfClass(Display.class, new AABB(cursor, secondPos));
+				List<Display> displays = level.getEntitiesOfClass(Display.class, new AABB(Vec3.atLowerCornerOf(cursor), Vec3.atLowerCornerOf(secondPos)));
 				BiomancyMod.LOGGER.debug("Discarding {} old display entities...", displays.size());
 				for (Display display : displays) {
 					display.discard();
@@ -152,7 +154,8 @@ public class BiomancyCommands {
 					sbe.setStructureName(templateId);
 
 					try {
-						success = sbe.loadStructure(level, false, template);
+						sbe.placeStructure(level);
+						success = true;
 						structuresPlaced.getAndIncrement();
 					}
 					catch (Exception e) {
@@ -175,7 +178,7 @@ public class BiomancyCommands {
 						boolean lootableExsists = false;
 						ResourceLocation id = ResourceLocation.tryParse(lootTableId);
 						if (id != null) {
-							LootTable lootTable = lootManager.getLootTable(id);
+							LootTable lootTable = lootManager.getLootTable(ResourceKey.create(Registries.LOOT_TABLE, id));
 							lootableExsists = lootTable != LootTable.EMPTY;
 						}
 
@@ -189,7 +192,7 @@ public class BiomancyCommands {
 						if (lootableExsists) {
 							BlockEntity blockEntity = level.getBlockEntity(new BlockPos(x, y, z));
 							if (blockEntity != null) {
-								CompoundTag data = blockEntity.saveWithoutMetadata();
+								CompoundTag data = blockEntity.saveWithoutMetadata(level.registryAccess());
 								if (!data.contains(RandomizableContainerBlockEntity.LOOT_TABLE_TAG, Tag.TAG_STRING)) {
 									text.append("\n").append(ComponentUtil.literal("LootTable is missing!").withStyle(TextStyles.ERROR));
 								}

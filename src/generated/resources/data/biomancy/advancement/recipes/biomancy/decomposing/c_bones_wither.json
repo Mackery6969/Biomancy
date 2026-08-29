@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_bones/wither": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:bones/wither"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "biomancy:decomposing/c_bones_wither"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_bones/wither"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "biomancy:decomposing/c_bones_wither"
+    ]
+  }
+}

@@ -6,7 +6,6 @@ import com.github.elenterius.biomancy.init.ModSerums;
 import com.github.elenterius.biomancy.serum.PotionSerum;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import net.minecraft.core.Holder;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -77,14 +76,12 @@ public class PotionSerumItem extends Item implements SerumContainer, ItemTooltip
 	}
 
 	public static ItemStack setSerumData(ItemStack stack, Holder<Potion> potion, Collection<MobEffectInstance> effects) {
-		CompoundTag tag = Serum.getOrCreateDataTag(stack);
-		PotionSerum.setData(tag, potion, effects);
+		Serum.updateDataTag(stack, tag -> PotionSerum.setData(tag, potion, effects));
 		return stack;
 	}
 
 	public static ItemStack setSerumData(ItemStack stack, Holder<Potion> potion, Collection<MobEffectInstance> effects, int color) {
-		CompoundTag tag = Serum.getOrCreateDataTag(stack);
-		PotionSerum.setData(tag, potion, effects, color);
+		Serum.updateDataTag(stack, tag -> PotionSerum.setData(tag, potion, effects, color));
 		return stack;
 	}
 

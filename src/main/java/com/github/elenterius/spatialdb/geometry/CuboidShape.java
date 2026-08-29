@@ -21,7 +21,7 @@ public class CuboidShape implements Shape {
 	}
 
 	public CuboidShape(BlockPos min, BlockPos max) {
-		aabb = new AABB(min, max);
+		aabb = new AABB(Vec3.atLowerCornerOf(min), Vec3.atLowerCornerOf(max));
 		origin = aabb.getCenter();
 	}
 
