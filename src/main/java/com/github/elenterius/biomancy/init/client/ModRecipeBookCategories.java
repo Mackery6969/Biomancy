@@ -29,6 +29,14 @@ public final class ModRecipeBookCategories {
 
 	private ModRecipeBookCategories() {}
 
+	@SuppressWarnings("unused") // referenced by META-INF/enumextensions.json
+	public static Object getIconSupplierParameter(int idx, Class<?> type) {
+		return type.cast(switch (idx) {
+			case 0 -> DUMMY_ICON_SUPPLIER;
+			default -> throw new IllegalArgumentException("Unexpected parameter index: " + idx);
+		});
+	}
+
 	public static RecipeBookCategories getRecipeBookCategories(BioForgeTab category) {
 		return BioForgeCategories.TAB_TO_CATEGORY.getOrDefault(category.enumId(), RecipeBookCategories.UNKNOWN);
 	}

@@ -5,11 +5,11 @@
       "required": false
     },
     {
-      "id": "#forge:cooked_meat",
+      "id": "#c:cooked_meat",
       "required": false
     },
     {
-      "id": "#forge:cooked_meats",
+      "id": "#c:cooked_meats",
       "required": false
     },
     "minecraft:cooked_beef",
@@ -38,4 +38,5 @@
       "required": false
     }
   ]
+
 }

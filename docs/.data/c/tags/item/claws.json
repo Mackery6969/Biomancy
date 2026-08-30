@@ -1,9 +1,10 @@
 {
   "values": [
     {
-      "id": "#forge:claws",
+      "id": "#c:claws",
       "required": false
     },
     "biomancy:mob_claw"
   ]
+
 }

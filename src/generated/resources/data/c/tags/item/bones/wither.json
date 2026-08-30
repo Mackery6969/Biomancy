@@ -1,8 +1,9 @@
 {
   "values": [
     {
-      "id": "#forge:bones/wither",
+      "id": "#c:bones/wither",
       "required": false
     }
   ]
+
 }

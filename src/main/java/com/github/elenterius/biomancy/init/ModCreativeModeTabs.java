@@ -1,12 +1,12 @@
 package com.github.elenterius.biomancy.init;
 
 import com.github.elenterius.biomancy.BiomancyMod;
+import com.github.elenterius.biomancy.client.util.ClientLevelAccess;
 import com.github.elenterius.biomancy.api.livingtool.LivingTool;
 import com.github.elenterius.biomancy.api.serum.SerumContainer;
 import com.github.elenterius.biomancy.crafting.recipe.PotionSerumRecipes;
 import com.github.elenterius.biomancy.item.SerumItem;
 import com.github.elenterius.biomancy.util.ComponentUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.state.properties.StructureMode;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.neoforged.fml.loading.FMLEnvironment;
 
 import java.util.List;
 import java.util.Set;
@@ -117,7 +118,7 @@ public final class ModCreativeModeTabs {
 					output.accept(PotionContents.createItemStack(Items.SPLASH_POTION, ModPotions.PRIMORDIAL_INFESTATION));
 					output.accept(PotionContents.createItemStack(Items.LINGERING_POTION, ModPotions.PRIMORDIAL_INFESTATION));
 
-					Level level = Minecraft.getInstance().level;
+					Level level = FMLEnvironment.dist.isClient() ? ClientLevelAccess.getLevel() : null;
 					if (level != null) {
 						for (Holder<Potion> potion : PotionSerumRecipes.getPotions(level)) {
 							output.accept(ModItems.POTION_SERUM.get().getInstanceFrom(potion));

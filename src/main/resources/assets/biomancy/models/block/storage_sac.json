@@ -1,6 +1,6 @@
 {
 	"credit": "Made by RhinoW",
-	"loader": "forge:composite",
+	"loader": "neoforge:composite",
 	"parent": "block/block",
 	"textures": {
 		"particle": "biomancy:block/storage_sac_side"
@@ -60,7 +60,7 @@
 	"children": {
 		"first": {
 			"parent": "block/block",
-			"loader": "forge:elements",
+			"loader": "neoforge:elements",
 			"render_type": "cutout",
 			"textures": {
 				"1": "biomancy:block/storage_sac_top_bottom",
@@ -109,7 +109,7 @@
 		},
 		"second": {
 			"parent": "block/block",
-			"loader": "forge:elements",
+			"loader": "neoforge:elements",
 			"render_type": "translucent",
 			"textures": {
 				"4": "biomancy:block/storage_sac_side_translucent"

@@ -5,11 +5,11 @@
       "required": false
     },
     {
-      "id": "#forge:cookies",
+      "id": "#c:cookies",
       "required": false
     },
     {
-      "id": "#forge:cookie",
+      "id": "#c:cookie",
       "required": false
     },
     "minecraft:cookie",
@@ -22,4 +22,5 @@
       "required": false
     }
   ]
+
 }

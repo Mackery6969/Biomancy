@@ -41,7 +41,7 @@
           "probability": 0.2
         },
         "output_state": {
-          "Name": "biomancy:primal_flesh_spike",
+          "Name": "biomancy:flesh_spike",
           "Properties": {
             "facing": "up",
             "spikes": "2"

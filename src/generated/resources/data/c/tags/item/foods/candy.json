@@ -5,12 +5,13 @@
       "required": false
     },
     {
-      "id": "#forge:candies",
+      "id": "#c:candies",
       "required": false
     },
     {
-      "id": "#forge:candy",
+      "id": "#c:candy",
       "required": false
     }
   ]
+
 }

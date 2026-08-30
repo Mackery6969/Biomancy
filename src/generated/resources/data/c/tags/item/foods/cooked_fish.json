@@ -5,14 +5,15 @@
       "required": false
     },
     {
-      "id": "#forge:cooked_fishes",
+      "id": "#c:cooked_fishes",
       "required": false
     },
     {
-      "id": "#forge:cooked_fish",
+      "id": "#c:cooked_fish",
       "required": false
     },
     "minecraft:cooked_cod",
     "minecraft:cooked_salmon"
   ]
+
 }

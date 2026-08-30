@@ -1,14 +1,15 @@
 {
   "values": [
     {
-      "id": "#forge:tools/claws",
+      "id": "#c:tools/claws",
       "required": false
     },
     {
-      "id": "#forge:tools/swords",
+      "id": "#c:tools/swords",
       "required": false
     },
     "biomancy:injector",
     "biomancy:extractor"
   ]
+
 }

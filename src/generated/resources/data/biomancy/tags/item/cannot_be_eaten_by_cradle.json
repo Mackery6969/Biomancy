@@ -13,8 +13,9 @@
     "#c:ingots/netherite",
     "#c:storage_blocks/netherite",
     {
-      "id": "#forge:shulker_boxes",
+      "id": "#c:shulker_boxes",
       "required": false
     }
   ]
+
 }

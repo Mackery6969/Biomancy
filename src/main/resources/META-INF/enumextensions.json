@@ -12,7 +12,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -21,7 +21,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -30,7 +30,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -39,7 +39,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -48,7 +48,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -57,7 +57,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -66,7 +66,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -75,7 +75,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -84,7 +84,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -93,7 +93,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -102,7 +102,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -111,7 +111,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -120,7 +120,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -129,7 +129,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -138,7 +138,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -147,7 +147,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -156,7 +156,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -165,7 +165,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -174,7 +174,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -183,7 +183,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -192,7 +192,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -201,7 +201,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -210,7 +210,7 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
@@ -219,44 +219,62 @@
             "constructor": "(Ljava/util/function/Supplier;)V",
             "parameters": {
                 "class": "com/github/elenterius/biomancy/init/client/ModRecipeBookCategories",
-                "field": "DUMMY_ICON_SUPPLIER"
+                "method": "getIconSupplierParameter"
             }
         },
         {
             "enum": "net/minecraft/world/item/Rarity",
             "name": "biomancy_common",
             "constructor": "(ILjava/lang/String;Ljava/util/function/UnaryOperator;)V",
-            "parameters": {"class": "com/github/elenterius/biomancy/init/ModRarities$EnumParams", "field": "COMMON_PROXY"}
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/ModRarities$EnumParams",
+                "field": "COMMON_PROXY"
+            }
         },
         {
             "enum": "net/minecraft/world/item/Rarity",
             "name": "biomancy_uncommon",
             "constructor": "(ILjava/lang/String;Ljava/util/function/UnaryOperator;)V",
-            "parameters": {"class": "com/github/elenterius/biomancy/init/ModRarities$EnumParams", "field": "UNCOMMON_PROXY"}
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/ModRarities$EnumParams",
+                "field": "UNCOMMON_PROXY"
+            }
         },
         {
             "enum": "net/minecraft/world/item/Rarity",
             "name": "biomancy_rare",
             "constructor": "(ILjava/lang/String;Ljava/util/function/UnaryOperator;)V",
-            "parameters": {"class": "com/github/elenterius/biomancy/init/ModRarities$EnumParams", "field": "RARE_PROXY"}
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/ModRarities$EnumParams",
+                "field": "RARE_PROXY"
+            }
         },
         {
             "enum": "net/minecraft/world/item/Rarity",
             "name": "biomancy_very_rare",
             "constructor": "(ILjava/lang/String;Ljava/util/function/UnaryOperator;)V",
-            "parameters": {"class": "com/github/elenterius/biomancy/init/ModRarities$EnumParams", "field": "VERY_RARE_PROXY"}
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/ModRarities$EnumParams",
+                "field": "VERY_RARE_PROXY"
+            }
         },
         {
             "enum": "net/minecraft/world/item/Rarity",
             "name": "biomancy_ultra_rare",
             "constructor": "(ILjava/lang/String;Ljava/util/function/UnaryOperator;)V",
-            "parameters": {"class": "com/github/elenterius/biomancy/init/ModRarities$EnumParams", "field": "ULTRA_RARE_PROXY"}
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/ModRarities$EnumParams",
+                "field": "ULTRA_RARE_PROXY"
+            }
         },
         {
             "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
             "name": "biomancy_hold_and_aim_gun_two_handed",
             "constructor": "(ZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
-            "parameters": {"class": "com/github/elenterius/biomancy/init/client/ModArmPoses", "field": "HOLD_AND_AIM_GUN_TWO_HANDED_PROXY"}
+            "parameters": {
+                "class": "com/github/elenterius/biomancy/init/client/ModArmPoses",
+                "field": "HOLD_AND_AIM_GUN_TWO_HANDED_PROXY"
+            }
         }
     ]
 }

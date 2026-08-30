@@ -1,8 +1,9 @@
 {
   "values": [
     {
-      "id": "#forge:capturing_not_supported",
+      "id": "#c:capturing_not_supported",
       "required": false
     }
   ]
+
 }

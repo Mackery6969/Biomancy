@@ -1,7 +1,7 @@
 {
   "values": [
     {
-      "id": "#forge:golems",
+      "id": "#c:golems",
       "required": false
     },
     "minecraft:iron_golem",
@@ -15,4 +15,5 @@
       "required": false
     }
   ]
+
 }

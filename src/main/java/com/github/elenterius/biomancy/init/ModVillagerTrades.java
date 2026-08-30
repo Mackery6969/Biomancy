@@ -54,7 +54,7 @@ public final class ModVillagerTrades {
 
 	@SubscribeEvent
 	public static void onVillagerTrades(final VillagerTradesEvent event) {
-		if (Boolean.FALSE.equals(BiomancyConfig.SERVER.addTradesToVillagers.get())) return;
+		if (BiomancyConfig.SERVER_SPECIFICATION.isLoaded() && Boolean.FALSE.equals(BiomancyConfig.SERVER.addTradesToVillagers.get())) return;
 
 		if (event.getType() == VillagerProfession.BUTCHER) {
 			addButcherTrades(event.getTrades());
@@ -106,7 +106,7 @@ public final class ModVillagerTrades {
 
 	@SubscribeEvent
 	public static void onWandererTrades(final WandererTradesEvent event) {
-		if (Boolean.FALSE.equals(BiomancyConfig.SERVER.addTradesToWanderingTrader.get())) return;
+		if (BiomancyConfig.SERVER_SPECIFICATION.isLoaded() && Boolean.FALSE.equals(BiomancyConfig.SERVER.addTradesToWanderingTrader.get())) return;
 
 		List<VillagerTrades.ItemListing> genericTrades = event.getGenericTrades();
 		genericTrades.add(sellToPlayer(ModItems.ACID_EXTRACT.get(), 4, 2, 16, 1));

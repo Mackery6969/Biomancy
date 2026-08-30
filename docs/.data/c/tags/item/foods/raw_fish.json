@@ -5,11 +5,11 @@
       "required": false
     },
     {
-      "id": "#forge:raw_fishes",
+      "id": "#c:raw_fishes",
       "required": false
     },
     {
-      "id": "#forge:raw_fish",
+      "id": "#c:raw_fish",
       "required": false
     },
     "minecraft:cod",
@@ -17,4 +17,5 @@
     "minecraft:tropical_fish",
     "minecraft:pufferfish"
   ]
+
 }

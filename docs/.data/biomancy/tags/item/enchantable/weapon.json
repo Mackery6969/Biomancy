@@ -3,8 +3,9 @@
     "biomancy:despoil_sickle",
     "biomancy:ravenous_claws",
     {
-      "id": "#forge:tools/knives",
+      "id": "#c:tools/knives",
       "required": false
     }
   ]
+
 }

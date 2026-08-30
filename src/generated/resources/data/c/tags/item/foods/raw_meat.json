@@ -5,31 +5,31 @@
       "required": false
     },
     {
-      "id": "#forge:raw_meats",
+      "id": "#c:raw_meats",
       "required": false
     },
     {
-      "id": "#forge:raw_meat",
+      "id": "#c:raw_meat",
       "required": false
     },
     {
-      "id": "#forge:raw_bacon",
+      "id": "#c:raw_bacon",
       "required": false
     },
     {
-      "id": "#forge:raw_beef",
+      "id": "#c:raw_beef",
       "required": false
     },
     {
-      "id": "#forge:raw_chicken",
+      "id": "#c:raw_chicken",
       "required": false
     },
     {
-      "id": "#forge:raw_pork",
+      "id": "#c:raw_pork",
       "required": false
     },
     {
-      "id": "#forge:raw_mutton",
+      "id": "#c:raw_mutton",
       "required": false
     },
     "#c:foods/raw_pork",
@@ -67,4 +67,5 @@
       "required": false
     }
   ]
+
 }

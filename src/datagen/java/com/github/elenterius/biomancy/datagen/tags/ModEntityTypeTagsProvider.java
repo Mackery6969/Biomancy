@@ -88,10 +88,6 @@ public class ModEntityTypeTagsProvider extends EntityTypeTagsProvider {
 		tag(ModEntityTags.C_CAPTURING_NOT_SUPPORTED)
 				.addOptionalTag(forgeTag("capturing_not_supported"));
 
-		createTag(ModEntityTags.C_BOSSES)
-				.addTag(Tags.EntityTypes.BOSSES)
-				.add(EntityType.WITHER, EntityType.ENDER_DRAGON); //TODO: remove this line when porting to minecraft 1.21+
-
 		createTag(ModEntityTags.C_GOLEMS)
 				.addTag(forgeTag("golems"))
 				.add(EntityType.IRON_GOLEM, EntityType.SNOW_GOLEM)

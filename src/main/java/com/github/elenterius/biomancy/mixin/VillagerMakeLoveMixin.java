@@ -18,7 +18,7 @@ public abstract class VillagerMakeLoveMixin {
 
 	@Inject(
 			method = "tick(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/npc/Villager;J)V",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ai/behavior/BehaviorUtils;lockGazeAndWalkToEachOther(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/LivingEntity;F)V", shift = At.Shift.AFTER),
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ai/behavior/BehaviorUtils;lockGazeAndWalkToEachOther(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/LivingEntity;FI)V", shift = At.Shift.AFTER),
 			cancellable = true
 	)
 	private void onCanBreed(ServerLevel level, Villager owner, long gameTime, CallbackInfo ci) {
