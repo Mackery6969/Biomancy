@@ -1,5 +1,9 @@
 package com.github.elenterius.biomancy.statuseffect;
 
+import java.util.function.BiConsumer;
+
+import org.jspecify.annotations.Nullable;
+
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.init.ModMobEffects;
 import com.github.elenterius.biomancy.init.tags.ModItemTags;
@@ -8,6 +12,7 @@ import com.github.elenterius.biomancy.item.armor.AcolyteArmorItem;
 import com.github.elenterius.biomancy.item.armor.LivingArmorItem;
 import com.github.elenterius.biomancy.serum.FrenzySerum;
 import com.github.elenterius.biomancy.util.OneShotTaskWorker;
+
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -21,9 +26,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
-import org.jspecify.annotations.Nullable;
-
-import java.util.function.BiConsumer;
 
 @EventBusSubscriber(modid = BiomancyMod.MOD_ID)
 public final class StatusEffectHandler {
@@ -105,7 +107,7 @@ public final class StatusEffectHandler {
 
 	public static boolean canApplySplashEffectIfAllowed(Holder<MobEffect> effect, LivingEntity target, BiConsumer<LivingArmorItem, ItemStack> nutrientsConsumer) {
 
-		if (ModMobEffectTags.forgeIsAcid(effect)) {
+		if (ModMobEffectTags.isAcid(effect)) {
 			return canApplyAcidEffect(target, nutrientsConsumer);
 		}
 
@@ -153,7 +155,8 @@ public final class StatusEffectHandler {
 
 	public static boolean hasAcidEffect(LivingEntity livingEntity) {
 		for (Holder<MobEffect> effect : livingEntity.getActiveEffectsMap().keySet()) {
-			if (ModMobEffectTags.forgeIsAcid(effect)) return true;
+			if (ModMobEffectTags.isAcid(effect))
+				return true;
 		}
 		return false;
 	}
