@@ -171,6 +171,11 @@ dependencies {
 	// KubeJS
 	compileOnly("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
 
+	// Sable API for optional block physics support
+	compileOnly("dev.ryanhcode.sable:sable-common-${minecraft_version}:${sable_version}") {
+		transitive = false
+	}
+
 	implementation("maven.modrinth:farmers-delight:${farmers_delight_version}")
 	datagenCompileOnly("maven.modrinth:farmers-delight:${farmers_delight_version}")
 
@@ -206,7 +211,8 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
 			mod_update_url       : mod_update_url,
 
 			geckolib_version     : geckolib_version, geckolib_version_range: geckolib_version_range,
-			jei_version          : jei_version, jei_version_range: jei_version_range
+			jei_version          : jei_version, jei_version_range: jei_version_range,
+			sable_version        : sable_version, sable_version_range: sable_version_range
 	]
 	inputs.properties replaceProperties
 	expand replaceProperties

@@ -1,0 +1,10 @@
+{
+  "selector": "#biomancy:sable/splatters",
+  "priority": 1400,
+  "properties": {
+    "sable:mass": 0.05,
+    "sable:volume": 0.05,
+    "sable:friction": 0.0,
+    "sable:fragile": true
+  }
+}

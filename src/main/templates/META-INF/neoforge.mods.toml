@@ -19,6 +19,9 @@ enumExtensions = "META-INF/enumextensions.json"
 [[mixins]]
 config = "${mod_id}.mixins.json"
 
+[[mixins]]
+config = "${mod_id}.sable.mixins.json"
+
 [[dependencies.${mod_id}]]
 modId = "neoforge"
 type = "required"
@@ -45,4 +48,11 @@ modId = "jei"
 type = "optional"
 versionRange = "${jei_version_range}"
 ordering = "BEFORE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "sable"
+type = "optional"
+versionRange = "${sable_version_range}"
+ordering = "AFTER"
 side = "BOTH"

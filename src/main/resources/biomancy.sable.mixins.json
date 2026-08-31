@@ -1,0 +1,16 @@
+{
+  "required": false,
+  "package": "com.github.elenterius.biomancy.mixin.sable",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8.5",
+  "refmap": "biomancy.refmap.json",
+  "plugin": "com.github.elenterius.biomancy.mixin.sable.SableCompatMixinPlugin",
+  "mixins": [
+    "FleshVeinsBlockMixin",
+    "JumpPadBlockMixin",
+    "SplatterBlockMixin",
+    "WaterGelBlockMixin"
+  ],
+  "client": [],
+  "server": []
+}

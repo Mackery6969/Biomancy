@@ -35,6 +35,19 @@ dependencyResolutionManagement {
 				includeGroup("com.github.alexthe668")
 			}
 		}
+		exclusiveContent {
+			forRepositories(
+					mavenLocal(),
+					maven {
+						name = "RyanHCode Maven"
+						url = uri("https://maven.ryanhcode.dev/releases")
+					}
+			)
+			filter {
+				includeGroup("dev.ryanhcode.sable")
+				includeGroup("dev.ryanhcode.sable-companion")
+			}
+		}
 		maven {
 			name = "NeoForged"
 			url = uri("https://maven.neoforged.net/releases")

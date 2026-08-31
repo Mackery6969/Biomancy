@@ -35,6 +35,7 @@ import java.util.function.Supplier;
 public final class PrimordialEcosystem {
 
 	private static final RandomSource random = RandomSource.create();
+	private static final Direction[] DIRECTIONS = Direction.values();
 	public static final IntSupplier MAX_CHARGE_SUPPLIER = () -> 15;
 	public static final Set<Block> MALIGNANT_UPGRADE_TARGETS = Set.of(ModBlocks.MALIGNANT_FLESH_SLAB.get(), ModBlocks.MALIGNANT_FLESH_STAIRS.get());
 	//	public static final Set<Block> POROUS_UPGRADE_TARGETS = Set.of(ModBlocks.POROUS_PRIMAL_FLESH_SLAB.get(), ModBlocks.POROUS_PRIMAL_FLESH_STAIRS.get());
@@ -218,26 +219,59 @@ public final class PrimordialEcosystem {
 
 		boolean hasPlacedVeins = false;
 
-		for (int i = 0; i < 4; i++) {
-			if (random.nextFloat() < 0.6f) {
-				Optional<MultifaceSpreader.SpreadPos> spreadPos = veinsBlock.getSpreader().spreadFromRandomFaceTowardRandomDirection(state, level, pos, random);
-				if (spreadPos.isPresent()) hasPlacedVeins = true;
+		if (state.is(veinsBlock)) {
+			for (int i = 0; i < 4; i++) {
+				if (random.nextFloat() < 0.6f) {
+					Optional<MultifaceSpreader.SpreadPos> spreadPos = veinsBlock.getSpreader().spreadFromRandomFaceTowardRandomDirection(state, level, pos, random);
+					if (spreadPos.isPresent()) hasPlacedVeins = true;
+				}
 			}
+		}
+		else {
+			hasPlacedVeins = seedMalignantVeinsFromBlock(level, pos, veinsBlock, chargeSupplier, random);
 		}
 
 		increaseMalignantVeinsChargeAroundPos(level, pos, chargeSupplier);
 		return hasPlacedVeins;
 	}
 
+	private static boolean seedMalignantVeinsFromBlock(ServerLevel level, BlockPos sourcePos, FleshVeinsBlock veinsBlock, IntSupplier chargeSupplier, RandomSource random) {
+		boolean hasPlacedVeins = false;
+		int visitedDirections = 0;
+
+		for (int i = 0; i < DIRECTIONS.length; i++) {
+			int directionIndex;
+			do {
+				directionIndex = random.nextInt(DIRECTIONS.length);
+			} while ((visitedDirections & (1 << directionIndex)) != 0);
+			visitedDirections |= 1 << directionIndex;
+
+			if (random.nextFloat() >= 0.6f) continue;
+
+			Direction direction = DIRECTIONS[directionIndex];
+			BlockPos targetPos = sourcePos.relative(direction);
+			BlockState targetState = level.getBlockState(targetPos);
+			BlockState stateForPlacement = veinsBlock.getStateForPlacement(targetState, level, targetPos, direction.getOpposite(), chargeSupplier.getAsInt());
+
+			if (stateForPlacement != null) {
+				level.setBlock(targetPos, stateForPlacement, Block.UPDATE_CLIENTS);
+				hasPlacedVeins = true;
+			}
+		}
+
+		return hasPlacedVeins;
+	}
+
 	public static int increaseMalignantVeinsChargeAroundPos(ServerLevel level, BlockPos pos, IntSupplier chargeSupplier) {
 		FleshVeinsBlock veinsBlock = ModBlocks.MALIGNANT_FLESH_VEINS.get();
 		int usedCharge = 0;
+		BlockPos.MutableBlockPos neighborPos = new BlockPos.MutableBlockPos();
 
 		for (int y = -1; y <= 1; y++) {
 			for (int x = -1; x <= 1; x++) {
 				for (int z = -1; z <= 1; z++) {
 					if (x == 0 && y == 0 && z == 0) continue;
-					BlockPos neighborPos = pos.offset(x, y, z);
+					neighborPos.setWithOffset(pos, x, y, z);
 					BlockState neighborState = level.getBlockState(neighborPos);
 					usedCharge += veinsBlock.increaseCharge(level, neighborPos, neighborState, chargeSupplier.getAsInt());
 				}
@@ -249,12 +283,13 @@ public final class PrimordialEcosystem {
 
 	public static int countMalignantChargeAroundPos(ServerLevel level, BlockPos pos) {
 		int totalCharge = 0;
+		BlockPos.MutableBlockPos neighborPos = new BlockPos.MutableBlockPos();
 
 		for (int y = -1; y <= 1; y++) {
 			for (int x = -1; x <= 1; x++) {
 				for (int z = -1; z <= 1; z++) {
 					if (x == 0 && y == 0 && z == 0) continue;
-					BlockPos neighborPos = pos.offset(x, y, z);
+					neighborPos.setWithOffset(pos, x, y, z);
 					BlockState neighborState = level.getBlockState(neighborPos);
 					totalCharge += neighborState.getOptionalValue(ModBlockProperties.CHARGE.get()).orElse(0);
 				}
@@ -266,12 +301,14 @@ public final class PrimordialEcosystem {
 
 	public static int countMalignantVeinsAroundPos(ServerLevel level, BlockPos pos) {
 		int veins = 0;
+		BlockPos.MutableBlockPos neighborPos = new BlockPos.MutableBlockPos();
 
 		for (int y = -1; y <= 1; y++) {
 			for (int x = -1; x <= 1; x++) {
 				for (int z = -1; z <= 1; z++) {
 					if (x == 0 && y == 0 && z == 0) continue;
-					if (level.getBlockState(pos.offset(x, y, z)).is(ModBlocks.MALIGNANT_FLESH_VEINS.get())) veins += 1;
+					neighborPos.setWithOffset(pos, x, y, z);
+					if (level.getBlockState(neighborPos).is(ModBlocks.MALIGNANT_FLESH_VEINS.get())) veins += 1;
 				}
 			}
 		}

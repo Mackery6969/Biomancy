@@ -1,0 +1,8 @@
+{
+  "selector": "#biomancy:sable/flesh_like",
+  "priority": 1220,
+  "properties": {
+    "sable:friction": 1.2,
+    "sable:restitution": 0.05
+  }
+}

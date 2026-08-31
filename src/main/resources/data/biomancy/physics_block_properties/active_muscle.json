@@ -1,0 +1,10 @@
+{
+  "selector": "biomancy:active_muscle",
+  "priority": 1400,
+  "properties": {
+    "sable:mass": 0.35,
+    "sable:volume": 0.2,
+    "sable:friction": 0.05,
+    "sable:restitution": 0.85
+  }
+}

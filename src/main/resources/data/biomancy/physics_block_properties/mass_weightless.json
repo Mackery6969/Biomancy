@@ -1,0 +1,7 @@
+{
+  "selector": "#biomancy:sable/mass_weightless",
+  "priority": 1200,
+  "properties": {
+    "sable:mass": 0.0
+  }
+}

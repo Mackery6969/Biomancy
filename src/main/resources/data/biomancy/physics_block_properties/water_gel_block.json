@@ -1,0 +1,10 @@
+{
+  "selector": "biomancy:water_gel_block",
+  "priority": 1400,
+  "properties": {
+    "sable:mass": 0.5,
+    "sable:volume": 0.85,
+    "sable:friction": 0.0,
+    "sable:restitution": 0.2
+  }
+}

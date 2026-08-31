@@ -1,0 +1,7 @@
+{
+  "selector": "#biomancy:sable/mass_heavy",
+  "priority": 1200,
+  "properties": {
+    "sable:mass": 2.0
+  }
+}

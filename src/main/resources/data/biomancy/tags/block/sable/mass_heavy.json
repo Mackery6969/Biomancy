@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "biomancy:packed_flesh",
+    "biomancy:packed_flesh_stairs",
+    "biomancy:packed_flesh_wall",
+    "biomancy:primal_bone_block",
+    "biomancy:primordial_cradle"
+  ]
+}

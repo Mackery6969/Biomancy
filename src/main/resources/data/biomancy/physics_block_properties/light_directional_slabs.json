@@ -1,0 +1,14 @@
+{
+  "selector": "#biomancy:sable/light_directional_slabs",
+  "priority": 1300,
+  "properties": {
+    "sable:mass": 0.25,
+    "sable:volume": 0.5
+  },
+  "overrides": {
+    "type=full": {
+      "sable:mass": 0.5,
+      "sable:volume": 1.0
+    }
+  }
+}

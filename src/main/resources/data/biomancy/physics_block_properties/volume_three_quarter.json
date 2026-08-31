@@ -1,0 +1,7 @@
+{
+  "selector": "#biomancy:sable/volume_three_quarter",
+  "priority": 1210,
+  "properties": {
+    "sable:volume": 0.75
+  }
+}

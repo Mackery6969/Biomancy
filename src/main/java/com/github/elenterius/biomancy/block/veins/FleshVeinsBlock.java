@@ -61,6 +61,7 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 	public static final Predicate<BlockState> BLOCKS_TO_AVOID_PREDICATE = blockState -> blockState.is(ModBlocks.PRIMAL_BLOOM.get());
 	protected static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	protected static final EnhancedIntegerProperty CHARGE = ModBlockProperties.CHARGE;
+	private static final int[] NEIGHBOR_OFFSETS = createNeighborOffsets();
 	private final MultifaceSpreader spreader = new MultifaceSpreader(new MalignantFleshSpreaderConfig(this));
 
 	public FleshVeinsBlock(Properties properties) {
@@ -91,6 +92,36 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 		}
 
 		return convertNormal(level, pos, mound, nearBoundingCenterPct, directNeighbors, facesSet);
+	}
+
+	private static int[] createNeighborOffsets() {
+		int[] offsets = new int[3 * 3 * 3 - 1];
+		int i = 0;
+		for (int y = -1; y <= 1; y++) {
+			for (int x = -1; x <= 1; x++) {
+				for (int z = -1; z <= 1; z++) {
+					if (x == 0 && y == 0 && z == 0) continue;
+					offsets[i++] = packOffset(x, y, z);
+				}
+			}
+		}
+		return offsets;
+	}
+
+	private static int packOffset(int x, int y, int z) {
+		return ((x + 1) << 4) | ((y + 1) << 2) | (z + 1);
+	}
+
+	private static int unpackOffsetX(int packedOffset) {
+		return ((packedOffset >> 4) & 3) - 1;
+	}
+
+	private static int unpackOffsetY(int packedOffset) {
+		return ((packedOffset >> 2) & 3) - 1;
+	}
+
+	private static int unpackOffsetZ(int packedOffset) {
+		return (packedOffset & 3) - 1;
 	}
 
 	protected static boolean convertNormal(ServerLevel level, BlockPos pos, @Nullable MoundShape mound, float nearBoundingCenterPct, int directNeighbors, Bit32Set facesSet) {
@@ -556,12 +587,12 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 		}
 
 		int directNeighbors = 0;
-		for (Direction direction : Direction.values()) {
+		for (Direction direction : DIRECTIONS) {
 			BlockState neighborState = level.getBlockState(pos.relative(direction));
 			directNeighbors += neighborState.is(this) ? 1 : 0;
 		}
 
-		float populationPct = directNeighbors / (float) Direction.values().length;
+		float populationPct = directNeighbors / (float) DIRECTIONS.length;
 		float conversionChance = charge / (CHARGE.getMax() + 5f) + populationPct * 0.5f;
 
 		if (random.nextFloat() < conversionChance && convert(state, level, pos, directNeighbors, mound, nearBoundingCenterPct, energyHandler)) {
@@ -610,22 +641,20 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 	public int increaseChargeAroundPos(ServerLevel level, BlockPos pos, RandomSource random, final int availableCharge) {
 		if (availableCharge <= 0) return 0;
 
-		BlockPos[] positions = new BlockPos[3 * 3 * 3 - 1];
-		int i = 0;
-		for (int y = -1; y <= 1; y++) {
-			for (int x = -1; x <= 1; x++) {
-				for (int z = -1; z <= 1; z++) {
-					if (x == 0 && y == 0 && z == 0) continue;
-					positions[i++] = pos.offset(x, y, z);
-				}
-			}
-		}
-		ArrayUtil.shuffle(positions, random);
-
 		int amount = Math.max(availableCharge / 2, 1);
 
 		int usedCharge = 0;
-		for (BlockPos neighborPos : positions) {
+		int visitedOffsets = 0;
+		BlockPos.MutableBlockPos neighborPos = new BlockPos.MutableBlockPos();
+		for (int i = 0; i < NEIGHBOR_OFFSETS.length; i++) {
+			int offsetIndex;
+			do {
+				offsetIndex = random.nextInt(NEIGHBOR_OFFSETS.length);
+			} while ((visitedOffsets & (1 << offsetIndex)) != 0);
+			visitedOffsets |= 1 << offsetIndex;
+
+			int packedOffset = NEIGHBOR_OFFSETS[offsetIndex];
+			neighborPos.setWithOffset(pos, unpackOffsetX(packedOffset), unpackOffsetY(packedOffset), unpackOffsetZ(packedOffset));
 			BlockState neighborState = level.getBlockState(neighborPos);
 			usedCharge += increaseCharge(level, neighborPos, neighborState, amount);
 			if (availableCharge - usedCharge <= 0) break;
@@ -640,7 +669,7 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 		int currentCharge = getCharge(state);
 		if (currentCharge < CHARGE.getMax()) {
 			int usedCharge = Math.min(amount, CHARGE.getMax() - currentCharge);
-			setCharge(level, pos, state, usedCharge);
+			setCharge(level, pos.immutable(), state, currentCharge + usedCharge);
 			return usedCharge;
 		}
 		return 0;
