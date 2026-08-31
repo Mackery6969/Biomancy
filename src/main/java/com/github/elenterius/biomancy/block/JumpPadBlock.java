@@ -35,7 +35,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.joml.Vector3d;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -134,7 +133,7 @@ public class JumpPadBlock extends SimpleMultiFaceBlock {
 	public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
 		if (!movedByPiston && oldState.is(newState.getBlock()) && level instanceof ServerLevel serverLevel) {
 			List<Direction> missingFaces = new ArrayList<>();
-			for (Direction face : Direction.values()) {
+			for (Direction face : DIRECTIONS) {
 				if (hasFace(oldState, face) && !hasFace(newState, face)) {
 					missingFaces.add(face);
 				}
@@ -160,16 +159,7 @@ public class JumpPadBlock extends SimpleMultiFaceBlock {
 	public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
 		if (level.isClientSide) return;
 
-		List<Direction> availableFaces = new ArrayList<>();
-		List<AABB> collisionAABBs = new ArrayList<>();
-		for (Direction face : Direction.values()) {
-			if (hasFace(state, face)) {
-				availableFaces.add(face);
-				collisionAABBs.add(SHAPE_BY_FACE.get(face).bounds().move(pos));
-			}
-		}
-
-		CollisionPrediction collisionPrediction = sweptAABB(entity, collisionAABBs);
+		CollisionPrediction collisionPrediction = sweptAABB(entity, pos, state);
 
 		boolean skipCollision = switch (collisionPrediction) {
 			case PREVIOUS_TICK, NEXT_TICK, NONE -> true;
@@ -192,27 +182,28 @@ public class JumpPadBlock extends SimpleMultiFaceBlock {
 		if (!state.getValue(ENABLED)) return;
 		if (entity.isSteppingCarefully() || entity.isSuppressingBounce()) return;
 
-		Vector3d mutableImpulse = new Vector3d();
-		for (Direction face : availableFaces) {
+		double impulseX = 0d;
+		double impulseY = 0d;
+		double impulseZ = 0d;
+		for (Direction face : DIRECTIONS) {
+			if (!hasFace(state, face)) continue;
+
 			Vec3i normal = face.getOpposite().getNormal();
-			mutableImpulse.add(normal.getX() * 2d, normal.getY(), normal.getZ() * 2d); // make horizontal movement stronger
+			impulseX += normal.getX() * 2d;
+			impulseY += normal.getY();
+			impulseZ += normal.getZ() * 2d; // make horizontal movement stronger
 		}
 
 		final Vec3 velocity = entity.getDeltaMovement();
-		//		Vec3 direction = velocity.normalize();
-		//		double directionSimilarity = mutableImpulse.normalize().dot(direction.x, direction.y, direction.z);
-		//		double recoveredVelocity = velocity.length() * Mth.clamp(directionSimilarity * -1d, 0, 1); //only recover velocity from frontal collisions
-		//		double negateVelocity = Mth.clamp(directionSimilarity + 1d, 0, 1);
+		double lengthSqr = impulseX * impulseX + impulseY * impulseY + impulseZ * impulseZ;
 
-		//		mutableImpulse.mul(Math.max(2d, recoveredVelocity) * (entity instanceof LivingEntity ? 1d : 0.8d));
-		double length = (entity instanceof LivingEntity ? 1d : 0.8d);
-		mutableImpulse.normalize(length + velocity.length() * 0.8d);
-
-		if (mutableImpulse.length() > 0d) {
+		if (lengthSqr > 0d) {
 			//execute jump only once per tick -> players tend to call the entityInside method more than once per tick
 			if (debounce(entity, pos)) return;
 
-			entity.setDeltaMovement(mutableImpulse.x, mutableImpulse.y, mutableImpulse.z);
+			double targetLength = (entity instanceof LivingEntity ? 1d : 0.8d) + velocity.length() * 0.8d;
+			double scale = targetLength / Math.sqrt(lengthSqr);
+			entity.setDeltaMovement(impulseX * scale, impulseY * scale, impulseZ * scale);
 			entity.hasImpulse = true; //force sync movement to client
 			entity.hurtMarked = true; //force sync for players
 
@@ -220,7 +211,7 @@ public class JumpPadBlock extends SimpleMultiFaceBlock {
 		}
 	}
 
-	protected static CollisionPrediction sweptAABB(Entity entity, List<AABB> collisionAABBs) {
+	protected static CollisionPrediction sweptAABB(Entity entity, BlockPos blockPos, BlockState blockState) {
 		AABB entityAABB = entity.getBoundingBox();
 		Vec3 currentPos = entityAABB.getCenter();
 		Vec3 offset = currentPos.subtract(entity.position());
@@ -234,8 +225,10 @@ public class JumpPadBlock extends SimpleMultiFaceBlock {
 		double halfY = entityAABB.getYsize() / 2d + EPSILON;
 		double halfZ = entityAABB.getZsize() / 2d + EPSILON;
 
-		for (AABB collisionAABB : collisionAABBs) {
-			AABB inflatedAABB = collisionAABB.inflate(halfX, halfY, halfZ); // minkowski sum
+		for (Direction face : DIRECTIONS) {
+			if (!hasFace(blockState, face)) continue;
+
+			AABB inflatedAABB = SHAPE_BY_FACE.get(face).bounds().move(blockPos).inflate(halfX, halfY, halfZ); // minkowski sum
 
 			if (inflatedAABB.contains(currentPos)) {
 				//if (inflatedAABB.contains(nextPos)) return CollisionResult.NEXT_TICK;

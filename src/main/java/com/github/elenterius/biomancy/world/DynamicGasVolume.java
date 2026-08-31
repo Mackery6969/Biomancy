@@ -19,13 +19,13 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.PriorityQueue;
 
 public class DynamicGasVolume {
 
+	private static final Direction[] DIRECTIONS = Direction.values();
 	private final RandomSource random;
 
 	//	private final Long2ObjectMap<Voxel> volume = new Long2ObjectOpenHashMap<>();
@@ -210,7 +210,9 @@ public class DynamicGasVolume {
 			maxY = Math.max(maxY, voxel.y());
 			maxZ = Math.max(maxZ, voxel.z());
 
-			for (Direction direction : obstacleCache.getTraversableDirectionsInsideOfBlock(voxel.pos, random)) {
+			ObjectArrayList<Direction> traversableDirections = obstacleCache.getTraversableDirectionsInsideOfBlock(voxel.pos, random);
+			for (int i = 0; i < traversableDirections.size(); i++) {
+				Direction direction = traversableDirections.get(i);
 				BlockPos neighborPos = voxel.pos.relative(direction);
 				long key = getKey(neighborPos);
 
@@ -229,23 +231,27 @@ public class DynamicGasVolume {
 		float apply(Voxel sourcePos, BlockPos pos, int depth);
 	}
 
-	protected record OcclusionCache(Level level, Long2ObjectMap<OcclusionData> obstacleCache) {
+	protected record OcclusionCache(Level level, Long2ObjectMap<OcclusionData> obstacleCache, ObjectArrayList<Direction> traversableDirections) {
 
 		OcclusionCache(Level level) {
-			this(level, new Long2ObjectOpenHashMap<>());
+			this(level, new Long2ObjectOpenHashMap<>(), new ObjectArrayList<>(DIRECTIONS.length));
 		}
 
-		public Collection<Direction> getTraversableDirectionsInsideOfBlock(BlockPos pos, RandomSource random) {
+		public ObjectArrayList<Direction> getTraversableDirectionsInsideOfBlock(BlockPos pos, RandomSource random) {
 			long key = pos.asLong();
+			traversableDirections.clear();
 
 			if (!obstacleCache.containsKey(key)) {
-				return Direction.allShuffled(random);
+				for (Direction direction : DIRECTIONS) {
+					traversableDirections.add(direction);
+				}
+				Util.shuffle(traversableDirections, random);
+				return traversableDirections;
 			}
 
-			ObjectArrayList<Direction> traversableDirections = new ObjectArrayList<>();
 			OcclusionData obstacle = obstacleCache.get(key);
 
-			for (Direction direction : Direction.values()) {
+			for (Direction direction : DIRECTIONS) {
 				if (obstacle.faceData[direction.get3DDataValue()] == 0) {
 					traversableDirections.add(direction);
 				}
@@ -298,7 +304,7 @@ public class DynamicGasVolume {
 
 				BlockPos.MutableBlockPos adjacentPos = new BlockPos.MutableBlockPos();
 				faceData = new byte[6];
-				for (Direction facing : Direction.values()) {
+				for (Direction facing : DIRECTIONS) {
 					adjacentPos.setWithOffset(pos, facing);
 					VoxelShape adjacentCollisionShape = level.getBlockState(adjacentPos).getCollisionShape(level, adjacentPos);
 

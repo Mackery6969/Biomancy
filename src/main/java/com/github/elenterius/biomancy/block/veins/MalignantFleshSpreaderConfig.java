@@ -24,6 +24,7 @@ import java.util.Set;
 class MalignantFleshSpreaderConfig extends MultifaceSpreader.DefaultSpreaderConfig {
 
 	protected static final Set<Block> VALID_SOURCES = Set.of(ModBlocks.MALIGNANT_FLESH_SLAB.get(), ModBlocks.MALIGNANT_FLESH_STAIRS.get(), ModBlocks.MALIGNANT_FLESH.get());
+	private static final Direction[] DIRECTIONS = Direction.values();
 
 	public MalignantFleshSpreaderConfig(MultifaceBlock block) {
 		super(block);
@@ -75,13 +76,20 @@ class MalignantFleshSpreaderConfig extends MultifaceSpreader.DefaultSpreaderConf
 		}
 
 		int neighbors = 0;
-		for (Direction direction : Direction.values()) {
+		BlockPos sourcePos = spreadPos.pos();
+		BlockPos.MutableBlockPos neighborPos = new BlockPos.MutableBlockPos();
+		BlockPos.MutableBlockPos belowNeighborPos = new BlockPos.MutableBlockPos();
+		for (Direction direction : DIRECTIONS) {
+			int stepX = direction.getStepX();
+			int stepY = direction.getStepY();
+			int stepZ = direction.getStepZ();
 			for (int i = 1; i <= 2; i++) {
-				BlockPos neighborPos = spreadPos.pos().relative(direction, i);
+				neighborPos.setWithOffset(sourcePos, stepX * i, stepY * i, stepZ * i);
 				BlockState neighborState = level.getBlockState(neighborPos);
 				neighbors += neighborState.is(block) ? 1 : 0;
 
-				Block belowNeighborBlock = level.getBlockState(neighborPos.below()).getBlock();
+				belowNeighborPos.setWithOffset(neighborPos, Direction.DOWN);
+				Block belowNeighborBlock = level.getBlockState(belowNeighborPos).getBlock();
 				boolean reduceNeighbors = PrimordialEcosystem.SOLID_FLESH_BLOCKS.contains(belowNeighborBlock);
 				if (reduceNeighbors) {
 					neighbors--;
@@ -90,13 +98,13 @@ class MalignantFleshSpreaderConfig extends MultifaceSpreader.DefaultSpreaderConf
 		}
 		if (neighbors >= 4) return false;
 
-		BlockState blockstate = getStateForPlacement(state, level, spreadPos.pos(), spreadPos.face());
+		BlockState blockstate = getStateForPlacement(state, level, sourcePos, spreadPos.face());
 		if (blockstate == null) return false;
 
 		if (markForPostprocessing) {
-			level.getChunk(spreadPos.pos()).markPosForPostprocessing(spreadPos.pos());
+			level.getChunk(sourcePos).markPosForPostprocessing(sourcePos);
 		}
 
-		return level.setBlock(spreadPos.pos(), blockstate, Block.UPDATE_CLIENTS);
+		return level.setBlock(sourcePos, blockstate, Block.UPDATE_CLIENTS);
 	}
 }

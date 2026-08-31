@@ -54,7 +54,7 @@ public class FleshChicken extends Chicken implements RangedAttackMob, GeoEntity 
 
 	@Override
 	public boolean isInvulnerableTo(DamageSource source) {
-		return super.isInvulnerableTo(source) || source.is(ModDamageTypeTags.FORGE_IS_ACID);
+		return super.isInvulnerableTo(source) || source.is(ModDamageTypeTags.C_IS_ACID);
 	}
 
 	@Override

@@ -26,10 +26,6 @@ public class ModEntityTypeTagsProvider extends EntityTypeTagsProvider {
 		super(output, lookupProvider, BiomancyMod.MOD_ID, existingFileHelper);
 	}
 
-	private static TagKey<EntityType<?>> forgeTag(String path) {
-		return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("forge", path));
-	}
-
 	private static TagKey<EntityType<?>> conventionalTag(String path) {
 		return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("c", path));
 	}
@@ -42,7 +38,6 @@ public class ModEntityTypeTagsProvider extends EntityTypeTagsProvider {
 	protected void addTags(HolderLookup.Provider provider) {
 		addBiomancyTags();
 		addMinecraftTags();
-		addForgeTags();
 		addConventionalTags();
 	}
 
@@ -80,16 +75,10 @@ public class ModEntityTypeTagsProvider extends EntityTypeTagsProvider {
 
 	}
 
-	private void addForgeTags() {
-
-	}
-
 	private void addConventionalTags() {
-		tag(ModEntityTags.C_CAPTURING_NOT_SUPPORTED)
-				.addOptionalTag(forgeTag("capturing_not_supported"));
+		tag(ModEntityTags.C_CAPTURING_NOT_SUPPORTED);
 
 		createTag(ModEntityTags.C_GOLEMS)
-				.addTag(forgeTag("golems"))
 				.add(EntityType.IRON_GOLEM, EntityType.SNOW_GOLEM)
 				.addOptional("strawgolem:strawgolem", "strawgolem:strawnggolem");
 	}

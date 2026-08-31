@@ -24,8 +24,8 @@ public class ModMobEffectTagsProvider extends IntrinsicHolderTagsProvider<MobEff
 		super(output, Registries.MOB_EFFECT, lookupProvider, mobEffect -> BuiltInRegistries.MOB_EFFECT.getResourceKey(mobEffect).orElseThrow(), BiomancyMod.MOD_ID, existingFileHelper);
 	}
 
-	private static TagKey<MobEffect> forgeTag(String path) {
-		return TagKey.create(Registries.MOB_EFFECT, ResourceLocation.fromNamespaceAndPath("forge", path));
+	private static TagKey<MobEffect> conventionalTag(String path) {
+		return TagKey.create(Registries.MOB_EFFECT, ResourceLocation.fromNamespaceAndPath("c", path));
 	}
 
 	@Override
@@ -37,9 +37,9 @@ public class ModMobEffectTagsProvider extends IntrinsicHolderTagsProvider<MobEff
 	protected void addTags(HolderLookup.Provider pProvider) {
 		addBiomancyTags();
 
-		tag(forgeTag("is_poison")).add(ModMobEffects.TOXIN.get());
+		tag(conventionalTag("is_poison")).add(ModMobEffects.TOXIN.get());
 
-		tag(ModMobEffectTags.FORGE_IS_ACID).add(
+		tag(ModMobEffectTags.C_IS_ACID).add(
 				ModMobEffects.CORROSIVE.get()
 		);
 	}

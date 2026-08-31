@@ -52,10 +52,6 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 			"biomesoplenty:pus_bubble"
 	);
 
-	private static TagKey<Item> forgeTag(String path) {
-		return ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", path));
-	}
-
 	private static TagKey<Item> conventionalTag(String path) {
 		return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", path));
 	}
@@ -72,7 +68,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 	protected void addTags(HolderLookup.Provider provider) {
 		addBiomancyTags();
 		addMinecraftTags();
-		addForgeTags();
+		addCommonTags();
 		addConventionalTags();
 		addCompatTags();
 	}
@@ -112,7 +108,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 				.add(ELYTRA)
 				.addTag(Tags.Items.ARMORS, Tags.Items.TOOLS)
 				.addTag(Tags.Items.ORES_NETHERITE_SCRAP, Tags.Items.INGOTS_NETHERITE, Tags.Items.STORAGE_BLOCKS_NETHERITE)
-				.addTag(forgeTag("shulker_boxes"));
+				.addTag(conventionalTag("shulker_boxes"));
 
 		createTag(ModItemTags.CANNOT_BE_DIGESTED_IN_ACID)
 				.add(ModItems.NUTRIENT_PASTE.get())
@@ -130,7 +126,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 
 		createTag(ModItemTags.ENCHANTABLE_WEAPON)
 				.add(ModItems.stream().filter(item -> item instanceof SwordItem || item instanceof TridentItem || item instanceof ClawsItem || item instanceof AxeItem))
-				.addTag(ModItemTags.FORGE_TOOLS_KNIVES);
+				.addTag(ModItemTags.C_TOOLS_KNIVES);
 
 		createTag(ItemTags.SWORD_ENCHANTABLE)
 				.add(ModItems.stream().filter(item -> item instanceof ClawsItem));
@@ -264,17 +260,17 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 				.add(ModItems.FLESH_IRIS_DOOR.get());
 	}
 
-	private void addForgeTags() {
+	private void addCommonTags() {
 		createTag(Tags.Items.STRINGS)
 				.add(ModItems.MOB_SINEW.get());
 
-		//		tag(ModItemTags.FORGE_TOOLS_KNIVES);
+		//		tag(ModItemTags.C_TOOLS_KNIVES);
 
-		TagKey<Item> clawsTag = forgeTag("tools/claws");
+		TagKey<Item> clawsTag = conventionalTag("tools/claws");
 		createTag(clawsTag)
 				.add(ModItems.RAVENOUS_CLAWS.get());
 
-		TagKey<Item> swordsTag = forgeTag("tools/swords");
+		TagKey<Item> swordsTag = conventionalTag("tools/swords");
 		createTag(swordsTag)
 				.add(ModItems.DESPOIL_SICKLE.get());
 		createTag(ItemTags.SWORDS)
@@ -290,7 +286,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 
 		createTag(Tags.Items.CHESTS).add(ModItems.FLESHKIN_CHEST.get());
 
-		EnhancedTagAppender<Item> shulkerBoxes = createTag(forgeTag("shulker_boxes"));
+		EnhancedTagAppender<Item> shulkerBoxes = createTag(conventionalTag("shulker_boxes"));
 		for (Item item : BuiltInRegistries.ITEM) {
 			if (item instanceof BlockItem blockItem && blockItem.getBlock() instanceof ShulkerBoxBlock) {
 				shulkerBoxes.add(item);
@@ -304,32 +300,28 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 	private void addConventionalTags() {
 		class FarmersDelightItems extends vectorwing.farmersdelight.common.registry.ModItems {} //alias workaround
 
-		createTag(ModItemTags.C_WITHER_BONES)
-				.addOptionalTag("forge:bones/wither");
+		createTag(ModItemTags.C_WITHER_BONES);
 
 		createTag(ModItemTags.C_CLAWS)
-				.addOptionalTag("forge:claws")
 				.add(ModItems.MOB_CLAW.get());
 
 		createTag(ModItemTags.C_FANGS)
-				.addOptionalTag("forge:fangs")
 				.add(ModItems.MOB_FANG.get());
 
 		createTag(conventionalTag("foods/candy"))
-				.addOptionalTag("c:foods/candies", "forge:candies", "forge:candy");
+				.addOptionalTag("c:foods/candies");
 
 		createTag(conventionalTag("foods/cookie"))
-				.addOptionalTag("c:foods/cookies", "forge:cookies", "forge:cookie")
+				.addOptionalTag("c:foods/cookies")
 				.add(COOKIE)
 				.add(FarmersDelightItems.SWEET_BERRY_COOKIE.get(), FarmersDelightItems.HONEY_COOKIE.get());
 
 		createTag(ModItemTags.C_RAW_PORK)
-				.addTag(forgeTag("raw_pork"))
 				.add(FarmersDelightItems.HAM.get());
 
 		createTag(conventionalTag("foods/raw_meat"))
-				.addOptionalTag("c:foods/raw_meats", "forge:raw_meats", "forge:raw_meat")
-				.addOptionalTag("forge:raw_bacon", "forge:raw_beef", "forge:raw_chicken", "forge:raw_pork", "forge:raw_mutton")
+				.addOptionalTag("c:foods/raw_meats")
+				.addOptionalTag("c:foods/raw_bacon", "c:foods/raw_beef", "c:foods/raw_chicken", "c:foods/raw_mutton")
 				.addTag(ModItemTags.C_RAW_PORK)
 				.add(BEEF, PORKCHOP, CHICKEN, RABBIT, MUTTON)
 				.add(FarmersDelightItems.HAM.get())
@@ -340,7 +332,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 		;
 
 		createTag(conventionalTag("foods/cooked_meat"))
-				.addOptionalTag("c:foods/cooked_meats", "forge:cooked_meat", "forge:cooked_meats")
+				.addOptionalTag("c:foods/cooked_meats")
 				.add(COOKED_BEEF, COOKED_PORKCHOP, COOKED_CHICKEN, COOKED_RABBIT, COOKED_MUTTON)
 				.add(FarmersDelightItems.SMOKED_HAM.get())
 				.addOptional("createfa:schnitzel", "createfa:meatballs", "createfa:chicken_nuggets")
@@ -348,12 +340,12 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 		;
 
 		createTag(conventionalTag("foods/raw_fish"))
-				.addOptionalTag("c:foods/raw_fishes", "forge:raw_fishes", "forge:raw_fish")
+				.addOptionalTag("c:foods/raw_fishes")
 				.add(COD, SALMON, TROPICAL_FISH, PUFFERFISH)
 		;
 
 		createTag(conventionalTag("foods/cooked_fish"))
-				.addOptionalTag("c:foods/cooked_fishes", "forge:cooked_fishes", "forge:cooked_fish")
+				.addOptionalTag("c:foods/cooked_fishes")
 				.add(COOKED_COD, COOKED_SALMON)
 		;
 	}

@@ -35,6 +35,10 @@ public abstract class RecipeCraftingStateData<T extends ProcessingRecipe> implem
 		return craftingState;
 	}
 
+	public @Nullable ResourceLocation getRecipeId() {
+		return recipeId;
+	}
+
 	public void setCraftingState(CraftingState craftingState) {
 		this.craftingState = craftingState;
 		if (craftingState == CraftingState.NONE) {

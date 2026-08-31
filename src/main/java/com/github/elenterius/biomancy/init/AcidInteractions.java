@@ -215,7 +215,7 @@ public final class AcidInteractions {
 				return;
 			}
 
-			ResourceLocation lastRecipeId = ResourceLocation.tryParse(digestionData.getString(RECIPE_KEY));
+			ResourceLocation lastRecipeId = digestionData.contains(RECIPE_KEY) ? ResourceLocation.tryParse(digestionData.getString(RECIPE_KEY)) : null;
 			Optional<RecipeHolder<DigestingRecipe>> optionalRecipe = DigesterBlockEntity.RECIPE_TYPE.get().getBestRecipeForIngredient(level, itemStack, lastRecipeId);
 
 			if (optionalRecipe.isEmpty()) return;
@@ -295,8 +295,8 @@ public final class AcidInteractions {
 
 		@SuppressWarnings("RedundantIfStatement") //Let me write readable code please, thanks
 		public static boolean isDigestible(ItemEntity itemEntity) {
-			if (itemEntity.getItem().is(ModItemTags.CANNOT_BE_DIGESTED_IN_ACID)) return false;
 			if (!itemEntity.isInFluidType(ModFluids.ACID_TYPE.get()) && !itemEntity.level().getBlockState(itemEntity.blockPosition()).is(ModBlocks.ACID_CAULDRON.get())) return false;
+			if (itemEntity.getItem().is(ModItemTags.CANNOT_BE_DIGESTED_IN_ACID)) return false;
 			return true;
 		}
 

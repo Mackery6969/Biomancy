@@ -125,7 +125,7 @@ public final class LivingEventHandler {
 			BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
 			for (int x = x1; x <= x2; x++) {
 				for (int z = z1; z <= z2; z++) {
-					cursor.setX(x).setZ(z);
+					cursor.set(x, y, z);
 					BlockState blockState = level.getBlockState(cursor);
 					if (blockState.getBlock() instanceof JumpPadBlock jumpPad && jumpPad.checkIfAABBIntersects(cursor, blockState, Direction.DOWN, aabb)) {
 						event.setDistance(0f);

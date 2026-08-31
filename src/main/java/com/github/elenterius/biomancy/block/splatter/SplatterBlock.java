@@ -28,6 +28,7 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -59,7 +60,7 @@ public abstract class SplatterBlock extends MultifaceBlock {
 
 		if (level.isAreaLoaded(pos, 1)) {
 			BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
-			for (Direction direction : Direction.values()) {
+			for (Direction direction : DIRECTIONS) {
 				mutablePos.setWithOffset(pos, direction);
 				BlockState neighborState = level.getBlockState(mutablePos);
 
@@ -98,6 +99,22 @@ public abstract class SplatterBlock extends MultifaceBlock {
 	}
 
 	abstract void entityInsideBoundingBox(Level level, BlockPos pos, BlockState state, Entity entity);
+
+	protected static @Nullable Direction getRandomFaceExceptUp(BlockState state, RandomSource random) {
+		int matches = 0;
+		Direction selected = null;
+
+		for (Direction direction : DIRECTIONS) {
+			if (direction == Direction.UP || !hasFace(state, direction)) continue;
+
+			matches++;
+			if (random.nextInt(matches) == 0) {
+				selected = direction;
+			}
+		}
+
+		return selected;
+	}
 
 	@Override
 	public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {

@@ -154,7 +154,7 @@ public class DecomposerBlockEntity extends MachineBlockEntity<DecomposingRecipe,
 
 	DecomposerRecipeResult getComputedRecipeResult(RecipeHolder<DecomposingRecipe> craftingGoal) {
 		if (computedRecipeResult == null || !computedRecipeResult.recipeId.equals(craftingGoal.id())) {
-			return DecomposerRecipeResult.computeRecipeResult(craftingGoal.value(), craftingGoal.id(), level.random.nextInt());
+			computedRecipeResult = DecomposerRecipeResult.computeRecipeResult(craftingGoal.value(), craftingGoal.id(), level.random.nextInt());
 		}
 
 		return computedRecipeResult;
@@ -214,6 +214,7 @@ public class DecomposerBlockEntity extends MachineBlockEntity<DecomposingRecipe,
 		for (ItemStack stack : precomputedResult.items) {  //output result
 			ItemHandlerUtil.insertItem(outputInventory.getRaw(), stack);
 		}
+		computedRecipeResult = null;
 
 		SoundUtil.Server.playBlockSound((ServerLevel) level, getBlockPos(), ModSoundEvents.DECOMPOSER_CRAFTING_COMPLETED);
 

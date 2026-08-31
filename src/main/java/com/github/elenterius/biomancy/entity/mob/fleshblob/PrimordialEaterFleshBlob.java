@@ -112,7 +112,7 @@ public class PrimordialEaterFleshBlob extends EaterFleshBlob implements Primordi
 
 	@Override
 	public boolean isInvulnerableTo(DamageSource source) {
-		return super.isInvulnerableTo(source) || source.is(ModDamageTypeTags.FORGE_IS_ACID);
+		return super.isInvulnerableTo(source) || source.is(ModDamageTypeTags.C_IS_ACID);
 	}
 
 	@Override

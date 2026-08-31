@@ -17,7 +17,7 @@ public final class ModMobEffectTags {
 	public static final TagKey<MobEffect> CRADLE_HOSTILITY_SOURCE = tag("cradle/hostility_sources");
 	public static final TagKey<MobEffect> CRADLE_ANOMALY_SOURCE = tag("cradle/anomaly_sources");
 
-	public static final TagKey<MobEffect> FORGE_IS_ACID = forgeTag("is_acid");
+	public static final TagKey<MobEffect> C_IS_ACID = conventionalTag("is_acid");
 
 	private ModMobEffectTags() {}
 
@@ -45,16 +45,16 @@ public final class ModMobEffectTags {
 		return mobEffect.is(CRADLE_ANOMALY_SOURCE);
 	}
 
-	public static boolean forgeIsAcid(Holder<MobEffect> mobEffect) {
-		return mobEffect.is(FORGE_IS_ACID);
+	public static boolean isAcid(Holder<MobEffect> mobEffect) {
+		return mobEffect.is(C_IS_ACID);
 	}
 
 	private static TagKey<MobEffect> tag(String name) {
 		return createTag(BiomancyMod.rl(name));
 	}
 
-	private static TagKey<MobEffect> forgeTag(String name) {
-		return createTag(ResourceLocation.fromNamespaceAndPath("forge", name));
+	private static TagKey<MobEffect> conventionalTag(String name) {
+		return createTag(ResourceLocation.fromNamespaceAndPath("c", name));
 	}
 
 	private static TagKey<MobEffect> createTag(ResourceLocation key) {

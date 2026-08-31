@@ -232,11 +232,17 @@ public abstract class SimpleMultiFaceBlock extends Block {
 	}
 
 	protected static boolean hasAnyFace(BlockState state) {
-		return Arrays.stream(DIRECTIONS).anyMatch(direction -> hasFace(state, direction));
+		for (Direction direction : DIRECTIONS) {
+			if (hasFace(state, direction)) return true;
+		}
+		return false;
 	}
 
 	private static boolean hasAnyVacantFace(BlockState state) {
-		return Arrays.stream(DIRECTIONS).anyMatch(direction -> !hasFace(state, direction));
+		for (Direction direction : DIRECTIONS) {
+			if (!hasFace(state, direction)) return true;
+		}
+		return false;
 	}
 
 	public static EnumSet<Direction> getAvailableFaces(BlockState state) {
@@ -245,7 +251,7 @@ public abstract class SimpleMultiFaceBlock extends Block {
 		}
 
 		EnumSet<Direction> set = EnumSet.noneOf(Direction.class);
-		for (Direction direction : Direction.values()) {
+		for (Direction direction : DIRECTIONS) {
 			if (hasFace(state, direction)) {
 				set.add(direction);
 			}

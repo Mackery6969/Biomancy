@@ -17,6 +17,7 @@ public class FindItemGoal extends Goal {
 	protected final double searchDistance;
 	protected final double speedModifier;
 	protected final Predicate<ItemEntity> itemFilter;
+	protected @Nullable ItemEntity targetItem;
 
 	public FindItemGoal(Mob mob) {
 		this(mob, 8d, 1.2d, ITEM_ENTITY_FILTER);
@@ -44,7 +45,8 @@ public class FindItemGoal extends Goal {
 
 		if (mob.getTarget() == null && mob.getLastHurtByMob() == null) {
 			if (mob.getRandom().nextInt(10) != 0) return false;
-			return findItem(searchDistance, itemFilter) != null;
+			targetItem = findItem(searchDistance, itemFilter);
+			return targetItem != null;
 		}
 
 		return false;
@@ -52,18 +54,34 @@ public class FindItemGoal extends Goal {
 
 	@Override
 	public void tick() {
-		ItemEntity itemEntity = findItem(searchDistance, itemFilter);
-		if (itemEntity != null) {
-			mob.getNavigation().moveTo(itemEntity, speedModifier);
+		if (!isValidTarget(targetItem)) {
+			targetItem = findItem(searchDistance, itemFilter);
 		}
+		moveToTarget();
 	}
 
 	@Override
 	public void start() {
-		ItemEntity itemEntity = findItem(searchDistance, itemFilter);
-		if (itemEntity != null) {
-			mob.getNavigation().moveTo(itemEntity, speedModifier);
+		moveToTarget();
+	}
+
+	@Override
+	public void stop() {
+		targetItem = null;
+	}
+
+	protected void moveToTarget() {
+		if (targetItem != null) {
+			mob.getNavigation().moveTo(targetItem, speedModifier);
 		}
+	}
+
+	protected boolean isValidTarget(@Nullable ItemEntity itemEntity) {
+		if (itemEntity == null) return false;
+		if (!mob.canPickUpLoot()) return false;
+		if (!itemFilter.test(itemEntity)) return false;
+		if (!mob.wantsToPickUp(itemEntity.getItem())) return false;
+		return itemEntity.distanceToSqr(mob) <= searchDistance * searchDistance;
 	}
 
 	@Nullable

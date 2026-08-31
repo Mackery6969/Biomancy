@@ -8,8 +8,8 @@ import net.minecraft.world.damagesource.DamageType;
 
 public final class ModDamageTypeTags {
 
-	public static final TagKey<DamageType> FORGE_IS_ACID = forgeTag("is_acid");
-	public static final TagKey<DamageType> FORGE_IS_POISON = forgeTag("is_poison");
+	public static final TagKey<DamageType> C_IS_ACID = conventionalTag("is_acid");
+	public static final TagKey<DamageType> C_IS_POISON = conventionalTag("is_poison");
 
 	/*
 	public static final TagKey<DamageType> IS_CORROSIVE = tag("is_corrosive");
@@ -30,8 +30,8 @@ public final class ModDamageTypeTags {
 		return TagKey.create(Registries.DAMAGE_TYPE, BiomancyMod.rl(name));
 	}
 
-	private static TagKey<DamageType> forgeTag(String name) {
-		return TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath("forge", name));
+	private static TagKey<DamageType> conventionalTag(String name) {
+		return TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath("c", name));
 	}
 
 }

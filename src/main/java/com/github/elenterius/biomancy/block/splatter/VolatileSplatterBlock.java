@@ -13,9 +13,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class VolatileSplatterBlock extends SplatterBlock {
 
 	public static final MapCodec<VolatileSplatterBlock> CODEC = simpleCodec(VolatileSplatterBlock::new);
@@ -43,16 +40,8 @@ public class VolatileSplatterBlock extends SplatterBlock {
 	public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
 		if (random.nextInt(5) != 0) return;
 
-		List<Direction> availableFaces = new ArrayList<>();
-		for (Direction direction : Direction.values()) {
-			if (direction != Direction.UP && hasFace(state, direction)) {
-				availableFaces.add(direction);
-			}
-		}
-
-		if (!availableFaces.isEmpty()) {
-			int index = availableFaces.size() == 1 ? 0 : random.nextIntBetweenInclusive(0, availableFaces.size() - 1);
-			Direction face = availableFaces.get(index);
+		Direction face = getRandomFaceExceptUp(state, random);
+		if (face != null) {
 			Vec3i normal = face.getNormal();
 
 			double x = pos.getX() + 0.5d;

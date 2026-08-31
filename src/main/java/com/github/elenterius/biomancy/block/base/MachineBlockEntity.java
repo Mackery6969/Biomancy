@@ -9,6 +9,7 @@ import com.github.elenterius.biomancy.init.ModBlockProperties;
 import com.github.elenterius.biomancy.inventory.InventoryHandler;
 import com.github.elenterius.biomancy.util.PlayerInteractionPredicate;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
@@ -27,6 +28,8 @@ public abstract class MachineBlockEntity<R extends ProcessingRecipe, S extends R
 
 	protected final int tickOffset = BiomancyMod.GLOBAL_RANDOM.nextInt(20);
 	protected int ticks = tickOffset;
+	private @Nullable RecipeHolder<R> cachedCraftingGoalHolder;
+	private boolean craftingGoalCacheDirty = true;
 
 	protected MachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -44,6 +47,7 @@ public abstract class MachineBlockEntity<R extends ProcessingRecipe, S extends R
 	}
 
 	protected void onInventoryChanged() {
+		craftingGoalCacheDirty = true;
 		if (level != null && !level.isClientSide) setChanged();
 	}
 
@@ -75,6 +79,21 @@ public abstract class MachineBlockEntity<R extends ProcessingRecipe, S extends R
 
 	public abstract void dropAllInvContents(Level level, BlockPos pos);
 
+	protected @Nullable RecipeHolder<R> getCraftingGoalHolder(ServerLevel level, S state) {
+		if (!craftingGoalCacheDirty) {
+			if (cachedCraftingGoalHolder == null) return null;
+			if (doesRecipeMatchInput(cachedCraftingGoalHolder.value(), level)) return cachedCraftingGoalHolder;
+		}
+
+		cachedCraftingGoalHolder = state
+				.getCraftingGoalRecipe(level) //try to use the current/previous crafting goal first
+				.filter(holder -> doesRecipeMatchInput(holder.value(), level)) //check if it's still matches with the ingredients in the input, if yes use it
+				.orElseGet(() -> resolveRecipeFromInput(level)); //else try to find new crafting goal
+
+		craftingGoalCacheDirty = false;
+		return cachedCraftingGoalHolder;
+	}
+
 	public boolean hasEnoughFuel(R recipeToCraft) {
 		return getFuelHandler().getFuelAmount() >= getFuelCost(recipeToCraft);
 	}
@@ -100,11 +119,7 @@ public abstract class MachineBlockEntity<R extends ProcessingRecipe, S extends R
 		}
 
 		S state = getStateData();
-		RecipeHolder<R> craftingGoalHolder = state
-				.getCraftingGoalRecipe(level) //try to use the current/previous crafting goal first
-				.filter(holder -> doesRecipeMatchInput(holder.value(), level)) //check if it's still matches with the ingredients in the input, if yes use it
-				.orElseGet(() -> resolveRecipeFromInput(level)); //else try to find new crafting goal
-
+		RecipeHolder<R> craftingGoalHolder = getCraftingGoalHolder(level, state);
 		R craftingGoal = craftingGoalHolder != null ? craftingGoalHolder.value() : null;
 
 		boolean emitRedstoneSignal = false;
@@ -125,8 +140,8 @@ public abstract class MachineBlockEntity<R extends ProcessingRecipe, S extends R
 						}
 					}
 					else if (!state.isCraftingCanceled()) { // something is being crafted, check that the crafting goals match
-						RecipeHolder<R> prevCraftingGoalHolder = state.getCraftingGoalRecipe(level).orElse(null);
-						if (prevCraftingGoalHolder == null || !craftingGoalHolder.equals(prevCraftingGoalHolder)) {
+						ResourceLocation prevCraftingGoalId = state.getRecipeId();
+						if (prevCraftingGoalId == null || !craftingGoalHolder.id().equals(prevCraftingGoalId)) {
 							state.cancelCrafting();
 						}
 					}

@@ -88,7 +88,7 @@ public class ModDamageTypeTagsProvider extends DamageTypeTagsProvider {
 				ModDamageTypes.IMPALER_PROJECTILE
 		);
 
-		tag(ModDamageTypeTags.FORGE_IS_ACID)
+		tag(ModDamageTypeTags.C_IS_ACID)
 				.add(
 						ModDamageTypes.CORROSIVE_ACID
 				)
@@ -96,7 +96,7 @@ public class ModDamageTypeTagsProvider extends DamageTypeTagsProvider {
 						ResourceLocation.fromNamespaceAndPath("alexscaves", "acid")
 				);
 
-		tag(ModDamageTypeTags.FORGE_IS_POISON).add(
+		tag(ModDamageTypeTags.C_IS_POISON).add(
 				ModDamageTypes.TOXIN
 		);
 

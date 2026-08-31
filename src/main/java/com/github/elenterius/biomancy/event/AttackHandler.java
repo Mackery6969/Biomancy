@@ -49,7 +49,7 @@ public final class AttackHandler {
 
 		DamageSource damageSource = event.getSource();
 		if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return;
-		if (!damageSource.is(ModDamageTypeTags.FORGE_IS_ACID)) return;
+		if (!damageSource.is(ModDamageTypeTags.C_IS_ACID)) return;
 		if (event.getAmount() <= 0f) return;
 
 		int resistProbability = 0;
