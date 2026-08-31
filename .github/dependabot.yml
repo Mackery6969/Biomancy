@@ -1,0 +1,64 @@
+version: 2
+
+updates:
+  # Dependencies for the newest supported Minecraft version
+  - package-ecosystem: "gradle"
+    directory: "/"
+    target-branch: "main"
+
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "America/Chicago"
+
+    open-pull-requests-limit: 10
+
+    labels:
+      - "dependencies"
+      - "automation"
+      - "minecraft: latest"
+
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+
+    groups:
+      minor-and-patch-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+    ignore:
+      - dependency-name: "net.neoforged:*"
+        update-types:
+          - "version-update:semver-major"
+
+      - dependency-name: "net.neoforged.gradle*"
+        update-types:
+          - "version-update:semver-major"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "main"
+
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:30"
+      timezone: "America/Chicago"
+
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "automation"
+
+    commit-message:
+      prefix: "ci"
+
+    groups:
+      github-actions:
+        patterns:
+          - "*"
