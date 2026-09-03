@@ -1,9 +1,5 @@
 {
   "values": [
-    {
-      "id": "#c:golems",
-      "required": false
-    },
     "minecraft:iron_golem",
     "minecraft:snow_golem",
     {
@@ -15,5 +11,4 @@
       "required": false
     }
   ]
-
 }

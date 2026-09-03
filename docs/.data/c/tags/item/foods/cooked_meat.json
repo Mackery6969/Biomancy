@@ -4,14 +4,6 @@
       "id": "#c:foods/cooked_meats",
       "required": false
     },
-    {
-      "id": "#c:cooked_meat",
-      "required": false
-    },
-    {
-      "id": "#c:cooked_meats",
-      "required": false
-    },
     "minecraft:cooked_beef",
     "minecraft:cooked_porkchop",
     "minecraft:cooked_chicken",
@@ -38,5 +30,4 @@
       "required": false
     }
   ]
-
 }

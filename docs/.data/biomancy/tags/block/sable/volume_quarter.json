@@ -1,0 +1,24 @@
+{
+  "replace": false,
+  "values": [
+    "biomancy:active_muscle",
+    "biomancy:acid_splatter",
+    "biomancy:adult_permeable_membrane_pane",
+    "biomancy:baby_permeable_membrane_pane",
+    "biomancy:bio_lantern_blue",
+    "biomancy:bio_lantern_yellow",
+    "biomancy:flesh_iris_door",
+    "biomancy:flesh_ladder",
+    "biomancy:flesh_spike",
+    "biomancy:fleshkin_pressure_plate",
+    "biomancy:impermeable_membrane_pane",
+    "biomancy:malignant_flesh_veins",
+    "biomancy:primal_bloom",
+    "biomancy:primal_permeable_membrane_pane",
+    "biomancy:primordial_bio_lantern",
+    "biomancy:tendon_chain",
+    "biomancy:undead_permeable_membrane_pane",
+    "biomancy:vial_holder",
+    "biomancy:volatile_splatter"
+  ]
+}

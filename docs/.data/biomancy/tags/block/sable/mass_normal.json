@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "biomancy:acid_cauldron",
+    "biomancy:bio_forge",
+    "biomancy:bio_lab",
+    "biomancy:biometric_membrane",
+    "biomancy:decomposer",
+    "biomancy:digester",
+    "biomancy:maw_hopper",
+    "biomancy:modular_larynx",
+    "biomancy:oneway_membrane",
+    "biomancy:primal_orifice",
+    "biomancy:water_gel_block"
+  ]
+}

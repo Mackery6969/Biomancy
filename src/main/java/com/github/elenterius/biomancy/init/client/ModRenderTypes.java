@@ -39,6 +39,11 @@ public final class ModRenderTypes {
 		return Objects.requireNonNull(entityCutoutPartyTimeShader, "Attempted to call getEntityCutoutPartyTimeShader before shaders have finished loading.");
 	}
 
+	@Nullable
+	public static ShaderInstance getEntityCutoutPartyTimeShaderOrNull() {
+		return entityCutoutPartyTimeShader;
+	}
+
 	private static final class ModRenderType extends RenderType {
 		private static final RenderStateShard.ShaderStateShard RENDER_TYPE_ENTITY_CUTOUT_PARTY_TIME_SHADER = new RenderStateShard.ShaderStateShard(ModRenderTypes::getEntityCutoutPartyTimeShader);
 

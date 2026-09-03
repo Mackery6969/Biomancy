@@ -12,10 +12,6 @@
     "#c:ores/netherite_scrap",
     "#c:ingots/netherite",
     "#c:storage_blocks/netherite",
-    {
-      "id": "#c:shulker_boxes",
-      "required": false
-    }
+    "#c:shulker_boxes"
   ]
-
 }

@@ -1,10 +1,5 @@
 {
   "values": [
-    {
-      "id": "#c:claws",
-      "required": false
-    },
     "biomancy:mob_claw"
   ]
-
 }

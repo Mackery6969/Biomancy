@@ -5,31 +5,19 @@
       "required": false
     },
     {
-      "id": "#c:raw_meats",
+      "id": "#c:foods/raw_bacon",
       "required": false
     },
     {
-      "id": "#c:raw_meat",
+      "id": "#c:foods/raw_beef",
       "required": false
     },
     {
-      "id": "#c:raw_bacon",
+      "id": "#c:foods/raw_chicken",
       "required": false
     },
     {
-      "id": "#c:raw_beef",
-      "required": false
-    },
-    {
-      "id": "#c:raw_chicken",
-      "required": false
-    },
-    {
-      "id": "#c:raw_pork",
-      "required": false
-    },
-    {
-      "id": "#c:raw_mutton",
+      "id": "#c:foods/raw_mutton",
       "required": false
     },
     "#c:foods/raw_pork",
@@ -67,5 +55,4 @@
       "required": false
     }
   ]
-
 }

@@ -126,7 +126,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 
 		createTag(ModItemTags.ENCHANTABLE_WEAPON)
 				.add(ModItems.stream().filter(item -> item instanceof SwordItem || item instanceof TridentItem || item instanceof ClawsItem || item instanceof AxeItem))
-				.addTag(ModItemTags.C_TOOLS_KNIVES);
+				.addOptionalTag(ModItemTags.C_TOOLS_KNIVES.location());
 
 		createTag(ItemTags.SWORD_ENCHANTABLE)
 				.add(ModItems.stream().filter(item -> item instanceof ClawsItem));

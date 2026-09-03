@@ -73,6 +73,6 @@
     }
   },
   "textures": {
-    "particle": "biomancy:item/ravenous_claws"
+    "particle": "biomancy:item/weapon/ravenous_claws"
   }
 }

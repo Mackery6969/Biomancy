@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "biomancy:fibrous_flesh_wall",
+    "biomancy:fibrous_primal_flesh_wall",
+    "biomancy:flesh_door",
+    "biomancy:flesh_fence",
+    "biomancy:flesh_fence_gate",
+    "biomancy:flesh_wall",
+    "biomancy:full_flesh_door",
+    "biomancy:malignant_flesh_wall",
+    "biomancy:packed_flesh_wall",
+    "biomancy:porous_primal_flesh_wall",
+    "biomancy:primal_flesh_wall",
+    "biomancy:smooth_primal_flesh_wall"
+  ]
+}

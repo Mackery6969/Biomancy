@@ -4,18 +4,9 @@
       "id": "#c:foods/raw_fishes",
       "required": false
     },
-    {
-      "id": "#c:raw_fishes",
-      "required": false
-    },
-    {
-      "id": "#c:raw_fish",
-      "required": false
-    },
     "minecraft:cod",
     "minecraft:salmon",
     "minecraft:tropical_fish",
     "minecraft:pufferfish"
   ]
-
 }

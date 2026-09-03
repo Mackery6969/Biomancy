@@ -3,15 +3,6 @@
     {
       "id": "#c:foods/candies",
       "required": false
-    },
-    {
-      "id": "#c:candies",
-      "required": false
-    },
-    {
-      "id": "#c:candy",
-      "required": false
     }
   ]
-
 }

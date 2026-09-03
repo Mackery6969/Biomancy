@@ -4,16 +4,7 @@
       "id": "#c:foods/cooked_fishes",
       "required": false
     },
-    {
-      "id": "#c:cooked_fishes",
-      "required": false
-    },
-    {
-      "id": "#c:cooked_fish",
-      "required": false
-    },
     "minecraft:cooked_cod",
     "minecraft:cooked_salmon"
   ]
-
 }

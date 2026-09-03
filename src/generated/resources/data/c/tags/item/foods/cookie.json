@@ -4,14 +4,6 @@
       "id": "#c:foods/cookies",
       "required": false
     },
-    {
-      "id": "#c:cookies",
-      "required": false
-    },
-    {
-      "id": "#c:cookie",
-      "required": false
-    },
     "minecraft:cookie",
     {
       "id": "farmersdelight:sweet_berry_cookie",
@@ -22,5 +14,4 @@
       "required": false
     }
   ]
-
 }

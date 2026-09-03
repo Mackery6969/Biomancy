@@ -1,15 +1,8 @@
 {
   "values": [
-    {
-      "id": "#c:tools/claws",
-      "required": false
-    },
-    {
-      "id": "#c:tools/swords",
-      "required": false
-    },
+    "#c:tools/claws",
+    "#c:tools/swords",
     "biomancy:injector",
     "biomancy:extractor"
   ]
-
 }
