@@ -131,6 +131,24 @@ jobs:
             echo "::error::MODRINTH_PROJECT_ID is set, but the MODRINTH_TOKEN repository secret is missing."
             exit 1
           fi
+
+          if [ -n "$CURSEFORGE_PROJECT_ID" ]; then
+            case "$CURSEFORGE_PROJECT_ID" in
+              ''|*[!0-9]*)
+                echo "::error::CURSEFORGE_PROJECT_ID must be the numeric Project ID from the CurseForge project page, not the slug (got '$CURSEFORGE_PROJECT_ID'). A slug here makes the upload fail with an opaque HTTP 500."
+                exit 1
+                ;;
+            esac
+
+            CF_STATUS=$(curl -s -o /dev/null -w '%{http_code}' \
+              -H "X-Api-Token: $CURSEFORGE_TOKEN" \
+              https://minecraft.curseforge.com/api/game/versions)
+            if [ "$CF_STATUS" != "200" ]; then
+              echo "::error::CURSEFORGE_TOKEN was rejected by the CurseForge API (HTTP $CF_STATUS)."
+              exit 1
+            fi
+            echo "CurseForge token OK, project id $CURSEFORGE_PROJECT_ID is numeric."
+          fi
         env:
           CURSEFORGE_PROJECT_ID: ${{ vars.CURSEFORGE_PROJECT_ID }}
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
@@ -151,7 +169,7 @@ jobs:
           changelog: ${{ inputs.changelog != '' && inputs.changelog || steps.changelog.outputs.text }}
 
       - name: Publish to CurseForge
-        if: ${{ vars.CURSEFORGE_PROJECT_ID != '' }}
+        if: ${{ !cancelled() && vars.CURSEFORGE_PROJECT_ID != '' }}
         uses: Kira-NT/mc-publish@v3
         with:
           name: ${{ steps.meta.outputs.name }}
@@ -167,7 +185,7 @@ jobs:
           curseforge-dependencies: ${{ vars.CURSEFORGE_DEPENDENCIES }}
 
       - name: Publish to Modrinth
-        if: ${{ vars.MODRINTH_PROJECT_ID != '' }}
+        if: ${{ !cancelled() && vars.MODRINTH_PROJECT_ID != '' }}
         uses: Kira-NT/mc-publish@v3
         with:
           name: ${{ steps.meta.outputs.name }}
