@@ -37,7 +37,7 @@ jobs:
 
       - name: Cache Alex's Caves build output
         id: cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ${{ runner.temp }}/${{ env.ALEXS_CAVES_DIR_NAME }}/mcmodsrepo
           key: ${{ steps.meta.outputs.cache-key }}

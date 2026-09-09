@@ -45,7 +45,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
 
       - name: Restore Alex's Caves build output
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: ${{ runner.temp }}/${{ env.ALEXS_CAVES_DIR_NAME }}/mcmodsrepo
           key: ${{ needs.alexs-caves.outputs.cache-key }}
@@ -96,7 +96,7 @@ jobs:
           distribution: temurin
 
       - name: Restore Alex's Caves build output
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: ${{ runner.temp }}/${{ env.ALEXS_CAVES_DIR_NAME }}/mcmodsrepo
           key: ${{ needs.alexs-caves.outputs.cache-key }}
