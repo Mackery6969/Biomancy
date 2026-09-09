@@ -33,7 +33,7 @@ jobs:
     env:
       ALEXS_CAVES_REPO: https://github.com/Raguto/AlexsCaves-1.21.1.git
       ALEXS_CAVES_COMMIT: d2a7b05998d85e602d86c4999e53340fb1ee9b06
-      ALEXS_CAVES_DIR: ${{ runner.temp }}/AlexsCaves-1.21.1
+      ALEXS_CAVES_DIR_NAME: AlexsCaves-1.21.1
 
     steps:
       - name: Checkout repository
@@ -55,14 +55,14 @@ jobs:
         id: alexs-caves-cache
         uses: actions/cache@v4
         with:
-          path: ${{ env.ALEXS_CAVES_DIR }}/mcmodsrepo
+          path: ${{ runner.temp }}/${{ env.ALEXS_CAVES_DIR_NAME }}/mcmodsrepo
           key: alexs-caves-mcmodsrepo-${{ runner.os }}-${{ env.ALEXS_CAVES_COMMIT }}
 
       - name: Build Alex's Caves from source
         if: steps.alexs-caves-cache.outputs.cache-hit != 'true'
         run: |
-          git init -q "$ALEXS_CAVES_DIR"
-          cd "$ALEXS_CAVES_DIR"
+          git init -q "$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME"
+          cd "$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME"
           git remote add origin "$ALEXS_CAVES_REPO"
           git fetch -q --depth 1 origin "$ALEXS_CAVES_COMMIT"
           git checkout -q FETCH_HEAD
@@ -70,7 +70,7 @@ jobs:
           ./gradlew publish --no-daemon
 
       - name: Build with Gradle
-        run: ./gradlew build "-Palexs_caves_repo=$ALEXS_CAVES_DIR/mcmodsrepo"
+        run: ./gradlew build "-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo"
 
       - name: Read mod version
         id: meta
