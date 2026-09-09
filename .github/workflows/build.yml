@@ -15,15 +15,18 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  alexs-caves:
+    name: Alex's Caves
+    uses: ./.github/workflows/alexs-caves.yml
+
   build:
     name: Build with Java 21
+    needs: alexs-caves
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 20
 
     env:
-      ALEXS_CAVES_REPO: https://github.com/Raguto/AlexsCaves-1.21.1.git
-      ALEXS_CAVES_COMMIT: d2a7b05998d85e602d86c4999e53340fb1ee9b06
-      ALEXS_CAVES_DIR_NAME: AlexsCaves-1.21.1
+      ALEXS_CAVES_DIR_NAME: ${{ needs.alexs-caves.outputs.dir-name }}
 
     steps:
       - name: Checkout repository
@@ -41,23 +44,12 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
 
-      - name: Cache Alex's Caves build output
-        id: alexs-caves-cache
-        uses: actions/cache@v4
+      - name: Restore Alex's Caves build output
+        uses: actions/cache/restore@v4
         with:
           path: ${{ runner.temp }}/${{ env.ALEXS_CAVES_DIR_NAME }}/mcmodsrepo
-          key: alexs-caves-mcmodsrepo-${{ runner.os }}-${{ env.ALEXS_CAVES_COMMIT }}
-
-      - name: Build Alex's Caves from source
-        if: steps.alexs-caves-cache.outputs.cache-hit != 'true'
-        run: |
-          git init -q "$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME"
-          cd "$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME"
-          git remote add origin "$ALEXS_CAVES_REPO"
-          git fetch -q --depth 1 origin "$ALEXS_CAVES_COMMIT"
-          git checkout -q FETCH_HEAD
-          chmod +x gradlew
-          ./gradlew publish --no-daemon
+          key: ${{ needs.alexs-caves.outputs.cache-key }}
+          fail-on-cache-miss: true
 
       - name: Build with Gradle
         run: ./gradlew build "-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo"
@@ -79,3 +71,38 @@ jobs:
             !build/libs/*-javadoc.jar
           if-no-files-found: error
           retention-days: 14
+
+  submit:
+    name: Submit Gradle Dependencies
+    needs: alexs-caves
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    permissions:
+      contents: write
+
+    env:
+      ALEXS_CAVES_DIR_NAME: ${{ needs.alexs-caves.outputs.dir-name }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v6
+        with:
+          java-version: "21"
+          distribution: temurin
+
+      - name: Restore Alex's Caves build output
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/${{ env.ALEXS_CAVES_DIR_NAME }}/mcmodsrepo
+          key: ${{ needs.alexs-caves.outputs.cache-key }}
+          fail-on-cache-miss: true
+
+      - name: Submit dependency graph
+        uses: gradle/actions/dependency-submission@v6
+        with:
+          additional-arguments: -Palexs_caves_repo=${{ runner.temp }}/${{ env.ALEXS_CAVES_DIR_NAME }}/mcmodsrepo

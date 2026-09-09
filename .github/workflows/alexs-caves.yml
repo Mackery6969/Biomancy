@@ -1,0 +1,61 @@
+name: Alex's Caves
+
+on:
+  workflow_call:
+    outputs:
+      cache-key:
+        description: "Cache key holding the published Alex's Caves Maven repo"
+        value: ${{ jobs.publish.outputs.cache-key }}
+      dir-name:
+        description: "Directory under RUNNER_TEMP holding the checkout; also the Maven artifactId"
+        value: ${{ jobs.publish.outputs.dir-name }}
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Build Alex's Caves
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      ALEXS_CAVES_REPO: https://github.com/Raguto/AlexsCaves-1.21.1.git
+      ALEXS_CAVES_COMMIT: d2a7b05998d85e602d86c4999e53340fb1ee9b06
+      ALEXS_CAVES_DIR_NAME: AlexsCaves-1.21.1
+
+    outputs:
+      cache-key: ${{ steps.meta.outputs.cache-key }}
+      dir-name: ${{ steps.meta.outputs.dir-name }}
+
+    steps:
+      - name: Compute cache metadata
+        id: meta
+        run: |
+          echo "cache-key=alexs-caves-mcmodsrepo-${RUNNER_OS}-${ALEXS_CAVES_COMMIT}" >> "$GITHUB_OUTPUT"
+          echo "dir-name=${ALEXS_CAVES_DIR_NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Alex's Caves build output
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/${{ env.ALEXS_CAVES_DIR_NAME }}/mcmodsrepo
+          key: ${{ steps.meta.outputs.cache-key }}
+
+      - name: Setup JDK 21
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v6
+        with:
+          java-version: "21"
+          distribution: temurin
+
+      - name: Build and publish Alex's Caves
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          git init -q "$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME"
+          cd "$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME"
+          git remote add origin "$ALEXS_CAVES_REPO"
+          git fetch -q --depth 1 origin "$ALEXS_CAVES_COMMIT"
+          git checkout -q FETCH_HEAD
+          chmod +x gradlew
+          ./gradlew publish --no-daemon
