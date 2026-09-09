@@ -75,6 +75,31 @@ jobs:
           echo "name=${MOD_ID}-${MOD_VERSION}" >> "$GITHUB_OUTPUT"
           echo "tag=v${MOD_VERSION}" >> "$GITHUB_OUTPUT"
 
+      - name: Verify updates.json is in sync
+        env:
+          MOD_VERSION: ${{ steps.meta.outputs.mod_version }}
+          MINECRAFT_VERSION: ${{ steps.meta.outputs.minecraft_version }}
+          RELEASE_TYPE: ${{ inputs.release_type }}
+        run: |
+          LATEST=$(jq -r --arg k "${MINECRAFT_VERSION}-latest" '.promos[$k] // ""' updates.json)
+          RECOMMENDED=$(jq -r --arg k "${MINECRAFT_VERSION}-recommended" '.promos[$k] // ""' updates.json)
+          NOTES=$(jq -r --arg mc "$MINECRAFT_VERSION" --arg v "$MOD_VERSION" '.[$mc][$v] // ""' updates.json)
+
+          if [ "$LATEST" != "$MOD_VERSION" ]; then
+            echo "::error::updates.json promos.${MINECRAFT_VERSION}-latest is '$LATEST', expected '$MOD_VERSION'"
+            exit 1
+          fi
+
+          if [ -z "$NOTES" ]; then
+            echo "::error::updates.json has no changelog entry for [\"$MINECRAFT_VERSION\"][\"$MOD_VERSION\"]"
+            exit 1
+          fi
+
+          if [ "$RELEASE_TYPE" = "release" ] && [ "$RECOMMENDED" != "$MOD_VERSION" ]; then
+            echo "::error::updates.json promos.${MINECRAFT_VERSION}-recommended is '$RECOMMENDED', expected '$MOD_VERSION' for a release build"
+            exit 1
+          fi
+
       - name: Extract this version's changelog section
         id: changelog
         run: |

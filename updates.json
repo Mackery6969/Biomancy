@@ -1,0 +1,10 @@
+{
+  "homepage": "https://modrinth.com/project/biomancy-port",
+  "1.21.1": {
+    "2.9.8.1": "Initial release."
+  },
+  "promos": {
+    "1.21.1-latest": "2.9.8.1",
+    "1.21.1-recommended": "2.9.8.1"
+  }
+}
