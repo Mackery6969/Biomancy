@@ -142,9 +142,9 @@ configurations {
 }
 
 dependencies {
-	api("org.jspecify:jspecify:1.0.0")
-	datagenCompileOnly("org.jspecify:jspecify:1.0.0")
-	api('org.jetbrains:annotations:26.0.2-1')
+	api("org.jspecify:jspecify:1.0.1")
+	datagenCompileOnly("org.jspecify:jspecify:1.0.1")
+	api('org.jetbrains:annotations:26.1.0')
 
 	//https://h2database.com/html/mvstore.html
 	implementation(jarJar("com.h2database:h2-mvstore") {
@@ -153,7 +153,7 @@ dependencies {
 			prefer '2.3.232'
 		}
 	})
-	additionalRuntimeClasspath "com.h2database:h2-mvstore:2.3.232"
+	additionalRuntimeClasspath "com.h2database:h2-mvstore:2.5.250"
 
 	// Geckolib
 	implementation("software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}")
