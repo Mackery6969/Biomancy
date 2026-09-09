@@ -56,11 +56,6 @@ public final class PehkuiIntegration {
 			float modifierAmount = targetScale - DEFAULT_SCALE;
 			if (modifierAmount != 0f) {
 				healthAttribute.addTransientModifier(new AttributeModifier(HEALTH_MODIFIER_ID, modifierAmount, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
-
-				float maxHealth = livingEntity.getMaxHealth();
-				if (livingEntity.getHealth() > maxHealth) {
-					livingEntity.setHealth(maxHealth); //TODO: remove in Minecraft 1.21
-				}
 			}
 		}
 	}
