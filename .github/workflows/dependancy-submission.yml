@@ -3,8 +3,7 @@ name: Dependency Submission
 on:
   push:
     branches:
-      - main
-      - "1.21.1"
+      - mc1.21.1/neoforge
 
   workflow_dispatch:
 
@@ -19,7 +18,12 @@ jobs:
   submit:
     name: Submit Gradle Dependencies
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
+
+    env:
+      ALEXS_CAVES_REPO: https://github.com/Raguto/AlexsCaves-1.21.1.git
+      ALEXS_CAVES_COMMIT: d2a7b05998d85e602d86c4999e53340fb1ee9b06
+      ALEXS_CAVES_DIR: ${{ runner.temp }}/AlexsCaves-1.21.1
 
     steps:
       - name: Checkout repository
@@ -31,5 +35,25 @@ jobs:
           java-version: "21"
           distribution: temurin
 
+      - name: Cache Alex's Caves build output
+        id: alexs-caves-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.ALEXS_CAVES_DIR }}/mcmodsrepo
+          key: alexs-caves-mcmodsrepo-${{ runner.os }}-${{ env.ALEXS_CAVES_COMMIT }}
+
+      - name: Build Alex's Caves from source
+        if: steps.alexs-caves-cache.outputs.cache-hit != 'true'
+        run: |
+          git init -q "$ALEXS_CAVES_DIR"
+          cd "$ALEXS_CAVES_DIR"
+          git remote add origin "$ALEXS_CAVES_REPO"
+          git fetch -q --depth 1 origin "$ALEXS_CAVES_COMMIT"
+          git checkout -q FETCH_HEAD
+          chmod +x gradlew
+          ./gradlew publish --no-daemon
+
       - name: Submit dependency graph
         uses: gradle/actions/dependency-submission@v6
+        with:
+          additional-arguments: -Palexs_caves_repo=${{ env.ALEXS_CAVES_DIR }}/mcmodsrepo

@@ -4,7 +4,7 @@ updates:
   # Dependencies for the newest supported Minecraft version
   - package-ecosystem: "gradle"
     directory: "/"
-    target-branch: "main"
+    target-branch: "mc1.21.1/neoforge"
 
     schedule:
       interval: "weekly"
@@ -42,7 +42,7 @@ updates:
 
   - package-ecosystem: "github-actions"
     directory: "/"
-    target-branch: "main"
+    target-branch: "mc1.21.1/neoforge"
 
     schedule:
       interval: "weekly"
