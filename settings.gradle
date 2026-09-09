@@ -23,14 +23,18 @@ plugins {
 	id 'net.neoforged.moddev.repositories'
 }
 
+def alexsCavesRepoPath = providers.gradleProperty("alexs_caves_repo")
+		.getOrElse("${rootDir}/../AlexsCaves-1.21.1/mcmodsrepo")
+def alexsCavesRepoUrl = alexsCavesRepoPath.startsWith("file:") ? alexsCavesRepoPath : new File(alexsCavesRepoPath).toURI().toString()
+
 dependencyResolutionManagement {
 	repositoriesMode = RepositoriesMode.PREFER_SETTINGS
 //	rulesMode = RulesMode.FAIL_ON_PROJECT_RULES
 
 	repositories {
 		maven {
-			name = "Alex's Caves (local checkout)"
-			url = uri("file:///D:/Programs/GitHub/AlexsCaves-1.21.1/mcmodsrepo")
+			name = "Alex's Caves (source build)"
+			url = uri(alexsCavesRepoUrl)
 			content {
 				includeGroup("com.github.alexthe668")
 			}

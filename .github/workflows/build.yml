@@ -36,8 +36,19 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
 
+      - name: Build Alex's Caves from source
+        run: |
+          mkdir -p "${{ runner.temp }}/alexscaves"
+          cd "${{ runner.temp }}/alexscaves"
+          git init -q
+          git remote add origin https://github.com/Raguto/AlexsCaves-1.21.1.git
+          git fetch -q --depth 1 origin d2a7b05998d85e602d86c4999e53340fb1ee9b06
+          git checkout -q FETCH_HEAD
+          chmod +x gradlew
+          ./gradlew publish --no-daemon
+
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build "-Palexs_caves_repo=${{ runner.temp }}/alexscaves/mcmodsrepo"
 
       - name: Compute artifact name
         id: artifact
