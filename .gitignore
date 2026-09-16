@@ -29,6 +29,9 @@ build
 /src/generated/resources/.wiki_data/
 /src/generated/resources/.wiki_content/
 
+# local maven publish target
+repo
+
 # other
 run
 runs

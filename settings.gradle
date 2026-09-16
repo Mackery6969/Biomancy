@@ -131,3 +131,5 @@ dependencyResolutionManagement {
 		}
 	}
 }
+
+rootProject.name = 'Biomancy'
