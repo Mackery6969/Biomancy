@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "sons_of_sins"
+    }
+  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_block_of_slime_rear": {

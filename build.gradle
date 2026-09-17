@@ -150,7 +150,7 @@ dependencies {
 	implementation(jarJar("com.h2database:h2-mvstore") {
 		version {
 			strictly '[2.3.230,3.0.0)'
-			prefer '2.3.232'
+			prefer '2.5.250'
 		}
 	})
 	additionalRuntimeClasspath "com.h2database:h2-mvstore:2.5.250"

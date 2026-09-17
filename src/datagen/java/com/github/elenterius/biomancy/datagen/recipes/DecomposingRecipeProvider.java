@@ -597,7 +597,7 @@ public class DecomposingRecipeProvider extends RecipeProvider {
 				.addOutput(ModItems.BILE.get(), 1, 2)
 				.unlockedBy(SonsOfSinsModItems.SLIME_REAR.get()).save(recipeOutput);
 
-		DecomposingRecipeBuilder.create().setIngredient(SonsOfSinsModItems.BLOCK_OF_SLIME_REAR.get())
+		sonsOfSinsRecipe().setIngredient(SonsOfSinsModItems.BLOCK_OF_SLIME_REAR.get())
 				.addExtraCraftingCost(3)
 				.addOutput(ModItems.REGENERATIVE_FLUID.get(), 2 * 9, 3 * 9)
 				.addOutput(ModItems.BILE.get(), 10, 18)
