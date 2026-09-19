@@ -467,11 +467,41 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 			return Blocks.AIR.defaultBlockState();
 		}
 
-		if (hasFace(state, direction) && !canVeinsAttachTo(level, direction, neighborPos, neighborState)) {
-			return removeFace(state, getFaceProperty(direction));
+		BlockState result = state;
+		for (Direction face : DIRECTIONS) {
+			if (!hasFace(result, face))
+				continue;
+
+			BlockPos supportPos = currentPos.relative(face);
+			BlockState supportState = face == direction ? neighborState : level.getBlockState(supportPos);
+
+			if (!canVeinsAttachTo(level, face, supportPos, supportState)) {
+				result = removeFace(result, getFaceProperty(face));
+				if (result.isAir())
+					return result;
+			}
 		}
 
-		return state;
+		return result;
+	}
+
+	@Nullable
+	protected static BlockState trimUnsupportedFaces(BlockGetter level, BlockPos pos, BlockState state) {
+		BlockState result = state;
+
+		for (Direction face : DIRECTIONS) {
+			if (!hasFace(result, face))
+				continue;
+
+			BlockPos supportPos = pos.relative(face);
+			if (!canVeinsAttachTo(level, face, supportPos, level.getBlockState(supportPos))) {
+				result = removeFace(result, getFaceProperty(face));
+				if (result.isAir())
+					return null;
+			}
+		}
+
+		return result;
 	}
 
 	@Override
@@ -562,8 +592,22 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 
 	@Override
 	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-		if (level.random.nextFloat() >= 0.5f) return;
-		if (!level.isAreaLoaded(pos, 2)) return;
+		if (!level.isAreaLoaded(pos, 2))
+			return;
+
+		// catches veins left floating by anything that skipped our shape update
+		BlockState supported = trimUnsupportedFaces(level, pos, state);
+		if (supported == null) {
+			level.destroyBlock(pos, true);
+			return;
+		}
+		if (supported != state) {
+			level.setBlock(pos, supported, Block.UPDATE_ALL);
+			state = supported;
+		}
+
+		if (level.random.nextFloat() >= 0.5f)
+			return;
 
 		PrimalEnergyHandler energyHandler = null;
 		MoundShape mound = null;
