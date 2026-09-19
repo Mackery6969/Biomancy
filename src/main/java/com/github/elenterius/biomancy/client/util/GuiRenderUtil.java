@@ -37,14 +37,25 @@ public final class GuiRenderUtil {
 	}
 
 	public static void drawAttackIndicator(GuiGraphics guiGraphics, int x, int y, float pct) {
+		RenderSystem.enableBlend();
 		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+
 		guiGraphics.blit(GUI_ICONS_TEXTURE, x, y, 36, 94, 16, 4);
 		guiGraphics.blit(GUI_ICONS_TEXTURE, x, y, 52, 94, (int) (pct * 17f), 4);
+
+		RenderSystem.defaultBlendFunc();
+		RenderSystem.disableBlend();
 	}
 
+	/** Same restore requirement as {@link #drawAttackIndicator}. */
 	public static void drawSquareProgressBar(GuiGraphics guiGraphics, int centerX, int centerY, int blitOffset, int radius, float pct) {
+		RenderSystem.enableBlend();
 		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+
 		drawSquareProgressBar(guiGraphics, centerX, centerY, radius, blitOffset, pct, 0xFF_FFFFFF);
+
+		RenderSystem.defaultBlendFunc();
+		RenderSystem.disableBlend();
 	}
 
 	private static void drawSquareProgressBar(GuiGraphics guiGraphics, int centerX, int centerY, int radius, int blitOffset, float pct, int argbColor) {

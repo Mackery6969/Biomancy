@@ -11,6 +11,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.MultifaceBlock;
@@ -137,6 +139,33 @@ public final class RandomTickGameTests {
 				helper.fail("aim check threw for " + direction + ": " + e, origin);
 				return;
 			}
+		}
+
+		helper.succeed();
+	}
+
+	@GameTest(template = TEMPLATE, timeoutTicks = 600)
+	public static void veinsEatDroppedMeatWithoutCrashing(GameTestHelper helper) {
+		prepareGround(helper);
+		BlockPos pos = new BlockPos(PLATFORM_SIZE / 2, SURFACE_Y, PLATFORM_SIZE / 2);
+
+		BlockState veins = ModBlocks.MALIGNANT_FLESH_VEINS.get().defaultBlockState()
+				.setValue(MultifaceBlock.getFaceProperty(Direction.DOWN), true);
+		veins = ModBlockProperties.CHARGE.setValue(veins, 0);
+		helper.setBlock(pos, veins);
+
+		ItemEntity item = helper.spawnItem(Items.BEEF, pos);
+
+		try {
+			helper.getBlockState(pos).entityInside(helper.getLevel(), helper.absolutePos(pos), item);
+		} catch (Exception e) {
+			helper.fail("veins eating a dropped item threw: " + e, pos);
+			return;
+		}
+
+		if (ModBlockProperties.CHARGE.getValue(helper.getBlockState(pos)) <= 0) {
+			helper.fail("veins ate the item but gained no charge", pos);
+			return;
 		}
 
 		helper.succeed();

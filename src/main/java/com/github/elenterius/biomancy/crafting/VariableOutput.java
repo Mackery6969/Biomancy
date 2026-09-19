@@ -129,10 +129,27 @@ public class VariableOutput {
 	}
 
 	public static VariableOutput deserialize(JsonObject jsonObject) {
-		ResourceLocation id = ResourceLocation.parse(GsonHelper.getAsString(jsonObject, "item"));
+		String itemId;
+		if (jsonObject.has("item")) {
+			itemId = GsonHelper.getAsString(jsonObject, "item");
+		} else if (jsonObject.has("id")) {
+			itemId = GsonHelper.getAsString(jsonObject, "id");
+		} else {
+			throw new JsonParseException("Result is missing an item id (expected 'item' or 'id') in: " + jsonObject);
+		}
+
+		ResourceLocation id = ResourceLocation.parse(itemId);
 		Item item = BuiltInRegistries.ITEM.get(id);
-		ItemCountRange countRange = ItemCountRange.fromJson(GsonHelper.getAsJsonObject(jsonObject, "countRange"));
-		if (item == Items.AIR) throw new JsonParseException("Result can't be Empty");
+		if (item == Items.AIR)
+			throw new JsonParseException("Result item '" + itemId + "' is not registered");
+
+		ItemCountRange countRange;
+		if (jsonObject.has("countRange")) {
+			countRange = ItemCountRange.fromJson(GsonHelper.getAsJsonObject(jsonObject, "countRange"));
+		} else {
+			countRange = new ItemCountRange.ConstantValue(GsonHelper.getAsInt(jsonObject, "count", 1));
+		}
+
 		return new VariableOutput(item, countRange);
 	}
 
