@@ -1,12 +1,13 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/biomancy-port",
   "1.21.1": {
+    "2.9.8.4": "Fixed a crash related to how Lithium handled fluids.\nFixed the durability meter of the gunblade to properly display.\nFixed a crash related to the flesh veins.",
     "2.9.8.3": "Fixed the primordial cradle not being able to replace any blocks or spread to any blocks in the world.",
     "2.9.8.2": "Added support for Bio-Factory; a create mod addon.",
     "2.9.8.1": "Initial release."
   },
   "promos": {
-    "1.21.1-latest": "2.9.8.3",
-    "1.21.1-recommended": "2.9.8.3"
+    "1.21.1-latest": "2.9.8.4",
+    "1.21.1-recommended": "2.9.8.4"
   }
 }
