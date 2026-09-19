@@ -88,9 +88,6 @@ neoForge {
 			systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
 		}
 
-		// This run config launches GameTestServer and runs all registered game tests, then exits.
-		// By default, the server will crash when no game tests are provided.
-		// The game test system is also enabled by default for other run configs under the /test command.
 		gameTestServer {
 			type = "gameTestServer"
 			gameDirectory = project.file('runs/game-test')
@@ -173,6 +170,10 @@ dependencies {
 
 	// Sable API for optional block physics support
 	compileOnly("dev.ryanhcode.sable:sable-common-${minecraft_version}:${sable_version}") {
+		transitive = false
+	}
+	// Sable.HELPER's type lives in the companion artifact
+	compileOnly("dev.ryanhcode.sable-companion:sable-companion-common-${minecraft_version}:${sable_companion_version}") {
 		transitive = false
 	}
 

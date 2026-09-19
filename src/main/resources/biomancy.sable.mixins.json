@@ -8,6 +8,7 @@
   "mixins": [
     "FleshVeinsBlockMixin",
     "JumpPadBlockMixin",
+    "MalignantFleshSpreaderConfigMixin",
     "SplatterBlockMixin",
     "WaterGelBlockMixin"
   ],
