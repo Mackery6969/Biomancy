@@ -39,6 +39,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -549,6 +550,11 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 	static int getRawMeatNutrition(ItemStack itemStack) {
 		FoodProperties food = itemStack.get(DataComponents.FOOD);
 		return food != null && itemStack.is(ModItemTags.FRESH_RAW_MEATS) ? food.nutrition() : 0;
+	}
+
+	@Override
+	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+		tick(state, level, pos, random);
 	}
 
 	@Override

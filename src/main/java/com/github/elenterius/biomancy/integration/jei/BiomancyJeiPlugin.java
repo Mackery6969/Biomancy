@@ -77,7 +77,7 @@ public class BiomancyJeiPlugin implements IModPlugin {
 	private static List<RecipeHolder<CraftingRecipe>> wrapAsRecipeHolders(String category, List<CraftingRecipe> recipes) {
 		List<RecipeHolder<CraftingRecipe>> holders = new ArrayList<>(recipes.size());
 		for (int i = 0; i < recipes.size(); i++) {
-			holders.add(new RecipeHolder<>(BiomancyMod.rl("jei/" + category + "/" + i), recipes.get(i)));
+			holders.add(new RecipeHolder<>(BiomancyMod.rl("/jei/" + category + "/" + i), recipes.get(i)));
 		}
 		return holders;
 	}

@@ -56,7 +56,10 @@ public final class DigestingRecipes {
 			StaticDigestingRecipe recipe = new StaticDigestingRecipe(result, craftingTimeTicks, craftingCostNutrients, ingredient);
 
 			String suffix = BuiltInRegistries.ITEM.getKey(ingredientItem.getItem()).toLanguageKey();
-			staticRecipes.add(new RecipeHolder<>(recipeId.withSuffix("_jei_" + suffix), recipe));
+
+			ResourceLocation id = ResourceLocation.fromNamespaceAndPath(
+					recipeId.getNamespace(), "/" + recipeId.getPath() + "_jei_" + suffix);
+			staticRecipes.add(new RecipeHolder<>(id, recipe));
 		}
 
 		return staticRecipes;
