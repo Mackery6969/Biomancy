@@ -48,7 +48,7 @@ public interface ItemCountRange {
 					return available.serializer;
 				}
 			}
-			throw new IllegalArgumentException("Invalid Type: " + type);
+			throw new IllegalArgumentException("Unknown count range type '" + type + "' (expected one of: constant, uniform, binomial)");
 		}
 
 		public static RangeSerializer<? extends ItemCountRange> getSerializer(byte id) {
@@ -87,6 +87,9 @@ public interface ItemCountRange {
 	}
 
 	static ItemCountRange fromJson(JsonObject jsonObject) {
+		if (!jsonObject.has("type")) {
+			throw new IllegalArgumentException("Count range is missing its 'type' field, got: " + jsonObject);
+		}
 		String type = GsonHelper.getAsString(jsonObject, "type");
 		return RangeSerializerType.getSerializer(type).fromJson(jsonObject);
 	}

@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.crafting.recipe;
 
+import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.crafting.IngredientStack;
 import com.github.elenterius.biomancy.crafting.VariableOutput;
 import com.github.elenterius.biomancy.menu.BioForgeTab;
@@ -106,7 +107,10 @@ public final class RecipeUtil {
 					return DataResult.success(Pair.of(decoder.apply(json.getAsJsonObject()), ops.empty()));
 				}
 				catch (Exception ex) {
-					return DataResult.error(ex::getMessage);
+					String reason = ex.getMessage() != null ? ex.getMessage() : ex.toString();
+					String message = reason + " | offending json: " + input;
+					BiomancyMod.LOGGER.error("Failed to parse recipe element: {}", message);
+					return DataResult.error(() -> message);
 				}
 			}
 

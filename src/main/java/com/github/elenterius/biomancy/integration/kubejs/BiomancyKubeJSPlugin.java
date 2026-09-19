@@ -110,23 +110,7 @@ public class BiomancyKubeJSPlugin implements KubeJSPlugin {
 	}
 
 	private static <T> Codec<T> jsonBridgeCodec(java.util.function.Function<T, JsonObject> encoder, java.util.function.Function<JsonObject, T> decoder) {
-		return new Codec<>() {
-			@Override
-			public <O> DataResult<Pair<T, O>> decode(DynamicOps<O> ops, O input) {
-				try {
-					var json = ops.convertTo(JsonOps.INSTANCE, input);
-					return DataResult.success(Pair.of(decoder.apply(json.getAsJsonObject()), ops.empty()));
-				}
-				catch (Exception ex) {
-					return DataResult.error(ex::getMessage);
-				}
-			}
-
-			@Override
-			public <O> DataResult<O> encode(T input, DynamicOps<O> ops, O prefix) {
-				return DataResult.success(JsonOps.INSTANCE.convertTo(ops, encoder.apply(input)));
-			}
-		};
+		return RecipeUtil.jsonBridgeCodec(encoder::apply, decoder::apply);
 	}
 
 	interface RecipeKeys {

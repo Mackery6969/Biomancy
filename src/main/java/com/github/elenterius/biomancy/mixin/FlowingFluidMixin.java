@@ -1,5 +1,7 @@
 package com.github.elenterius.biomancy.mixin;
 
+import com.github.elenterius.biomancy.block.veins.FleshVeinsBlock;
+import com.github.elenterius.biomancy.fluid.AcidFluid;
 import com.github.elenterius.biomancy.init.tags.ModBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,6 +32,11 @@ public abstract class FlowingFluidMixin extends Fluid {
 	@Inject(method = "canPassThrough", at = @At(value = "HEAD"), cancellable = true)
 	private void onCanPassThrough(BlockGetter level, Fluid fluid, BlockPos fromPos, BlockState fromBlockState, Direction direction, BlockPos toPos, BlockState toBlockState, FluidState toFluidState, CallbackInfoReturnable<Boolean> cir) {
 		if (biomancy$isLavaFluid() && toBlockState.is(ModBlockTags.LAVA_DESTRUCTIBLE)) {
+			cir.setReturnValue(true);
+			return;
+		}
+
+		if ((Object) this instanceof AcidFluid && toBlockState.getBlock() instanceof FleshVeinsBlock) {
 			cir.setReturnValue(true);
 		}
 	}

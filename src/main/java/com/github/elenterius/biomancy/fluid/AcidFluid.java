@@ -27,11 +27,6 @@ public abstract class AcidFluid extends BaseFlowingFluid {
 	}
 
 	@Override
-	public boolean canPassThrough(BlockGetter level, Fluid fluid, BlockPos fromPos, BlockState fromBlockState, Direction direction, BlockPos toPos, BlockState toBlockState, FluidState toFluidState) {
-		return toBlockState.getBlock() instanceof FleshVeinsBlock || super.canPassThrough(level, fluid, fromPos, fromBlockState, direction, toPos, toBlockState, toFluidState);
-	}
-
-	@Override
 	protected boolean canSpreadTo(BlockGetter level, BlockPos fromPos, BlockState fromBlockState, Direction direction, BlockPos toPos, BlockState toBlockState, FluidState toFluidState, Fluid fluid) {
 		return toBlockState.getBlock() instanceof FleshVeinsBlock || super.canSpreadTo(level, fromPos, fromBlockState, direction, toPos, toBlockState, toFluidState, fluid);
 	}
