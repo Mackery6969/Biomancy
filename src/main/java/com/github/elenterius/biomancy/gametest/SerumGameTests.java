@@ -79,6 +79,40 @@ public final class SerumGameTests {
 		helper.succeed();
 	}
 
+	@GameTest(template = TEMPLATE, timeoutTicks = 400)
+	public static void absorptionSerumGrantsHeartsOnTheFirstInjection(GameTestHelper helper) {
+		prepareGround(helper);
+
+		LivingEntity target = helper.spawnWithNoFreeWill(EntityType.ZOMBIE,
+				new BlockPos(PLATFORM_SIZE / 2, SURFACE_Y, PLATFORM_SIZE / 2));
+		AbsorptionSerum serum = ModSerums.ABSORPTION_BOOST.get();
+
+		float afterFirst = 0f;
+		for (int injection = 1; injection <= 3; injection++) {
+			serum.affectEntity(helper.getLevel(), new CompoundTag(), null, target);
+
+			float immediately = target.getAbsorptionAmount();
+			for (int t = 0; t < 5; t++) {
+				target.tick();
+			}
+			float afterTicks = target.getAbsorptionAmount();
+
+			BiomancyMod.LOGGER.info("ABSORPTION injection {}: immediately={} afterTicks={} maxAbsorptionAttr={}",
+					injection, immediately, afterTicks, target.getAttributeValue(Attributes.MAX_ABSORPTION));
+
+			if (injection == 1)
+				afterFirst = afterTicks;
+		}
+
+		if (afterFirst <= 0f) {
+			helper.fail("first injection left absorption at " + afterFirst + " (max_absorption="
+					+ target.getAttributeValue(Attributes.MAX_ABSORPTION) + ")");
+			return;
+		}
+
+		helper.succeed();
+	}
+
 	private static void prepareGround(GameTestHelper helper) {
 		for (int x = 0; x < PLATFORM_SIZE; x++) {
 			for (int z = 0; z < PLATFORM_SIZE; z++) {

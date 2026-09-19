@@ -2,6 +2,7 @@ package com.github.elenterius.biomancy.datagen.recipes;
 
 import com.github.elenterius.biomancy.datagen.recipes.builder.BioBrewingRecipeBuilder;
 import com.github.elenterius.biomancy.init.ModItems;
+import com.github.elenterius.biomancy.integration.ModsCompatHandler;
 import net.minecraft.data.PackOutput;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -128,6 +129,7 @@ public class BioBrewingRecipeProvider extends RecipeProvider {
 				.unlockedBy(ModItems.GENETIC_COMPOUND.get()).save(recipeOutput);
 
 		BioBrewingRecipeBuilder.create(ModItems.ENLARGEMENT_SERUM.get())
+				.ifModLoaded(ModsCompatHandler.PEHKUI_MOD_ID)
 				.addIngredient(ModItems.NUTRIENT_PASTE.get())
 				.addIngredient(ModItems.HORMONE_SECRETION.get())
 				.addIngredient(ModItems.HEALING_ADDITIVE.get())
@@ -137,6 +139,7 @@ public class BioBrewingRecipeProvider extends RecipeProvider {
 				.unlockedBy(ModItems.GENETIC_COMPOUND.get()).save(recipeOutput);
 
 		BioBrewingRecipeBuilder.create(ModItems.SHRINKING_SERUM.get())
+				.ifModLoaded(ModsCompatHandler.PEHKUI_MOD_ID)
 				.addIngredient(ModItems.EXOTIC_DUST.get())
 				.addIngredient(ModItems.HEALING_ADDITIVE.get())
 				.addIngredient(ModItems.DECAYING_ADDITIVE.get())
