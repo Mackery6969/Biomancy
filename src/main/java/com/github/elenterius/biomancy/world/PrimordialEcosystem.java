@@ -1,5 +1,10 @@
 package com.github.elenterius.biomancy.world;
 
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.IntSupplier;
+import java.util.function.Supplier;
+
 import com.github.elenterius.biomancy.block.base.DirectionalSlabBlock;
 import com.github.elenterius.biomancy.block.property.DirectionalSlabType;
 import com.github.elenterius.biomancy.block.veins.FleshVeinsBlock;
@@ -11,7 +16,12 @@ import com.github.elenterius.biomancy.init.ModSoundEvents;
 import com.github.elenterius.biomancy.init.tags.ModBlockTags;
 import com.github.elenterius.biomancy.util.LevelUtil;
 import com.github.elenterius.biomancy.util.MobUtil;
-import com.github.elenterius.biomancy.util.random.*;
+import com.github.elenterius.biomancy.util.random.CellularNoise;
+import com.github.elenterius.biomancy.util.random.CellularNoiseProvider;
+import com.github.elenterius.biomancy.util.random.CellularNoiseWithDomainWarp;
+import com.github.elenterius.biomancy.util.random.FastNoiseLite;
+import com.github.elenterius.biomancy.util.random.Noise;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -26,11 +36,6 @@ import net.minecraft.world.item.context.DirectionalPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.MultifaceSpreader;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.IntSupplier;
-import java.util.function.Supplier;
 
 public final class PrimordialEcosystem {
 
@@ -219,48 +224,19 @@ public final class PrimordialEcosystem {
 
 		boolean hasPlacedVeins = false;
 
-		if (state.is(veinsBlock)) {
-			for (int i = 0; i < 4; i++) {
-				if (random.nextFloat() < 0.6f) {
-					Optional<MultifaceSpreader.SpreadPos> spreadPos = veinsBlock.getSpreader().spreadFromRandomFaceTowardRandomDirection(state, level, pos, random);
-					if (spreadPos.isPresent()) hasPlacedVeins = true;
-				}
+		for (int i = 0; i < 4; i++) {
+			if (random.nextFloat() < 0.6f) {
+				Optional<MultifaceSpreader.SpreadPos> spreadPos = veinsBlock.getSpreader()
+						.spreadFromRandomFaceTowardRandomDirection(state, level, pos, random);
+				if (spreadPos.isPresent())
+					hasPlacedVeins = true;
 			}
-		}
-		else {
-			hasPlacedVeins = seedMalignantVeinsFromBlock(level, pos, veinsBlock, chargeSupplier, random);
 		}
 
 		increaseMalignantVeinsChargeAroundPos(level, pos, chargeSupplier);
 		return hasPlacedVeins;
 	}
 
-	private static boolean seedMalignantVeinsFromBlock(ServerLevel level, BlockPos sourcePos, FleshVeinsBlock veinsBlock, IntSupplier chargeSupplier, RandomSource random) {
-		boolean hasPlacedVeins = false;
-		int visitedDirections = 0;
-
-		for (int i = 0; i < DIRECTIONS.length; i++) {
-			int directionIndex;
-			do {
-				directionIndex = random.nextInt(DIRECTIONS.length);
-			} while ((visitedDirections & (1 << directionIndex)) != 0);
-			visitedDirections |= 1 << directionIndex;
-
-			if (random.nextFloat() >= 0.6f) continue;
-
-			Direction direction = DIRECTIONS[directionIndex];
-			BlockPos targetPos = sourcePos.relative(direction);
-			BlockState targetState = level.getBlockState(targetPos);
-			BlockState stateForPlacement = veinsBlock.getStateForPlacement(targetState, level, targetPos, direction.getOpposite(), chargeSupplier.getAsInt());
-
-			if (stateForPlacement != null) {
-				level.setBlock(targetPos, stateForPlacement, Block.UPDATE_CLIENTS);
-				hasPlacedVeins = true;
-			}
-		}
-
-		return hasPlacedVeins;
-	}
 
 	public static int increaseMalignantVeinsChargeAroundPos(ServerLevel level, BlockPos pos, IntSupplier chargeSupplier) {
 		FleshVeinsBlock veinsBlock = ModBlocks.MALIGNANT_FLESH_VEINS.get();
