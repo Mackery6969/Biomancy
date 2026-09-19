@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.9.8.5] - 2026-09-19
+
+### Added
+
+- Added more interaction with the Sable sublevels, allowing for spreading on a sublevel to branch out to nearby blocks and other sublevels.
+
 ## [2.9.8.4] - 2026-09-19
 
 ### Fixed
