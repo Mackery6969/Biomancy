@@ -64,6 +64,18 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build "-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo"
 
+      - name: Stage the Maven tree
+        run: ./gradlew publish "-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo"
+
+      - name: Upload the staged tree
+        uses: actions/upload-artifact@v7
+        with:
+          name: maven-staging
+          path: repo/
+          if-no-files-found: error
+          retention-days: 1
+
+
       - name: Read mod version
         id: meta
         run: |
@@ -199,3 +211,13 @@ jobs:
           modrinth-id: ${{ vars.MODRINTH_PROJECT_ID }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           modrinth-dependencies: ${{ vars.MODRINTH_DEPENDENCIES }}
+
+  maven:
+    name: Publish to maven.mackery.com
+    needs: release
+    uses: Mackery6969/Maven/.github/workflows/publish.yml@main
+    with:
+      artifact: maven-staging
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
