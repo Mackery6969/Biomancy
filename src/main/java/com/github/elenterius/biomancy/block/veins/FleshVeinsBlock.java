@@ -536,12 +536,15 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 
 			int optimalAmount = Mth.ceil((CHARGE.getMax() - (float) charge) / nutrition);
 			int amount = Math.min(stack.getCount(), optimalAmount);
+
+			ItemStack eatenStack = stack.copyWithCount(1);
 			stack.shrink(amount);
 			charge += amount * nutrition;
 			setCharge(level, pos, state, charge);
 
 			Vec3 motion = new Vec3((level.random.nextFloat() - 0.5d) * 0.1d, level.random.nextFloat() * 0.1d + 0.15d, (level.random.nextFloat() - 0.5d) * 0.1d);
-			((ServerLevel) level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack), itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), 8, motion.x, motion.y, motion.z, 0.05f);
+			((ServerLevel) level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, eatenStack),
+					itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), 8, motion.x, motion.y, motion.z, 0.05f);
 
 			level.playSound(null, pos, ModSoundEvents.DECOMPOSER_EAT.get(), SoundSource.BLOCKS, 0.6f, 0.15f + level.random.nextFloat() * 0.5f);
 		}
