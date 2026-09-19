@@ -12,12 +12,18 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class SpreadingMembraneBlock extends MembraneBlock {
 
 	public SpreadingMembraneBlock(Properties properties, IgnoreEntityCollisionPredicate predicate) {
 		super(properties.randomTicks(), predicate);
+	}
+
+	@Override
+	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+		tick(state, level, pos, random);
 	}
 
 	@Override
