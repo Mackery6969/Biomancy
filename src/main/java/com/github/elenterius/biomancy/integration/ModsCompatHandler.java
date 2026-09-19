@@ -16,6 +16,8 @@ import org.apache.logging.log4j.MarkerManager;
 
 public final class ModsCompatHandler {
 
+	public static final String PEHKUI_MOD_ID = "pehkui";
+
 	static final Marker LOG_MARKER = MarkerManager.getMarker(ModsCompatHandler.class.getSimpleName());
 
 	static PehkuiHelper PEHKUI_HELPER = PehkuiHelper.EMPTY;
@@ -24,7 +26,7 @@ public final class ModsCompatHandler {
 	private ModsCompatHandler() {}
 
 	public static void onBiomancyInit(final IEventBus eventBus) {
-		if (ModList.get().isLoaded("pehkui")) {
+		if (isPehkuiLoaded()) {
 			BiomancyMod.LOGGER.info(LOG_MARKER, "Initializing Pehkui Integration...");
 			PehkuiIntegration.init(helper -> PEHKUI_HELPER = helper);
 		}
@@ -65,6 +67,10 @@ public final class ModsCompatHandler {
 		//				BiomancyJerPlugin.onClientPostSetup();
 		//			}
 		//		});
+	}
+
+	public static boolean isPehkuiLoaded() {
+		return ModList.get().isLoaded(PEHKUI_MOD_ID);
 	}
 
 	public static PehkuiHelper getPehkuiHelper() {

@@ -4,6 +4,7 @@ import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.client.util.ClientLevelAccess;
 import com.github.elenterius.biomancy.api.livingtool.LivingTool;
 import com.github.elenterius.biomancy.api.serum.SerumContainer;
+import com.github.elenterius.biomancy.integration.ModsCompatHandler;
 import com.github.elenterius.biomancy.crafting.recipe.PotionSerumRecipes;
 import com.github.elenterius.biomancy.item.SerumItem;
 import com.github.elenterius.biomancy.util.ComponentUtil;
@@ -112,7 +113,10 @@ public final class ModCreativeModeTabs {
 					);
 					includeItems.stream().map(DeferredHolder::get).forEachOrdered(output::accept);
 
-					ModItems.findItems(SerumItem.class).forEach(output::accept);
+					// the scale serums do nothing without Pehkui
+					ModItems.findItems(SerumItem.class)
+							.filter(item -> ModsCompatHandler.isPehkuiLoaded() || !isScaleSerum(item))
+							.forEach(output::accept);
 
 					output.accept(PotionContents.createItemStack(Items.POTION, ModPotions.PRIMORDIAL_INFESTATION));
 					output.accept(PotionContents.createItemStack(Items.SPLASH_POTION, ModPotions.PRIMORDIAL_INFESTATION));
@@ -188,6 +192,10 @@ public final class ModCreativeModeTabs {
 
 	private static String translationKey(String name) {
 		return "creative_tab." + BiomancyMod.MOD_ID + "." + name;
+	}
+
+	private static boolean isScaleSerum(Item item) {
+		return item == ModItems.ENLARGEMENT_SERUM.get() || item == ModItems.SHRINKING_SERUM.get();
 	}
 
 }

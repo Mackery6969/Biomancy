@@ -1,5 +1,8 @@
 package com.github.elenterius.biomancy.client.gui;
 
+import org.joml.Matrix4f;
+import org.jspecify.annotations.Nullable;
+
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.api.serum.SerumContainer;
 import com.github.elenterius.biomancy.block.WaterGelBlock;
@@ -17,9 +20,13 @@ import com.github.elenterius.biomancy.styles.TextStyles;
 import com.github.elenterius.biomancy.util.ComponentUtil;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
+
 import net.minecraft.client.Camera;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -39,8 +46,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import org.joml.Matrix4f;
-import org.jspecify.annotations.Nullable;
 
 public final class ScreenOverlays {
 
@@ -111,6 +116,9 @@ public final class ScreenOverlays {
 		guiGraphics.setColor(colorOffset, 1f, 1f, 1f);
 
 		guiGraphics.blit(VIGNETTE, 0, 0, -90, 0f, 0f, screenWidth, screenHeight, screenWidth, screenHeight);
+
+		guiGraphics.setColor(1f, 1f, 1f, 1f);
+		RenderSystem.defaultBlendFunc();
 
 		RenderSystem.disableBlend();
 		RenderSystem.depthMask(true);

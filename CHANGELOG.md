@@ -2,6 +2,15 @@
 
 ## [2.9.8.5] - 2026-09-19
 
+### Fixed
+
+- Fixed the absorption serum from not actually giving any absorption hearts when used.
+- Fixed the frenzy serum from causing the UI to not display properly when used.
+
+### Changed
+
+- Changed it so the growth and shrinking serums will not be obtainable unless Pehkui is installed, as Pekhui is required for the serums to work properly.
+
 ### Added
 
 - Added more interaction with the Sable sublevels, allowing for spreading on a sublevel to branch out to nearby blocks and other sublevels.
