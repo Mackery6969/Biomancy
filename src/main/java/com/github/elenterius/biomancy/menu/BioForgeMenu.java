@@ -291,7 +291,7 @@ public class BioForgeMenu extends PlayerContainerMenu {
 		@Override
 		protected void checkTakeAchievements(ItemStack stack) {
 			if (removeCount > 0) stack.onCraftedBy(player.level(), player, removeCount);
-			//((ResultContainer) container).awardUsedRecipes(player, List.of());
+			resultContainer.awardUsedRecipes(player, List.of(stack));
 			removeCount = 0;
 		}
 
