@@ -5,6 +5,7 @@
 ### Fixed
 
 - Fixed the Primordial Cradle from consuming the wrong items, including non food items, when attempting to feed it.
+- Fixed the structures from not generating properly in the world, they were locatable but not actually generating.
 
 ## [2.9.8.5] - 2026-09-19
 
