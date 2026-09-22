@@ -20,8 +20,9 @@ public class ServerConfig {
 	public ServerConfig(ModConfigSpec.Builder builder) {
 		builder.push("recipes");
 		doBioForgeRecipeProgression = builder
-				.comment("Determines if the BioForge recipes need to be unlocked to be able to craft them")
-				.define("doBioForgeRecipeProgression", true);
+				.comment("Determines if the BioForge recipes need to be unlocked before they can be crafted",
+						"Behaves like the doLimitedCrafting gamerule. Recipes unlock by crafting them or via recipe advancements")
+				.define("doBioForgeRecipeProgression", false);
 		builder.pop();
 
 		builder.push("trades");
