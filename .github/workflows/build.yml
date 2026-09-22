@@ -2,6 +2,19 @@ name: Build
 
 on:
   push:
+    paths-ignore:
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'CODE_OF_CONDUCT.md'
+      - 'docs/**'
+      - 'media/**'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/FUNDING.yaml'
+      - '.github/dependabot.yml'
+      - 'crowdin.yml'
+      - 'updates.json'
+      - '.gitignore'
+      - '.editorconfig'
 
   pull_request:
 
