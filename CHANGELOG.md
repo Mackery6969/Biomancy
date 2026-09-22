@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.9.8.6] - 2026-09-21
+
+### Fixed
+
+- Fixed the Primordial Cradle from consuming the wrong items, including non food items, when attempting to feed it.
+
 ## [2.9.8.5] - 2026-09-19
 
 ### Fixed
@@ -43,6 +49,8 @@
 
 _Initial release._
 
+[2.9.8.6]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.6
+[2.9.8.5]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.5
 [2.9.8.4]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.4
 [2.9.8.3]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.3
 [2.9.8.2]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.2
