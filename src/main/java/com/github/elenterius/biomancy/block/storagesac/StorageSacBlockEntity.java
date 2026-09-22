@@ -12,6 +12,8 @@ import com.github.elenterius.biomancy.util.PlayerInteractionPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -27,6 +29,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
+import net.minecraft.world.item.component.SeededContainerLoot;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
@@ -178,6 +182,58 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 
 		tag.put(INVENTORY_KEY, inventory.serializeNBT(registries));
 		//tag.put(TOP5_BY_COUNT_KEY, serializeTop5()); //serialize for block destruction
+	}
+
+	@Override
+	protected void applyImplicitComponents(DataComponentInput components) {
+		super.applyImplicitComponents(components);
+		Component customName = components.get(DataComponents.CUSTOM_NAME);
+		if (customName != null) setCustomName(customName);
+
+		ItemContainerContents contents = components.get(DataComponents.CONTAINER);
+		if (contents != null) {
+			boolean hasLegacyContents = !inventory.isEmpty();
+			for (int slot = 0; slot < contents.getSlots(); slot++) {
+				ItemStack stack = contents.getStackInSlot(slot);
+				if (!hasLegacyContents && slot < inventory.getSlots()) {
+					inventory.setStackInSlot(slot, stack);
+				}
+				else {
+					// Older sacs can contain both the original NBT inventory and a separate component inventory.
+					ItemStack remainder = ItemHandlerUtil.insertItem(inventory.getRaw(), stack);
+					if (!remainder.isEmpty() && level != null && !level.isClientSide) {
+						Block.popResource(level, worldPosition, remainder);
+					}
+				}
+			}
+			countAllItems();
+		}
+
+		SeededContainerLoot loot = components.get(DataComponents.CONTAINER_LOOT);
+		if (loot != null) setLootTable(loot.lootTable().location(), loot.seed());
+	}
+
+	@Override
+	protected void collectImplicitComponents(DataComponentMap.Builder components) {
+		super.collectImplicitComponents(components);
+		components.set(DataComponents.CUSTOM_NAME, getCustomName());
+		List<ItemStack> items = new ArrayList<>(inventory.getSlots());
+		for (int slot = 0; slot < inventory.getSlots(); slot++) {
+			items.add(inventory.getStackInSlot(slot));
+		}
+		components.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(items));
+		if (lootTableId != null) {
+			components.set(DataComponents.CONTAINER_LOOT, new SeededContainerLoot(ResourceKey.create(Registries.LOOT_TABLE, lootTableId), lootTableSeed));
+		}
+	}
+
+	@Override
+	public void removeComponentsFromTag(CompoundTag tag) {
+		super.removeComponentsFromTag(tag);
+		tag.remove(INVENTORY_KEY);
+		tag.remove("CustomName");
+		tag.remove(LOOT_TABLE_KEY);
+		tag.remove(LOOT_TABLE_SEED_TAG);
 	}
 
 	@Override

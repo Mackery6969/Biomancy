@@ -26,9 +26,9 @@ public record BioLabFilterMessage(int containerId, List<@Nullable ItemStack> fil
 	private static final StreamCodec<RegistryFriendlyByteBuf, @Nullable ItemStack> NULLABLE_ITEM_STACK_STREAM_CODEC = StreamCodec.of(
 			(buffer, stack) -> {
 				buffer.writeBoolean(stack != null);
-				if (stack != null) ItemStack.STREAM_CODEC.encode(buffer, stack);
+				if (stack != null) ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, stack);
 			},
-			buffer -> !buffer.readBoolean() ? null : ItemStack.STREAM_CODEC.decode(buffer)
+			buffer -> !buffer.readBoolean() ? null : ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer)
 	);
 
 	public static final StreamCodec<RegistryFriendlyByteBuf, BioLabFilterMessage> STREAM_CODEC = StreamCodec.composite(

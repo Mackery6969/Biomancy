@@ -131,7 +131,7 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityDa
 			remap = false
 	)
 	private MobEffectInstance onCurePotionEffects(MobEffectInstance effectInstance, @Share("removedFrenzy") LocalRef<MobEffectInstance> removedFrenzyRef) {
-		if (effectInstance.getEffect() == ModMobEffects.FRENZY) {
+		if (effectInstance.getEffect().is(ModMobEffects.FRENZY)) {
 			removedFrenzyRef.set(effectInstance);
 		}
 		return effectInstance;
@@ -152,7 +152,7 @@ public abstract class LivingEntityMixin extends Entity implements LivingEntityDa
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;onEffectRemoved(Lnet/minecraft/world/effect/MobEffectInstance;)V")
 	)
 	private MobEffectInstance onTickEffects(MobEffectInstance effectInstance, @Share("expiredFrenzy") LocalRef<MobEffectInstance> expiredFrenzyRef) {
-		if (effectInstance.getEffect() == ModMobEffects.FRENZY) {
+		if (effectInstance.getEffect().is(ModMobEffects.FRENZY)) {
 			expiredFrenzyRef.set(effectInstance);
 		}
 		return effectInstance;

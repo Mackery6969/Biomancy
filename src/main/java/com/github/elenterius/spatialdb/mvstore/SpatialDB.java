@@ -121,7 +121,8 @@ public class SpatialDB {
 		}
 
 		if (backupDB.isValid()) {
-			if (mainDB.storeVersion == SpatialDBManager.STORE_VERSION && backupDB.storeVersion == SpatialDBManager.STORE_VERSION) {
+			if ((!mainDB.isValid() || mainDB.storeVersion == SpatialDBManager.STORE_VERSION)
+					&& backupDB.storeVersion == SpatialDBManager.STORE_VERSION) {
 				if (!mainDB.isValid() || mainDB.snapshotVersion < backupDB.snapshotVersion) {
 
 					//noinspection DataFlowIssue - already covered by backupDB.isValid()
@@ -289,4 +290,3 @@ public class SpatialDB {
 	}
 
 }
-

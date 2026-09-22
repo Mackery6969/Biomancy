@@ -117,10 +117,11 @@ public class LivingArmorItem extends ArmorItem implements SimpleLivingTool {
 				}
 
 				int remainder = needed % validIndices;
-				for (int i = 0; i < remainder; i++) {
+				for (int i = 0; i < remaining.length && remainder > 0; i++) {
 					if (remaining[i] > 0) {
 						consumed[i] += 1;
 						remaining[i] -= 1;
+						remainder--;
 					}
 				}
 			}

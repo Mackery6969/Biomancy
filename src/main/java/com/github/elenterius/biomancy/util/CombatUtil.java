@@ -60,7 +60,7 @@ public final class CombatUtil {
 			else return false;
 		}
 
-		return equippedTypes.size() == ArmorItem.Type.values().length;
+		return equippedTypes.containsAll(EnumSet.of(ArmorItem.Type.HELMET, ArmorItem.Type.CHESTPLATE, ArmorItem.Type.LEGGINGS, ArmorItem.Type.BOOTS));
 	}
 
 	public static void performWaterAOE(Level level, Entity attacker, double maxDistance) {
