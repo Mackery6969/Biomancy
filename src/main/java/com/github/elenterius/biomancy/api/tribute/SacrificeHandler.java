@@ -1,17 +1,19 @@
 package com.github.elenterius.biomancy.api.tribute;
 
+import java.util.function.Consumer;
+
+import org.jetbrains.annotations.ApiStatus;
+
 import com.github.elenterius.biomancy.api.tribute.fluid.FluidTributeConsumerHandler;
 import com.github.elenterius.biomancy.inventory.Notify;
 import com.github.elenterius.biomancy.util.SaturatedMath;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.ApiStatus;
-
-import java.util.function.Consumer;
 
 @ApiStatus.Internal
 public class SacrificeHandler implements INBTSerializable<CompoundTag> {
@@ -231,6 +233,7 @@ public class SacrificeHandler implements INBTSerializable<CompoundTag> {
 	public boolean addTribute(Tribute tribute) {
 		if (isFull()) return false;
 		if (tribute.isEmpty()) return false;
+		if (tribute == Tributes.WRONG_ITEM) return false; //rejecting incompatible items
 
 		boolean addedBiomass = addBiomass(tribute.biomass());
 		boolean addedLifeEnergy = addLifeEnergy(tribute.lifeEnergy());
