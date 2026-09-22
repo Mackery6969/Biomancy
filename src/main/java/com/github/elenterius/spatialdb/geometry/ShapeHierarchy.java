@@ -23,9 +23,9 @@ public class ShapeHierarchy<T extends Shape> {
 		double aabbMinX = Double.MAX_VALUE;
 		double aabbMinY = Double.MAX_VALUE;
 		double aabbMinZ = Double.MAX_VALUE;
-		double aabbMaxX = Double.MIN_VALUE;
-		double aabbMaxY = Double.MIN_VALUE;
-		double aabbMaxZ = Double.MIN_VALUE;
+		double aabbMaxX = -Double.MAX_VALUE;
+		double aabbMaxY = -Double.MAX_VALUE;
+		double aabbMaxZ = -Double.MAX_VALUE;
 
 		for (T shape : shapes) {
 			AABB boundingBox = shape.getAABB();
@@ -40,7 +40,8 @@ public class ShapeHierarchy<T extends Shape> {
 			addShapeToSections(shape);
 		}
 
-		this.aabb = new AABB(aabbMinX, aabbMinY, aabbMinZ, aabbMaxX, aabbMaxY, aabbMaxZ);
+		this.aabb = sections.isEmpty() ? new AABB(0, 0, 0, 0, 0, 0)
+				: new AABB(aabbMinX, aabbMinY, aabbMinZ, aabbMaxX, aabbMaxY, aabbMaxZ);
 	}
 
 	protected void addShapesToSection(long sectionKey, Collection<T> shapes) {

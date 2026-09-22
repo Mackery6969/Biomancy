@@ -141,7 +141,7 @@ public class ImpalerItem extends LivingGunItem implements ItemTooltipStyleProvid
 				baseInaccuracy -> modifyProjectileInaccuracy(baseInaccuracy, projectileWeapon),
 				projectile -> {
 					if (projectile instanceof ImpalerProjectile impalerProjectile) {
-						impalerProjectile.setPierceLevel(ModEnchantments.getLevel(projectileWeapon, Enchantments.PIERCING));
+						impalerProjectile.setPierceLevel(ModEnchantments.getLevel(projectileWeapon, Enchantments.PIERCING) * 2);
 					}
 				});
 

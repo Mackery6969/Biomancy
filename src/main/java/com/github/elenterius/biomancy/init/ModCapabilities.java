@@ -1,11 +1,10 @@
 package com.github.elenterius.biomancy.init;
 
 import com.github.elenterius.biomancy.BiomancyMod;
-import com.github.elenterius.biomancy.block.storagesac.StorageSacBlockEntity;
 import com.github.elenterius.biomancy.inventory.InjectorItemInventory;
+import com.github.elenterius.biomancy.inventory.StorageSacItemHandler;
 import com.github.elenterius.biomancy.item.injector.InjectorItem;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -14,7 +13,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.items.ComponentItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -38,7 +36,7 @@ public final class ModCapabilities {
 		ModBlockEntities.registerCapabilities(event);
 
 		event.registerItem(ITEM_HANDLER_ITEM, (stack, ctx) ->
-				new ComponentItemHandler(stack, DataComponents.CONTAINER, StorageSacBlockEntity.SLOTS),
+				new StorageSacItemHandler(stack),
 				ModItems.STORAGE_SAC.get());
 
 		event.registerItem(ITEM_HANDLER_ITEM, (stack, ctx) ->
