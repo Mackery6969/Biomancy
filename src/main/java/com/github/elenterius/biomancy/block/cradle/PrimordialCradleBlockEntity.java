@@ -34,6 +34,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -67,6 +68,7 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 	public static final String HIVEMIND_KEY = "Hivemind";
 
 	public static final int DURATION_TICKS = 20 * 4;
+	public static final int REINFORCE_RADIUS = 8;
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -124,6 +126,15 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 		if (wasDormant != hivemind.isDormant()) {
 			syncToClient();
 		}
+	}
+
+	public void reportHazard(BlockPos hazardPos, @Nullable LivingEntity culprit) {
+		if (!isHivemindActive()) return;
+
+		hivemind.onHarmed(hazardPos, primalEnergy);
+		if (culprit != null) hivemind.setThreat(culprit);
+
+		markChunkAsUnsaved();
 	}
 
 	public void feedFromForager(CarriedBiomass carried) {
@@ -358,6 +369,15 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 		if (supplyAmount == PrimalEnergySettings.SupplyAmount.UNLIMITED) return Integer.MAX_VALUE;
 
 		return primalEnergy;
+	}
+
+	@Override
+	public boolean isReinforcing(BlockPos pos) {
+		if (!isHivemindActive()) return false;
+		if (hivemind.getHazardResponse() != PrimordialHivemind.HazardResponse.REINFORCE) return false;
+
+		BlockPos hazardPos = hivemind.getHazardPos();
+		return hazardPos != null && hazardPos.distSqr(pos) <= REINFORCE_RADIUS * REINFORCE_RADIUS;
 	}
 
 	@Override

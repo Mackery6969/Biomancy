@@ -7,6 +7,9 @@ import com.github.elenterius.biomancy.init.ModCapabilities;
 import com.github.elenterius.biomancy.init.ModParticleTypes;
 import com.github.elenterius.biomancy.util.LevelUtil;
 import com.github.elenterius.biomancy.util.MobUtil;
+import com.github.elenterius.biomancy.world.mound.MoundShape;
+import com.github.elenterius.spatialdb.SpatialDBManager;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -46,6 +49,19 @@ public final class HivemindForaging {
 	public static @Nullable PrimordialCradleBlockEntity findHive(Mob mob) {
 		if (!(mob.level() instanceof ServerLevel serverLevel)) return null;
 		return LevelUtil.findNearestBlockEntity(serverLevel, mob.blockPosition(), HIVE_SEARCH_RANGE, PrimordialCradleBlockEntity.class);
+	}
+
+	public static @Nullable PrimordialCradleBlockEntity findHive(ServerLevel level, BlockPos pos) {
+		if (SpatialDBManager.getInstance(level).getClosestShape(level, pos, MoundShape.class::isInstance) instanceof MoundShape moundShape
+				&& level.getBlockEntity(moundShape.getOrigin()) instanceof PrimordialCradleBlockEntity cradle) {
+			return cradle;
+		}
+		return null;
+	}
+
+	public static void reportHazard(ServerLevel level, BlockPos hazardPos, @Nullable LivingEntity culprit) {
+		PrimordialCradleBlockEntity hive = findHive(level, hazardPos);
+		if (hive != null) hive.reportHazard(hazardPos, culprit);
 	}
 
 	public static boolean isHiveHungry(Mob mob) {

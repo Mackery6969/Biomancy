@@ -9,6 +9,7 @@
 - Flesh Blobs hunt animals for the hive, carry the biomass back to the Cradle, and feed it directly. Killing a gorged blob before it gets home denies the hive the meal.
 - Flesh Blobs defend the Cradle from whoever attacks it, and fight back when attacked themselves.
 - A Cradle that starves goes dormant and its flesh recedes. A Cradle that has never been fed stays inert instead, so worldgen structures keep the flesh they generated with.
+- The Cradle reacts to fire, lava and explosions damaging its flesh, and decides what to do about it: a well fed hive grows into the hazard and thickens its flesh into solid blocks to smother it, while a weak hive recoils and grows away from it instead. Whoever lit the fire or set off the explosion is remembered as a threat.
 - Flesh with no Cradle spreads faster and more aggressively than normal, but has nothing sustaining it and dies out once its charge is spent.
 
 
@@ -67,6 +68,7 @@
 
 _Initial release._
 
+[2.9.8.7]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.7
 [2.9.8.6]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.6
 [2.9.8.5]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.5
 [2.9.8.4]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.4

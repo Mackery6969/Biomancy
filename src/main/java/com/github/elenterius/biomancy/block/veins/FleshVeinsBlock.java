@@ -1,5 +1,6 @@
 package com.github.elenterius.biomancy.block.veins;
 
+import com.github.elenterius.biomancy.event.HivemindHazardHandler;
 import com.github.elenterius.biomancy.block.bloom.BloomBlock;
 import com.github.elenterius.biomancy.block.cradle.PrimalEnergyHandler;
 import com.github.elenterius.biomancy.init.*;
@@ -19,6 +20,9 @@ import com.github.elenterius.spatialdb.SpatialDBManager;
 import com.mojang.serialization.MapCodec;
 import com.github.elenterius.spatialdb.geometry.HasRadius;
 import com.github.elenterius.spatialdb.geometry.Shape;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -64,6 +68,7 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 	protected static final EnhancedIntegerProperty CHARGE = ModBlockProperties.CHARGE;
 
 	private static final float FERAL_CONVERSION_BOOST = 1.75f;
+	private static final float REINFORCE_CONVERSION_BOOST = 2.5f;
 	private static final int[] NEIGHBOR_OFFSETS = createNeighborOffsets();
 	private final MultifaceSpreader spreader = new MultifaceSpreader(new MalignantFleshSpreaderConfig(this));
 
@@ -640,6 +645,10 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 
 		final boolean feral = energyHandler == null && ModFeatureFlags.isHivemindEnabled(level);
 
+		if (energyHandler != null && isNearHazard(level, pos)) {
+			energyHandler.reportHazard(pos, null);
+		}
+
 		int charge = getCharge(state);
 		if (charge < 2) {
 			if (energyHandler != null && energyHandler.drainPrimalEnergy(1, pos) > 0) {
@@ -660,6 +669,7 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 		float populationPct = directNeighbors / (float) DIRECTIONS.length;
 		float conversionChance = charge / (CHARGE.getMax() + 5f) + populationPct * 0.5f;
 		if (feral) conversionChance *= FERAL_CONVERSION_BOOST;
+		else if (energyHandler != null && energyHandler.isReinforcing(pos)) conversionChance *= REINFORCE_CONVERSION_BOOST;
 
 		if (random.nextFloat() < conversionChance && convert(state, level, pos, directNeighbors, mound, nearBoundingCenterPct, energyHandler)) {
 			level.playSound(null, pos, ModSoundEvents.FLESH_BLOCK_STEP.get(), SoundSource.BLOCKS, 0.8f, 0.15f + random.nextFloat() * 0.5f);
@@ -702,6 +712,20 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 			}
 			setCharge(level, pos, state, charge);
 		}
+	}
+
+	private static boolean isNearHazard(ServerLevel level, BlockPos pos) {
+		for (Direction direction : DIRECTIONS) {
+			BlockState neighborState = level.getBlockState(pos.relative(direction));
+			if (neighborState.is(BlockTags.FIRE) || neighborState.getFluidState().is(FluidTags.LAVA)) return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void onCaughtFire(BlockState state, Level level, BlockPos pos, @Nullable Direction direction, @Nullable LivingEntity igniter) {
+		HivemindHazardHandler.onFleshHarmed(level, pos, igniter);
+		super.onCaughtFire(state, level, pos, direction, igniter);
 	}
 
 	private void recede(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {

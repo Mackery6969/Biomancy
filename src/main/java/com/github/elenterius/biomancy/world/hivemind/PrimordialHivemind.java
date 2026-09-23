@@ -16,6 +16,10 @@ import java.util.UUID;
 
 public class PrimordialHivemind {
 
+	public enum HazardResponse {
+		NONE, AVOID, REINFORCE
+	}
+
 	public static final int TICK_INTERVAL = 20;
 
 	private static final String DORMANT_KEY = "Dormant";
@@ -24,6 +28,9 @@ public class PrimordialHivemind {
 	private static final String THREAT_KEY = "Threat";
 	private static final String THREAT_AGE_KEY = "ThreatAge";
 	private static final String AWAKENED_KEY = "Awakened";
+	private static final String HAZARD_KEY = "Hazard";
+	private static final String HAZARD_AGE_KEY = "HazardAge";
+	private static final String REINFORCING_KEY = "Reinforcing";
 
 	private static final int IDLE_UPKEEP = 2;
 	private static final int HUNTING_UPKEEP = 6;
@@ -31,6 +38,8 @@ public class PrimordialHivemind {
 	private static final int TARGET_SEARCH_RANGE = 64;
 	private static final int TARGET_REFRESH_CYCLES = 30;
 	private static final int THREAT_MEMORY_CYCLES = 30;
+	private static final int HAZARD_MEMORY_CYCLES = 60;
+	private static final int REINFORCE_THRESHOLD = 1024;
 
 	private boolean dormant;
 	private boolean awakened;
@@ -38,6 +47,9 @@ public class PrimordialHivemind {
 	private int targetAge;
 	private @Nullable UUID threatId;
 	private int threatAge;
+	private @Nullable BlockPos hazardPos;
+	private int hazardAge;
+	private boolean reinforcing;
 
 	public boolean isDormant() {
 		return dormant;
@@ -58,6 +70,10 @@ public class PrimordialHivemind {
 	 * @return true when the requester lies in the half-space the hivemind is currently growing toward
 	 */
 	public boolean isWithinGrowthCone(BlockPos origin, BlockPos requesterPos) {
+		if (getHazardResponse() == HazardResponse.AVOID && hazardPos != null && !isSameSide(origin, hazardPos, requesterPos)) {
+			return false;
+		}
+
 		if (growthTarget == null) return true;
 
 		double toTargetX = growthTarget.getX() - origin.getX();
@@ -66,6 +82,38 @@ public class PrimordialHivemind {
 		double toRequesterZ = requesterPos.getZ() - origin.getZ();
 
 		return toTargetX * toRequesterX + toTargetZ * toRequesterZ >= 0;
+	}
+
+	private static boolean isSameSide(BlockPos origin, BlockPos a, BlockPos b) {
+		double toAX = a.getX() - origin.getX();
+		double toAZ = a.getZ() - origin.getZ();
+		double toBX = b.getX() - origin.getX();
+		double toBZ = b.getZ() - origin.getZ();
+
+		return toAX * toBX + toAZ * toBZ <= 0;
+	}
+
+	/**
+	 * a well fed hive grows into the hazard to smother it, a weak one recoils and grows elsewhere
+	 */
+	public void onHarmed(BlockPos pos, int availablePrimalEnergy) {
+		hazardPos = pos;
+		hazardAge = HAZARD_MEMORY_CYCLES;
+		reinforcing = !dormant && availablePrimalEnergy >= REINFORCE_THRESHOLD;
+
+		if (reinforcing) {
+			growthTarget = pos;
+			targetAge = TARGET_REFRESH_CYCLES;
+		}
+	}
+
+	public HazardResponse getHazardResponse() {
+		if (hazardAge <= 0 || hazardPos == null) return HazardResponse.NONE;
+		return reinforcing ? HazardResponse.REINFORCE : HazardResponse.AVOID;
+	}
+
+	public @Nullable BlockPos getHazardPos() {
+		return hazardAge > 0 ? hazardPos : null;
 	}
 
 	public void setThreat(LivingEntity entity) {
@@ -94,6 +142,7 @@ public class PrimordialHivemind {
 	public int serverTick(ServerLevel level, BlockPos origin, int availablePrimalEnergy) {
 		if (targetAge > 0) targetAge--;
 		if (threatAge > 0) threatAge--;
+		if (hazardAge > 0) hazardAge--;
 
 		if (dormant) {
 			growthTarget = null;
@@ -140,6 +189,11 @@ public class PrimordialHivemind {
 		tag.putBoolean(AWAKENED_KEY, awakened);
 		tag.putInt(TARGET_AGE_KEY, targetAge);
 		tag.putInt(THREAT_AGE_KEY, threatAge);
+		tag.putInt(HAZARD_AGE_KEY, hazardAge);
+		tag.putBoolean(REINFORCING_KEY, reinforcing);
+		if (hazardPos != null) {
+			tag.putLong(HAZARD_KEY, hazardPos.asLong());
+		}
 		if (threatId != null) {
 			tag.putUUID(THREAT_KEY, threatId);
 		}
@@ -153,6 +207,9 @@ public class PrimordialHivemind {
 		awakened = tag.getBoolean(AWAKENED_KEY);
 		targetAge = tag.getInt(TARGET_AGE_KEY);
 		threatAge = tag.getInt(THREAT_AGE_KEY);
+		hazardAge = tag.getInt(HAZARD_AGE_KEY);
+		reinforcing = tag.getBoolean(REINFORCING_KEY);
+		hazardPos = tag.contains(HAZARD_KEY) ? BlockPos.of(tag.getLong(HAZARD_KEY)) : null;
 		threatId = tag.hasUUID(THREAT_KEY) ? tag.getUUID(THREAT_KEY) : null;
 		growthTarget = tag.contains(GROWTH_TARGET_KEY) ? BlockPos.of(tag.getLong(GROWTH_TARGET_KEY)) : null;
 	}
