@@ -7,6 +7,11 @@
 - Fixed the Primordial Cradle from consuming the wrong items, including non food items, when attempting to feed it.
 - Fixed the structures from not generating properly in the world, they were locatable but not actually generating.
 
+### Changed
+
+- Changed the Bio-Forge to no longer rely on advancements to unlock recipes. Crafting a recipe now unlocks it directly, the same way vanilla's stonecutter and smithing table do, so recipes still unlock on worlds with advancements disabled.
+- Changed `doBioForgeRecipeProgression` to default to `false`, matching vanilla's `doLimitedCrafting` game rule. Existing configs keep their current value.
+
 ## [2.9.8.5] - 2026-09-19
 
 ### Fixed
