@@ -1,5 +1,10 @@
 package com.github.elenterius.biomancy.block.storagesac;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.block.base.SimpleContainerBlockEntity;
 import com.github.elenterius.biomancy.init.ModBlockEntities;
@@ -9,9 +14,10 @@ import com.github.elenterius.biomancy.inventory.ItemHandlerUtil;
 import com.github.elenterius.biomancy.menu.StorageSacMenu;
 import com.github.elenterius.biomancy.util.ItemStackCounter;
 import com.github.elenterius.biomancy.util.PlayerInteractionPredicate;
-import net.minecraft.core.HolderLookup;
+
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -40,10 +46,6 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements PlayerInteractionPredicate {
 
@@ -64,6 +66,20 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 	public StorageSacBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntities.STORAGE_SAC.get(), pos, state);
 		inventory = InventoryHandlers.denyItemWithFilledInventory(SLOTS, this::onInventoryChanged);
+	}
+
+	@Override
+	public void onLoad() {
+		super.onLoad();
+		if (level == null || level.isClientSide)
+			return;
+
+		ItemContainerContents storedContents = components().get(DataComponents.CONTAINER);
+		if (storedContents != null) {
+			restoreContainerContents(storedContents);
+			setComponents(components().filter(type -> type != DataComponents.CONTAINER));
+			setChanged();
+		}
 	}
 
 	protected boolean tryLoadLootTable(CompoundTag tag) {
@@ -191,26 +207,30 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 		if (customName != null) setCustomName(customName);
 
 		ItemContainerContents contents = components.get(DataComponents.CONTAINER);
-		if (contents != null) {
-			boolean hasLegacyContents = !inventory.isEmpty();
-			for (int slot = 0; slot < contents.getSlots(); slot++) {
-				ItemStack stack = contents.getStackInSlot(slot);
-				if (!hasLegacyContents && slot < inventory.getSlots()) {
-					inventory.setStackInSlot(slot, stack);
-				}
-				else {
-					// Older sacs can contain both the original NBT inventory and a separate component inventory.
-					ItemStack remainder = ItemHandlerUtil.insertItem(inventory.getRaw(), stack);
-					if (!remainder.isEmpty() && level != null && !level.isClientSide) {
-						Block.popResource(level, worldPosition, remainder);
-					}
-				}
-			}
-			countAllItems();
-		}
+		if (contents != null)
+			restoreContainerContents(contents);
 
 		SeededContainerLoot loot = components.get(DataComponents.CONTAINER_LOOT);
-		if (loot != null) setLootTable(loot.lootTable().location(), loot.seed());
+		if (loot != null)
+			setLootTable(loot.lootTable().location(), loot.seed());
+	}
+
+	private void restoreContainerContents(ItemContainerContents contents) {
+		boolean hasLegacyContents = !inventory.isEmpty();
+		for (int slot = 0; slot < contents.getSlots(); slot++) {
+			ItemStack stack = contents.getStackInSlot(slot);
+			if (!hasLegacyContents && slot < inventory.getSlots()) {
+				inventory.setStackInSlot(slot, stack);
+			} else {
+				// Older sacs can contain both the original NBT inventory and a separate
+				// component inventory.
+				ItemStack remainder = ItemHandlerUtil.insertItem(inventory.getRaw(), stack);
+				if (!remainder.isEmpty() && level != null && !level.isClientSide) {
+					Block.popResource(level, worldPosition, remainder);
+				}
+			}
+		}
+		countAllItems();
 	}
 
 	@Override
