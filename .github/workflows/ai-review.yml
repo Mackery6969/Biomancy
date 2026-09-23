@@ -1,44 +1,41 @@
 name: AI Review
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    paths:
+      - "src/**/*.java"
+
+  # Resumes a review that stopped on Gemini's daily quota; shortly after it resets at midnight Pacific.
+  schedule:
+    - cron: "30 8 * * *"
+
+  workflow_dispatch:
 
 permissions:
   contents: read
-  pull-requests: write
+  issues: write
 
 concurrency:
-  group: ai-review-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
+  group: ai-review
+  cancel-in-progress: false
 
 jobs:
   review:
     name: Gemini Review
-    if: >-
-      !github.event.pull_request.draft &&
-      github.event.pull_request.head.repo.full_name == github.repository &&
-      github.actor != 'dependabot[bot]'
+    if: github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 350
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
 
       - name: Gemini Review
-        uses: Nikita-Filonov/ai-review@v1.1.0
+        uses: Mackery6969/AI-Review@v1.1.0
         with:
-          review-command: run
-        env:
-          LLM__PROVIDER: GEMINI
-          LLM__META__MODEL: gemini-2.5-flash
-          LLM__HTTP_CLIENT__API_URL: https://generativelanguage.googleapis.com
-          LLM__HTTP_CLIENT__API_TOKEN: ${{ secrets.GEMINI_API_KEY }}
-          VCS__PROVIDER: GITHUB
-          VCS__PIPELINE__OWNER: ${{ github.repository_owner }}
-          VCS__PIPELINE__REPO: ${{ github.event.repository.name }}
-          VCS__PIPELINE__PULL_NUMBER: ${{ github.event.pull_request.number }}
-          VCS__HTTP_CLIENT__API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+          include: src/**/*.java
+          instructions: >-
+            Biomancy, a Minecraft mod being ported from Forge 1.20.1 to NeoForge 1.21.1.
+            Watch for Forge APIs used the old way, logical-side (client/server) mistakes,
+            and code that compiles but behaves differently on 1.21.1.
