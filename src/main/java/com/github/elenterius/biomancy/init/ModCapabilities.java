@@ -4,6 +4,7 @@ import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.block.storagesac.StorageSacBlockEntity;
 import com.github.elenterius.biomancy.inventory.InjectorItemInventory;
 import com.github.elenterius.biomancy.item.injector.InjectorItem;
+import com.github.elenterius.biomancy.world.hivemind.CarriedBiomass;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -26,6 +27,8 @@ public final class ModCapabilities {
 	public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, BiomancyMod.MOD_ID);
 
 	public static final DeferredHolder<AttachmentType<?>, AttachmentType<FlagCapImpl>> NO_KNOCKBACK_FLAG = ATTACHMENT_TYPES.register("no_knockback", () -> AttachmentType.builder(FlagCapImpl::new).build());
+
+	public static final DeferredHolder<AttachmentType<?>, AttachmentType<CarriedBiomass>> CARRIED_BIOMASS = ATTACHMENT_TYPES.register("carried_biomass", () -> AttachmentType.builder(() -> CarriedBiomass.NONE).serialize(CarriedBiomass.CODEC, CarriedBiomass::isGorged).build());
 
 	public static final BlockCapability<IItemHandler, Direction> ITEM_HANDLER = Capabilities.ItemHandler.BLOCK;
 	public static final BlockCapability<IFluidHandler, Direction> FLUID_HANDLER = Capabilities.FluidHandler.BLOCK;

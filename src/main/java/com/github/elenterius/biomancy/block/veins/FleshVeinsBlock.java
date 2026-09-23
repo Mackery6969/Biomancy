@@ -62,6 +62,8 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 	public static final Predicate<BlockState> BLOCKS_TO_AVOID_PREDICATE = blockState -> blockState.is(ModBlocks.PRIMAL_BLOOM.get());
 	protected static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	protected static final EnhancedIntegerProperty CHARGE = ModBlockProperties.CHARGE;
+
+	private static final float FERAL_CONVERSION_BOOST = 1.75f;
 	private static final int[] NEIGHBOR_OFFSETS = createNeighborOffsets();
 	private final MultifaceSpreader spreader = new MultifaceSpreader(new MalignantFleshSpreaderConfig(this));
 
@@ -631,10 +633,20 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 			}
 		}
 
+		if (energyHandler != null && energyHandler.isStarving()) {
+			recede(state, level, pos, random);
+			return;
+		}
+
+		final boolean feral = energyHandler == null && ModFeatureFlags.isHivemindEnabled(level);
+
 		int charge = getCharge(state);
 		if (charge < 2) {
-			if (energyHandler != null && energyHandler.drainPrimalEnergy(1) > 0) {
+			if (energyHandler != null && energyHandler.drainPrimalEnergy(1, pos) > 0) {
 				setCharge(level, pos, state, charge + 1);
+			}
+			else if (feral) {
+				recede(state, level, pos, random);
 			}
 			return;
 		}
@@ -647,6 +659,7 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 
 		float populationPct = directNeighbors / (float) DIRECTIONS.length;
 		float conversionChance = charge / (CHARGE.getMax() + 5f) + populationPct * 0.5f;
+		if (feral) conversionChance *= FERAL_CONVERSION_BOOST;
 
 		if (random.nextFloat() < conversionChance && convert(state, level, pos, directNeighbors, mound, nearBoundingCenterPct, energyHandler)) {
 			level.playSound(null, pos, ModSoundEvents.FLESH_BLOCK_STEP.get(), SoundSource.BLOCKS, 0.8f, 0.15f + random.nextFloat() * 0.5f);
@@ -671,7 +684,7 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 
 		if (energyHandler != null) {
 			int primalEnergy = Math.max(charge, Math.round(CHARGE.getMax() * nearBoundingCenterPct) / 2);
-			if (energyHandler.getPrimalEnergy() > primalEnergy && energyHandler.drainPrimalEnergy(primalEnergy) >= primalEnergy) {
+			if (energyHandler.getPrimalEnergy() > primalEnergy && energyHandler.drainPrimalEnergy(primalEnergy, pos) >= primalEnergy) {
 				increaseChargeAroundPos(level, pos, random, primalEnergy * 2);
 			}
 			else if (charge > 1) {
@@ -688,6 +701,20 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 				charge -= increaseChargeAroundPos(level, pos, random, charge);
 			}
 			setCharge(level, pos, state, charge);
+		}
+	}
+
+	private void recede(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+		int charge = getCharge(state);
+
+		if (charge > 0) {
+			setCharge(level, pos, state, charge - 1);
+			return;
+		}
+
+		if (random.nextFloat() < 0.25f) {
+			level.removeBlock(pos, false);
+			level.playSound(null, pos, ModSoundEvents.FLESH_BLOCK_STEP.get(), SoundSource.BLOCKS, 0.5f, 0.15f + random.nextFloat() * 0.5f);
 		}
 	}
 

@@ -23,6 +23,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.monster.Enemy;
+import com.github.elenterius.biomancy.entity.mob.PrimordialFleshkin;
+import com.github.elenterius.biomancy.init.tags.ModEntityTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -42,9 +44,12 @@ import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import java.util.function.Predicate;
 import java.util.function.BiConsumer;
 
 public abstract class FleshBlob extends PathfinderMob implements Fleshkin, JumpMoveHelper.JumpingPathfinderMob, JukeboxDancer, GeoEntity {
+
+	public static final Predicate<LivingEntity> HIVE_PREY_SELECTOR = livingEntity -> !(livingEntity instanceof PrimordialFleshkin) && !livingEntity.getType().is(ModEntityTags.FLESHKIN_IGNORES);
 
 	public static final byte MAX_SIZE = 10;
 	public static final byte MIN_SIZE = 1;

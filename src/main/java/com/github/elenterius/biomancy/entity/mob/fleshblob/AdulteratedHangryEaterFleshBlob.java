@@ -2,6 +2,9 @@ package com.github.elenterius.biomancy.entity.mob.fleshblob;
 
 import com.github.elenterius.biomancy.entity.mob.AdulteratedFleshkin;
 import com.github.elenterius.biomancy.entity.mob.PrimordialFleshkin;
+import com.github.elenterius.biomancy.entity.mob.ai.goal.HuntForHiveGoal;
+import com.github.elenterius.biomancy.entity.mob.ai.goal.DefendHiveGoal;
+import com.github.elenterius.biomancy.entity.mob.ai.goal.FeedHiveGoal;
 import com.github.elenterius.biomancy.entity.mob.ai.goal.BurningOrFreezingPanicGoal;
 import com.github.elenterius.biomancy.entity.mob.ai.goal.DanceNearJukeboxGoal;
 import com.github.elenterius.biomancy.entity.mob.ai.goal.EatFoodItemGoal;
@@ -62,6 +65,7 @@ public class AdulteratedHangryEaterFleshBlob extends EaterFleshBlob implements E
 		goalSelector.addGoal(2, new BurningOrFreezingPanicGoal(this, 1.5f));
 		goalSelector.addGoal(3, new FindItemGoal(this, 8f, ITEM_ENTITY_FILTER));
 		goalSelector.addGoal(3, new EatFoodItemGoal<>(this, 0.1f));
+		goalSelector.addGoal(3, new FeedHiveGoal(this));
 		goalSelector.addGoal(4, new FleshBlobAttackGoal(this, 1.2f));
 		goalSelector.addGoal(5, new AvoidEntityGoal<>(this, AbstractGolem.class, 6f, 1f, 1.2f));
 		goalSelector.addGoal(6, new DanceNearJukeboxGoal<>(this));
@@ -69,11 +73,13 @@ public class AdulteratedHangryEaterFleshBlob extends EaterFleshBlob implements E
 		goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8f));
 		goalSelector.addGoal(7, new RandomLookAroundGoal(this));
 
+		targetSelector.addGoal(1, new DefendHiveGoal(this));
 		targetSelector.addGoal(1, new HurtByTargetGoal(this));
 		targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, FleshBlob.class, false, PRIMORDIAL_PREY_SELECTOR));
 		targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, true, MAIN_PREY_SELECTOR));
 		targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Animal.class, false, MAIN_PREY_SELECTOR));
 		targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, false, MAIN_PREY_SELECTOR));
+		targetSelector.addGoal(5, new HuntForHiveGoal<>(this, Animal.class, false, HIVE_PREY_SELECTOR));
 	}
 
 	@Override

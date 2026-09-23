@@ -1,0 +1,11 @@
+{
+	"features": {
+		"enabled": [
+			"biomancy:primordial_hivemind"
+		]
+	},
+	"pack": {
+		"description": "The Primordial Cradle becomes a thinking organism: it hungers, directs the flesh it grows, and sends its spawn out to hunt for it.",
+		"pack_format": 48
+	}
+}

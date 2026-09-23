@@ -5,11 +5,13 @@ import com.github.elenterius.biomancy.block.JumpPadBlock;
 import com.github.elenterius.biomancy.entity.misc.LivingEntityData;
 import com.github.elenterius.biomancy.enchantment.LivingEnchantmentEffects;
 import com.github.elenterius.biomancy.init.AcidInteractions;
+import com.github.elenterius.biomancy.init.ModFeatureFlags;
 import com.github.elenterius.biomancy.init.ModMobEffects;
 import com.github.elenterius.biomancy.item.armor.WarriorArmorItem;
 import com.github.elenterius.biomancy.serum.FrenzySerum;
 import com.github.elenterius.biomancy.styles.Fonts;
 import com.github.elenterius.biomancy.world.PrimordialEcosystem;
+import com.github.elenterius.biomancy.world.hivemind.HivemindForaging;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -78,7 +80,13 @@ public final class LivingEventHandler {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onLivingDeath(final LivingDeathEvent event) {
 		LivingEntity livingEntity = event.getEntity();
-		if (livingEntity.level() instanceof ServerLevel serverLevel && livingEntity.hasEffect(ModMobEffects.PRIMORDIAL_INFESTATION)) {
+		if (!(livingEntity.level() instanceof ServerLevel serverLevel)) return;
+
+		if (ModFeatureFlags.isHivemindEnabled(serverLevel)) {
+			HivemindForaging.onPreyKilled(serverLevel, livingEntity, event.getSource());
+		}
+
+		if (livingEntity.hasEffect(ModMobEffects.PRIMORDIAL_INFESTATION)) {
 			if (livingEntity.isFreezing() || livingEntity.isOnFire()) return;
 			PrimordialEcosystem.placeMalignantBlocksOnLivingDeath(serverLevel, livingEntity);
 		}

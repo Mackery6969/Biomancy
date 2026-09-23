@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.9.8.7] - 2026-09-22
+
+### Added
+
+- Added the **Primordial Hivemind** experiment, selectable in the Experiments screen when creating a world. It turns the Primordial Cradle into a thinking organism:
+- The Cradle burns primal energy over time instead of hoarding it, and picks a growth target it steers its flesh toward rather than spreading in every direction.
+- Flesh Blobs hunt animals for the hive, carry the biomass back to the Cradle, and feed it directly. Killing a gorged blob before it gets home denies the hive the meal.
+- Flesh Blobs defend the Cradle from whoever attacks it, and fight back when attacked themselves.
+- A Cradle that starves goes dormant and its flesh recedes. A Cradle that has never been fed stays inert instead, so worldgen structures keep the flesh they generated with.
+- Flesh with no Cradle spreads faster and more aggressively than normal, but has nothing sustaining it and dies out once its charge is spent.
+
+
 ## [2.9.8.6] - 2026-09-21
 
 ### Fixed
