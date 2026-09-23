@@ -3,6 +3,7 @@ name: Build
 on:
   push:
     paths-ignore:
+      - '!.github/workflows/build.yml'
       - 'README.md'
       - 'CHANGELOG.md'
       - 'CODE_OF_CONDUCT.md'
@@ -11,6 +12,8 @@ on:
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/FUNDING.yaml'
       - '.github/dependabot.yml'
+      - '.github/workflows/ai-review.yml'
+      - '.github/workflows/**'
       - 'crowdin.yml'
       - 'updates.json'
       - 'actionlint.exe'
