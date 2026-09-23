@@ -34,6 +34,7 @@ jobs:
         uses: Mackery6969/AI-Review@v1.1.0
         with:
           gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
+          model: gemini-3.8-flash
           include: src/**/*.java
           instructions: >-
             Biomancy, a Minecraft mod being ported from Forge 1.20.1 to NeoForge 1.21.1.
