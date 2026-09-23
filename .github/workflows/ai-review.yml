@@ -36,7 +36,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Gemini Review
-        uses: Mackery6969/AI-Review@v2.0.1
+        uses: Mackery6969/AI-Review@v2.0.2
         with:
           gemini-api-key: ${{ secrets.GEMINI_API_KEY }}
           model: gemini-3.8-flash
