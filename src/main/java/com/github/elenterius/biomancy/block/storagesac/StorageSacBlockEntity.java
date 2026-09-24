@@ -1,10 +1,5 @@
 package com.github.elenterius.biomancy.block.storagesac;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jspecify.annotations.Nullable;
-
 import com.github.elenterius.biomancy.BiomancyMod;
 import com.github.elenterius.biomancy.block.base.SimpleContainerBlockEntity;
 import com.github.elenterius.biomancy.init.ModBlockEntities;
@@ -14,7 +9,6 @@ import com.github.elenterius.biomancy.inventory.ItemHandlerUtil;
 import com.github.elenterius.biomancy.menu.StorageSacMenu;
 import com.github.elenterius.biomancy.util.ItemStackCounter;
 import com.github.elenterius.biomancy.util.PlayerInteractionPredicate;
-
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -46,6 +40,10 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements PlayerInteractionPredicate {
 
@@ -105,10 +103,11 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 		if (lootTableId == null) return;
 		if (!(level instanceof ServerLevel serverLevel)) return;
 
-		LootTable lootTable = serverLevel.getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, lootTableId));
+		ResourceKey<LootTable> lootTableKey = ResourceKey.create(Registries.LOOT_TABLE, lootTableId);
+		LootTable lootTable = serverLevel.getServer().reloadableRegistries().getLootTable(lootTableKey);
 
-		if (player instanceof ServerPlayer) {
-			CriteriaTriggers.GENERATE_LOOT.trigger((ServerPlayer) player, ResourceKey.create(Registries.LOOT_TABLE, lootTableId));
+		if (player instanceof ServerPlayer serverPlayer) {
+			CriteriaTriggers.GENERATE_LOOT.trigger(serverPlayer, lootTableKey);
 		}
 
 		lootTableId = null;
@@ -194,8 +193,7 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		super.saveAdditional(tag, registries);
 
-		if (trySaveLootTable(tag)) return;
-
+		trySaveLootTable(tag);
 		tag.put(INVENTORY_KEY, inventory.serializeNBT(registries));
 		//tag.put(TOP5_BY_COUNT_KEY, serializeTop5()); //serialize for block destruction
 	}
@@ -260,8 +258,7 @@ public class StorageSacBlockEntity extends SimpleContainerBlockEntity implements
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		super.loadAdditional(tag, registries);
 
-		if (tryLoadLootTable(tag)) return;
-
+		tryLoadLootTable(tag);
 		if (tag.contains(INVENTORY_KEY)) {
 			inventory.deserializeNBT(registries, tag.getCompound(INVENTORY_KEY));
 			countAllItems();

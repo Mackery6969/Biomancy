@@ -26,18 +26,20 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 import java.util.List;
+import java.util.function.ToIntFunction;
+
+import static com.github.elenterius.biomancy.gametest.GameTestTemplates.EMPTY_PLATFORM;
+import static com.github.elenterius.biomancy.gametest.GameTestTemplates.PLATFORM_CENTER;
 
 @GameTestHolder(BiomancyMod.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class ItemRegressionGameTests {
 
-	private static final String TEMPLATE = "empty_platform";
-
 	private ItemRegressionGameTests() {}
 
-	@GameTest(template = TEMPLATE)
+	@GameTest(template = EMPTY_PLATFORM)
 	public static void dispenserInjectorAppliesStoredPotionEffects(GameTestHelper helper) {
-		BlockPos pos = new BlockPos(4, 2, 4);
+		BlockPos pos = PLATFORM_CENTER;
 		LivingEntity target = helper.spawnWithNoFreeWill(EntityType.COW, pos);
 		ItemStack injector = ModItems.INJECTOR.get().getDefaultInstance();
 		ItemStack vials = ModItems.POTION_SERUM.get().getInstanceFrom(Potions.SWIFTNESS,
@@ -53,9 +55,9 @@ public final class ItemRegressionGameTests {
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE)
+	@GameTest(template = EMPTY_PLATFORM)
 	public static void impalerConsumesPiercingAcrossHitsAndReload(GameTestHelper helper) {
-		LivingEntity target = helper.spawnWithNoFreeWill(EntityType.COW, new BlockPos(4, 2, 4));
+		LivingEntity target = helper.spawnWithNoFreeWill(EntityType.COW, PLATFORM_CENTER);
 		TestImpaler projectile = new TestImpaler(helper.getLevel());
 		projectile.setPierceLevel(2);
 		projectile.hit(target);
@@ -73,39 +75,63 @@ public final class ItemRegressionGameTests {
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE)
+	@GameTest(template = EMPTY_PLATFORM)
 	public static void warriorArmorRecognizesFourPiecePlayerSet(GameTestHelper helper) {
 		Player player = equipWarriorArmor(helper);
-		helper.assertTrue(CombatUtil.hasFulLArmorSetEquipped(player, WarriorArmorItem.ARMOR_SET_PREDICATE),
+		helper.assertTrue(CombatUtil.hasFullArmorSetEquipped(player, WarriorArmorItem.ARMOR_SET_PREDICATE),
 				"four warrior armor pieces were not recognized as a full player set");
 		player.setItemSlot(EquipmentSlot.FEET, ItemStack.EMPTY);
-		helper.assertFalse(CombatUtil.hasFulLArmorSetEquipped(player, WarriorArmorItem.ARMOR_SET_PREDICATE),
+		helper.assertFalse(CombatUtil.hasFullArmorSetEquipped(player, WarriorArmorItem.ARMOR_SET_PREDICATE),
 				"warrior armor was considered complete without boots");
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE)
+	@GameTest(template = EMPTY_PLATFORM)
 	public static void armorNutrientCostSkipsDepletedPieces(GameTestHelper helper) {
 		Player player = equipWarriorArmor(helper);
-		for (ItemStack stack : player.getArmorSlots()) {
-			LivingArmorItem armor = (LivingArmorItem) stack.getItem();
-			armor.setNutrients(stack, armor.getType().getSlot() == EquipmentSlot.FEET ? 0 : 100);
-		}
+		setNutrients(player, slot -> slot == EquipmentSlot.FEET ? 0 : 100);
 
-		LivingArmorItem.consumeNutrientsFromEquippedArmor(player, 100, WarriorArmorItem.ARMOR_SET_PREDICATE);
-		helper.assertValueEqual(LivingArmorItem.getNutrientsFromEquippedArmor(player, WarriorArmorItem.ARMOR_SET_PREDICATE),
-				200, "nutrients after paying roar cost with depleted boots");
+		consumeNutrients(player, 100);
+		helper.assertValueEqual(totalNutrients(player), 200, "nutrients after paying roar cost with depleted boots");
 		for (ItemStack stack : player.getArmorSlots()) {
 			LivingArmorItem armor = (LivingArmorItem) stack.getItem();
 			int nutrients = armor.getNutrients(stack);
-			helper.assertTrue(armor.getType().getSlot() == EquipmentSlot.FEET ? nutrients == 0 : nutrients >= 66 && nutrients <= 67,
-					"nutrient cost was not balanced across the three charged pieces");
+			if (armor.getType().getSlot() == EquipmentSlot.FEET) {
+				helper.assertValueEqual(nutrients, 0, "depleted boots nutrients");
+			}
+			else {
+				helper.assertTrue(nutrients == 66 || nutrients == 67, "nutrient cost was not balanced across the three charged pieces");
+			}
 		}
 
-		LivingArmorItem.consumeNutrientsFromEquippedArmor(player, 200, WarriorArmorItem.ARMOR_SET_PREDICATE);
-		helper.assertValueEqual(LivingArmorItem.getNutrientsFromEquippedArmor(player, WarriorArmorItem.ARMOR_SET_PREDICATE),
-				0, "nutrients after consuming the uneven remaining reserves");
+		consumeNutrients(player, 200);
+		helper.assertValueEqual(totalNutrients(player), 0, "nutrients after consuming the uneven remaining reserves");
 		helper.succeed();
+	}
+
+	@GameTest(template = EMPTY_PLATFORM)
+	public static void armorNutrientCostSmallerThanChargedPieceCountTerminates(GameTestHelper helper) {
+		Player player = equipWarriorArmor(helper);
+		setNutrients(player, slot -> slot == EquipmentSlot.FEET || slot == EquipmentSlot.LEGS ? 0 : 5);
+
+		consumeNutrients(player, 1);
+		helper.assertValueEqual(totalNutrients(player), 9, "nutrients after paying a cost of one across two charged pieces");
+		helper.succeed();
+	}
+
+	private static void setNutrients(Player player, ToIntFunction<EquipmentSlot> nutrientsBySlot) {
+		for (ItemStack stack : player.getArmorSlots()) {
+			LivingArmorItem armor = (LivingArmorItem) stack.getItem();
+			armor.setNutrients(stack, nutrientsBySlot.applyAsInt(armor.getType().getSlot()));
+		}
+	}
+
+	private static void consumeNutrients(Player player, int amount) {
+		LivingArmorItem.consumeNutrientsFromEquippedArmor(player, amount, WarriorArmorItem.ARMOR_SET_PREDICATE);
+	}
+
+	private static int totalNutrients(Player player) {
+		return LivingArmorItem.getNutrientsFromEquippedArmor(player, WarriorArmorItem.ARMOR_SET_PREDICATE);
 	}
 
 	private static Player equipWarriorArmor(GameTestHelper helper) {

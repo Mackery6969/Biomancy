@@ -7,12 +7,10 @@ import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -61,13 +59,6 @@ public class StorageSacBlock extends WaterloggedFacingEntityBlock {
 	}
 
 	@Override
-	public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-		if (level.getBlockEntity(pos) instanceof StorageSacBlockEntity sac && stack.has(DataComponents.CUSTOM_NAME)) {
-			sac.setCustomName(stack.getHoverName());
-		}
-	}
-
-	@Override
 	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (level.getBlockEntity(pos) instanceof StorageSacBlockEntity sac && sac.canPlayerInteract(player)) {
 			if (!level.isClientSide) {
@@ -85,7 +76,6 @@ public class StorageSacBlock extends WaterloggedFacingEntityBlock {
 		if (!level.isClientSide && player.isCreative() && level.getBlockEntity(pos) instanceof StorageSacBlockEntity storage && !storage.isEmpty()) {
 			ItemStack stack = new ItemStack(this);
 			storage.saveToItem(stack, level.registryAccess());
-			if (storage.hasCustomName()) stack.set(DataComponents.CUSTOM_NAME, storage.getCustomName());
 			ItemEntity itemEntity = new ItemEntity(level, pos.getX() + 0.5d, pos.getY() + 0.5D, pos.getZ() + 0.5d, stack);
 			itemEntity.setDefaultPickUpDelay();
 			level.addFreshEntity(itemEntity);

@@ -20,28 +20,14 @@ public class ShapeHierarchy<T extends Shape> {
 	protected final AABB aabb;
 
 	public ShapeHierarchy(Iterable<T> shapes) {
-		double aabbMinX = Double.MAX_VALUE;
-		double aabbMinY = Double.MAX_VALUE;
-		double aabbMinZ = Double.MAX_VALUE;
-		double aabbMaxX = -Double.MAX_VALUE;
-		double aabbMaxY = -Double.MAX_VALUE;
-		double aabbMaxZ = -Double.MAX_VALUE;
+		AABB bounds = null;
 
 		for (T shape : shapes) {
-			AABB boundingBox = shape.getAABB();
-
-			if (boundingBox.minX < aabbMinX) aabbMinX = boundingBox.minX;
-			if (boundingBox.minY < aabbMinY) aabbMinY = boundingBox.minY;
-			if (boundingBox.minZ < aabbMinZ) aabbMinZ = boundingBox.minZ;
-			if (boundingBox.maxX > aabbMaxX) aabbMaxX = boundingBox.maxX;
-			if (boundingBox.maxY > aabbMaxY) aabbMaxY = boundingBox.maxY;
-			if (boundingBox.maxZ > aabbMaxZ) aabbMaxZ = boundingBox.maxZ;
-
+			bounds = bounds == null ? shape.getAABB() : bounds.minmax(shape.getAABB());
 			addShapeToSections(shape);
 		}
 
-		this.aabb = sections.isEmpty() ? new AABB(0, 0, 0, 0, 0, 0)
-				: new AABB(aabbMinX, aabbMinY, aabbMinZ, aabbMaxX, aabbMaxY, aabbMaxZ);
+		this.aabb = bounds != null ? bounds : new AABB(Vec3.ZERO, Vec3.ZERO);
 	}
 
 	protected void addShapesToSection(long sectionKey, Collection<T> shapes) {

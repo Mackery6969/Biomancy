@@ -21,13 +21,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static com.github.elenterius.biomancy.gametest.GameTestTemplates.EMPTY_PLATFORM;
+
 @GameTestHolder(BiomancyMod.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class WorldPersistenceGameTests {
 
 	private WorldPersistenceGameTests() {}
 
-	@GameTest(template = "empty_platform")
+	@GameTest(template = EMPTY_PLATFORM)
 	public static void corruptDatabaseRecoversSavedShapes(GameTestHelper helper) throws Exception {
 		Path directory = Files.createTempDirectory("biomancy-recovery-test-");
 		Path database = directory.resolve("spatial.db");
@@ -40,7 +42,7 @@ public final class WorldPersistenceGameTests {
 			Files.write(database, new byte[8192]);
 			SpatialDB recovered = SpatialDB.open(database, "GameTest", "recovery", path -> new MVStore.Builder().fileName(path.toString()).open());
 			try {
-				helper.assertTrue("saved shape".equals(recovered.getStore().openMap("test").get("shape")), "Recovery must restore data from the valid backup");
+				helper.assertValueEqual(recovered.getStore().openMap("test").get("shape"), "saved shape", "value restored from the backup");
 			}
 			finally {
 				recovered.shutdown();
@@ -55,18 +57,18 @@ public final class WorldPersistenceGameTests {
 		helper.succeed();
 	}
 
-	@GameTest(template = "empty_platform")
+	@GameTest(template = EMPTY_PLATFORM)
 	public static void hierarchyKeepsNegativeCoordinateBounds(GameTestHelper helper) {
 		CuboidShape shape = new CuboidShape(-100, -50, -80, -90, -40, -70);
 		ShapeHierarchy<Shape> hierarchy = new ShapeHierarchy<>(List.of(shape));
-		helper.assertTrue(hierarchy.getAABB().equals(shape.getAABB()), "Negative-coordinate bounds must not expand toward zero");
-		helper.assertTrue(hierarchy.getCenter().equals(shape.center()), "Negative-coordinate center must stay inside its shape");
+		helper.assertValueEqual(hierarchy.getAABB(), shape.getAABB(), "negative-coordinate bounds");
+		helper.assertValueEqual(hierarchy.getCenter(), shape.center(), "negative-coordinate center");
 		ShapeHierarchy<Shape> empty = new ShapeHierarchy<>(List.of());
-		helper.assertTrue(empty.getAABB().equals(new AABB(0, 0, 0, 0, 0, 0)), "An empty hierarchy must have empty bounds");
+		helper.assertValueEqual(empty.getAABB(), new AABB(0, 0, 0, 0, 0, 0), "empty hierarchy bounds");
 		helper.succeed();
 	}
 
-	@GameTest(template = "empty_platform")
+	@GameTest(template = EMPTY_PLATFORM)
 	public static void spawnFilterRetainsItsShapeAfterSerialization(GameTestHelper helper) {
 		Shape shape = new MobSpawnFilterShape(new CuboidShape(-100, -50, -80, -90, -40, -70));
 		ShapeDataType dataType = new ShapeDataType();
@@ -76,7 +78,7 @@ public final class WorldPersistenceGameTests {
 		bytes.flip();
 		Shape restored = dataType.read(bytes);
 		helper.assertTrue(restored instanceof MobSpawnFilterShape, "Spawn filter must retain its type");
-		helper.assertTrue(restored.getAABB().equals(shape.getAABB()), "Spawn filter must retain its nested bounds");
+		helper.assertValueEqual(restored.getAABB(), shape.getAABB(), "restored spawn filter bounds");
 		helper.assertTrue(restored.contains(-95, -45, -75), "Restored spawn filter must still contain its protected area");
 		helper.succeed();
 	}

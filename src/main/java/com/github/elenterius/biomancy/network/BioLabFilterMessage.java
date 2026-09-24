@@ -16,6 +16,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 //client bound message
@@ -23,13 +24,8 @@ public record BioLabFilterMessage(int containerId, List<@Nullable ItemStack> fil
 
 	public static final Type<BioLabFilterMessage> TYPE = new Type<>(BiomancyMod.rl("bio_lab_filter"));
 
-	private static final StreamCodec<RegistryFriendlyByteBuf, @Nullable ItemStack> NULLABLE_ITEM_STACK_STREAM_CODEC = StreamCodec.of(
-			(buffer, stack) -> {
-				buffer.writeBoolean(stack != null);
-				if (stack != null) ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, stack);
-			},
-			buffer -> !buffer.readBoolean() ? null : ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer)
-	);
+	private static final StreamCodec<RegistryFriendlyByteBuf, @Nullable ItemStack> NULLABLE_ITEM_STACK_STREAM_CODEC = ByteBufCodecs.optional(ItemStack.OPTIONAL_STREAM_CODEC)
+			.map(stack -> stack.orElse(null), Optional::ofNullable);
 
 	public static final StreamCodec<RegistryFriendlyByteBuf, BioLabFilterMessage> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_INT, BioLabFilterMessage::containerId,
