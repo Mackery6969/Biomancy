@@ -1,6 +1,5 @@
 package com.github.elenterius.spatialdb.type;
 
-import com.github.elenterius.biomancy.util.serialization.NBTSerializer;
 import com.github.elenterius.spatialdb.geometry.Shape;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
@@ -64,11 +63,7 @@ public class ShapeDataType extends BasicDataType<Shape> {
 			return;
 		}
 
-		NBTSerializer<Shape> serializer = shape.getNBTSerializer();
-		CompoundTag nbt = serializer.write(shape);
-		nbt.putString("Serializer", serializer.id());
-
-		byte[] data = writeCompressed(nbt);
+		byte[] data = writeCompressed(ShapeSerializers.write(shape));
 		buffer.putVarInt(data.length);
 		if (data.length > 0) {
 			buffer.put(data);
@@ -82,12 +77,8 @@ public class ShapeDataType extends BasicDataType<Shape> {
 		if (length > 0) {
 			byte[] data = new byte[length];
 			buffer.get(data);
-			CompoundTag nbt = readCompressed(data);
-
-			String serializerId = nbt.getString("Serializer");
-			NBTSerializer<Shape> serializer = ShapeSerializers.get(serializerId);
-			if (serializer != null) {
-				Shape shape = serializer.read(nbt);
+			Shape shape = ShapeSerializers.read(readCompressed(data));
+			if (shape != Shape.EMPTY) {
 				computeAverageSize(shape, data);
 				return shape;
 			}

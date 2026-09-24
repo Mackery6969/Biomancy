@@ -13,6 +13,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -40,16 +41,19 @@ import net.neoforged.neoforge.items.IItemHandler;
 import java.util.List;
 import java.util.Objects;
 
+import static com.github.elenterius.biomancy.gametest.GameTestTemplates.EMPTY_PLATFORM;
+
 @GameTestHolder(BiomancyMod.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class StorageSacGameTests {
 
 	private static final BlockPos FIRST_POS = new BlockPos(2, 2, 2);
 	private static final BlockPos SECOND_POS = new BlockPos(5, 2, 2);
+	private static final SeededContainerLoot DUNGEON_LOOT = new SeededContainerLoot(ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.withDefaultNamespace("chests/simple_dungeon")), 12345L);
 
 	private StorageSacGameTests() {}
 
-	@GameTest(template = "empty_platform")
+	@GameTest(template = EMPTY_PLATFORM)
 	public static void itemContentsSurvivePlacementSaveAndSurvivalDrop(GameTestHelper helper) {
 		ItemStack sac = new ItemStack(ModItems.STORAGE_SAC.get());
 		sac.set(DataComponents.CUSTOM_NAME, Component.literal("Travel supplies"));
@@ -59,20 +63,18 @@ public final class StorageSacGameTests {
 
 		StorageSacBlockEntity placed = place(helper, FIRST_POS, sac);
 		assertStack(helper, placed.getInventory().getStackInSlot(7), expected, "Placed sac lost its item contents or slot");
-		StorageSacBlockEntity reloaded = new StorageSacBlockEntity(placed.getBlockPos(), placed.getBlockState());
-		reloaded.loadWithComponents(placed.saveWithFullMetadata(helper.getLevel().registryAccess()), helper.getLevel().registryAccess());
-		assertStack(helper, reloaded.getInventory().getStackInSlot(7), expected, "World save lost the contents");
+		assertStack(helper, reload(helper, placed).getInventory().getStackInSlot(7), expected, "World save lost the contents");
 
 		ItemStack dropped = survivalDrop(helper, placed);
 		assertStack(helper, handler(dropped).getStackInSlot(7), expected, "Survival drop lost its contents");
-		helper.assertTrue(dropped.getHoverName().equals(Component.literal("Travel supplies")), "Survival drop lost the custom name");
+		helper.assertValueEqual(dropped.getHoverName(), Component.literal("Travel supplies"), "survival drop name");
 		helper.assertFalse(dropped.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).contains(StorageSacBlockEntity.INVENTORY_KEY), "Drop must not duplicate the inventory in legacy NBT");
 		StorageSacBlockEntity replaced = place(helper, SECOND_POS, dropped);
 		assertStack(helper, replaced.getInventory().getStackInSlot(7), expected, "Replacing the dropped sac lost its contents");
 		helper.succeed();
 	}
 
-	@GameTest(template = "empty_platform")
+	@GameTest(template = EMPTY_PLATFORM)
 	public static void legacyItemMigrationPreservesComponentsAndDoesNotMutateSimulation(GameTestHelper helper) {
 		ItemStack expected = namedEnchantedSword(helper);
 		ItemStack sac = legacySac(helper, 9, expected);
@@ -91,7 +93,7 @@ public final class StorageSacGameTests {
 		helper.succeed();
 	}
 
-	@GameTest(template = "empty_platform")
+	@GameTest(template = EMPTY_PLATFORM)
 	public static void legacyItemCanBePlacedWithoutOpeningItsCapability(GameTestHelper helper) {
 		ItemStack expected = new ItemStack(Items.DIAMOND, 11);
 		StorageSacBlockEntity placed = place(helper, FIRST_POS, legacySac(helper, 12, expected));
@@ -100,7 +102,7 @@ public final class StorageSacGameTests {
 		helper.succeed();
 	}
 
-	@GameTest(template = "empty_platform")
+	@GameTest(template = EMPTY_PLATFORM)
 	public static void creativeBreakCopiesContentsWithoutDuplicatingLegacyData(GameTestHelper helper) {
 		StorageSacBlockEntity placed = place(helper, FIRST_POS, new ItemStack(ModItems.STORAGE_SAC.get()));
 		ItemStack expected = new ItemStack(Items.EMERALD, 19);
@@ -109,15 +111,15 @@ public final class StorageSacGameTests {
 		Player player = helper.makeMockPlayer(GameType.CREATIVE);
 		placed.getBlockState().getBlock().playerWillDestroy(helper.getLevel(), placed.getBlockPos(), placed.getBlockState(), player);
 		List<ItemEntity> entities = helper.getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(placed.getBlockPos()));
-		helper.assertTrue(entities.size() == 1, "Creative break must drop one filled sac");
+		helper.assertValueEqual(entities.size(), 1, "creative drop count");
 		ItemStack dropped = entities.getFirst().getItem();
 		assertStack(helper, handler(dropped).getStackInSlot(4), expected, "Creative drop lost contents");
-		helper.assertTrue(dropped.getHoverName().equals(Component.literal("Keepsakes")), "Creative drop lost its custom name");
+		helper.assertValueEqual(dropped.getHoverName(), Component.literal("Keepsakes"), "creative drop name");
 		helper.assertFalse(dropped.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).contains(StorageSacBlockEntity.INVENTORY_KEY), "Creative copy must not keep a second inventory");
 		helper.succeed();
 	}
 
-	@GameTest(template = "empty_platform")
+	@GameTest(template = EMPTY_PLATFORM)
 	public static void mixedOldAndNewItemContentsAreBothRecoveredOnPlacement(GameTestHelper helper) {
 		ItemStack sac = legacySac(helper, 0, new ItemStack(Items.DIAMOND, 5));
 		sac.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(new ItemStack(Items.EMERALD, 7))));
@@ -127,7 +129,7 @@ public final class StorageSacGameTests {
 		helper.succeed();
 	}
 
-	@GameTest(template = "empty_platform")
+	@GameTest(template = EMPTY_PLATFORM)
 	public static void existingPlacedSacRecoversUnclaimedComponentsOnlyOnce(GameTestHelper helper) {
 		StorageSacBlockEntity placed = place(helper, FIRST_POS, new ItemStack(ModItems.STORAGE_SAC.get()));
 		placed.getInventory().setStackInSlot(0, new ItemStack(Items.DIAMOND, 5));
@@ -143,15 +145,51 @@ public final class StorageSacGameTests {
 		helper.succeed();
 	}
 
-	@GameTest(template = "empty_platform")
+	@GameTest(template = EMPTY_PLATFORM)
 	public static void unopenedLootTableSurvivesSurvivalDropAndPlacement(GameTestHelper helper) {
-		SeededContainerLoot expected = new SeededContainerLoot(ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.withDefaultNamespace("chests/simple_dungeon")), 12345L);
 		StorageSacBlockEntity placed = place(helper, FIRST_POS, new ItemStack(ModItems.STORAGE_SAC.get()));
-		placed.setLootTable(expected.lootTable().location(), expected.seed());
+		placed.setLootTable(DUNGEON_LOOT.lootTable().location(), DUNGEON_LOOT.seed());
 		ItemStack dropped = survivalDrop(helper, placed);
-		helper.assertTrue(expected.equals(dropped.get(DataComponents.CONTAINER_LOOT)), "Survival drop lost an unopened loot table");
+		helper.assertValueEqual(dropped.get(DataComponents.CONTAINER_LOOT), DUNGEON_LOOT, "survival drop loot table");
 		StorageSacBlockEntity replaced = place(helper, SECOND_POS, dropped);
-		helper.assertTrue(expected.equals(replaced.collectComponents().get(DataComponents.CONTAINER_LOOT)), "Placement lost the unopened loot table or seed");
+		helper.assertValueEqual(replaced.collectComponents().get(DataComponents.CONTAINER_LOOT), DUNGEON_LOOT, "placed loot table");
+		helper.succeed();
+	}
+
+	@GameTest(template = EMPTY_PLATFORM)
+	public static void contentsAddedToUnopenedLootSacSurviveReload(GameTestHelper helper) {
+		ItemStack sac = new ItemStack(ModItems.STORAGE_SAC.get());
+		sac.set(DataComponents.CONTAINER_LOOT, DUNGEON_LOOT);
+		ItemStack expected = new ItemStack(Items.EMERALD, 7);
+		helper.assertTrue(handler(sac).insertItem(0, expected.copy(), false).isEmpty(), "Unopened loot sac must accept items");
+
+		StorageSacBlockEntity reloaded = reload(helper, place(helper, FIRST_POS, sac));
+		assertStack(helper, reloaded.getInventory().getStackInSlot(0), expected, "World save lost items added to an unopened loot sac");
+		helper.assertValueEqual(reloaded.collectComponents().get(DataComponents.CONTAINER_LOOT), DUNGEON_LOOT, "reloaded loot table");
+		helper.succeed();
+	}
+
+	@GameTest(template = EMPTY_PLATFORM)
+	public static void partiallyUnreadableLegacyItemIsLockedInsteadOfCrashing(GameTestHelper helper) {
+		ItemStack readable = new ItemStack(Items.DIAMOND, 3);
+		ItemStack sac = legacySac(helper, 1, readable);
+		CustomData.update(DataComponents.BLOCK_ENTITY_DATA, sac, tag -> {
+			CompoundTag removedModItem = new CompoundTag();
+			removedModItem.putInt("Slot", 0);
+			removedModItem.putString("id", "removed_mod:gone");
+			removedModItem.putInt("count", 1);
+			tag.getCompound(StorageSacBlockEntity.INVENTORY_KEY).getList("Items", Tag.TAG_COMPOUND).add(removedModItem);
+		});
+		ItemStack original = sac.copy();
+
+		IItemHandler inventory = handler(sac);
+		assertStack(helper, inventory.getStackInSlot(1), readable, "Readable legacy entries must stay visible");
+		helper.assertTrue(inventory.extractItem(1, 1, false).isEmpty(), "A partially unreadable legacy sac must not allow extraction");
+		helper.assertFalse(inventory.isItemValid(2, new ItemStack(Items.STONE)), "A partially unreadable legacy sac must not accept items");
+		helper.assertTrue(ItemStack.matches(original, sac), "A partially unreadable legacy sac must not be migrated");
+
+		StorageSacBlockEntity placed = place(helper, FIRST_POS, sac);
+		assertStack(helper, placed.getInventory().getStackInSlot(1), readable, "Placement must still recover readable legacy entries");
 		helper.succeed();
 	}
 
@@ -177,6 +215,12 @@ public final class StorageSacGameTests {
 		return sac;
 	}
 
+	private static StorageSacBlockEntity reload(GameTestHelper helper, StorageSacBlockEntity sac) {
+		StorageSacBlockEntity reloaded = new StorageSacBlockEntity(sac.getBlockPos(), sac.getBlockState());
+		reloaded.loadWithComponents(sac.saveWithFullMetadata(helper.getLevel().registryAccess()), helper.getLevel().registryAccess());
+		return reloaded;
+	}
+
 	private static StorageSacBlockEntity place(GameTestHelper helper, BlockPos relativePos, ItemStack sac) {
 		helper.setBlock(relativePos.below(), Blocks.STONE);
 		helper.setBlock(relativePos, Blocks.AIR);
@@ -190,7 +234,8 @@ public final class StorageSacGameTests {
 
 	private static ItemStack survivalDrop(GameTestHelper helper, StorageSacBlockEntity sac) {
 		List<ItemStack> drops = Block.getDrops(sac.getBlockState(), helper.getLevel(), sac.getBlockPos(), sac);
-		helper.assertTrue(drops.size() == 1 && drops.getFirst().is(ModItems.STORAGE_SAC.get()), "Expected one storage sac drop");
+		helper.assertValueEqual(drops.size(), 1, "survival drop count");
+		helper.assertTrue(drops.getFirst().is(ModItems.STORAGE_SAC.get()), "Expected the storage sac itself to drop");
 		return drops.getFirst();
 	}
 

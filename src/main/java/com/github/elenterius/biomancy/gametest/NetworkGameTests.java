@@ -18,13 +18,15 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.neoforge.network.connection.ConnectionType;
 
+import static com.github.elenterius.biomancy.gametest.GameTestTemplates.EMPTY_PLATFORM;
+
 @GameTestHolder(BiomancyMod.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class NetworkGameTests {
 
 	private NetworkGameTests() {}
 
-	@GameTest(template = "empty_platform")
+	@GameTest(template = EMPTY_PLATFORM)
 	public static void bioLabFiltersPreserveLockedEmptyAndUnlockedSlots(GameTestHelper helper) {
 		InventoryHandler<BehavioralItemHandler.LockableItemStackFilterInput> inventory =
 				InventoryHandlers.lockableFilterInput(BioLabBlockEntity.INPUT_SLOTS, () -> {});
@@ -34,8 +36,8 @@ public final class NetworkGameTests {
 		inventory.get().setLocked(true);
 
 		BioLabFilterMessage locked = roundTrip(helper, new BioLabFilterMessage(17, inventory.get().getFilters()));
-		helper.assertTrue(locked.containerId() == 17, "filter packet lost its container id");
-		helper.assertTrue(locked.filters().size() == BioLabBlockEntity.INPUT_SLOTS, "filter packet lost input slots");
+		helper.assertValueEqual(locked.containerId(), 17, "filter packet container id");
+		helper.assertValueEqual(locked.filters().size(), BioLabBlockEntity.INPUT_SLOTS, "filter packet slot count");
 		helper.assertTrue(ItemStack.matches(locked.filters().getFirst(), inventory.get().getFilterItemStack(0)),
 				"filter packet lost the populated slot's item or components");
 		for (int i = 1; i < locked.filters().size(); i++) {
@@ -55,7 +57,7 @@ public final class NetworkGameTests {
 		try {
 			BioLabFilterMessage.STREAM_CODEC.encode(buffer, message);
 			BioLabFilterMessage decoded = BioLabFilterMessage.STREAM_CODEC.decode(buffer);
-			helper.assertTrue(!buffer.isReadable(), "filter packet left unread bytes");
+			helper.assertFalse(buffer.isReadable(), "filter packet left unread bytes");
 			return decoded;
 		}
 		finally {

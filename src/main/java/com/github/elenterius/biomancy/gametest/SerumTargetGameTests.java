@@ -12,15 +12,18 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
+import static com.github.elenterius.biomancy.gametest.GameTestTemplates.EMPTY_PLATFORM;
+import static com.github.elenterius.biomancy.gametest.GameTestTemplates.PLATFORM_CENTER;
+
 @GameTestHolder(BiomancyMod.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class SerumTargetGameTests {
 
 	private SerumTargetGameTests() {}
 
-	@GameTest(template = "empty_platform")
+	@GameTest(template = EMPTY_PLATFORM)
 	public static void dispenserSerumsResizeArmorStands(GameTestHelper helper) {
-		BlockPos pos = new BlockPos(4, 2, 4);
+		BlockPos pos = PLATFORM_CENTER;
 		ArmorStand stand = helper.spawn(EntityType.ARMOR_STAND, pos);
 		ItemStack injector = ModItems.INJECTOR.get().getDefaultInstance();
 		InjectorItem.getItemHandler(injector).orElseThrow().setStack(ModItems.SHRINKING_SERUM.get().getDefaultInstance());

@@ -121,29 +121,26 @@ public class SpatialDB {
 		}
 
 		if (backupDB.isValid()) {
-			if ((!mainDB.isValid() || mainDB.storeVersion == SpatialDBManager.STORE_VERSION)
-					&& backupDB.storeVersion == SpatialDBManager.STORE_VERSION) {
-				if (!mainDB.isValid() || mainDB.snapshotVersion < backupDB.snapshotVersion) {
+			if (shouldRestoreFromBackup(mainDB, backupDB)) {
 
-					//noinspection DataFlowIssue - already covered by backupDB.isValid()
-					String backupFile = backupDB.mvStore.getFileStore().getFileName();
+				//noinspection DataFlowIssue - already covered by backupDB.isValid()
+				String backupFile = backupDB.mvStore.getFileStore().getFileName();
 
-					backupDB.closeImmediately();
-					mainDB.closeImmediately();
+				backupDB.closeImmediately();
+				mainDB.closeImmediately();
 
-					MVStoreTool.moveAtomicReplace(backupFile, dbFilepath.toString());
+				MVStoreTool.moveAtomicReplace(backupFile, dbFilepath.toString());
 
-					try {
-						BackupUtil.deleteRecoveryFile(dbFilepath.toString());
-					}
-					catch (Exception e) {
-						SpatialDBManager.LOGGER.warn("Failed to delete temporary recovery file of database '{}' for '{}'", dbName, dbOwnerName, e);
-					}
+				try {
+					BackupUtil.deleteRecoveryFile(dbFilepath.toString());
+				}
+				catch (Exception e) {
+					SpatialDBManager.LOGGER.warn("Failed to delete temporary recovery file of database '{}' for '{}'", dbName, dbOwnerName, e);
+				}
 
-					mainDB = tryOpen(dbFilepath, dbName, dbOwnerName, mainDBFactory);
-					if (mainDB.status == DBStatus.OK) {
-						return mainDB.toResilientDB();
-					}
+				mainDB = tryOpen(dbFilepath, dbName, dbOwnerName, mainDBFactory);
+				if (mainDB.status == DBStatus.OK) {
+					return mainDB.toResilientDB();
 				}
 			}
 		}
@@ -161,6 +158,12 @@ public class SpatialDB {
 		}
 
 		return mainDB.toResilientDB();
+	}
+
+	private static boolean shouldRestoreFromBackup(DBHelper mainDB, DBHelper backupDB) {
+		if (backupDB.storeVersion != SpatialDBManager.STORE_VERSION) return false;
+		if (!mainDB.isValid()) return true;
+		return mainDB.storeVersion == SpatialDBManager.STORE_VERSION && mainDB.snapshotVersion < backupDB.snapshotVersion;
 	}
 
 	private static DBHelper tryOpen(Path dbFilepath, String dbName, String dbOwnerName, MVStoreFactory factory) {

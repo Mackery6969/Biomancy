@@ -16,12 +16,22 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.items.ComponentItemHandler;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 
 public class StorageSacItemHandler extends ComponentItemHandler {
 
+	private static final RegistryOps.RegistryInfoLookup ACTIVE_REGISTRIES = new RegistryOps.RegistryInfoLookup() {
+		@Override
+		public <T> Optional<RegistryOps.RegistryInfo<T>> lookup(ResourceKey<? extends Registry<? extends T>> key) {
+			HolderLookup.RegistryLookup<T> lookup = CommonHooks.resolveLookup(ResourceKey.createRegistryKey(key.location()));
+			return Optional.ofNullable(lookup).map(RegistryOps.RegistryInfo::fromRegistryLookup);
+		}
+	};
+
 	private final ItemStack sac;
+	private @Nullable LegacyContents legacyContents;
 
 	public StorageSacItemHandler(ItemStack sac) {
 		super(sac, DataComponents.CONTAINER, StorageSacBlockEntity.SLOTS);
@@ -35,35 +45,23 @@ public class StorageSacItemHandler extends ComponentItemHandler {
 
 	@Override
 	public boolean isItemValid(int slot, ItemStack stack) {
-		return InventoryHandlers.EMPTY_ITEM_INVENTORY_PREDICATE.test(stack);
+		return !isReadOnly() && InventoryHandlers.EMPTY_ITEM_INVENTORY_PREDICATE.test(stack);
+	}
+
+	@Override
+	public ItemStack extractItem(int slot, int amount, boolean simulate) {
+		return isReadOnly() ? ItemStack.EMPTY : super.extractItem(slot, amount, simulate);
+	}
+
+	@Override
+	public void setStackInSlot(int slot, ItemStack stack) {
+		if (!isReadOnly()) super.setStackInSlot(slot, stack);
 	}
 
 	@Override
 	protected ItemContainerContents getContents() {
-		if (sac.has(DataComponents.CONTAINER)) return super.getContents();
-
-		CustomData data = sac.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY);
-		if (!data.contains(StorageSacBlockEntity.INVENTORY_KEY)) return ItemContainerContents.EMPTY;
-
-		// Capabilities have no level context. Resolve registry-backed item components on the active side.
-		RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, new RegistryOps.RegistryInfoLookup() {
-			@Override
-			public <T> Optional<RegistryOps.RegistryInfo<T>> lookup(ResourceKey<? extends Registry<? extends T>> key) {
-				HolderLookup.RegistryLookup<T> lookup = CommonHooks.resolveLookup(ResourceKey.createRegistryKey(key.location()));
-				return Optional.ofNullable(lookup).map(RegistryOps.RegistryInfo::fromRegistryLookup);
-			}
-		});
-		NonNullList<ItemStack> items = NonNullList.withSize(getSlots(), ItemStack.EMPTY);
-		ListTag entries = data.copyTag().getCompound(StorageSacBlockEntity.INVENTORY_KEY).getList("Items", Tag.TAG_COMPOUND);
-		for (int index = 0; index < entries.size(); index++) {
-			CompoundTag entry = entries.getCompound(index);
-			int slot = entry.getInt("Slot");
-			if (slot >= 0 && slot < items.size()) {
-				// Do not replace legacy data with a partially decoded inventory on a failed migration.
-				items.set(slot, ItemStack.CODEC.parse(ops, entry).getOrThrow());
-			}
-		}
-		return ItemContainerContents.fromItems(items);
+		LegacyContents legacy = getLegacyContents();
+		return legacy != null ? legacy.contents() : super.getContents();
 	}
 
 	@Override
@@ -74,4 +72,43 @@ public class StorageSacItemHandler extends ComponentItemHandler {
 			CustomData.update(DataComponents.BLOCK_ENTITY_DATA, sac, tag -> tag.remove(StorageSacBlockEntity.INVENTORY_KEY));
 		}
 	}
+
+	private boolean isReadOnly() {
+		LegacyContents legacy = getLegacyContents();
+		return legacy != null && !legacy.complete();
+	}
+
+	private @Nullable LegacyContents getLegacyContents() {
+		if (sac.has(DataComponents.CONTAINER)) return null;
+
+		CustomData data = sac.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY);
+		if (legacyContents == null || legacyContents.source() != data) {
+			legacyContents = decodeLegacyContents(data);
+		}
+		return legacyContents;
+	}
+
+	private LegacyContents decodeLegacyContents(CustomData data) {
+		if (!data.contains(StorageSacBlockEntity.INVENTORY_KEY)) return new LegacyContents(data, ItemContainerContents.EMPTY, true);
+
+		RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, ACTIVE_REGISTRIES);
+		NonNullList<ItemStack> items = NonNullList.withSize(getSlots(), ItemStack.EMPTY);
+		boolean complete = true;
+
+		ListTag entries = data.copyTag().getCompound(StorageSacBlockEntity.INVENTORY_KEY).getList("Items", Tag.TAG_COMPOUND);
+		for (int index = 0; index < entries.size(); index++) {
+			CompoundTag entry = entries.getCompound(index);
+			int slot = entry.getInt("Slot");
+			if (slot < 0 || slot >= items.size()) continue;
+
+			Optional<ItemStack> stack = ItemStack.CODEC.parse(ops, entry).result();
+			if (stack.isPresent()) items.set(slot, stack.get());
+			else complete = false;
+		}
+
+		return new LegacyContents(data, ItemContainerContents.fromItems(items), complete);
+	}
+
+	private record LegacyContents(CustomData source, ItemContainerContents contents, boolean complete) {}
+
 }

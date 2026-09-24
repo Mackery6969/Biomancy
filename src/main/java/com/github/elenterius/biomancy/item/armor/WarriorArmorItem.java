@@ -116,7 +116,7 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 	@Override
 	public KeyPressResult onClientKeyPress(ItemStack stack, Level level, Player player, EquipmentSlot slot, byte flags) {
 		if (slot != EquipmentSlot.HEAD || type != Type.HELMET) return KeyPressResult.fail();
-		if (!CombatUtil.hasFulLArmorSetEquipped(player, ARMOR_SET_PREDICATE)) return KeyPressResult.fail();
+		if (!CombatUtil.hasFullArmorSetEquipped(player, ARMOR_SET_PREDICATE)) return KeyPressResult.fail();
 
 		int nutrients = getNutrientsFromEquippedArmor(player, ARMOR_SET_PREDICATE);
 		if (nutrients < IMPOSING_ROAR_COST) {
@@ -131,7 +131,7 @@ public class WarriorArmorItem extends LivingArmorGeoItem implements KnowledgeRea
 	@Override
 	public void onServerReceiveKeyPress(ItemStack stack, ServerLevel level, Player player, byte flags) {
 		if (type != Type.HELMET || player.getItemBySlot(EquipmentSlot.HEAD) != stack) return;
-		if (!CombatUtil.hasFulLArmorSetEquipped(player, ARMOR_SET_PREDICATE)) return;
+		if (!CombatUtil.hasFullArmorSetEquipped(player, ARMOR_SET_PREDICATE)) return;
 
 		int nutrients = getNutrientsFromEquippedArmor(player, ARMOR_SET_PREDICATE);
 		if (nutrients >= IMPOSING_ROAR_COST) {

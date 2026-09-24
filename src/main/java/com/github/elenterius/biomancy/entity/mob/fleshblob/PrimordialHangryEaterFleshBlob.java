@@ -146,7 +146,7 @@ public class PrimordialHangryEaterFleshBlob extends EaterFleshBlob implements En
 	@Override
 	public boolean canBeAffected(MobEffectInstance effectInstance) {
 		Holder<MobEffect> effect = effectInstance.getEffect();
-		if (effect == ModMobEffects.PRIMORDIAL_INFESTATION) return false;
+		if (effect.is(ModMobEffects.PRIMORDIAL_INFESTATION)) return false;
 		if (ModMobEffectTags.isAcid(effect))
 			return false;
 		return super.canBeAffected(effectInstance);

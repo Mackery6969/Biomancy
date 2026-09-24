@@ -173,10 +173,8 @@ public class SingleItemStackHandler implements SerializableItemHandler, IItemHan
 		CompoundTag nbt = new CompoundTag();
 		serializeItemAmount(nbt);
 		if (!cachedStack.isEmpty()) {
-			int count = cachedStack.getCount();
-			if (count > 64) cachedStack.setCount(64); //prevent byte overflow
-			nbt.put(ITEM_TAG, cachedStack.save(registries));
-			if (count != cachedStack.getCount()) cachedStack.setCount(count); //restore item count
+			int count = Math.min(cachedStack.getCount(), Item.ABSOLUTE_MAX_STACK_SIZE);
+			nbt.put(ITEM_TAG, cachedStack.copyWithCount(count).save(registries));
 		}
 		return nbt;
 	}
