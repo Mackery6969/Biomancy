@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.8.7] - 2026-09-24
+
+### Fixed
+
+- Fixed the primal energy supply config of the Primordial Cradle being ignored, where the flesh veins created charge out of nothing and kept spreading forever after a single feeding, even when set to limited ([#20](https://github.com/Mackery6969/Biomancy/issues/20)).
+- Fixed a crash when the world saved while a mined Primordial Cradle, Bio-Forge, Digester or Decomposer was in the inventory, which also deleted the item after relogging ([#19](https://github.com/Mackery6969/Biomancy/issues/19)).
+
 ## [2.9.8.6] - 2026-09-21
 
 ### Fixed
