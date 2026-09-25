@@ -43,10 +43,12 @@ public record BioLabFilterMessage(int containerId, List<@Nullable ItemStack> fil
 	}
 
 	public static void handle(BioLabFilterMessage packet, IPayloadContext context) {
-		LocalPlayer player = Minecraft.getInstance().player;
-		if (player != null && player.containerMenu instanceof BioLabMenu menu && menu.containerId == packet.containerId) {
-			menu.setFilters(packet.filters);
-		}
+		context.enqueueWork(() -> {
+			LocalPlayer player = Minecraft.getInstance().player;
+			if (player != null && player.containerMenu instanceof BioLabMenu menu && menu.containerId == packet.containerId) {
+				menu.setFilters(packet.filters);
+			}
+		});
 	}
 
 }
