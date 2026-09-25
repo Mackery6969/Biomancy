@@ -37,6 +37,8 @@ public final class AttackHandler {
 
 	@SubscribeEvent
 	public static void onHurt(final LivingIncomingDamageEvent event) {
+		if (event.isCanceled()) return;
+
 		LivingEntity livingEntity = event.getEntity();
 
 		if (!livingEntity.level().isClientSide && event.getAmount() >= 6f && livingEntity.hasEffect(ModMobEffects.VOLATILE)) {
