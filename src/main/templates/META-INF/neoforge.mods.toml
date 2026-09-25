@@ -15,6 +15,7 @@ credits = "${mod_credits}"
 authors = "${mod_authors}"
 description = '''${mod_description}'''
 enumExtensions = "META-INF/enumextensions.json"
+featureFlags = "feature_flags.json"
 
 [[mixins]]
 config = "${mod_id}.mixins.json"

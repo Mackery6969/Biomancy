@@ -8,11 +8,14 @@ import com.github.elenterius.biomancy.config.PrimalEnergySettings;
 import com.github.elenterius.biomancy.entity.mob.PrimordialFleshkin;
 import com.github.elenterius.biomancy.entity.mob.fleshblob.FleshBlob;
 import com.github.elenterius.biomancy.init.*;
+import com.github.elenterius.biomancy.init.ModFeatureFlags;
 import com.github.elenterius.biomancy.item.armor.AcolyteArmorItem;
 import com.github.elenterius.biomancy.util.SaturatedMath;
 import com.github.elenterius.biomancy.util.animation.TriggerableAnimation;
 import com.github.elenterius.biomancy.util.sounds.SoundUtil;
 import com.github.elenterius.biomancy.world.PrimordialEcosystem;
+import com.github.elenterius.biomancy.world.hivemind.CarriedBiomass;
+import com.github.elenterius.biomancy.world.hivemind.PrimordialHivemind;
 import com.github.elenterius.biomancy.world.mound.MoundGenerator;
 import com.github.elenterius.biomancy.world.mound.MoundShape;
 import com.github.elenterius.spatialdb.SpatialDBManager;
@@ -31,6 +34,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -61,12 +65,15 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 	public static final String SACRIFICE_KEY = "SacrificeHandler";
 	public static final String PRIMAL_ENERGY_KEY = "PrimalEnergy";
 	public static final String PROC_GEN_VALUES_KEY = "ProcGenValues";
+	public static final String HIVEMIND_KEY = "Hivemind";
 
 	public static final int DURATION_TICKS = 20 * 4;
+	public static final int REINFORCE_RADIUS = 8;
 
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
 	protected final SacrificeHandler sacrificeHandler;
+	protected final PrimordialHivemind hivemind = new PrimordialHivemind();
 
 	private long ticks;
 	private int primalEnergy;
@@ -93,6 +100,52 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 				cradle.ticks = 0;
 			}
 		}
+
+		if (cradle.isHivemindActive() && level.getGameTime() % PrimordialHivemind.TICK_INTERVAL == 0) {
+			cradle.hivemindTick((ServerLevel) level);
+		}
+	}
+
+	public boolean isHivemindActive() {
+		return level != null && ModFeatureFlags.isHivemindEnabled(level);
+	}
+
+	public PrimordialHivemind getHivemind() {
+		return hivemind;
+	}
+
+	private void hivemindTick(ServerLevel level) {
+		boolean wasDormant = hivemind.isDormant();
+
+		int burned = hivemind.serverTick(level, worldPosition, primalEnergy);
+		if (burned > 0) {
+			primalEnergy = Math.max(0, primalEnergy - burned);
+			markChunkAsUnsaved();
+		}
+
+		if (wasDormant != hivemind.isDormant()) {
+			syncToClient();
+		}
+	}
+
+	public void reportHazard(BlockPos hazardPos, @Nullable LivingEntity culprit) {
+		if (!isHivemindActive()) return;
+
+		hivemind.onHarmed(hazardPos, primalEnergy);
+		if (culprit != null) hivemind.setThreat(culprit);
+
+		markChunkAsUnsaved();
+	}
+
+	public void feedFromForager(CarriedBiomass carried) {
+		sacrificeHandler.addBiomass(carried.biomass());
+		sacrificeHandler.addLifeEnergy(carried.lifeEnergy());
+
+		primalEnergy = SaturatedMath.add(primalEnergy, carried.lifeEnergy() * 2);
+		hivemind.onFed(primalEnergy);
+
+		markChunkAsUnsaved();
+		syncToClient();
 	}
 
 	@Override
@@ -311,14 +364,36 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 	@Override
 	public int getPrimalEnergy() {
 		PrimalEnergySettings.SupplyAmount supplyAmount = BiomancyConfig.SERVER.primalEnergySupplyOfCradle.get();
-		if (supplyAmount == PrimalEnergySettings.SupplyAmount.UNLIMITED) return Integer.MAX_VALUE;
 		if (supplyAmount == PrimalEnergySettings.SupplyAmount.NONE) return 0;
+		if (isStarving()) return 0;
+		if (supplyAmount == PrimalEnergySettings.SupplyAmount.UNLIMITED) return Integer.MAX_VALUE;
 
 		return primalEnergy;
 	}
 
+	@Override
+	public boolean isReinforcing(BlockPos pos) {
+		if (!isHivemindActive()) return false;
+		if (hivemind.getHazardResponse() != PrimordialHivemind.HazardResponse.REINFORCE) return false;
+
+		BlockPos hazardPos = hivemind.getHazardPos();
+		return hazardPos != null && hazardPos.distSqr(pos) <= REINFORCE_RADIUS * REINFORCE_RADIUS;
+	}
+
+	@Override
+	public boolean isStarving() {
+		return isHivemindActive() && hivemind.isStarving();
+	}
+
+	@Override
+	public int drainPrimalEnergy(int amount, BlockPos requesterPos) {
+		if (isHivemindActive() && !hivemind.isWithinGrowthCone(worldPosition, requesterPos)) return 0;
+		return drainPrimalEnergy(amount);
+	}
+
 	private void addPrimalEnergy(int amount) {
 		primalEnergy = SaturatedMath.add(primalEnergy, amount);
+		hivemind.onFed(primalEnergy);
 	}
 
 	@Override
@@ -329,6 +404,7 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 		primalEnergy = SaturatedMath.add(primalEnergy, amount);
 		int filled = primalEnergy - prevPrimalEnergy;
 
+		hivemind.onFed(primalEnergy);
 		setChanged();
 
 		return filled;
@@ -339,8 +415,9 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 		if (amount <= 0) return 0;
 
 		PrimalEnergySettings.SupplyAmount supplyAmount = BiomancyConfig.SERVER.primalEnergySupplyOfCradle.get();
-		if (supplyAmount == PrimalEnergySettings.SupplyAmount.UNLIMITED) return amount;
 		if (supplyAmount == PrimalEnergySettings.SupplyAmount.NONE) return 0;
+		if (isStarving()) return 0;
+		if (supplyAmount == PrimalEnergySettings.SupplyAmount.UNLIMITED) return amount;
 
 		if (primalEnergy < amount) {
 			int prevPrimalEnergy = primalEnergy;
@@ -432,6 +509,10 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 		tag.put(SACRIFICE_KEY, sacrificeHandler.serializeNBT(registries));
 		tag.putInt(PRIMAL_ENERGY_KEY, primalEnergy);
 
+		CompoundTag tagHivemind = new CompoundTag();
+		hivemind.writeTo(tagHivemind);
+		tag.put(HIVEMIND_KEY, tagHivemind);
+
 		if (procGenValues != null) {
 			CompoundTag tagProcGen = new CompoundTag();
 			procGenValues.writeTo(tagProcGen);
@@ -456,6 +537,10 @@ public class PrimordialCradleBlockEntity extends SimpleSyncedBlockEntity impleme
 		//		}
 
 		primalEnergy = tag.getInt(PRIMAL_ENERGY_KEY);
+
+		if (tag.contains(HIVEMIND_KEY)) {
+			hivemind.readFrom(tag.getCompound(HIVEMIND_KEY));
+		}
 
 		if (tag.contains(PROC_GEN_VALUES_KEY)) {
 			procGenValues = MoundShape.ProcGenValues.readFrom(tag.getCompound(PROC_GEN_VALUES_KEY));

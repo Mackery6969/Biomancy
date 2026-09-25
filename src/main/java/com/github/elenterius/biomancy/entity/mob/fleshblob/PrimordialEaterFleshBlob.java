@@ -1,5 +1,9 @@
 package com.github.elenterius.biomancy.entity.mob.fleshblob;
 
+import com.github.elenterius.biomancy.entity.mob.ai.goal.DefendSelfForHiveGoal;
+import com.github.elenterius.biomancy.entity.mob.ai.goal.HuntForHiveGoal;
+import com.github.elenterius.biomancy.entity.mob.ai.goal.DefendHiveGoal;
+import com.github.elenterius.biomancy.entity.mob.ai.goal.FeedHiveGoal;
 import com.github.elenterius.biomancy.entity.mob.PrimordialCradleUser;
 import com.github.elenterius.biomancy.entity.mob.PrimordialFleshkin;
 import com.github.elenterius.biomancy.entity.mob.ai.goal.*;
@@ -17,6 +21,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
@@ -58,12 +63,18 @@ public class PrimordialEaterFleshBlob extends EaterFleshBlob implements Primordi
 		goalSelector.addGoal(2, new BurningOrFreezingPanicGoal(this, 1.5d));
 		goalSelector.addGoal(3, new FindItemGoal(this, 12f, SPECIAL_ITEM_ENTITY_FILTER));
 		goalSelector.addGoal(3, new EatFoodItemGoal<>(this, 0.05f));
+		goalSelector.addGoal(3, new FeedHiveGoal(this));
 		goalSelector.addGoal(4, new AvoidEntityGoal<>(this, AbstractGolem.class, 6f, 0.8f, 1.2f));
 		goalSelector.addGoal(4, new UsePrimordialCradleGoal<>(this, 6d));
 		goalSelector.addGoal(5, new DanceNearJukeboxGoal<>(this));
 		goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1d));
 		goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8f));
 		goalSelector.addGoal(7, new RandomLookAroundGoal(this));
+
+		goalSelector.addGoal(4, new HiveAttackGoal(this, 1.2f));
+		targetSelector.addGoal(1, new DefendHiveGoal(this));
+		targetSelector.addGoal(2, new DefendSelfForHiveGoal(this));
+		targetSelector.addGoal(3, new HuntForHiveGoal<>(this, Animal.class, false, HIVE_PREY_SELECTOR));
 	}
 
 	@Override
