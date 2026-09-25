@@ -27,7 +27,11 @@ public class SingleItemStackHandler implements SerializableItemHandler, IItemHan
 
 	@Override
 	public int getSlotLimit(int slot) {
-		return cachedStack.getMaxStackSize();
+		return cachedStack.isEmpty() ? Item.ABSOLUTE_MAX_STACK_SIZE : cachedStack.getMaxStackSize();
+	}
+
+	protected int getStackLimit(ItemStack stack) {
+		return Math.min(getMaxAmount(), stack.getMaxStackSize());
 	}
 
 	public boolean isItemValid(ItemStack stack) {
@@ -106,11 +110,12 @@ public class SingleItemStackHandler implements SerializableItemHandler, IItemHan
 		if (!isItemValid(slot, stackIn)) return stackIn;
 
 		if (!cachedStack.isEmpty() && !ItemStack.isSameItemSameComponents(stackIn, cachedStack)) return stackIn;
-		if (getAmount() >= getMaxAmount()) return stackIn;
+		int stackLimit = getStackLimit(stackIn);
+		if (getAmount() >= stackLimit) return stackIn;
 
 		int insertGoal = stackIn.getCount();
 		int newAmount = getAmount() + insertGoal;
-		int overflow = newAmount > getMaxAmount() ? newAmount - getMaxAmount() : 0;
+		int overflow = Math.max(0, newAmount - stackLimit);
 
 		if (!simulate) {
 			int insertAmount = overflow > 0 ? insertGoal - overflow : insertGoal;
@@ -168,10 +173,8 @@ public class SingleItemStackHandler implements SerializableItemHandler, IItemHan
 		CompoundTag nbt = new CompoundTag();
 		serializeItemAmount(nbt);
 		if (!cachedStack.isEmpty()) {
-			int count = cachedStack.getCount();
-			if (count > 64) cachedStack.setCount(64); //prevent byte overflow
-			nbt.put(ITEM_TAG, cachedStack.save(registries));
-			if (count != cachedStack.getCount()) cachedStack.setCount(count); //restore item count
+			int count = Math.min(cachedStack.getCount(), Item.ABSOLUTE_MAX_STACK_SIZE);
+			nbt.put(ITEM_TAG, cachedStack.copyWithCount(count).save(registries));
 		}
 		return nbt;
 	}

@@ -17,8 +17,8 @@ import java.util.List;
 final class BiomancyKJSEvents {
 
 	static final EventGroup GROUP = EventGroup.of("BiomancyEvents");
-	static final EventHandler CAN_SPAWN_MOB = GROUP.server("canCradleSpawnMob", () -> CanCradleSpawnMobEventKJS.class);
-	static final EventHandler ON_SPAWN_MOB = GROUP.server("onCradleSpawnMob", () -> OnCradleSpawnMobEventKJS.class);
+	static final EventHandler CAN_SPAWN_MOB = GROUP.server("canCradleSpawnMob", () -> CanCradleSpawnMobEventKJS.class).hasResult();
+	static final EventHandler ON_SPAWN_MOB = GROUP.server("onCradleSpawnMob", () -> OnCradleSpawnMobEventKJS.class).hasResult();
 
 	static void canCradleSpawnMob(PrimordialCradleEvents.CanSpawnMob forgeEvent) {
 		if (!CAN_SPAWN_MOB.hasListeners()) return;

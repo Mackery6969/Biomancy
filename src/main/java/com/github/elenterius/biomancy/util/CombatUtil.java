@@ -23,6 +23,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public final class CombatUtil {
+	private static final Set<ArmorItem.Type> HUMANOID_ARMOR_TYPES = EnumSet.of(ArmorItem.Type.HELMET, ArmorItem.Type.CHESTPLATE, ArmorItem.Type.LEGGINGS, ArmorItem.Type.BOOTS);
+
 	private CombatUtil() {}
 
 	public static boolean canPierceThroughArmor(ItemStack weapon, LivingEntity target, @Nullable LivingEntity attacker) {
@@ -50,7 +52,7 @@ public final class CombatUtil {
 		return target.getRandom().nextFloat() < pct + 0.075f * pierceLevel + pierceProbability;
 	}
 
-	public static boolean hasFulLArmorSetEquipped(Player player, Predicate<ItemStack> predicate) {
+	public static boolean hasFullArmorSetEquipped(Player player, Predicate<ItemStack> predicate) {
 		Set<ArmorItem.Type> equippedTypes = EnumSet.noneOf(ArmorItem.Type.class);
 
 		for (ItemStack stackInArmorSlot : player.getArmorSlots()) {
@@ -60,7 +62,7 @@ public final class CombatUtil {
 			else return false;
 		}
 
-		return equippedTypes.size() == ArmorItem.Type.values().length;
+		return equippedTypes.containsAll(HUMANOID_ARMOR_TYPES);
 	}
 
 	public static void performWaterAOE(Level level, Entity attacker, double maxDistance) {

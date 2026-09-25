@@ -30,14 +30,16 @@ public record BioForgeRecipeMessage(int containerId, ResourceLocation id) implem
 	}
 
 	public static void handle(BioForgeRecipeMessage packet, IPayloadContext context) {
-		if (context.player() instanceof ServerPlayer sender && !sender.isSpectator() && sender.containerMenu instanceof BioForgeMenu menu && menu.containerId == packet.containerId) {
-			RecipeManager recipeManager = sender.level().getRecipeManager();
-			RecipeHolder<BioForgingRecipe> recipeHolder = recipeManager.byKey(packet.id)
-					.filter(holder -> holder.value() instanceof BioForgingRecipe)
-					.map(holder -> new RecipeHolder<>(holder.id(), (BioForgingRecipe) holder.value()))
-					.orElse(null);
-			menu.setSelectedRecipe(recipeHolder, sender);
-		}
+		context.enqueueWork(() -> {
+			if (context.player() instanceof ServerPlayer sender && !sender.isSpectator() && sender.containerMenu instanceof BioForgeMenu menu && menu.containerId == packet.containerId) {
+				RecipeManager recipeManager = sender.level().getRecipeManager();
+				RecipeHolder<BioForgingRecipe> recipeHolder = recipeManager.byKey(packet.id)
+						.filter(holder -> holder.value() instanceof BioForgingRecipe)
+						.map(holder -> new RecipeHolder<>(holder.id(), (BioForgingRecipe) holder.value()))
+						.orElse(null);
+				menu.setSelectedRecipe(recipeHolder, sender);
+			}
+		});
 	}
 
 }

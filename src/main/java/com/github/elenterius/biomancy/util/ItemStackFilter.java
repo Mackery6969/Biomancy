@@ -47,11 +47,14 @@ public class ItemStackFilter implements Predicate<ItemStack>, INBTSerializable<C
 		if (filter == null) return ALLOW_ANY;
 		if (filter.isEmpty()) return ALLOW_NONE;
 
-		filter = filter.copyWithCount(1);
-		filter.remove(DataComponents.ENCHANTMENTS);
-		filter.remove(DataComponents.ATTRIBUTE_MODIFIERS);
+		return new ItemStackFilter(copyForComparison(filter), isStrict);
+	}
 
-		return new ItemStackFilter(filter, isStrict);
+	private static ItemStack copyForComparison(ItemStack stack) {
+		ItemStack copy = stack.copyWithCount(1);
+		copy.remove(DataComponents.ENCHANTMENTS);
+		copy.remove(DataComponents.ATTRIBUTE_MODIFIERS);
+		return copy;
 	}
 
 	@Override
@@ -62,7 +65,8 @@ public class ItemStackFilter implements Predicate<ItemStack>, INBTSerializable<C
 		if (filter.isEmpty()) return false;
 
 		if (isStrict) {
-			return ItemStack.isSameItemSameComponents(filter, stack);
+			// Ignore the same components on both sides, including their default empty values.
+			return filter.is(stack.getItem()) && ItemStack.isSameItemSameComponents(filter, copyForComparison(stack));
 		}
 		else {
 			return filter.is(stack.getItem());

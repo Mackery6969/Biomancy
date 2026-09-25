@@ -31,10 +31,12 @@ public record KeyPressMessage(byte slotIndex, byte flag) implements CustomPacket
 	}
 
 	public static void handle(KeyPressMessage packet, IPayloadContext context) {
-		if (context.player() instanceof ServerPlayer player) {
-			ServerLevel level = player.serverLevel();
-			KeyPressListener.onReceiveKeybindingPacket(level, player, UnsignedBytes.toInt(packet.slotIndex), packet.flag); //TODO: add version which is not tied to EquipmentSlotType
-		}
+		context.enqueueWork(() -> {
+			if (context.player() instanceof ServerPlayer player) {
+				ServerLevel level = player.serverLevel();
+				KeyPressListener.onReceiveKeybindingPacket(level, player, UnsignedBytes.toInt(packet.slotIndex), packet.flag); //TODO: add version which is not tied to EquipmentSlotType
+			}
+		});
 	}
 
 }

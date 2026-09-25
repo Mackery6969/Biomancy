@@ -520,7 +520,8 @@ public class GasCloud extends Entity implements TraceableEntity, HitboxDebugInfo
 		}
 
 		public static GasInteractionType fromId(byte id) {
-			return values()[id];
+			GasInteractionType[] values = values();
+			return id >= 0 && id < values.length ? values[id] : TOUCH;
 		}
 
 		public boolean canInteract(DynamicGasVolume gasVolume, LivingEntity livingEntity) {

@@ -13,14 +13,13 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:copy_name",
+              "function": "minecraft:copy_components",
+              "include": [
+                "minecraft:custom_name",
+                "minecraft:container",
+                "minecraft:container_loot"
+              ],
               "source": "block_entity"
-            },
-            {
-              "function": "biomancy:copy_block_entity_data",
-              "keys": [
-                "Inventory"
-              ]
             }
           ],
           "name": "biomancy:storage_sac"
