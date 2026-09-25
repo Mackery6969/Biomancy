@@ -675,11 +675,7 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 				increaseChargeAroundPos(level, pos, random, primalEnergy * 2);
 			}
 			else if (charge > 1) {
-				int usedCharge = increaseChargeAroundPos(level, pos, random, charge);
-				for (int i = usedCharge; i > 0; i--) {
-					if (random.nextFloat() < 0.75f) charge--;
-				}
-				charge = Math.max(charge, 1);
+				charge -= increaseChargeAroundPos(level, pos, random, charge);
 			}
 			setCharge(level, pos, state, charge);
 		}
