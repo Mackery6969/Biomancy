@@ -28,7 +28,7 @@ public final class ModCapabilities {
 
 	public static final DeferredHolder<AttachmentType<?>, AttachmentType<FlagCapImpl>> NO_KNOCKBACK_FLAG = ATTACHMENT_TYPES.register("no_knockback", () -> AttachmentType.builder(FlagCapImpl::new).build());
 
-	public static final DeferredHolder<AttachmentType<?>, AttachmentType<CarriedBiomass>> CARRIED_BIOMASS = ATTACHMENT_TYPES.register("carried_biomass", () -> AttachmentType.builder(() -> CarriedBiomass.NONE).serialize(CarriedBiomass.CODEC, CarriedBiomass::isGorged).build());
+	public static final DeferredHolder<AttachmentType<?>, AttachmentType<CarriedBiomass>> CARRIED_BIOMASS = ATTACHMENT_TYPES.register("carried_biomass", () -> AttachmentType.builder(() -> CarriedBiomass.NONE).serialize(CarriedBiomass.CODEC, CarriedBiomass::hasAnything).build());
 
 	public static final BlockCapability<IItemHandler, Direction> ITEM_HANDLER = Capabilities.ItemHandler.BLOCK;
 	public static final BlockCapability<IFluidHandler, Direction> FLUID_HANDLER = Capabilities.FluidHandler.BLOCK;

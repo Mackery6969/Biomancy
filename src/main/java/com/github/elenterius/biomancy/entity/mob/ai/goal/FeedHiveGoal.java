@@ -20,6 +20,8 @@ public class FeedHiveGoal extends MoveToBlockGoal {
 
 	public static final int SEARCH_RANGE = 32;
 
+	private static final int FAILED_DELIVERY_COOLDOWN = 20 * 15;
+
 	private final PathfinderMob forager;
 	private boolean canFeed;
 
@@ -71,6 +73,12 @@ public class FeedHiveGoal extends MoveToBlockGoal {
 	}
 
 	@Override
+	public void stop() {
+		super.stop();
+		if (isGorged()) nextStartTick = FAILED_DELIVERY_COOLDOWN;
+	}
+
+	@Override
 	public double acceptedDistance() {
 		return 1.5d;
 	}
@@ -93,7 +101,7 @@ public class FeedHiveGoal extends MoveToBlockGoal {
 		if (nearestBlockEntity == null) return false;
 
 		BlockPos nearestPos = nearestBlockEntity.getBlockPos();
-		if (isValidTarget(serverLevel, nearestPos)) {
+		if (forager.isWithinRestriction(nearestPos) && isValidTarget(serverLevel, nearestPos)) {
 			blockPos = nearestPos;
 			return true;
 		}

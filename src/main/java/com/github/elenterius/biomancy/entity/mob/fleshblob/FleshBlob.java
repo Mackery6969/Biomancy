@@ -25,6 +25,8 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.monster.Enemy;
 import com.github.elenterius.biomancy.entity.mob.PrimordialFleshkin;
 import com.github.elenterius.biomancy.init.tags.ModEntityTags;
+import com.github.elenterius.biomancy.init.ModCapabilities;
+import com.github.elenterius.biomancy.world.hivemind.HiveBond;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -50,6 +52,9 @@ import java.util.function.BiConsumer;
 public abstract class FleshBlob extends PathfinderMob implements Fleshkin, JumpMoveHelper.JumpingPathfinderMob, JukeboxDancer, GeoEntity {
 
 	public static final Predicate<LivingEntity> HIVE_PREY_SELECTOR = livingEntity -> !(livingEntity instanceof PrimordialFleshkin) && !livingEntity.getType().is(ModEntityTags.FLESHKIN_IGNORES);
+
+	private Vec3 lastStuckCheckPos = Vec3.ZERO;
+	private int stuckTicks;
 
 	public static final byte MAX_SIZE = 10;
 	public static final byte MIN_SIZE = 1;
@@ -276,6 +281,39 @@ public abstract class FleshBlob extends PathfinderMob implements Fleshkin, JumpM
 	@Override
 	protected void customServerAiStep() {
 		jumpMoveHelper.onCustomServerAiStep();
+
+		if (level() instanceof ServerLevel serverLevel) {
+			HiveBond.serverTick(this, serverLevel);
+			trackStuckState(serverLevel);
+		}
+	}
+
+	private void trackStuckState(ServerLevel level) {
+		boolean wantsToMove = !getNavigation().isDone() || getTarget() != null || getData(ModCapabilities.CARRIED_BIOMASS).isGorged();
+
+		if (!wantsToMove) {
+			stuckTicks = 0;
+			lastStuckCheckPos = position();
+			return;
+		}
+
+		double dx = getX() - lastStuckCheckPos.x;
+		double dz = getZ() - lastStuckCheckPos.z;
+
+		if (dx * dx + dz * dz < 0.25d) {
+			stuckTicks++;
+
+			if (stuckTicks >= HiveBond.stuckThreshold()) {
+				if (HiveBond.tryEatThroughFlesh(this, level)) {
+					getNavigation().stop();
+				}
+				stuckTicks = 0;
+			}
+		}
+		else {
+			stuckTicks = 0;
+			lastStuckCheckPos = position();
+		}
 	}
 
 	@Override

@@ -27,6 +27,7 @@ public final class HivemindForaging {
 	private static final float MIN_PREY_SCALE = 0.1f;
 	private static final float MAX_PREY_SCALE = 4f;
 	private static final int HIVE_SEARCH_RANGE = 32;
+	private static final float OWN_ENERGY_SHARE = 0.35f;
 
 	private HivemindForaging() {}
 
@@ -41,7 +42,8 @@ public final class HivemindForaging {
 		int biomass = Mth.ceil(scale * BIOMASS_PER_PREY);
 		int lifeEnergy = Mth.ceil(prey.getMaxHealth() * scale);
 
-		killer.setData(ModCapabilities.CARRIED_BIOMASS, carried.add(biomass, lifeEnergy));
+		int ownShare = Mth.ceil(lifeEnergy * OWN_ENERGY_SHARE);
+		killer.setData(ModCapabilities.CARRIED_BIOMASS, carried.add(biomass, lifeEnergy - ownShare).addOwnEnergy(ownShare));
 
 		level.sendParticles(ModParticleTypes.PINK_GLOW.get(), killer.getX(), killer.getY(0.5d), killer.getZ(), 4, 0.25d, 0.25d, 0.25d, 0);
 	}

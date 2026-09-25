@@ -11,6 +11,8 @@
 - A Cradle that starves goes dormant and its flesh recedes. A Cradle that has never been fed stays inert instead, so worldgen structures keep the flesh they generated with.
 - The Cradle reacts to fire, lava and explosions damaging its flesh, and decides what to do about it: a well fed hive grows into the hazard and thickens its flesh into solid blocks to smother it, while a weak hive recoils and grows away from it instead. Whoever lit the fire or set off the explosion is remembered as a threat.
 - Flesh with no Cradle spreads faster and more aggressively than normal, but has nothing sustaining it and dies out once its charge is spent.
+- Flesh Blobs keep a share of every kill as their own energy and hand the rest to the Cradle, so they still function alone. A blob bonded to a living hive is stronger, gaining attack damage, movement speed and armour, and spends its own energy to heal itself.
+- Flesh Blobs that end up walled in by the hive's own flesh eat their way back out, absorbing the flesh as energy. A blob holding biomass for a hive that no longer exists absorbs it instead of carrying it forever.
 
 
 ## [2.9.8.6] - 2026-09-21
