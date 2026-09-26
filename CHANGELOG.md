@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.9.8.8] - 2026-09-25
+
+### Added
+
+- Added stonecutter support for more version support.
+
+### Notes
+
+Alexs Caves compat is only on 1.21.1, as for later minecraft versions, geckolib is required for the mod to work, and geckolib is not yet ported to later versions.
+
 ## [2.9.8.7] - 2026-09-24
 
 ### Fixed

@@ -1,0 +1,37 @@
+plugins {
+	id 'dev.kikugie.stonecutter'
+	id 'net.neoforged.moddev' apply false
+}
+
+stonecutter.active '1.21.1'
+
+tasks.named('wrapper', Wrapper).configure {
+	distributionType = Wrapper.DistributionType.ALL
+}
+
+def declaredVersions = stonecutter.versions*.version as Set
+def propertyVersions = rootProject.file('stonecutter.properties.toml').readLines()
+		.collect { (it =~ /^\s*\[\s*"([^"]+)"\s*]\s*$/) }
+		.findAll { it.find() }
+		.collect { it.group(1) } as Set
+if (declaredVersions != propertyVersions) {
+	throw new GradleException(
+			"settings.gradle and stonecutter.properties.toml disagree about the supported Minecraft versions.\n" +
+					"  declared in settings.gradle:            ${declaredVersions.sort()}\n" +
+					"  configured in stonecutter.properties.toml: ${propertyVersions.sort()}\n" +
+					"  only in settings.gradle:                ${(declaredVersions - propertyVersions).sort()}\n" +
+					"  only in stonecutter.properties.toml:    ${(propertyVersions - declaredVersions).sort()}")
+}
+
+stonecutter.parameters {
+	['jei', 'kubejs', 'pehkui', 'farmers_delight', 'overweight_farming',
+	 'sons_of_sins', 'alexs_caves', 'sable', 'geckolib', 'parchment'].each { dep ->
+		constants.put(dep, project.findProperty("deps.${dep}") != null)
+	}
+
+	swaps.put('minecraft_version', "\"${node.metadata.version}\";")
+}
+
+stonecutter.tasks {
+	order('buildAndCollect')
+}

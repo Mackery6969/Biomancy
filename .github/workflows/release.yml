@@ -1,16 +1,20 @@
 name: Release
 
 on:
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
     inputs:
       release_type:
-        description: "Release type (also controls the GitHub prerelease flag)"
+        description: "Release type (also controls the GitHub prerelease flag). Inferred from the mod version when left as auto."
         type: choice
         options:
+          - auto
           - release
           - beta
           - alpha
-        default: release
+        default: auto
       changelog:
         description: "Changelog for this release (Markdown). Leave blank to pull the matching version's section from CHANGELOG.md automatically."
         type: string
@@ -25,18 +29,25 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  alexs-caves:
-    name: Alex's Caves
-    uses: ./.github/workflows/alexs-caves.yml
+  versions:
+    name: Versions
+    uses: ./.github/workflows/versions.yml
+    with:
+      publishable-only: true
 
-  release:
-    name: Build and publish
-    needs: alexs-caves
+  meta:
+    name: Resolve release
+    needs: versions
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
 
-    env:
-      ALEXS_CAVES_DIR_NAME: ${{ needs.alexs-caves.outputs.dir-name }}
+    outputs:
+      mod_version: ${{ steps.meta.outputs.mod_version }}
+      name: ${{ steps.meta.outputs.name }}
+      tag: ${{ steps.meta.outputs.tag }}
+      release_type: ${{ steps.meta.outputs.release_type }}
+      prerelease: ${{ steps.meta.outputs.prerelease }}
+      changelog: ${{ steps.changelog.outputs.text }}
 
     steps:
       - name: Checkout repository
@@ -45,80 +56,82 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      - name: Setup JDK 21
-        uses: actions/setup-java@v6
-        with:
-          java-version: "21"
-          distribution: temurin
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
-
-      - name: Restore Alex's Caves build output
-        uses: actions/cache/restore@v6
-        with:
-          path: ${{ runner.temp }}/${{ env.ALEXS_CAVES_DIR_NAME }}/mcmodsrepo
-          key: ${{ needs.alexs-caves.outputs.cache-key }}
-          fail-on-cache-miss: true
-
-      - name: Build with Gradle
-        run: ./gradlew build "-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo"
-
-      - name: Stage the Maven tree
-        run: ./gradlew publish "-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo"
-
-      - name: Upload the staged tree
-        uses: actions/upload-artifact@v7
-        with:
-          name: maven-staging
-          path: repo/
-          if-no-files-found: error
-          retention-days: 1
-
-
-      - name: Read mod version
+      - name: Resolve version, tag and release type
         id: meta
+        env:
+          REQUESTED_TYPE: ${{ inputs.release_type || 'auto' }}
         run: |
           MOD_ID=$(grep -oP '^mod_id=\K.*' gradle.properties)
           MOD_VERSION=$(grep -oP '^mod_version=\K.*' gradle.properties)
-          MINECRAFT_VERSION=$(grep -oP '^minecraft_version=\K.*' gradle.properties)
-          echo "mod_version=$MOD_VERSION" >> "$GITHUB_OUTPUT"
-          echo "minecraft_version=$MINECRAFT_VERSION" >> "$GITHUB_OUTPUT"
-          echo "name=${MOD_ID}-${MOD_VERSION}" >> "$GITHUB_OUTPUT"
-          echo "tag=v${MOD_VERSION}" >> "$GITHUB_OUTPUT"
+          EXPECTED_TAG="v${MOD_VERSION}"
 
-      - name: Verify updates.json is in sync
+          if [ "${GITHUB_REF_TYPE}" = "tag" ] && [ "${GITHUB_REF_NAME}" != "$EXPECTED_TAG" ]; then
+            echo "::error::Tag '${GITHUB_REF_NAME}' does not match mod_version in gradle.properties (expected '${EXPECTED_TAG}'). Bump mod_version or retag."
+            exit 1
+          fi
+
+          RELEASE_TYPE="$REQUESTED_TYPE"
+          if [ "$RELEASE_TYPE" = "auto" ] || [ -z "$RELEASE_TYPE" ]; then
+            case "$MOD_VERSION" in
+              *alpha*) RELEASE_TYPE=alpha ;;
+              *beta*)  RELEASE_TYPE=beta ;;
+              *)       RELEASE_TYPE=release ;;
+            esac
+          fi
+
+          PRERELEASE=true
+          [ "$RELEASE_TYPE" = "release" ] && PRERELEASE=false
+
+          {
+            echo "mod_version=$MOD_VERSION"
+            echo "name=${MOD_ID}-${MOD_VERSION}"
+            echo "tag=$EXPECTED_TAG"
+            echo "release_type=$RELEASE_TYPE"
+            echo "prerelease=$PRERELEASE"
+          } >> "$GITHUB_OUTPUT"
+
+          echo "Releasing ${MOD_ID} ${MOD_VERSION} as '${RELEASE_TYPE}' under tag ${EXPECTED_TAG}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Verify updates.json is in sync for every published version
         env:
+          MATRIX: ${{ needs.versions.outputs.matrix }}
           MOD_VERSION: ${{ steps.meta.outputs.mod_version }}
-          MINECRAFT_VERSION: ${{ steps.meta.outputs.minecraft_version }}
-          RELEASE_TYPE: ${{ inputs.release_type }}
+          RELEASE_TYPE: ${{ steps.meta.outputs.release_type }}
         run: |
-          LATEST=$(jq -r --arg k "${MINECRAFT_VERSION}-latest" '.promos[$k] // ""' updates.json)
-          RECOMMENDED=$(jq -r --arg k "${MINECRAFT_VERSION}-recommended" '.promos[$k] // ""' updates.json)
-          NOTES=$(jq -r --arg mc "$MINECRAFT_VERSION" --arg v "$MOD_VERSION" '.[$mc][$v] // ""' updates.json)
+          failed=0
+          for mc in $(echo "$MATRIX" | jq -r '.[].mc'); do
+            LATEST=$(jq -r --arg k "${mc}-latest" '.promos[$k] // ""' updates.json)
+            RECOMMENDED=$(jq -r --arg k "${mc}-recommended" '.promos[$k] // ""' updates.json)
+            NOTES=$(jq -r --arg mc "$mc" --arg v "$MOD_VERSION" '.[$mc][$v] // ""' updates.json)
 
-          if [ "$LATEST" != "$MOD_VERSION" ]; then
-            echo "::error::updates.json promos.${MINECRAFT_VERSION}-latest is '$LATEST', expected '$MOD_VERSION'"
-            exit 1
-          fi
+            if [ "$LATEST" != "$MOD_VERSION" ]; then
+              echo "::error::updates.json promos.${mc}-latest is '$LATEST', expected '$MOD_VERSION'"
+              failed=1
+            fi
 
-          if [ -z "$NOTES" ]; then
-            echo "::error::updates.json has no changelog entry for [\"$MINECRAFT_VERSION\"][\"$MOD_VERSION\"]"
-            exit 1
-          fi
+            if [ -z "$NOTES" ]; then
+              echo "::error::updates.json has no changelog entry for [\"$mc\"][\"$MOD_VERSION\"]"
+              failed=1
+            fi
 
-          if [ "$RELEASE_TYPE" = "release" ] && [ "$RECOMMENDED" != "$MOD_VERSION" ]; then
-            echo "::error::updates.json promos.${MINECRAFT_VERSION}-recommended is '$RECOMMENDED', expected '$MOD_VERSION' for a release build"
-            exit 1
-          fi
+            if [ "$RELEASE_TYPE" = "release" ] && [ "$RECOMMENDED" != "$MOD_VERSION" ]; then
+              echo "::error::updates.json promos.${mc}-recommended is '$RECOMMENDED', expected '$MOD_VERSION' for a release build"
+              failed=1
+            fi
+          done
+          exit $failed
 
       - name: Extract this version's changelog section
         id: changelog
+        env:
+          PROVIDED: ${{ inputs.changelog }}
+          MOD_VERSION: ${{ steps.meta.outputs.mod_version }}
         run: |
-          MOD_VERSION="${{ steps.meta.outputs.mod_version }}"
           {
             echo "text<<CHANGELOG_EOF"
-            if [ -f CHANGELOG.md ]; then
+            if [ -n "$PROVIDED" ]; then
+              echo "$PROVIDED"
+            elif [ -f CHANGELOG.md ]; then
               awk -v ver="$MOD_VERSION" '
                 /^## \[/ {
                   if (found) exit
@@ -167,30 +180,140 @@ jobs:
           MODRINTH_PROJECT_ID: ${{ vars.MODRINTH_PROJECT_ID }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
 
+  alexs-caves:
+    name: Alex's Caves
+    uses: ./.github/workflows/alexs-caves.yml
+
+  build:
+    name: Build ${{ matrix.version.mc }}
+    needs: [versions, meta, alexs-caves]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: true
+      matrix:
+        version: ${{ fromJson(needs.versions.outputs.matrix) }}
+
+    env:
+      ALEXS_CAVES_DIR_NAME: ${{ needs.alexs-caves.outputs.dir-name }}
+      MC: ${{ matrix.version.mc }}
+      NEEDS_ALEXS_CAVES: ${{ matrix.version.alexs_caves }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v6
+        with:
+          java-version: "21"
+          distribution: temurin
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Restore Alex's Caves build output
+        if: ${{ matrix.version.alexs_caves }}
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ runner.temp }}/${{ env.ALEXS_CAVES_DIR_NAME }}/mcmodsrepo
+          key: ${{ needs.alexs-caves.outputs.cache-key }}
+          fail-on-cache-miss: true
+
+      - name: Build and stage with Gradle
+        run: |
+          args=()
+          if [ "$NEEDS_ALEXS_CAVES" = "true" ]; then
+            args+=("-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo")
+          fi
+          ./gradlew ":${MC}:build" ":${MC}:publish" "${args[@]}"
+
+      - name: Upload jars
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-jars-${{ matrix.version.mc }}
+          path: |
+            versions/${{ matrix.version.mc }}/build/libs/*.jar
+            !versions/${{ matrix.version.mc }}/build/libs/*-sources.jar
+            !versions/${{ matrix.version.mc }}/build/libs/*-javadoc.jar
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Upload the staged Maven tree
+        uses: actions/upload-artifact@v7
+        with:
+          name: maven-staging-${{ matrix.version.mc }}
+          path: repo/
+          if-no-files-found: error
+          retention-days: 1
+
+  publish-github:
+    name: Publish to GitHub Releases
+    needs: [meta, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Download every version's jars
+        uses: actions/download-artifact@v7
+        with:
+          pattern: release-jars-*
+          merge-multiple: true
+          path: dist
+
+      - name: List what is being released
+        run: |
+          find dist -name '*.jar' -printf '%f\n' | sort | tee -a "$GITHUB_STEP_SUMMARY"
+
       - name: Publish to GitHub Releases
         uses: Kira-NT/mc-publish@v3
         with:
-          name: ${{ steps.meta.outputs.name }}
-          version: ${{ steps.meta.outputs.mod_version }}
-          version-type: ${{ inputs.release_type }}
+          name: ${{ needs.meta.outputs.name }}
+          version: ${{ needs.meta.outputs.mod_version }}
+          version-type: ${{ needs.meta.outputs.release_type }}
+          files: dist/*.jar
 
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-tag: ${{ steps.meta.outputs.tag }}
-          github-prerelease: ${{ inputs.release_type != 'release' }}
+          github-tag: ${{ needs.meta.outputs.tag }}
+          github-prerelease: ${{ needs.meta.outputs.prerelease }}
 
-          changelog: ${{ inputs.changelog != '' && inputs.changelog || steps.changelog.outputs.text }}
+          changelog: ${{ needs.meta.outputs.changelog }}
+
+  publish-mods:
+    name: Publish ${{ matrix.version.mc }} to mod sites
+    needs: [versions, meta, build, publish-github]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      max-parallel: 1
+      fail-fast: false
+      matrix:
+        version: ${{ fromJson(needs.versions.outputs.matrix) }}
+
+    steps:
+      - name: Download this version's jars
+        uses: actions/download-artifact@v7
+        with:
+          name: release-jars-${{ matrix.version.mc }}
+          path: dist
 
       - name: Publish to CurseForge
-        if: ${{ !cancelled() && vars.CURSEFORGE_PROJECT_ID != '' }}
+        if: ${{ vars.CURSEFORGE_PROJECT_ID != '' }}
         uses: Kira-NT/mc-publish@v3
         with:
-          name: ${{ steps.meta.outputs.name }}
-          version: ${{ steps.meta.outputs.mod_version }}
-          version-type: ${{ inputs.release_type }}
-          changelog: ${{ inputs.changelog != '' && inputs.changelog || steps.changelog.outputs.text }}
+          name: ${{ needs.meta.outputs.name }}
+          version: ${{ needs.meta.outputs.mod_version }}
+          version-type: ${{ needs.meta.outputs.release_type }}
+          changelog: ${{ needs.meta.outputs.changelog }}
+          files: dist/*.jar
           loaders: ${{ vars.MOD_LOADERS != '' && vars.MOD_LOADERS || 'neoforge' }}
-          game-versions: ${{ vars.MINECRAFT_GAME_VERSIONS != '' && vars.MINECRAFT_GAME_VERSIONS || steps.meta.outputs.minecraft_version }}
-          java: ${{ vars.JAVA_VERSIONS != '' && vars.JAVA_VERSIONS || '21' }}
+          game-versions: ${{ join(matrix.version.releases, ',') }}
+          java: ${{ matrix.version.java }}
 
           curseforge-id: ${{ vars.CURSEFORGE_PROJECT_ID }}
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
@@ -200,21 +323,44 @@ jobs:
         if: ${{ !cancelled() && vars.MODRINTH_PROJECT_ID != '' }}
         uses: Kira-NT/mc-publish@v3
         with:
-          name: ${{ steps.meta.outputs.name }}
-          version: ${{ steps.meta.outputs.mod_version }}
-          version-type: ${{ inputs.release_type }}
-          changelog: ${{ inputs.changelog != '' && inputs.changelog || steps.changelog.outputs.text }}
+          name: ${{ needs.meta.outputs.name }}
+          version: ${{ needs.meta.outputs.mod_version }}
+          version-type: ${{ needs.meta.outputs.release_type }}
+          changelog: ${{ needs.meta.outputs.changelog }}
+          files: dist/*.jar
           loaders: ${{ vars.MOD_LOADERS != '' && vars.MOD_LOADERS || 'neoforge' }}
-          game-versions: ${{ vars.MINECRAFT_GAME_VERSIONS != '' && vars.MINECRAFT_GAME_VERSIONS || steps.meta.outputs.minecraft_version }}
-          java: ${{ vars.JAVA_VERSIONS != '' && vars.JAVA_VERSIONS || '21' }}
+          game-versions: ${{ join(matrix.version.releases, ',') }}
+          java: ${{ matrix.version.java }}
 
           modrinth-id: ${{ vars.MODRINTH_PROJECT_ID }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           modrinth-dependencies: ${{ vars.MODRINTH_DEPENDENCIES }}
 
+  merge-maven:
+    name: Merge staged Maven trees
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Download every version's staged tree
+        uses: actions/download-artifact@v7
+        with:
+          pattern: maven-staging-*
+          merge-multiple: true
+          path: repo
+
+      - name: Upload the merged tree
+        uses: actions/upload-artifact@v7
+        with:
+          name: maven-staging
+          path: repo/
+          if-no-files-found: error
+          retention-days: 1
+
   maven:
     name: Publish to maven.mackery.com
-    needs: release
+    needs: merge-maven
     uses: Mackery6969/Maven/.github/workflows/publish.yml@main
     with:
       artifact: maven-staging
