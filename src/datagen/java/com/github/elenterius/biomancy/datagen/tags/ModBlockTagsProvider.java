@@ -4,6 +4,7 @@ import com.github.elenterius.biomancy.block.FleshDoorBlock;
 import com.github.elenterius.biomancy.block.FullFleshDoorBlock;
 import com.github.elenterius.biomancy.block.base.DirectionalSlabBlock;
 import com.github.elenterius.biomancy.block.membrane.Membrane;
+import com.github.elenterius.biomancy.block.membrane.MembranePaneBlock;
 import com.github.elenterius.biomancy.init.ModBlocks;
 import com.github.elenterius.biomancy.init.tags.ModBlockTags;
 import net.minecraft.core.HolderLookup;
@@ -50,6 +51,7 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 		addMineableWithToolTags();
 		addCreateTags();
 		addQuarkTags();
+		addAeronauticsTags();
 
 		enhancedTag(ModBlockTags.FLESH_REPLACEABLE)
 				.add(Blocks.CLAY).addTag(BlockTags.SAND).addTag(Tags.Blocks.GRAVELS)
@@ -196,6 +198,16 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 		//Example: Wool
 		IntrinsicTagAppender<Block> windmillSailsTag = tag(tagKey(modId, "windmill_sails"));
 		ModBlocks.BLOCKS.getEntries().stream().map(DeferredHolder::get).filter(Membrane.class::isInstance).forEach(windmillSailsTag::add);
+	}
+
+	private void addAeronauticsTags() {
+		String modId = "aeronautics";
+
+		//Blocks which can hold gas, allowing them to be used as a balloon envelope
+		//Example: Wool
+		IntrinsicTagAppender<Block> airtightTag = tag(tagKey(modId, "airtight"));
+		Predicate<Block> predicate = block -> block instanceof Membrane && !(block instanceof MembranePaneBlock);
+		ModBlocks.BLOCKS.getEntries().stream().map(DeferredHolder::get).filter(predicate).forEach(airtightTag::add);
 	}
 
 	/**
