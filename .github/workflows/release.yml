@@ -1,6 +1,10 @@
 name: Release
 
 on:
+  push:
+    tags:
+      - "v*"
+
   workflow_dispatch:
     inputs:
       release_type:
@@ -61,21 +65,6 @@ jobs:
           key: ${{ needs.alexs-caves.outputs.cache-key }}
           fail-on-cache-miss: true
 
-      - name: Build with Gradle
-        run: ./gradlew build "-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo"
-
-      - name: Stage the Maven tree
-        run: ./gradlew publish "-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo"
-
-      - name: Upload the staged tree
-        uses: actions/upload-artifact@v7
-        with:
-          name: maven-staging
-          path: repo/
-          if-no-files-found: error
-          retention-days: 1
-
-
       - name: Read mod version
         id: meta
         run: |
@@ -87,11 +76,26 @@ jobs:
           echo "name=${MOD_ID}-${MOD_VERSION}" >> "$GITHUB_OUTPUT"
           echo "tag=v${MOD_VERSION}" >> "$GITHUB_OUTPUT"
 
+          RELEASE_TYPE="${{ inputs.release_type }}"
+          if [ -z "$RELEASE_TYPE" ]; then
+            case "$GITHUB_REF_NAME" in
+              *-alpha*) RELEASE_TYPE=alpha ;;
+              *-beta*) RELEASE_TYPE=beta ;;
+              *) RELEASE_TYPE=release ;;
+            esac
+          fi
+          echo "release_type=$RELEASE_TYPE" >> "$GITHUB_OUTPUT"
+
+          if [ "$GITHUB_EVENT_NAME" = "push" ] && [ "$GITHUB_REF_NAME" != "v${MOD_VERSION}" ]; then
+            echo "::error::pushed tag '$GITHUB_REF_NAME' does not match mod_version '$MOD_VERSION' in gradle.properties (expected 'v${MOD_VERSION}')"
+            exit 1
+          fi
+
       - name: Verify updates.json is in sync
         env:
           MOD_VERSION: ${{ steps.meta.outputs.mod_version }}
           MINECRAFT_VERSION: ${{ steps.meta.outputs.minecraft_version }}
-          RELEASE_TYPE: ${{ inputs.release_type }}
+          RELEASE_TYPE: ${{ steps.meta.outputs.release_type }}
         run: |
           LATEST=$(jq -r --arg k "${MINECRAFT_VERSION}-latest" '.promos[$k] // ""' updates.json)
           RECOMMENDED=$(jq -r --arg k "${MINECRAFT_VERSION}-recommended" '.promos[$k] // ""' updates.json)
@@ -111,6 +115,22 @@ jobs:
             echo "::error::updates.json promos.${MINECRAFT_VERSION}-recommended is '$RECOMMENDED', expected '$MOD_VERSION' for a release build"
             exit 1
           fi
+
+
+      - name: Build with Gradle
+        run: ./gradlew build "-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo"
+
+      - name: Stage the Maven tree
+        run: ./gradlew publish "-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo"
+
+      - name: Upload the staged tree
+        uses: actions/upload-artifact@v7
+        with:
+          name: maven-staging
+          path: repo/
+          if-no-files-found: error
+          retention-days: 1
+
 
       - name: Extract this version's changelog section
         id: changelog
@@ -172,11 +192,11 @@ jobs:
         with:
           name: ${{ steps.meta.outputs.name }}
           version: ${{ steps.meta.outputs.mod_version }}
-          version-type: ${{ inputs.release_type }}
+          version-type: ${{ steps.meta.outputs.release_type }}
 
           github-token: ${{ secrets.GITHUB_TOKEN }}
           github-tag: ${{ steps.meta.outputs.tag }}
-          github-prerelease: ${{ inputs.release_type != 'release' }}
+          github-prerelease: ${{ steps.meta.outputs.release_type != 'release' }}
 
           changelog: ${{ inputs.changelog != '' && inputs.changelog || steps.changelog.outputs.text }}
 
@@ -186,7 +206,7 @@ jobs:
         with:
           name: ${{ steps.meta.outputs.name }}
           version: ${{ steps.meta.outputs.mod_version }}
-          version-type: ${{ inputs.release_type }}
+          version-type: ${{ steps.meta.outputs.release_type }}
           changelog: ${{ inputs.changelog != '' && inputs.changelog || steps.changelog.outputs.text }}
           loaders: ${{ vars.MOD_LOADERS != '' && vars.MOD_LOADERS || 'neoforge' }}
           game-versions: ${{ vars.MINECRAFT_GAME_VERSIONS != '' && vars.MINECRAFT_GAME_VERSIONS || steps.meta.outputs.minecraft_version }}
@@ -202,7 +222,7 @@ jobs:
         with:
           name: ${{ steps.meta.outputs.name }}
           version: ${{ steps.meta.outputs.mod_version }}
-          version-type: ${{ inputs.release_type }}
+          version-type: ${{ steps.meta.outputs.release_type }}
           changelog: ${{ inputs.changelog != '' && inputs.changelog || steps.changelog.outputs.text }}
           loaders: ${{ vars.MOD_LOADERS != '' && vars.MOD_LOADERS || 'neoforge' }}
           game-versions: ${{ vars.MINECRAFT_GAME_VERSIONS != '' && vars.MINECRAFT_GAME_VERSIONS || steps.meta.outputs.minecraft_version }}
