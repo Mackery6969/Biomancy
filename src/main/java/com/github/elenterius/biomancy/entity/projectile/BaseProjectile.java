@@ -58,7 +58,7 @@ public abstract class BaseProjectile extends Projectile implements IEntityWithCo
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag) {
 		super.readAdditionalSaveData(tag);
-		damage = tag.contains("damage") ? tag.getFloat("damage") : 5f;
+		damage = tag.contains("damage") ? tag.getFloat("damage") : damage;
 		knockback = tag.getByte("knockback");
 	}
 

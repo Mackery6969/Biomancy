@@ -15,22 +15,23 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
+import static com.github.elenterius.biomancy.gametest.GameTestTemplates.EMPTY_PLATFORM;
+import static com.github.elenterius.biomancy.gametest.GameTestTemplates.PLATFORM_SIZE;
+import static com.github.elenterius.biomancy.gametest.GameTestTemplates.GROUND_Y;
+import static com.github.elenterius.biomancy.gametest.GameTestTemplates.SURFACE_Y;
+import static com.github.elenterius.biomancy.gametest.GameTestTemplates.PLATFORM_CENTER;
+
 @GameTestHolder(BiomancyMod.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class SerumGameTests {
 
-	private static final String TEMPLATE = "empty_platform";
-	private static final int PLATFORM_SIZE = 9;
-	private static final int GROUND_Y = 1;
-	private static final int SURFACE_Y = GROUND_Y + 1;
-
 	private SerumGameTests() {}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 200)
+	@GameTest(template = EMPTY_PLATFORM, timeoutTicks = 200)
 	public static void absorptionSerumGrantsHearts(GameTestHelper helper) {
 		prepareGround(helper);
 
-		LivingEntity target = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(PLATFORM_SIZE / 2, SURFACE_Y, PLATFORM_SIZE / 2));
+		LivingEntity target = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, PLATFORM_CENTER);
 		AbsorptionSerum serum = ModSerums.ABSORPTION_BOOST.get();
 
 		serum.affectEntity(helper.getLevel(), new CompoundTag(), null, target);
@@ -45,11 +46,11 @@ public final class SerumGameTests {
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 200)
+	@GameTest(template = EMPTY_PLATFORM, timeoutTicks = 200)
 	public static void absorptionSerumStacksUpToTheConfiguredMax(GameTestHelper helper) {
 		prepareGround(helper);
 
-		LivingEntity target = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(PLATFORM_SIZE / 2, SURFACE_Y, PLATFORM_SIZE / 2));
+		LivingEntity target = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, PLATFORM_CENTER);
 		AbsorptionSerum serum = ModSerums.ABSORPTION_BOOST.get();
 
 		float previous = 0f;
@@ -79,12 +80,12 @@ public final class SerumGameTests {
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 400)
+	@GameTest(template = EMPTY_PLATFORM, timeoutTicks = 400)
 	public static void absorptionSerumGrantsHeartsOnTheFirstInjection(GameTestHelper helper) {
 		prepareGround(helper);
 
 		LivingEntity target = helper.spawnWithNoFreeWill(EntityType.ZOMBIE,
-				new BlockPos(PLATFORM_SIZE / 2, SURFACE_Y, PLATFORM_SIZE / 2));
+				PLATFORM_CENTER);
 		AbsorptionSerum serum = ModSerums.ABSORPTION_BOOST.get();
 
 		float afterFirst = 0f;

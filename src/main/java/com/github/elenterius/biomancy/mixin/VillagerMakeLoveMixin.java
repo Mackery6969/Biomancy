@@ -23,8 +23,9 @@ public abstract class VillagerMakeLoveMixin {
 	)
 	private void onCanBreed(ServerLevel level, Villager owner, long gameTime, CallbackInfo ci) {
 		if (owner.hasEffect(ModMobEffects.LIBIDO) && gameTime % 40 == 0L) {
-			Villager partner = (Villager) owner.getBrain().getMemory(MemoryModuleType.BREED_TARGET).get();
-			biomancy$breed(level, owner, partner);
+			Optional<Villager> partner = owner.getBrain().getMemory(MemoryModuleType.BREED_TARGET).map(Villager.class::cast);
+			if (partner.isEmpty()) return;
+			biomancy$breed(level, owner, partner.get());
 			ci.cancel();
 		}
 	}

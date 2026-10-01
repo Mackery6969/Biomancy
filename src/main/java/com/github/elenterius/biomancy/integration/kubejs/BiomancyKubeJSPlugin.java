@@ -32,6 +32,7 @@ import dev.latvian.mods.kubejs.recipe.component.ItemStackComponent;
 import dev.latvian.mods.kubejs.recipe.component.NumberComponent;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponentType;
+import dev.latvian.mods.kubejs.recipe.component.SizedIngredientComponent;
 import dev.latvian.mods.kubejs.recipe.component.StringComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
@@ -48,6 +49,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -144,13 +146,13 @@ public class BiomancyKubeJSPlugin implements KubeJSPlugin {
 
 			@Override
 			public dev.latvian.mods.rhino.type.TypeInfo typeInfo() {
-				return IngredientComponent.INGREDIENT.instance().typeInfo();
+				return SizedIngredientComponent.SIZED_INGREDIENT.instance().typeInfo();
 			}
 
 			@Override
 			public IngredientStack wrap(RecipeScriptContext cx, Object from) {
-				Ingredient ingredient = IngredientComponent.INGREDIENT.instance().wrap(cx, from);
-				return new IngredientStack(ingredient, 1);
+				SizedIngredient ingredient = SizedIngredientComponent.SIZED_INGREDIENT.instance().wrap(cx, from);
+				return new IngredientStack(ingredient.ingredient(), ingredient.count());
 			}
 
 			@Override

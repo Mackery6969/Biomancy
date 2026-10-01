@@ -170,7 +170,7 @@ public class ImpalerProjectile extends BaseProjectile implements GeoEntity {
 	}
 
 	public void setPierceLevel(int level) {
-		entityData.set(PIERCE_LEVEL, (byte) (level * 2));
+		entityData.set(PIERCE_LEVEL, (byte) level);
 	}
 
 	public byte getPierceLevel() {

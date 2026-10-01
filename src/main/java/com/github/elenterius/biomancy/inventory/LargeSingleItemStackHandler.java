@@ -32,6 +32,11 @@ public class LargeSingleItemStackHandler extends SingleItemStackHandler {
 	}
 
 	@Override
+	protected int getStackLimit(ItemStack stack) {
+		return maxItemAmount;
+	}
+
+	@Override
 	public int getAmount() {
 		return itemAmount;
 	}

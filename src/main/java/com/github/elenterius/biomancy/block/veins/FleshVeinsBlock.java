@@ -624,7 +624,7 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 			mound = moundShape;
 
 			BlockPos origin = mound.getOrigin();
-			BlockEntity existingBlockEntity = level.getBlockEntity(origin);
+			BlockEntity existingBlockEntity = LevelUtil.getExistingBlockEntity(level, origin);
 			if (existingBlockEntity instanceof PrimalEnergyHandler peh) {
 				energyHandler = peh;
 			}
@@ -698,11 +698,7 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 				increaseChargeAroundPos(level, pos, random, primalEnergy * 2);
 			}
 			else if (charge > 1) {
-				int usedCharge = increaseChargeAroundPos(level, pos, random, charge);
-				for (int i = usedCharge; i > 0; i--) {
-					if (random.nextFloat() < 0.75f) charge--;
-				}
-				charge = Math.max(charge, 1);
+				charge -= increaseChargeAroundPos(level, pos, random, charge);
 			}
 			setCharge(level, pos, state, charge);
 		}
@@ -773,7 +769,7 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 		int currentCharge = getCharge(state);
 		if (currentCharge < CHARGE.getMax()) {
 			int usedCharge = Math.min(amount, CHARGE.getMax() - currentCharge);
-			setCharge(level, pos.immutable(), state, currentCharge + usedCharge);
+			setCharge(level, pos.immutable(), state, usedCharge);
 			return usedCharge;
 		}
 		return 0;

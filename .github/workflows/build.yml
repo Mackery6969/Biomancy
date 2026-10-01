@@ -3,7 +3,6 @@ name: Build
 on:
   push:
     paths-ignore:
-      - '!.github/workflows/build.yml'
       - 'README.md'
       - 'CHANGELOG.md'
       - 'CODE_OF_CONDUCT.md'
@@ -19,6 +18,7 @@ on:
       - 'actionlint.exe'
       - '.gitignore'
       - '.editorconfig'
+      - '!.github/workflows/build.yml'
 
   pull_request:
 
@@ -40,7 +40,7 @@ jobs:
     name: Build with Java 21
     needs: alexs-caves
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     env:
       ALEXS_CAVES_DIR_NAME: ${{ needs.alexs-caves.outputs.dir-name }}
@@ -70,6 +70,21 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build "-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo"
+
+      - name: Run game tests
+        id: gametest
+        run: ./gradlew runGameTestServer "-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo"
+
+      - name: Upload game test logs
+        if: failure() && steps.gametest.outcome == 'failure'
+        uses: actions/upload-artifact@v7
+        with:
+          name: gametest-logs-${{ github.sha }}
+          path: |
+            runs/game-test/logs/
+            runs/game-test/crash-reports/
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Compute artifact name
         id: artifact

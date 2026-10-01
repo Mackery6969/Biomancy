@@ -6,6 +6,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -67,7 +68,7 @@ public class CopyBlockEntityDataFunction extends LootItemConditionalFunction {
 		}
 
 		if (copiedAny) {
-			CustomData.set(DataComponents.BLOCK_ENTITY_DATA, stack, targetTag);
+			BlockItem.setBlockEntityData(stack, blockEntity.getType(), targetTag);
 		}
 
 		return stack;

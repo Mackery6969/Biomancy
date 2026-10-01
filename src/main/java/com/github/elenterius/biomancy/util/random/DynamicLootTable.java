@@ -37,7 +37,8 @@ public class DynamicLootTable extends DynamicWeightedRandomList<DynamicWeightedR
 
 	public Optional<ItemLoot> getAndRemoveRandomItem(RandomSource random) {
 		Optional<IWeightedEntry<ItemLoot>> weightedEntry = getRandom(random);
-		weightedEntry.ifPresent(this::removeEntry);
+		//self-removing entries are already removed by getRandom()/getWeightedItem(); removing again here could delete an unrelated but structurally-equal entry instead of being a no-op
+		weightedEntry.filter(entry -> !entry.shouldRemove()).ifPresent(this::removeEntry);
 		return weightedEntry.map(IWeightedEntry::data);
 	}
 

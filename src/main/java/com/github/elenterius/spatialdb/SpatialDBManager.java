@@ -21,8 +21,8 @@ import org.h2.mvstore.MVStore;
 import org.h2.store.fs.FileUtils;
 
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -38,7 +38,7 @@ public class SpatialDBManager {
 
 	public static final String FILE_NAME = "biomancy.spatial.db";
 
-	private static final Map<String, SDBI> DATABASES = new HashMap<>();
+	private static final Map<String, SDBI> DATABASES = new ConcurrentHashMap<>();
 
 	private static final ExecutorService EXECUTOR_SERVICE;
 
@@ -87,10 +87,16 @@ public class SpatialDBManager {
 
 	private static void backupDB(ServerLevel level) {
 		String key = getWorldName(level);
-		if (DATABASES.containsKey(key)) {
-			SpatialDB db = DATABASES.get(key).getSpatialDB();
+		SDBI sdbi = DATABASES.get(key);
+		if (sdbi != null) {
+			SpatialDB db = sdbi.getSpatialDB();
 			try {
-				EXECUTOR_SERVICE.submit(db::backup);
+				//synchronize on the db instance so this never races a concurrent shutdownDB()/shutdownAll() closing the same store
+				EXECUTOR_SERVICE.submit(() -> {
+					synchronized (db) {
+						db.backup();
+					}
+				});
 			}
 			catch (Exception ignored) {
 
@@ -101,14 +107,16 @@ public class SpatialDBManager {
 	/// Close [SpatialDB] if present for the given level and remove it from the cache
 	private static void shutdownDB(ServerLevel level) {
 		String key = getWorldName(level);
-		if (DATABASES.containsKey(key)) {
-			SpatialDB db = DATABASES.get(key).getSpatialDB();
+		SDBI sdbi = DATABASES.remove(key);
+		if (sdbi != null) {
+			SpatialDB db = sdbi.getSpatialDB();
 
 			LOGGER.info(LOG_MARKER, "Shutting down database for world {}...", key);
-			db.backup();
-			db.shutdown();
-
-			DATABASES.remove(key);
+			//synchronize on the db instance so this can't run concurrently with an in-flight async backupDB() task for the same db
+			synchronized (db) {
+				db.backup();
+				db.shutdown();
+			}
 		}
 	}
 
@@ -129,8 +137,10 @@ public class SpatialDBManager {
 		DATABASES.forEach((world, sdbi) -> {
 			LOGGER.info(LOG_MARKER, "Shutting down database for [World/{}]...", world);
 			SpatialDB db = sdbi.getSpatialDB();
-			db.backup();
-			db.shutdown();
+			synchronized (db) {
+				db.backup();
+				db.shutdown();
+			}
 		});
 		DATABASES.clear();
 	}

@@ -57,22 +57,13 @@ public class MobSpawnFilterShape implements Shape, MobSpawnFilter {
 		@Override
 		public CompoundTag write(MobSpawnFilterShape shape) {
 			CompoundTag tag = new CompoundTag();
-			tag.put("Shape", shape.shape.getNBTSerializer().write(shape.shape));
+			tag.put("Shape", ShapeSerializers.write(shape.shape));
 			return tag;
 		}
 
 		@Override
 		public MobSpawnFilterShape read(CompoundTag tag) {
-			Shape shape = EMPTY;
-
-			CompoundTag shapeCompound = tag.getCompound("Shape");
-			String serializerId = shapeCompound.getString("Serializer");
-			NBTSerializer<Shape> serializer = ShapeSerializers.get(serializerId);
-			if (serializer != null) {
-				shape = serializer.read(shapeCompound);
-			}
-
-			return new MobSpawnFilterShape(shape);
+			return new MobSpawnFilterShape(ShapeSerializers.read(tag.getCompound("Shape")));
 		}
 	}
 }

@@ -63,7 +63,7 @@ public class EnlargementSerum extends BasicSerum {
 
 	@Override
 	public boolean canAffectEntity(CompoundTag tag, @Nullable LivingEntity source, LivingEntity target) {
-		return target instanceof Mob || target instanceof Player;
+		return target instanceof Mob || target instanceof Player || target instanceof ArmorStand;
 	}
 
 	@Override

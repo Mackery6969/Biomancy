@@ -43,6 +43,9 @@ public class CradleCleansingRecipe extends CustomRecipe {
 				}
 				cleansingSerum = stack;
 			}
+			else {
+				return false;
+			}
 		}
 
 		return !cradle.isEmpty() && !cleansingSerum.isEmpty();

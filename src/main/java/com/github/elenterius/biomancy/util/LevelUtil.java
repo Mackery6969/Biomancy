@@ -25,6 +25,11 @@ public final class LevelUtil {
 		return level.getCapability(ModCapabilities.ITEM_HANDLER, pos, direction);
 	}
 
+	public static @Nullable BlockEntity getExistingBlockEntity(ServerLevel level, BlockPos pos) {
+		LevelChunk chunk = level.getChunkSource().getChunkNow(SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
+		return chunk != null ? chunk.getBlockEntity(pos, LevelChunk.EntityCreationType.CHECK) : null;
+	}
+
 	/**
 	 * @return max(skyLight, blockLight) in the range of [0, ..., 15]
 	 */

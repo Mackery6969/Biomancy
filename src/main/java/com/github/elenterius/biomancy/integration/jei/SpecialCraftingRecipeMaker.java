@@ -55,7 +55,9 @@ public final class SpecialCraftingRecipeMaker {
 	}
 
 	public static List<CraftingRecipe> createHelmetUpgradeRecipes() {
-		return ModItems.findEntries(LivingArmorItem.class).map(SpecialCraftingRecipeMaker::createHelmetUpgradeRecipe).toList();
+		return ModItems.findEntries(LivingArmorItem.class)
+				.filter(armorItem -> armorItem.get().getType() == ArmorItem.Type.HELMET)
+				.map(SpecialCraftingRecipeMaker::createHelmetUpgradeRecipe).toList();
 	}
 
 	private static <A extends ArmorItem> CraftingRecipe createHelmetUpgradeRecipe(DeferredHolder<Item, A> armorItem) {

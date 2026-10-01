@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.9.8.7] - 2026-09-22
+## [2.9.8.9] - 2026-09-22
 
 ### Added
 
@@ -15,6 +15,23 @@ Experimental features are now available in the Experiments screen when creating 
 - Flesh with no Cradle spreads faster and more aggressively than normal, but has nothing sustaining it and dies out once its charge is spent.
 - Flesh Blobs keep a share of every kill as their own energy and hand the rest to the Cradle, so they still function alone. A blob bonded to a living hive is stronger, gaining attack damage, movement speed and armour, and spends its own energy to heal itself.
 - Flesh Blobs that end up walled in by the hive's own flesh eat their way back out, absorbing the flesh as energy. A blob holding biomass for a hive that no longer exists absorbs it instead of carrying it forever.
+
+## [2.9.8.8] - 2026-10-01
+
+### Fixed
+
+- Fixed the Primordial Cradle from causing memory leaks ([[Mackery6969/Biomancy#27](https://github.com/Mackery6969/Biomancy/issues/27)]).
+
+## [2.9.8.7] - 2026-09-24
+
+### Fixed
+
+- Fixed the primal energy supply config of the Primordial Cradle being ignored, where the flesh veins created charge out of nothing and kept spreading forever after a single feeding, even when set to limited ([#20](https://github.com/Mackery6969/Biomancy/issues/20)).
+- Fixed a crash when the world saved while a mined Primordial Cradle, Bio-Forge, Digester or Decomposer was in the inventory, which also deleted the item after relogging ([#19](https://github.com/Mackery6969/Biomancy/issues/19)).
+
+### Added
+
+- Added all of the full block membranes to Aeronautics' `#aeronautics:airtight` block tag, so they can be used as a balloon envelope ([#23](https://github.com/Mackery6969/Biomancy/issues/23)).
 
 ## [2.9.8.6] - 2026-09-21
 
@@ -71,6 +88,8 @@ Experimental features are now available in the Experiments screen when creating 
 
 _Initial release._
 
+[2.9.8.9]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.9
+[2.9.8.8]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.8
 [2.9.8.7]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.7
 [2.9.8.6]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.6
 [2.9.8.5]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.5

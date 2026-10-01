@@ -44,7 +44,7 @@ public class OrificeBlock extends Block implements BucketPickup {
 	}
 
 	public static ToIntFunction<BlockState> lightEmission(int maxLightValue) {
-		return (state) -> AGE.getValue(state) / AGE.getMax() * maxLightValue;
+		return (state) -> AGE.getValue(state) * maxLightValue / AGE.getMax();
 	}
 
 	@Override

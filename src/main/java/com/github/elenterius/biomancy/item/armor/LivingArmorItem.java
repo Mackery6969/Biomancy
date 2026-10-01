@@ -73,62 +73,68 @@ public class LivingArmorItem extends ArmorItem implements SimpleLivingTool {
 	private static int[] consumeBalanced(final int targetAmount, int... array) {
 		int[] remaining = ArrayUtil.copyOf(array);
 		int[] consumed = new int[array.length];
-
 		int needed = targetAmount;
 
 		while (needed > 0) {
-			if (ArrayUtil.sum(remaining) <= 0) break;
+			int index = findRichestSlot(remaining);
+			if (index < 0) break;
 
-			int validIndices = 0;
-			int index = -1;
-			int max = 0;
-			for (int i = 0; i < remaining.length; i++) {
-				int n = remaining[i];
-				if (n > max) {
-					max = n;
-					index = i;
-				}
-				if (n > 0) validIndices++;
+			int nextMax = findNextNutrientLevel(remaining, remaining[index]);
+			if (nextMax == 0) {
+				consumeEvenly(needed, remaining, consumed);
+				break;
 			}
 
-			if (max == 0) break;
-
-			int nextMax = 0;
-			for (int n : remaining) {
-				if (n < max && n > nextMax) {
-					nextMax = n;
-				}
-			}
-
-			if (nextMax > 0) {
-				int toConsume = Math.min(max - nextMax, needed);
-				consumed[index] += toConsume;
-				remaining[index] -= toConsume;
-			}
-			else {
-				int toConsume = needed / validIndices;
-
-				for (int i = 0; i < remaining.length; i++) {
-					if (remaining[i] > 0) {
-						int min = Math.min(toConsume, remaining[i]);
-						consumed[i] += min;
-						remaining[i] -= min;
-					}
-				}
-
-				int remainder = needed % validIndices;
-				for (int i = 0; i < remainder; i++) {
-					if (remaining[i] > 0) {
-						consumed[i] += 1;
-						remaining[i] -= 1;
-					}
-				}
-			}
-
-			needed = targetAmount - ArrayUtil.sum(consumed);
+			int toConsume = Math.min(remaining[index] - nextMax, needed);
+			consumed[index] += toConsume;
+			remaining[index] -= toConsume;
+			needed -= toConsume;
 		}
 
 		return consumed;
+	}
+
+	private static int findRichestSlot(int[] remaining) {
+		int index = -1;
+		int max = 0;
+		for (int i = 0; i < remaining.length; i++) {
+			if (remaining[i] > max) {
+				max = remaining[i];
+				index = i;
+			}
+		}
+		return index;
+	}
+
+	private static int findNextNutrientLevel(int[] remaining, int max) {
+		int nextMax = 0;
+		for (int nutrients : remaining) {
+			if (nutrients < max && nutrients > nextMax) nextMax = nutrients;
+		}
+		return nextMax;
+	}
+
+	private static void consumeEvenly(int amount, int[] remaining, int[] consumed) {
+		int chargedSlots = 0;
+		for (int nutrients : remaining) {
+			if (nutrients > 0) chargedSlots++;
+		}
+
+		int share = amount / chargedSlots;
+		for (int i = 0; i < remaining.length; i++) {
+			int toConsume = Math.min(share, remaining[i]);
+			consumed[i] += toConsume;
+			remaining[i] -= toConsume;
+		}
+
+		int remainder = amount % chargedSlots;
+		for (int i = 0; i < remaining.length && remainder > 0; i++) {
+			if (remaining[i] > 0) {
+				consumed[i]++;
+				remaining[i]--;
+				remainder--;
+			}
+		}
 	}
 
 	@Override

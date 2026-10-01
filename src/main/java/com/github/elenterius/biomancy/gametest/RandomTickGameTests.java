@@ -24,23 +24,24 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.elenterius.biomancy.gametest.GameTestTemplates.EMPTY_PLATFORM;
+import static com.github.elenterius.biomancy.gametest.GameTestTemplates.PLATFORM_SIZE;
+import static com.github.elenterius.biomancy.gametest.GameTestTemplates.GROUND_Y;
+import static com.github.elenterius.biomancy.gametest.GameTestTemplates.SURFACE_Y;
+import static com.github.elenterius.biomancy.gametest.GameTestTemplates.PLATFORM_CENTER;
+
 @GameTestHolder(BiomancyMod.MOD_ID)
 @PrefixGameTestTemplate(false)
 public final class RandomTickGameTests {
-
-	private static final String TEMPLATE = "empty_platform";
-	private static final int PLATFORM_SIZE = 9;
-	private static final int GROUND_Y = 1;
-	private static final int SURFACE_Y = GROUND_Y + 1;
 
 	private static final int RANDOM_TICKS = 2000;
 
 	private RandomTickGameTests() {}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 600)
+	@GameTest(template = EMPTY_PLATFORM, timeoutTicks = 600)
 	public static void malignantFleshVeinsSpread(GameTestHelper helper) {
 		prepareGround(helper);
-		BlockPos seed = new BlockPos(PLATFORM_SIZE / 2, SURFACE_Y, PLATFORM_SIZE / 2);
+		BlockPos seed = PLATFORM_CENTER;
 
 		BlockState veins = ModBlocks.MALIGNANT_FLESH_VEINS.get().defaultBlockState()
 				.setValue(MultifaceBlock.getFaceProperty(Direction.DOWN), true);
@@ -65,10 +66,10 @@ public final class RandomTickGameTests {
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 600)
+	@GameTest(template = EMPTY_PLATFORM, timeoutTicks = 600)
 	public static void unchargedVeinsDoNotSpread(GameTestHelper helper) {
 		prepareGround(helper);
-		BlockPos seed = new BlockPos(PLATFORM_SIZE / 2, SURFACE_Y, PLATFORM_SIZE / 2);
+		BlockPos seed = PLATFORM_CENTER;
 
 		BlockState veins = ModBlocks.MALIGNANT_FLESH_VEINS.get().defaultBlockState()
 				.setValue(MultifaceBlock.getFaceProperty(Direction.DOWN), true);
@@ -86,10 +87,10 @@ public final class RandomTickGameTests {
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 600)
+	@GameTest(template = EMPTY_PLATFORM, timeoutTicks = 600)
 	public static void acidSplatterDecays(GameTestHelper helper) {
 		prepareGround(helper);
-		BlockPos pos = new BlockPos(PLATFORM_SIZE / 2, SURFACE_Y, PLATFORM_SIZE / 2);
+		BlockPos pos = PLATFORM_CENTER;
 
 		BlockState splatter = ModBlocks.ACID_SPLATTER.get().defaultBlockState()
 				.setValue(MultifaceBlock.getFaceProperty(Direction.DOWN), true);
@@ -107,10 +108,10 @@ public final class RandomTickGameTests {
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 600)
+	@GameTest(template = EMPTY_PLATFORM, timeoutTicks = 600)
 	public static void cradleSeedsVeinsAroundItself(GameTestHelper helper) {
 		prepareGround(helper);
-		BlockPos cradlePos = new BlockPos(PLATFORM_SIZE / 2, SURFACE_Y, PLATFORM_SIZE / 2);
+		BlockPos cradlePos = PLATFORM_CENTER;
 
 		helper.setBlock(cradlePos, ModBlocks.PRIMORDIAL_CRADLE.get());
 		helper.setBlock(cradlePos.below(), ModBlocks.MALIGNANT_FLESH.get());
@@ -130,10 +131,10 @@ public final class RandomTickGameTests {
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 600)
+	@GameTest(template = EMPTY_PLATFORM, timeoutTicks = 600)
 	public static void bloomAimCheckWorksWithoutAnEntity(GameTestHelper helper) {
 		prepareGround(helper);
-		BlockPos origin = new BlockPos(PLATFORM_SIZE / 2, SURFACE_Y, PLATFORM_SIZE / 2);
+		BlockPos origin = PLATFORM_CENTER;
 
 		BloomBlock bloom = ModBlocks.PRIMAL_BLOOM.get();
 		for (Direction direction : Direction.values()) {
@@ -148,10 +149,10 @@ public final class RandomTickGameTests {
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 600)
+	@GameTest(template = EMPTY_PLATFORM, timeoutTicks = 600)
 	public static void veinsEatDroppedMeatWithoutCrashing(GameTestHelper helper) {
 		prepareGround(helper);
-		BlockPos pos = new BlockPos(PLATFORM_SIZE / 2, SURFACE_Y, PLATFORM_SIZE / 2);
+		BlockPos pos = PLATFORM_CENTER;
 
 		BlockState veins = ModBlocks.MALIGNANT_FLESH_VEINS.get().defaultBlockState()
 				.setValue(MultifaceBlock.getFaceProperty(Direction.DOWN), true);
@@ -175,13 +176,13 @@ public final class RandomTickGameTests {
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 600)
+	@GameTest(template = EMPTY_PLATFORM, timeoutTicks = 600)
 	public static void spreadingNeverLeavesFloatingVeins(GameTestHelper helper) {
 		prepareGround(helper);
 		ServerLevel level = helper.getLevel();
 		Block veinsBlock = ModBlocks.MALIGNANT_FLESH_VEINS.get();
 
-		BlockPos seed = new BlockPos(PLATFORM_SIZE / 2, SURFACE_Y, PLATFORM_SIZE / 2);
+		BlockPos seed = PLATFORM_CENTER;
 		BlockState seedState = veinsBlock.defaultBlockState()
 				.setValue(MultifaceBlock.getFaceProperty(Direction.DOWN), true);
 		seedState = ModBlockProperties.CHARGE.setValue(seedState, ModBlockProperties.CHARGE.getMax());
@@ -246,13 +247,13 @@ public final class RandomTickGameTests {
 		return positions;
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 200)
+	@GameTest(template = EMPTY_PLATFORM, timeoutTicks = 200)
 	public static void removingSupportWithUpdateClientsDetachesVeins(GameTestHelper helper) {
 		prepareGround(helper);
 		ServerLevel level = helper.getLevel();
 		Block veinsBlock = ModBlocks.MALIGNANT_FLESH_VEINS.get();
 
-		BlockPos rel = new BlockPos(PLATFORM_SIZE / 2, SURFACE_Y, PLATFORM_SIZE / 2);
+		BlockPos rel = PLATFORM_CENTER;
 		BlockPos abs = helper.absolutePos(rel);
 		BlockPos supportAbs = abs.below();
 
@@ -276,7 +277,7 @@ public final class RandomTickGameTests {
 		helper.succeed();
 	}
 
-	@GameTest(template = TEMPLATE, timeoutTicks = 600)
+	@GameTest(template = EMPTY_PLATFORM, timeoutTicks = 600)
 	public static void spreadingOverVariedTerrainLeavesNoFloatingVeins(GameTestHelper helper) {
 		prepareGround(helper);
 		ServerLevel level = helper.getLevel();
@@ -365,13 +366,13 @@ public final class RandomTickGameTests {
 	 * Veins whose
 	 * support disappears that way are never told, so they stay behind floating.
 	 */
-	@GameTest(template = TEMPLATE, timeoutTicks = 200)
+	@GameTest(template = EMPTY_PLATFORM, timeoutTicks = 200)
 	public static void veinsDoNotSurviveSupportRemovedWithoutShapeUpdate(GameTestHelper helper) {
 		prepareGround(helper);
 		ServerLevel level = helper.getLevel();
 		Block veinsBlock = ModBlocks.MALIGNANT_FLESH_VEINS.get();
 
-		BlockPos rel = new BlockPos(PLATFORM_SIZE / 2, SURFACE_Y, PLATFORM_SIZE / 2);
+		BlockPos rel = PLATFORM_CENTER;
 		BlockPos abs = helper.absolutePos(rel);
 
 		BlockState veins = veinsBlock.defaultBlockState()

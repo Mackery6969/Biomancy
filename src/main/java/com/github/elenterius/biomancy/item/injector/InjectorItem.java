@@ -106,7 +106,7 @@ public class InjectorItem extends Item implements SerumInjector, ItemTooltipStyl
 
 	private static boolean dispenserAffectEntity(ServerLevel level, BlockPos pos, Serum serum, ItemStack injectorStack, InjectorItem injectorItem, LivingEntity target) {
 		if (CombatUtil.canPierceThroughArmor(injectorStack, target, null)) {
-			CompoundTag dataTag = Serum.getDataTag(injectorStack);
+			CompoundTag dataTag = injectorItem.getSerumData(injectorStack);
 			if (serum.canAffectEntity(dataTag, null, target)) {
 				serum.affectEntity(level, dataTag, null, target);
 				injectorItem.consumeSerum(injectorStack, null);
