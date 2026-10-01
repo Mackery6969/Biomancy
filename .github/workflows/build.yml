@@ -3,7 +3,6 @@ name: Build
 on:
   push:
     paths-ignore:
-      - '!.github/workflows/build.yml'
       - 'README.md'
       - 'CHANGELOG.md'
       - 'CODE_OF_CONDUCT.md'
@@ -19,6 +18,7 @@ on:
       - 'actionlint.exe'
       - '.gitignore'
       - '.editorconfig'
+      - '!.github/workflows/build.yml'
 
   pull_request:
 
