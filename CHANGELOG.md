@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.9.8.9] - 2026-09-25
+
+### Added
+
+- Added stonecutter support for more version support.
+
+### Notes
+
+Alexs Caves compat is only on 1.21.1, as for later minecraft versions, geckolib is required for the mod to work, and geckolib is not yet ported to later versions.
+
 ## [2.9.8.8] - 2026-10-01
 
 ### Fixed
@@ -72,6 +82,7 @@
 
 _Initial release._
 
+[2.9.8.9]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.9
 [2.9.8.8]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.8
 [2.9.8.7]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.7
 [2.9.8.6]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.6

@@ -1,0 +1,248 @@
+["1.21"]
+# NOT PORTED.
+mc.range              = "[1.21,1.21.1)"
+mc.family             = "mc-1.21-1.21.8"
+mc.pack_format        = 15        # inherited from 1.21.1, unverified
+build.java            = 21
+build.mixin_compat    = "JAVA_21"
+deps.neoforge         = "21.0.167"
+deps.neoforge_range   = "[21.0.0,)"
+deps.loader_range     = "[4,)"
+deps.parchment_mc     = "1.21"
+deps.parchment        = "2024.11.10"
+deps.geckolib         = "4.5.8"
+deps.geckolib_range   = "[4.5,)"
+deps.mclib            = "20"
+deps.jei              = "19.8.2.99"
+deps.jei_range        = "[19.0.0,)"
+# Pehkui, Farmer's Delight, Overweight Farming, Sons of Sins, Sable and KubeJS have no
+# build above 1.21.1, and Alex's Caves compat is 1.21.1 only, so all are omitted.
+publish.enabled       = false
+publish.mc_releases   = ["1.21"]
+ci.fast               = false
+
+
+["1.21.1"]
+# The version this branch ships today. These are the coordinates the released jar is
+# built with -- do not bump them as part of unrelated work.
+mc.range              = "[1.21.1,1.21.2)"
+mc.family             = "mc-1.21-1.21.8"
+mc.pack_format        = 15
+build.java            = 21
+build.mixin_compat    = "JAVA_21"
+deps.neoforge         = "21.1.248"
+deps.neoforge_range   = "[21.1.0,)"
+deps.loader_range     = "[4,)"
+deps.parchment_mc     = "1.21.1"
+deps.parchment        = "2024.11.17"
+deps.geckolib         = "4.9.2"
+deps.geckolib_range   = "[4.9,)"
+deps.mclib            = "20"
+deps.jei              = "19.32.0.359"
+deps.jei_range        = "[19.0.0,)"
+deps.kubejs           = "2101.7.2-build.374"
+deps.pehkui           = "3.8.3+1.21-neoforge"
+deps.farmers_delight  = "1.21.1-1.3.3"
+deps.overweight_farming = "1.21.1-2.2.0-forge"
+deps.sons_of_sins     = "2.2.1.b"
+deps.sable            = "2.0.5"
+deps.sable_range      = "[2.0.5,)"
+deps.sable_companion  = "1.6.0"
+# Alex's Caves compatibility is deliberately 1.21.1 only.
+deps.alexs_caves      = "2.0.10"
+publish.enabled       = true
+publish.mc_releases   = ["1.21.1"]
+ci.fast               = true
+
+
+["1.21.3"]
+# NOT PORTED.
+#   No JEI build exists for this version, so the JEI integration is off here.
+mc.range              = "[1.21.3,1.21.4)"
+mc.family             = "mc-1.21-1.21.8"
+mc.pack_format        = 15        # inherited from 1.21.1, unverified
+build.java            = 21
+build.mixin_compat    = "JAVA_21"
+deps.neoforge         = "21.3.97"
+deps.neoforge_range   = "[21.3.0,)"
+deps.loader_range     = "[4,)"
+deps.parchment_mc     = "1.21.3"
+deps.parchment        = "2024.12.07"
+deps.geckolib         = "4.7.3"
+deps.geckolib_range   = "[4.7,)"
+deps.mclib            = "20"
+# Pehkui, Farmer's Delight, Overweight Farming, Sons of Sins, Sable and KubeJS have no
+# build above 1.21.1, and Alex's Caves compat is 1.21.1 only, so all are omitted.
+publish.enabled       = false
+publish.mc_releases   = ["1.21.3"]
+ci.fast               = false
+
+
+["1.21.4"]
+# NOT PORTED.
+mc.range              = "[1.21.4,1.21.5)"
+mc.family             = "mc-1.21-1.21.8"
+mc.pack_format        = 15        # inherited from 1.21.1, unverified
+build.java            = 21
+build.mixin_compat    = "JAVA_21"
+deps.neoforge         = "21.4.157"
+deps.neoforge_range   = "[21.4.0,)"
+deps.loader_range     = "[4,)"
+deps.parchment_mc     = "1.21.4"
+deps.parchment        = "2025.03.23"
+deps.geckolib         = "4.8.5"
+deps.geckolib_range   = "[4.8,)"
+deps.mclib            = "20"
+deps.jei              = "20.0.0.4"
+deps.jei_range        = "[20.0.0,)"
+# Pehkui, Farmer's Delight, Overweight Farming, Sons of Sins, Sable and KubeJS have no
+# build above 1.21.1, and Alex's Caves compat is 1.21.1 only, so all are omitted.
+publish.enabled       = false
+publish.mc_releases   = ["1.21.4"]
+ci.fast               = false
+
+
+["1.21.5"]
+# NOT PORTED.
+mc.range              = "[1.21.5,1.21.6)"
+mc.family             = "mc-1.21-1.21.8"
+mc.pack_format        = 15        # inherited from 1.21.1, unverified
+build.java            = 21
+build.mixin_compat    = "JAVA_21"
+deps.neoforge         = "21.5.98"
+deps.neoforge_range   = "[21.5.0,)"
+deps.loader_range     = "[4,)"
+deps.parchment_mc     = "1.21.5"
+deps.parchment        = "2025.06.15"
+deps.geckolib         = "5.1.0"
+deps.geckolib_range   = "[5.1,)"
+deps.mclib            = "20"
+deps.jei              = "21.4.0.27"
+deps.jei_range        = "[21.0.0,)"
+# Pehkui, Farmer's Delight, Overweight Farming, Sons of Sins, Sable and KubeJS have no
+# build above 1.21.1, and Alex's Caves compat is 1.21.1 only, so all are omitted.
+publish.enabled       = false
+publish.mc_releases   = ["1.21.5"]
+ci.fast               = false
+
+
+["1.21.6"]
+# NOT PORTED.
+#   NeoForge 21.6.20-beta is the newest build for this version and is a prerelease.
+#   No JEI build exists for this version, so the JEI integration is off here.
+mc.range              = "[1.21.6,1.21.7)"
+mc.family             = "mc-1.21-1.21.8"
+mc.pack_format        = 15        # inherited from 1.21.1, unverified
+build.java            = 21
+build.mixin_compat    = "JAVA_21"
+deps.neoforge         = "21.6.20-beta"
+deps.neoforge_range   = "[21.6.0,)"
+deps.loader_range     = "[4,)"
+deps.parchment_mc     = "1.21.6"
+deps.parchment        = "2025.06.29"
+deps.geckolib         = "5.2.0"
+deps.geckolib_range   = "[5.2,)"
+deps.mclib            = "20"
+# Pehkui, Farmer's Delight, Overweight Farming, Sons of Sins, Sable and KubeJS have no
+# build above 1.21.1, and Alex's Caves compat is 1.21.1 only, so all are omitted.
+publish.enabled       = false
+publish.mc_releases   = ["1.21.6"]
+ci.fast               = false
+
+
+["1.21.7"]
+# NOT PORTED.
+#   NeoForge 21.7.25-beta is the newest build for this version and is a prerelease.
+mc.range              = "[1.21.7,1.21.8)"
+mc.family             = "mc-1.21-1.21.8"
+mc.pack_format        = 15        # inherited from 1.21.1, unverified
+build.java            = 21
+build.mixin_compat    = "JAVA_21"
+deps.neoforge         = "21.7.25-beta"
+deps.neoforge_range   = "[21.7.0,)"
+deps.loader_range     = "[4,)"
+deps.parchment_mc     = "1.21.7"
+deps.parchment        = "2025.07.18"
+deps.geckolib         = "5.2.1"
+deps.geckolib_range   = "[5.2,)"
+deps.mclib            = "20"
+deps.jei              = "23.1.0.8"
+deps.jei_range        = "[23.0.0,)"
+# Pehkui, Farmer's Delight, Overweight Farming, Sons of Sins, Sable and KubeJS have no
+# build above 1.21.1, and Alex's Caves compat is 1.21.1 only, so all are omitted.
+publish.enabled       = false
+publish.mc_releases   = ["1.21.7"]
+ci.fast               = false
+
+
+["1.21.8"]
+# NOT PORTED.
+mc.range              = "[1.21.8,1.21.9)"
+mc.family             = "mc-1.21-1.21.8"
+mc.pack_format        = 15        # inherited from 1.21.1, unverified
+build.java            = 21
+build.mixin_compat    = "JAVA_21"
+deps.neoforge         = "21.8.54"
+deps.neoforge_range   = "[21.8.0,)"
+deps.loader_range     = "[4,)"
+deps.parchment_mc     = "1.21.8"
+deps.parchment        = "2025.09.14"
+deps.geckolib         = "5.2.2"
+deps.geckolib_range   = "[5.2,)"
+deps.mclib            = "20"
+deps.jei              = "24.2.0.6"
+deps.jei_range        = "[24.0.0,)"
+# Pehkui, Farmer's Delight, Overweight Farming, Sons of Sins, Sable and KubeJS have no
+# build above 1.21.1, and Alex's Caves compat is 1.21.1 only, so all are omitted.
+publish.enabled       = false
+publish.mc_releases   = ["1.21.8"]
+ci.fast               = true
+
+
+["1.21.10"]
+# NOT PORTED.
+#   Geckolib 5.3-alpha-3 is the newest build for this version and is an alpha.
+mc.range              = "[1.21.10,1.21.11)"
+mc.family             = "mc-1.21.9-1.21.10"
+mc.pack_format        = 15        # inherited from 1.21.1, unverified
+build.java            = 21
+build.mixin_compat    = "JAVA_21"
+deps.neoforge         = "21.10.64"
+deps.neoforge_range   = "[21.10.0,)"
+deps.loader_range     = "[4,)"
+deps.parchment_mc     = "1.21.10"
+deps.parchment        = "2025.10.12"
+deps.geckolib         = "5.3-alpha-3"
+deps.geckolib_range   = "[5.3,)"
+deps.mclib            = "20"
+deps.jei              = "26.3.0.31"
+deps.jei_range        = "[26.0.0,)"
+# Pehkui, Farmer's Delight, Overweight Farming, Sons of Sins, Sable and KubeJS have no
+# build above 1.21.1, and Alex's Caves compat is 1.21.1 only, so all are omitted.
+publish.enabled       = false
+publish.mc_releases   = ["1.21.10"]
+ci.fast               = true
+
+
+["1.21.11"]
+# NOT PORTED.
+mc.range              = "[1.21.11,1.21.12)"
+mc.family             = "mc-1.21.11"
+mc.pack_format        = 15        # inherited from 1.21.1, unverified
+build.java            = 21
+build.mixin_compat    = "JAVA_21"
+deps.neoforge         = "21.11.45"
+deps.neoforge_range   = "[21.11.0,)"
+deps.loader_range     = "[4,)"
+deps.parchment_mc     = "1.21.11"
+deps.parchment        = "2025.12.20"
+deps.geckolib         = "5.4.5"
+deps.geckolib_range   = "[5.4,)"
+deps.mclib            = "20"
+deps.jei              = "27.44.0.103"
+deps.jei_range        = "[27.0.0,)"
+# Pehkui, Farmer's Delight, Overweight Farming, Sons of Sins, Sable and KubeJS have no
+# build above 1.21.1, and Alex's Caves compat is 1.21.1 only, so all are omitted.
+publish.enabled       = false
+publish.mc_releases   = ["1.21.11"]
+ci.fast               = true
