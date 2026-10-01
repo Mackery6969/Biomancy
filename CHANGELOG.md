@@ -66,6 +66,8 @@
 
 _Initial release._
 
+[2.9.8.8]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.8
+[2.9.8.7]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.7
 [2.9.8.6]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.6
 [2.9.8.5]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.5
 [2.9.8.4]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.4
