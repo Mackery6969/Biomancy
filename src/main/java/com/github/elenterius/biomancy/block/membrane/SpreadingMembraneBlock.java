@@ -3,6 +3,7 @@ package com.github.elenterius.biomancy.block.membrane;
 import com.github.elenterius.biomancy.block.cradle.PrimalEnergyHandler;
 import com.github.elenterius.biomancy.block.veins.FleshVeinsBlock;
 import com.github.elenterius.biomancy.init.ModBlocks;
+import com.github.elenterius.biomancy.util.LevelUtil;
 import com.github.elenterius.biomancy.util.VectorUtil;
 import com.github.elenterius.biomancy.world.PrimordialEcosystem;
 import com.github.elenterius.biomancy.world.mound.MoundShape;
@@ -37,7 +38,7 @@ public class SpreadingMembraneBlock extends MembraneBlock {
 		if (!stateAtTargetPos.isAir() && !(stateAtTargetPos.getBlock() instanceof FleshVeinsBlock) && !PrimordialEcosystem.isReplaceable(stateAtTargetPos)) return;
 
 		if (SpatialDBManager.getInstance(level).getClosestShape(level, pos, MoundShape.class::isInstance) instanceof MoundShape mound) {
-			BlockEntity blockEntity = level.getBlockEntity(mound.getOrigin());
+			BlockEntity blockEntity = LevelUtil.getExistingBlockEntity(level, mound.getOrigin());
 			if (blockEntity instanceof PrimalEnergyHandler energyHandler && !mound.hasChamberAt(targetPos)) {
 
 				int nextToAnyChamberCount = 0;
