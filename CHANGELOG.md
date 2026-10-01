@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.9.8.8] - 2026-09-25
+## [2.9.8.9] - 2026-09-25
 
 ### Added
 
@@ -10,12 +10,22 @@
 
 Alexs Caves compat is only on 1.21.1, as for later minecraft versions, geckolib is required for the mod to work, and geckolib is not yet ported to later versions.
 
+## [2.9.8.8] - 2026-09-26
+
+### Fixed
+
+- Fixed the Primordial Cradle from causing memory leaks ([[Mackery6969/Biomancy#27](https://github.com/Mackery6969/Biomancy/issues/27)]).
+
 ## [2.9.8.7] - 2026-09-24
 
 ### Fixed
 
 - Fixed the primal energy supply config of the Primordial Cradle being ignored, where the flesh veins created charge out of nothing and kept spreading forever after a single feeding, even when set to limited ([#20](https://github.com/Mackery6969/Biomancy/issues/20)).
 - Fixed a crash when the world saved while a mined Primordial Cradle, Bio-Forge, Digester or Decomposer was in the inventory, which also deleted the item after relogging ([#19](https://github.com/Mackery6969/Biomancy/issues/19)).
+
+### Added
+
+- Added all of the full block membranes to Aeronautics' `#aeronautics:airtight` block tag, so they can be used as a balloon envelope ([#23](https://github.com/Mackery6969/Biomancy/issues/23)).
 
 ## [2.9.8.6] - 2026-09-21
 
@@ -72,6 +82,9 @@ Alexs Caves compat is only on 1.21.1, as for later minecraft versions, geckolib 
 
 _Initial release._
 
+[2.9.8.9]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.9
+[2.9.8.8]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.8
+[2.9.8.7]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.7
 [2.9.8.6]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.6
 [2.9.8.5]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.5
 [2.9.8.4]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.4

@@ -3,7 +3,6 @@ name: Build
 on:
   push:
     paths-ignore:
-      - '!.github/workflows/build.yml'
       - 'README.md'
       - 'CHANGELOG.md'
       - 'CODE_OF_CONDUCT.md'
@@ -19,6 +18,7 @@ on:
       - 'actionlint.exe'
       - '.gitignore'
       - '.editorconfig'
+      - '!.github/workflows/build.yml'
 
   pull_request:
 
@@ -55,7 +55,7 @@ jobs:
     name: Minecraft ${{ matrix.version.mc }}
     needs: [versions, alexs-caves]
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
 
     strategy:
       fail-fast: false
@@ -100,6 +100,26 @@ jobs:
             args+=("-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo")
           fi
           ./gradlew ":${MC}:build" "${args[@]}"
+
+      - name: Run game tests
+        id: gametest
+        run: |
+          args=()
+          if [ "$NEEDS_ALEXS_CAVES" = "true" ]; then
+            args+=("-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo")
+          fi
+          ./gradlew ":${MC}:runGameTestServer" "${args[@]}"
+
+      - name: Upload game test logs
+        if: failure() && steps.gametest.outcome == 'failure'
+        uses: actions/upload-artifact@v7
+        with:
+          name: gametest-logs-${{ matrix.version.mc }}-${{ github.sha }}
+          path: |
+            runs/${{ matrix.version.mc }}/game-test/logs/
+            runs/${{ matrix.version.mc }}/game-test/crash-reports/
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Compute artifact name
         id: artifact
