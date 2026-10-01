@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.9.8.8] - 2026-09-26
+
+### Fixed
+
+- Fixed the Primordial Cradle from causing memory leaks ([[Mackery6969/Biomancy#27](https://github.com/Mackery6969/Biomancy/issues/27)]).
+
 ## [2.9.8.7] - 2026-09-24
 
 ### Fixed
