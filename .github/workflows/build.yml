@@ -42,6 +42,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
 
+    permissions:
+      contents: read
+      security-events: write
+
     env:
       ALEXS_CAVES_DIR_NAME: ${{ needs.alexs-caves.outputs.dir-name }}
 
@@ -70,6 +74,12 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build "-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo"
+
+      - name: Scan jars for malware
+        uses: Mackery6969/Minecraft-Malware-Scanner@v1
+        with:
+          path: build/libs
+          upload-sarif: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
 
       - name: Run game tests
         id: gametest
