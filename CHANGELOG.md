@@ -10,7 +10,7 @@
 
 Alexs Caves compat is only on 1.21.1, as for later minecraft versions, geckolib is required for the mod to work, and geckolib is not yet ported to later versions.
 
-## [2.9.8.8] - 2026-09-26
+## [2.9.8.8] - 2026-10-01
 
 ### Fixed
 
