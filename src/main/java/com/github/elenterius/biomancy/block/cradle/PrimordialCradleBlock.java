@@ -135,6 +135,14 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 	}
 
 	@Override
+	public void attack(BlockState state, Level level, BlockPos pos, Player player) {
+		if (level instanceof ServerLevel && level.getBlockEntity(pos) instanceof PrimordialCradleBlockEntity cradle && cradle.isHivemindActive()) {
+			cradle.getHivemind().setThreat(player);
+		}
+		super.attack(state, level, pos, player);
+	}
+
+	@Override
 	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (!state.is(newState.getBlock())) {
 			if (level instanceof ServerLevel serverLevel) {
