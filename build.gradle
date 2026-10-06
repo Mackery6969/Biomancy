@@ -144,7 +144,7 @@ dependencies {
 	api('org.jetbrains:annotations:26.1.0')
 
 	//https://h2database.com/html/mvstore.html
-	additionalRuntimeClasspath "com.h2database:h2-mvstore:2.5.250"
+	additionalRuntimeClasspath "com.h2database:h2-mvstore:2.5.252"
 	def h2MvstoreVersion = configurations.additionalRuntimeClasspath.dependencies.find { it.name == 'h2-mvstore' }.version
 	implementation(jarJar("com.h2database:h2-mvstore") {
 		version {
