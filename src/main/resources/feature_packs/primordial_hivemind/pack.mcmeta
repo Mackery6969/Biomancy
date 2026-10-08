@@ -1,0 +1,11 @@
+{
+	"features": {
+		"enabled": [
+			"biomancy:primordial_hivemind"
+		]
+	},
+	"pack": {
+		"description": "The Primordial Cradle becomes a thinking organism. (UNDER CONSTRUCTION)",
+		"pack_format": 48
+	}
+}
