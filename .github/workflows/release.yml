@@ -67,6 +67,8 @@ jobs:
 
       - name: Read mod version
         id: meta
+        env:
+          INPUT_RELEASE_TYPE: ${{ inputs.release_type }}
         run: |
           MOD_ID=$(grep -oP '^mod_id=\K.*' gradle.properties)
           MOD_VERSION=$(grep -oP '^mod_version=\K.*' gradle.properties)
@@ -76,7 +78,7 @@ jobs:
           echo "name=${MOD_ID}-${MOD_VERSION}" >> "$GITHUB_OUTPUT"
           echo "tag=v${MOD_VERSION}" >> "$GITHUB_OUTPUT"
 
-          RELEASE_TYPE="${{ inputs.release_type }}"
+          RELEASE_TYPE="$INPUT_RELEASE_TYPE"
           if [ -z "$RELEASE_TYPE" ]; then
             case "$GITHUB_REF_NAME" in
               *-alpha*) RELEASE_TYPE=alpha ;;
@@ -119,6 +121,12 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build "-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo"
+
+      - name: Scan release jars for malware
+        uses: Mackery6969/Minecraft-Malware-Scanner@v1
+        with:
+          path: build/libs
+          upload-sarif: "false"
 
       - name: Stage the Maven tree
         run: ./gradlew publish "-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo"

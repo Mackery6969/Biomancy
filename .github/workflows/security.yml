@@ -1,0 +1,75 @@
+name: Security
+
+on:
+  workflow_run:
+    workflows: ["CodeQL", "Automatic Dependency Submission", "Dependency Graph", "Dependabot Updates"]
+    types: [completed]
+  issues:
+    types: [opened, labeled, reopened]
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+  schedule:
+    - cron: "37 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Take everything on again, even what earlier pull requests already covered
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  security-events: write
+  actions: write
+  checks: read
+
+concurrency:
+  group: claude-security-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  alexs-caves:
+    if: ${{ (github.event.action != 'closed') && !(startsWith(github.head_ref, 'claude/') && github.event.action != 'closed') && !startsWith(github.event.workflow_run.head_branch, 'claude/') }}
+    uses: ./.github/workflows/alexs-caves.yml
+  security:
+    needs: alexs-caves
+    if: ${{ (!cancelled() && needs.alexs-caves.result != 'failure') && !(startsWith(github.head_ref, 'claude/') && github.event.action != 'closed') && !startsWith(github.event.workflow_run.head_branch, 'claude/') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    env:
+      HAS_CLAUDE_APP: ${{ secrets.CLAUDE_APP_PRIVATE_KEY != '' }}
+      ALEXS_CAVES_DIR_NAME: ${{ needs.alexs-caves.outputs.dir-name }}
+    steps:
+      - uses: actions/create-github-app-token@v3
+        id: app
+        if: env.HAS_CLAUDE_APP == 'true'
+        continue-on-error: true
+        with:
+          client-id: Iv23lizzdQw7rAtlQQsX
+          private-key: ${{ secrets.CLAUDE_APP_PRIVATE_KEY }}
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+          fetch-tags: true
+      - uses: actions/setup-java@v6
+        with:
+          java-version: "21"
+          distribution: temurin
+      - uses: gradle/actions/setup-gradle@v6
+      - uses: actions/cache/restore@v6
+        if: env.ALEXS_CAVES_DIR_NAME != ''
+        with:
+          path: ${{ runner.temp }}/${{ env.ALEXS_CAVES_DIR_NAME }}/mcmodsrepo
+          key: ${{ needs.alexs-caves.outputs.cache-key }}
+          fail-on-cache-miss: true
+      - uses: Mackery6969/Claude-Autofix@v2
+        with:
+          task: security
+          claude-code-oauth-token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github-token: ${{ steps.app.outputs.token || github.token }}
+          app-slug: ${{ steps.app.outputs.app-slug }}
+          force: ${{ inputs.force == true }}
+          verify-command: ./gradlew compileJava "-Palexs_caves_repo=$RUNNER_TEMP/$ALEXS_CAVES_DIR_NAME/mcmodsrepo"
