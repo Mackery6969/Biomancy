@@ -24,11 +24,11 @@ concurrency:
 
 jobs:
   alexs-caves:
-    if: github.event.action != 'closed'
+    if: ${{ (github.event.action != 'closed') && !(startsWith(github.head_ref, 'claude/') && github.event.action != 'closed') && !startsWith(github.event.workflow_run.head_branch, 'claude/') }}
     uses: ./.github/workflows/alexs-caves.yml
   quality:
     needs: alexs-caves
-    if: ${{ !cancelled() && needs.alexs-caves.result != 'failure' }}
+    if: ${{ (!cancelled() && needs.alexs-caves.result != 'failure') && !(startsWith(github.head_ref, 'claude/') && github.event.action != 'closed') && !startsWith(github.event.workflow_run.head_branch, 'claude/') }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
