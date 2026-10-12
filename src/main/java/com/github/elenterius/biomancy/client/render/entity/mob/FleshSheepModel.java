@@ -7,7 +7,6 @@ import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.loading.math.MathParser;
-import software.bernie.geckolib.loading.math.value.Variable;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 import software.bernie.geckolib.model.data.EntityModelData;
 
@@ -38,7 +37,7 @@ public class FleshSheepModel<T extends FleshSheep> extends DefaultedEntityGeoMod
 
 		T animatable = animationState.getAnimatable();
 
-		MathParser.registerVariable(new Variable("variable.limb_swing", () -> {
+		MathParser.setVariable("variable.limb_swing", () -> {
 			boolean shouldSit = animatable.isPassenger() && (animatable.getVehicle() != null && animatable.getVehicle().shouldRiderSit());
 
 			float limbSwing = 0;
@@ -49,9 +48,9 @@ public class FleshSheepModel<T extends FleshSheep> extends DefaultedEntityGeoMod
 			}
 
 			return limbSwing;
-		}));
+		});
 
-		MathParser.registerVariable(new Variable("variable.limb_swing_amount", () -> {
+		MathParser.setVariable("variable.limb_swing_amount", () -> {
 			boolean shouldSit = animatable.isPassenger() && (animatable.getVehicle() != null && animatable.getVehicle().shouldRiderSit());
 
 			float limbSwingAmount = 0;
@@ -62,7 +61,7 @@ public class FleshSheepModel<T extends FleshSheep> extends DefaultedEntityGeoMod
 			}
 
 			return limbSwingAmount;
-		}));
+		});
 	}
 
 }
