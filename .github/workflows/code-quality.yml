@@ -59,7 +59,7 @@ jobs:
           path: ${{ runner.temp }}/${{ env.ALEXS_CAVES_DIR_NAME }}/mcmodsrepo
           key: ${{ needs.alexs-caves.outputs.cache-key }}
           fail-on-cache-miss: true
-      - uses: Mackery6969/Claude-Autofix@v1
+      - uses: Mackery6969/Claude-Autofix@v2
         with:
           task: quality
           claude-code-oauth-token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
