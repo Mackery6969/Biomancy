@@ -31,11 +31,11 @@ concurrency:
 
 jobs:
   alexs-caves:
-    if: ${{ (github.event.action != 'closed') && !(startsWith(github.head_ref, 'claude/') && github.event.action != 'closed') && !startsWith(github.event.workflow_run.head_branch, 'claude/') }}
+    if: ${{ github.event.action != 'closed' && !startsWith(github.head_ref, 'claude/') && !startsWith(github.event.workflow_run.head_branch, 'claude/') }}
     uses: ./.github/workflows/alexs-caves.yml
   security:
     needs: alexs-caves
-    if: ${{ (!cancelled() && needs.alexs-caves.result != 'failure') && !(startsWith(github.head_ref, 'claude/') && github.event.action != 'closed') && !startsWith(github.event.workflow_run.head_branch, 'claude/') }}
+    if: ${{ (!cancelled() && needs.alexs-caves.result != 'failure') && ((github.event.action == 'closed' && startsWith(github.head_ref, 'claude/')) || (github.event.action != 'closed' && !startsWith(github.head_ref, 'claude/') && !startsWith(github.event.workflow_run.head_branch, 'claude/'))) }}
     runs-on: ubuntu-latest
     timeout-minutes: 355
     env:
@@ -50,17 +50,20 @@ jobs:
           client-id: Iv23lizzdQw7rAtlQQsX
           private-key: ${{ secrets.CLAUDE_APP_PRIVATE_KEY }}
       - uses: actions/checkout@v7
+        if: github.event.action != 'closed'
         with:
           persist-credentials: false
           fetch-depth: 0
           fetch-tags: true
       - uses: actions/setup-java@v6
+        if: github.event.action != 'closed'
         with:
           java-version: "21"
           distribution: temurin
       - uses: gradle/actions/setup-gradle@v6
+        if: github.event.action != 'closed'
       - uses: actions/cache/restore@v6
-        if: env.ALEXS_CAVES_DIR_NAME != ''
+        if: ${{ github.event.action != 'closed' && (env.ALEXS_CAVES_DIR_NAME != '') }}
         with:
           path: ${{ runner.temp }}/${{ env.ALEXS_CAVES_DIR_NAME }}/mcmodsrepo
           key: ${{ needs.alexs-caves.outputs.cache-key }}

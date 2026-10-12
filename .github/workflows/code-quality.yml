@@ -24,11 +24,11 @@ concurrency:
 
 jobs:
   alexs-caves:
-    if: ${{ (github.event.action != 'closed') && !(startsWith(github.head_ref, 'claude/') && github.event.action != 'closed') && !startsWith(github.event.workflow_run.head_branch, 'claude/') }}
+    if: ${{ github.event.action != 'closed' && !startsWith(github.head_ref, 'claude/') && !startsWith(github.event.workflow_run.head_branch, 'claude/') }}
     uses: ./.github/workflows/alexs-caves.yml
   quality:
     needs: alexs-caves
-    if: ${{ (!cancelled() && needs.alexs-caves.result != 'failure') && !(startsWith(github.head_ref, 'claude/') && github.event.action != 'closed') && !startsWith(github.event.workflow_run.head_branch, 'claude/') }}
+    if: ${{ (!cancelled() && needs.alexs-caves.result != 'failure') && ((github.event.action == 'closed' && startsWith(github.head_ref, 'claude/')) || (github.event.action != 'closed' && !startsWith(github.head_ref, 'claude/') && !startsWith(github.event.workflow_run.head_branch, 'claude/'))) }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
@@ -43,18 +43,21 @@ jobs:
           client-id: Iv23lizzdQw7rAtlQQsX
           private-key: ${{ secrets.CLAUDE_APP_PRIVATE_KEY }}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: github.event.action != 'closed'
         with:
           ref: ${{ github.head_ref || github.ref }}
           persist-credentials: false
           fetch-depth: 0
           fetch-tags: true
       - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
+        if: github.event.action != 'closed'
         with:
           java-version: "21"
           distribution: temurin
       - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6
+        if: github.event.action != 'closed'
       - uses: actions/cache/restore@v6
-        if: env.ALEXS_CAVES_DIR_NAME != ''
+        if: ${{ github.event.action != 'closed' && (env.ALEXS_CAVES_DIR_NAME != '') }}
         with:
           path: ${{ runner.temp }}/${{ env.ALEXS_CAVES_DIR_NAME }}/mcmodsrepo
           key: ${{ needs.alexs-caves.outputs.cache-key }}
