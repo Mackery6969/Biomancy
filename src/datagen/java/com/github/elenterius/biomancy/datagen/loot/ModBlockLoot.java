@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.CopyNameFunction;
 import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
@@ -66,59 +67,49 @@ public class ModBlockLoot extends BlockLootSubProvider {
 		return LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1)).when(hasShearsOrSilkTouch()).add(LootItem.lootTableItem(item)));
 	}
 
+	private LootTable.Builder createSingleRollTable(Block block, LootPoolEntryContainer.Builder<?> entry) {
+		return LootTable.lootTable().withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(entry)));
+	}
+
 	protected LootTable.Builder createNameableBioMachineTable(Block block) {
-		return LootTable.lootTable().withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-				.add(LootItem.lootTableItem(block)
-						.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY))
-						.apply(CopyBlockEntityDataFunction.copyData("Fuel"))
-				)));
+		return createSingleRollTable(block, LootItem.lootTableItem(block)
+				.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY))
+				.apply(CopyBlockEntityDataFunction.copyData("Fuel")));
 	}
 
 	protected LootTable.Builder createPrimordialCradleTable(Block block) {
-		return LootTable.lootTable().withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-				.add(LootItem.lootTableItem(block)
-						.apply(CopyBlockEntityDataFunction.copyData("PrimalEnergy", "ProcGenValues", "SacrificeHandler"))
-				)));
+		return createSingleRollTable(block, LootItem.lootTableItem(block)
+				.apply(CopyBlockEntityDataFunction.copyData("PrimalEnergy", "ProcGenValues", "SacrificeHandler")));
 	}
 
 	protected LootTable.Builder dropWithInventory(Block block) {
-		return LootTable.lootTable().withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-				.add(LootItem.lootTableItem(block)
-						.apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)
-								.include(DataComponents.CUSTOM_NAME)
-								.include(DataComponents.CONTAINER)
-								.include(DataComponents.CONTAINER_LOOT))
-				)));
+		return createSingleRollTable(block, LootItem.lootTableItem(block)
+				.apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)
+						.include(DataComponents.CUSTOM_NAME)
+						.include(DataComponents.CONTAINER)
+						.include(DataComponents.CONTAINER_LOOT)));
 	}
 
 	protected LootTable.Builder dropChrysalisWithEntity(Block block) {
-		return LootTable.lootTable().withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-				.add(LootItem.lootTableItem(block)
-						.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY))
-						.apply(CopyBlockEntityDataFunction.copyData(Chrysalis.ENTITY_KEY))
-				)));
+		return createSingleRollTable(block, LootItem.lootTableItem(block)
+				.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY))
+				.apply(CopyBlockEntityDataFunction.copyData(Chrysalis.ENTITY_KEY)));
 	}
 
 	protected LootTable.Builder dropMembraneSettings(Block block) {
-		return LootTable.lootTable().withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-				.add(LootItem.lootTableItem(block)
-						.apply(CopyBlockEntityDataFunction.copyData(BiometricMembraneBlockEntity.MEMBRANE_KEY))
-				)));
+		return createSingleRollTable(block, LootItem.lootTableItem(block)
+				.apply(CopyBlockEntityDataFunction.copyData(BiometricMembraneBlockEntity.MEMBRANE_KEY)));
 	}
 
 	protected LootTable.Builder dropOwnableInventory(Block block) {
-		return LootTable.lootTable().withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-				.add(LootItem.lootTableItem(block)
-						.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY))
-						.apply(CopyBlockEntityDataFunction.copyData("Inventory", "OwnerUUID", "UserList"))
-				)));
+		return createSingleRollTable(block, LootItem.lootTableItem(block)
+				.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY))
+				.apply(CopyBlockEntityDataFunction.copyData("Inventory", "OwnerUUID", "UserList")));
 	}
 
 	protected LootTable.Builder dropWithOwnableData(Block container) {
-		return LootTable.lootTable().withPool(applyExplosionCondition(container, LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-				.add(LootItem.lootTableItem(container)
-						.apply(CopyBlockEntityDataFunction.copyData("OwnerUUID", "UserList"))
-				)));
+		return createSingleRollTable(container, LootItem.lootTableItem(container)
+				.apply(CopyBlockEntityDataFunction.copyData("OwnerUUID", "UserList")));
 	}
 
 	protected LootTable.Builder createFleshDoorTable(DoorBlock block) {
