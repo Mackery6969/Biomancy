@@ -1,0 +1,49 @@
+name: Claude Code Scanning
+run-name: "${{ inputs.pull-request && format('Pull request #{0}', inputs.pull-request) || inputs.issue && format('Issue #{0}', inputs.issue) || inputs.ref || github.ref_name }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch (leave empty for the default branch; any other branch gets only what differs from it)
+        default: ""
+      pull-request:
+        description: Pull request number
+        default: ""
+      issue:
+        description: Issue number
+        default: ""
+      sha:
+        description: Commit of the branch (set by the hub)
+        default: ""
+      before:
+        description: The commit before a push, to scan only what it changed (set by the hub)
+        default: ""
+      sender:
+        description: Who made the change (set by the hub)
+        default: ""
+      cursor:
+        description: Where the last pass stopped (set by the hub)
+        default: ""
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: claude-scan-${{ inputs.pull-request || inputs.issue || inputs.ref }}
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    uses: Mackery6969/Claude-Autofix/.github/workflows/run.yml@v3
+    with:
+      hub-url: https://claude-autofix-hub.davishayden32.workers.dev
+      task: scan
+      ref: ${{ inputs.ref }}
+      sha: ${{ inputs.sha }}
+      before: ${{ inputs.before }}
+      pull-request: ${{ inputs.pull-request }}
+      issue: ${{ inputs.issue }}
+      sender: ${{ inputs.sender || (!endsWith(github.actor, '[bot]') && github.actor || '') }}
+      cursor: ${{ inputs.cursor }}
