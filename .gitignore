@@ -24,10 +24,10 @@ bin
 build
 .gradle
 
-# generated data, per Minecraft version
-/src/generated/*/resources/.cache/
-/src/generated/*/resources/.wiki_data/
-/src/generated/*/resources/.wiki_content/
+# generated data
+/src/generated/**/.cache/
+/src/generated/**/.wiki_data/
+/src/generated/**/.wiki_content/
 
 # local maven publish target
 repo
