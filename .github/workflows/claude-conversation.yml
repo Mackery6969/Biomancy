@@ -1,29 +1,15 @@
 name: Claude Conversations
-run-name: "${{ inputs.pull-request && format('Pull request #{0}', inputs.pull-request) || inputs.issue && format('Issue #{0}', inputs.issue) || inputs.ref || github.ref_name }}"
+run-name: "${{ fromJSON(inputs.hub || '{}').label || format('Run by {0} · {1}', github.actor, inputs.number && format('#{0}', inputs.number) || github.ref_name) }}"
 
 on:
   workflow_dispatch:
     inputs:
-      ref:
-        description: Branch (leave empty for the default branch; any other branch gets only what differs from it)
+      number:
+        description: Pull request or issue number
+        required: true
         default: ""
-      pull-request:
-        description: Pull request number
-        default: ""
-      issue:
-        description: Issue number
-        default: ""
-      sha:
-        description: Commit of the branch (set by the hub)
-        default: ""
-      before:
-        description: The commit before a push, to scan only what it changed (set by the hub)
-        default: ""
-      sender:
-        description: Who made the change (set by the hub)
-        default: ""
-      cursor:
-        description: Where the last pass stopped (set by the hub)
+      hub:
+        description: Leave empty (the hub fills this in)
         default: ""
 
 permissions:
@@ -31,7 +17,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: claude-conversation-${{ inputs.pull-request || inputs.issue || inputs.ref }}
+  group: claude-conversation-${{ inputs.number || fromJSON(inputs.hub || '{}').pullRequest || fromJSON(inputs.hub || '{}').issue || fromJSON(inputs.hub || '{}').ref || github.ref_name }}
   cancel-in-progress: false
 
 jobs:
@@ -40,10 +26,7 @@ jobs:
     with:
       hub-url: https://claude-autofix-hub.davishayden32.workers.dev
       task: conversation
-      ref: ${{ inputs.ref }}
-      sha: ${{ inputs.sha }}
-      before: ${{ inputs.before }}
-      pull-request: ${{ inputs.pull-request }}
-      issue: ${{ inputs.issue }}
-      sender: ${{ inputs.sender || (!endsWith(github.actor, '[bot]') && github.actor || '') }}
-      cursor: ${{ inputs.cursor }}
+      hub: ${{ inputs.hub }}
+      number: ${{ inputs.number }}
+      branch: ${{ github.ref_name }}
+      sender: ${{ !endsWith(github.actor, '[bot]') && github.actor || '' }}
