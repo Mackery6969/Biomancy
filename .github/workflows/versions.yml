@@ -1,0 +1,98 @@
+name: Supported versions
+
+on:
+  workflow_call:
+    inputs:
+      publishable-only:
+        description: "Only report versions with publish.enabled = true"
+        type: boolean
+        required: false
+        default: false
+      fast-only:
+        description: "Only report versions with ci.fast = true (the representative subset)"
+        type: boolean
+        required: false
+        default: false
+    outputs:
+      matrix:
+        description: "JSON array of {mc, java, experimental, releases, alexs_caves}, in file order"
+        value: ${{ jobs.resolve.outputs.matrix }}
+      count:
+        description: "How many versions the matrix holds"
+        value: ${{ jobs.resolve.outputs.count }}
+
+permissions:
+  contents: read
+
+jobs:
+  resolve:
+    name: Resolve version matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    outputs:
+      matrix: ${{ steps.resolve.outputs.matrix }}
+      count: ${{ steps.resolve.outputs.count }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Read stonecutter.properties.toml
+        id: resolve
+        env:
+          PUBLISHABLE_ONLY: ${{ inputs.publishable-only }}
+          FAST_ONLY: ${{ inputs.fast-only }}
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os, pathlib, tomllib
+
+          data = tomllib.loads(pathlib.Path("stonecutter.properties.toml").read_text())
+          publishable_only = os.environ["PUBLISHABLE_ONLY"] == "true"
+          fast_only = os.environ["FAST_ONLY"] == "true"
+
+          versions = []
+          for name, block in data.items():
+              # Version blocks are the tables that declare a NeoForge build; anything else in
+              # this file is a global property, not a target.
+              if not isinstance(block, dict) or "neoforge" not in block.get("deps", {}):
+                  continue
+              publish = block.get("publish", {})
+              enabled = bool(publish.get("enabled", False))
+              fast = bool(block.get("ci", {}).get("fast", False))
+              if publishable_only and not enabled:
+                  continue
+              # A publishable version is always built, even outside the fast subset: never
+              # ship a version that this run did not actually compile.
+              if fast_only and not (fast or enabled):
+                  continue
+              versions.append({
+                  "mc": name,
+                  "java": block.get("build", {}).get("java", 21),
+                  # A version that is declared but not publishable is a port in progress: it is
+                  # built so the breakage stays visible, but it may not hold up a release.
+                  "experimental": not enabled,
+                  "releases": publish.get("mc_releases", [name]),
+                  "alexs_caves": "alexs_caves" in block.get("deps", {}),
+                  "family": block.get("mc", {}).get("family", ""),
+                  "fast": fast,
+              })
+
+          if not versions:
+              raise SystemExit("stonecutter.properties.toml declared no matching versions")
+
+          print(f"matrix={json.dumps(versions, separators=(',', ':'))}")
+          print(f"count={len(versions)}")
+          PY
+
+      - name: Summarise
+        env:
+          MATRIX: ${{ steps.resolve.outputs.matrix }}
+        run: |
+          {
+            echo "### Supported Minecraft versions"
+            echo
+            echo "| Minecraft | Java | Family | Published |"
+            echo "| --- | --- | --- | --- |"
+            echo "$MATRIX" | jq -r '.[] | "| \(.mc) | \(.java) | \(.family) | \(if .experimental then ":construction: port in progress" else ":white_check_mark: yes" end) |"'
+          } >> "$GITHUB_STEP_SUMMARY"
