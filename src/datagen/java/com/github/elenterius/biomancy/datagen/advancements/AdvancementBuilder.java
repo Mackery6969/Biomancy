@@ -162,18 +162,20 @@ public class AdvancementBuilder {
 	}
 
 	public AdvancementHolder save(Consumer<AdvancementHolder> consumer, ExistingFileHelper fileHelper, String category) throws IllegalStateException {
+		ResourceLocation advancementId = createRL(category + "/" + id);
+
 		if (empty) {
 			internalBuilder.display(icon.isEmpty() ? new ItemStack(Items.BARRIER) : icon, ComponentUtil.EMPTY, ComponentUtil.EMPTY, background, frameType, showToast, announceToChat, hidden);
-			return internalBuilder.save(consumer, createRL(category + "/" + id), fileHelper);
+			return internalBuilder.save(consumer, advancementId, fileHelper);
 		}
 
-		if (title == null || title.isBlank()) throw new IllegalStateException("Missing title for advancement " + createRL(category + "/" + id));
-		if (description == null || description.isBlank()) throw new IllegalStateException("Missing description for advancement " + createRL(category + "/" + id));
+		if (title == null || title.isBlank()) throw new IllegalStateException("Missing title for advancement " + advancementId);
+		if (description == null || description.isBlank()) throw new IllegalStateException("Missing description for advancement " + advancementId);
 
 		lang.add(titleTranslationKey, title);
 		lang.add(descriptionTranslationKey, description);
 		internalBuilder.display(icon, ComponentUtil.translatable(titleTranslationKey), ComponentUtil.translatable(descriptionTranslationKey), background, frameType, showToast, announceToChat, hidden);
-		return internalBuilder.save(consumer, createRL(category + "/" + id), fileHelper);
+		return internalBuilder.save(consumer, advancementId, fileHelper);
 	}
 
 	private ResourceLocation createRL(String path) {

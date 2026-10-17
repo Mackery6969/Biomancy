@@ -182,10 +182,11 @@ dependencies {
 	api('org.jetbrains:annotations:26.1.0')
 
 	//https://h2database.com/html/mvstore.html
+	def h2MvstoreVersion = '2.5.252'
 	implementation(jarJar("com.h2database:h2-mvstore") {
 		version {
 			strictly '[2.3.230,3.0.0)'
-			prefer '2.5.250'
+			prefer h2MvstoreVersion
 		}
 	})
 	// The jar-in-jar copy is not on the classpath in a dev run, so h2 has to be added to
@@ -193,9 +194,9 @@ dependencies {
 	// newer Minecraft versions, where localRuntime does the same job; both keep it out of
 	// the published metadata, unlike runtimeOnly.
 	if (neoForge.versionCapabilities.legacyClasspath) {
-		additionalRuntimeClasspath "com.h2database:h2-mvstore:2.5.250"
+		additionalRuntimeClasspath "com.h2database:h2-mvstore:${h2MvstoreVersion}"
 	} else {
-		localRuntime "com.h2database:h2-mvstore:2.5.250"
+		localRuntime "com.h2database:h2-mvstore:${h2MvstoreVersion}"
 	}
 
 	// Every mod dependency below is declared per Minecraft version. A version that does

@@ -232,6 +232,12 @@ jobs:
           fi
           ./gradlew ":${MC}:build" ":${MC}:publish" "${args[@]}"
 
+      - name: Scan release jars for malware
+        uses: Mackery6969/Minecraft-Malware-Scanner@v1
+        with:
+          path: versions/${{ matrix.version.mc }}/build/libs
+          upload-sarif: "false"
+
       - name: Upload jars
         uses: actions/upload-artifact@v7
         with:
