@@ -21,6 +21,7 @@ Experimental features are now available in the Experiments screen when creating 
 ### Fixed
 
 - Fixed the Primordial Cradle from causing memory leaks ([[Mackery6969/Biomancy#27](https://github.com/Mackery6969/Biomancy/issues/27)]).
+- Fixed a Neoforge security vulnerability where hackers could trigger denial-of-service attacks in a minecraft server.
 
 ## [2.9.8.7] - 2026-09-24
 

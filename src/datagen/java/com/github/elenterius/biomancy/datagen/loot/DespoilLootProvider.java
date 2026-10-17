@@ -29,12 +29,11 @@ public abstract class DespoilLootProvider implements LootTableSubProvider {
 		ResourceLocation entityTypeId = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
 		ResourceLocation lootTableId = DespoilLootModifier.getLootTableId(entityType);
 
-		if (canHaveLootTable(entityType)) {
-			add(entityTypeId, lootTableId, builder);
-		}
-		else {
+		if (!canHaveLootTable(entityType)) {
 			throw new IllegalStateException(String.format(Locale.ROOT, "Weird despoil loottable '%s' for '%s', not a LivingEntity so should not have despoil loot", lootTableId, entityTypeId));
 		}
+
+		add(entityTypeId, lootTableId, builder);
 	}
 
 	protected void add(ResourceLocation entityTypeId, LootTable.Builder builder) {
@@ -57,15 +56,14 @@ public abstract class DespoilLootProvider implements LootTableSubProvider {
 
 		for (Map.Entry<ResourceLocation, LootTableBuilder> entry : mobToDespoilLootMap.entrySet()) {
 			LootTableBuilder lootTableBuilder = entry.getValue();
-			if (lootTableBuilder != null) {
-				if (!uniqueLootTables.add(lootTableBuilder.id)) {
-					ResourceLocation entityTypeId = entry.getKey();
-					throw new IllegalStateException(String.format(Locale.ROOT, "Duplicate despoil loottable '%s' for '%s'", lootTableBuilder.id, entityTypeId));
-				}
-				else {
-					output.accept(ResourceKey.create(Registries.LOOT_TABLE, lootTableBuilder.id), lootTableBuilder.builder);
-				}
+			if (lootTableBuilder == null) continue;
+
+			if (!uniqueLootTables.add(lootTableBuilder.id)) {
+				ResourceLocation entityTypeId = entry.getKey();
+				throw new IllegalStateException(String.format(Locale.ROOT, "Duplicate despoil loottable '%s' for '%s'", lootTableBuilder.id, entityTypeId));
 			}
+
+			output.accept(ResourceKey.create(Registries.LOOT_TABLE, lootTableBuilder.id), lootTableBuilder.builder);
 		}
 
 		mobToDespoilLootMap.clear();

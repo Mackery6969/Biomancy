@@ -25,9 +25,9 @@ build
 .gradle
 
 # generated data
-/src/generated/resources/.cache/
-/src/generated/resources/.wiki_data/
-/src/generated/resources/.wiki_content/
+/src/generated/**/.cache/
+/src/generated/**/.wiki_data/
+/src/generated/**/.wiki_content/
 
 # local maven publish target
 repo
