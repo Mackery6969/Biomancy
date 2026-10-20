@@ -76,49 +76,49 @@ public abstract class AbstractLangProvider implements DataProvider, LangProvider
 			translations.putAll(preAdded);
 		}
 
-		if (!translations.isEmpty()) {
-			JsonObject json = new JsonObject();
-			translations.forEach(json::addProperty);
-
-			if (hasMissingTranslations()) {
-				LOGGER.error("Has Missing Translations!");
-				//				return CompletableFuture.allOf();
-			}
-
-			Path path = packOutput.getOutputFolder().resolve("assets/%s/lang/%s.json".formatted(modId, languageLocale));
-
-			return CompletableFuture.runAsync(() -> {
-				try {
-					ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-					HashingOutputStream hashingOutputStream = new HashingOutputStream(Hashing.sha1(), outputStream);
-					JsonWriter jsonWriter = new JsonWriter(new OutputStreamWriter(hashingOutputStream, StandardCharsets.UTF_8));
-					jsonWriter.setSerializeNulls(false);
-					jsonWriter.setIndent("  ");
-
-					try {
-						GsonHelper.writeValue(jsonWriter, json, null); //no comparator is used to maintain the order of how the translations were added
-					}
-					catch (IOException e) {
-						try {
-							jsonWriter.close();
-						}
-						catch (IOException suppressed) {
-							e.addSuppressed(suppressed);
-						}
-						throw e;
-					}
-
-					jsonWriter.close();
-					cache.writeIfNeeded(path, outputStream.toByteArray(), hashingOutputStream.hash());
-				}
-				catch (IOException e) {
-					LOGGER.error("Failed to save file to {}", path, e);
-				}
-
-			}, Util.backgroundExecutor());
+		if (translations.isEmpty()) {
+			return CompletableFuture.allOf();
 		}
 
-		return CompletableFuture.allOf();
+		JsonObject json = new JsonObject();
+		translations.forEach(json::addProperty);
+
+		if (hasMissingTranslations()) {
+			LOGGER.error("Has Missing Translations!");
+			//				return CompletableFuture.allOf();
+		}
+
+		Path path = packOutput.getOutputFolder().resolve("assets/%s/lang/%s.json".formatted(modId, languageLocale));
+
+		return CompletableFuture.runAsync(() -> {
+			try {
+				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+				HashingOutputStream hashingOutputStream = new HashingOutputStream(Hashing.sha1(), outputStream);
+				JsonWriter jsonWriter = new JsonWriter(new OutputStreamWriter(hashingOutputStream, StandardCharsets.UTF_8));
+				jsonWriter.setSerializeNulls(false);
+				jsonWriter.setIndent("  ");
+
+				try {
+					GsonHelper.writeValue(jsonWriter, json, null); //no comparator is used to maintain the order of how the translations were added
+				}
+				catch (IOException e) {
+					try {
+						jsonWriter.close();
+					}
+					catch (IOException suppressed) {
+						e.addSuppressed(suppressed);
+					}
+					throw e;
+				}
+
+				jsonWriter.close();
+				cache.writeIfNeeded(path, outputStream.toByteArray(), hashingOutputStream.hash());
+			}
+			catch (IOException e) {
+				LOGGER.error("Failed to save file to {}", path, e);
+			}
+
+		}, Util.backgroundExecutor());
 	}
 
 	@Override
