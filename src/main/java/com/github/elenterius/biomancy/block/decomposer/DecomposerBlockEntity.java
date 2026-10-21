@@ -73,6 +73,7 @@ public class DecomposerBlockEntity extends MachineBlockEntity<DecomposingRecipe,
 	private LoopingSoundHelper loopingSoundHelper = LoopingSoundHelper.NULL;
 
 	private @Nullable DecomposerRecipeResult computedRecipeResult;
+	private @Nullable CompoundTag pendingRecipeResultTag; //level is not yet available when loading from disk
 
 	public DecomposerBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntities.DECOMPOSER.get(), pos, state);
@@ -153,6 +154,11 @@ public class DecomposerBlockEntity extends MachineBlockEntity<DecomposingRecipe,
 	}
 
 	DecomposerRecipeResult getComputedRecipeResult(RecipeHolder<DecomposingRecipe> craftingGoal) {
+		if (pendingRecipeResultTag != null) {
+			computedRecipeResult = DecomposerRecipeResult.deserialize(pendingRecipeResultTag, level.getRecipeManager());
+			pendingRecipeResultTag = null;
+		}
+
 		if (computedRecipeResult == null || !computedRecipeResult.recipeId.equals(craftingGoal.id())) {
 			computedRecipeResult = DecomposerRecipeResult.computeRecipeResult(craftingGoal.value(), craftingGoal.id(), level.random.nextInt());
 		}
@@ -177,6 +183,9 @@ public class DecomposerBlockEntity extends MachineBlockEntity<DecomposingRecipe,
 		if (computedRecipeResult != null) {
 			tag.put("ComputedRecipeResult", computedRecipeResult.serialize());
 		}
+		else if (pendingRecipeResultTag != null) {
+			tag.put("ComputedRecipeResult", pendingRecipeResultTag.copy());
+		}
 		tag.put("Fuel", fuelHandler.serializeNBT(registries));
 		tag.put("FuelSlots", fuelInventory.serializeNBT(registries));
 		tag.put("InputSlots", inputInventory.serializeNBT(registries));
@@ -187,9 +196,8 @@ public class DecomposerBlockEntity extends MachineBlockEntity<DecomposingRecipe,
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		super.loadAdditional(tag, registries);
 		stateData.deserialize(tag);
-		if (level != null && tag.contains("ComputedRecipeResult")) {
-			computedRecipeResult = DecomposerRecipeResult.deserialize(tag.getCompound("ComputedRecipeResult"), level.getRecipeManager());
-		}
+		computedRecipeResult = null;
+		pendingRecipeResultTag = tag.contains("ComputedRecipeResult") ? tag.getCompound("ComputedRecipeResult") : null;
 		fuelHandler.deserializeNBT(registries, tag.getCompound("Fuel"));
 		fuelInventory.deserializeNBT(registries, tag.getCompound("FuelSlots"));
 		inputInventory.deserializeNBT(registries, tag.getCompound("InputSlots"));
