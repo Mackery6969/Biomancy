@@ -250,8 +250,8 @@ class BioForgeScreenController {
 	public void updateSearchString(String searchString) {
 		searchString = searchString.toLowerCase(Locale.ROOT);
 		if (searchString.equals(currentSearchString)) return;
-		updateAndSearchRecipes();
 		currentSearchString = searchString;
+		updateAndSearchRecipes();
 	}
 
 	private static void canCraftRecipe(RecipeCollection recipeCollection, ItemStackCounter itemCounter, RecipeBook book, boolean isCreativePlayer) {
@@ -313,7 +313,7 @@ class BioForgeScreenController {
 		shownRecipes = recipes;
 
 		maxPages = Mth.ceil(recipes.size() / (float) GRID_SIZE);
-		if (maxPages <= getCurrentPage()) {
+		if (getCurrentPage() > maxPages) {
 			resetPagination();
 		}
 	}
