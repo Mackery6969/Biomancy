@@ -9,6 +9,8 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
+import java.util.Arrays;
+
 public class FluidTributeConsumerHandler implements IFluidHandler, INBTSerializable<CompoundTag> {
 
 	public static final String MILLI_TRIBUTE_BUFFER_KEY = "MilliTributeBuffer";
@@ -128,7 +130,8 @@ public class FluidTributeConsumerHandler implements IFluidHandler, INBTSerializa
 	@Override
 	public void deserializeNBT(HolderLookup.Provider registries, CompoundTag tag) {
 		long[] buffer = tag.getLongArray(MILLI_TRIBUTE_BUFFER_KEY);
-		System.arraycopy(buffer, 0, milliTributeBuffer, 0, milliTributeBuffer.length);
+		Arrays.fill(milliTributeBuffer, 0);
+		System.arraycopy(buffer, 0, milliTributeBuffer, 0, Math.min(buffer.length, milliTributeBuffer.length));
 	}
 
 }
