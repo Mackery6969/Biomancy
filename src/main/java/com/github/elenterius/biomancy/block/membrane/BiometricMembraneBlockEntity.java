@@ -60,7 +60,7 @@ public class BiometricMembraneBlockEntity extends SimpleSyncedBlockEntity implem
 
 		entityType = optional.orElse(null);
 		entityUUID = essenceItem.getEntityUUID(stack).orElse(null);
-		entityColors = essenceItem.getColors(stack);
+		entityColors = validColorsOrDefault(essenceItem.getColors(stack));
 
 		setChanged();
 		syncToClient();
@@ -130,8 +130,12 @@ public class BiometricMembraneBlockEntity extends SimpleSyncedBlockEntity implem
 
 		entityType = EntityType.byString(tag.getString(ENTITY_TYPE_KEY)).orElse(null);
 		entityUUID = tag.hasUUID(ENTITY_UUID_KEY) ? tag.getUUID(ENTITY_UUID_KEY) : null;
-		entityColors = tag.contains(ENTITY_COLORS_KEY, Tag.TAG_INT_ARRAY) ? tag.getIntArray(ENTITY_COLORS_KEY) : DEFAULT_COLORS;
+		entityColors = tag.contains(ENTITY_COLORS_KEY, Tag.TAG_INT_ARRAY) ? validColorsOrDefault(tag.getIntArray(ENTITY_COLORS_KEY)) : DEFAULT_COLORS;
 		isInverted = tag.getBoolean(IS_INVERTED_KEY);
+	}
+
+	private static int[] validColorsOrDefault(int[] colors) {
+		return colors.length >= 2 ? colors : DEFAULT_COLORS;
 	}
 
 	public int[] getColors() {

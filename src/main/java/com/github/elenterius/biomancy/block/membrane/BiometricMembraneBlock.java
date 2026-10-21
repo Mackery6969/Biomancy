@@ -65,7 +65,8 @@ public class BiometricMembraneBlock extends MembraneBlock implements EntityBlock
 		CompoundTag tag = compoundTag.getCompound(BiometricMembraneBlockEntity.MEMBRANE_KEY);
 
 		if (tag.contains(BiometricMembraneBlockEntity.ENTITY_COLORS_KEY, Tag.TAG_INT_ARRAY)) {
-			return tag.getIntArray(BiometricMembraneBlockEntity.ENTITY_COLORS_KEY)[tintIndex];
+			int[] colors = tag.getIntArray(BiometricMembraneBlockEntity.ENTITY_COLORS_KEY);
+			if (tintIndex >= 0 && tintIndex < colors.length) return colors[tintIndex];
 		}
 
 		return 0xFFFF_FFFF;
