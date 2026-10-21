@@ -283,7 +283,7 @@ public class FleshkinChestBlock extends BaseEntityBlock implements SimpleWaterlo
 				CompoundTag inventoryTag = tag.getCompound("Inventory");
 				HolderLookup.Provider registries = context.registries();
 				if (registries != null && !inventoryTag.isEmpty() && inventoryTag.contains("Items", Tag.TAG_LIST)) {
-					int size = inventoryTag.contains("Size") ? inventoryTag.getInt("Size") : FleshkinChestBlockEntity.SLOTS;
+					int size = inventoryTag.contains("Size") ? Math.clamp(inventoryTag.getInt("Size"), 0, FleshkinChestBlockEntity.SLOTS) : FleshkinChestBlockEntity.SLOTS;
 					NonNullList<ItemStack> itemList = NonNullList.withSize(size, ItemStack.EMPTY);
 					ContainerHelper.loadAllItems(inventoryTag, itemList, registries);
 					int count = 0;
