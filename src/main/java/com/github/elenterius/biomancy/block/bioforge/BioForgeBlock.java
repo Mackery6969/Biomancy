@@ -160,6 +160,6 @@ public class BioForgeBlock extends BaseEntityBlock {
 		CustomData customData = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY);
 		if (customData.isEmpty()) return 0;
 		CompoundTag tag = customData.copyTag();
-		return tag.contains("Fuel") ? tag.getShort("Fuel") : 0;
+		return tag.contains("Fuel") ? tag.getCompound("Fuel").getInt("Amount") : 0;
 	}
 }
