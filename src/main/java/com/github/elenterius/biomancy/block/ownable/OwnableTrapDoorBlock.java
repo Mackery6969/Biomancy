@@ -105,7 +105,7 @@ public class OwnableTrapDoorBlock extends TrapDoorBlock implements OwnableEntity
 				return ItemInteractionResult.CONSUME;
 			}
 
-			if (player.isShiftKeyDown()) {
+			if (player.isShiftKeyDown() && restrictedBlock.isActionAllowed(player, Actions.CONFIGURE)) {
 				state = state.cycle(SENSITIVITY);
 				level.setBlock(pos, state, Block.UPDATE_CLIENTS);
 				if (isWaterlogged(state)) {
