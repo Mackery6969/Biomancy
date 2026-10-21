@@ -97,10 +97,9 @@ public class DirectionalPillarSlabBlock extends DirectionalSlabBlock {
 
 	@Override
 	public BlockState mirror(BlockState state, Mirror mirror) {
+		//mirroring never changes the axis, and FULL slabs store their axis independently of TYPE
 		DirectionalSlabType type = state.getValue(TYPE);
-		return state
-				.setValue(TYPE, type.mirror(mirror))
-				.setValue(AXIS, type.getFacing().getAxis());
+		return state.setValue(TYPE, type.mirror(mirror));
 	}
 
 }
