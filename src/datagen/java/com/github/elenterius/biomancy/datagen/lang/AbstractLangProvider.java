@@ -127,7 +127,7 @@ public abstract class AbstractLangProvider implements DataProvider, LangProvider
 	}
 
 	public void add(String key, String translation) {
-		if (translation.contains(key)) throw new IllegalStateException("Duplicate translation key " + key);
+		if (translations.containsKey(key)) throw new IllegalStateException("Duplicate translation key " + key);
 
 		translations.put(key, translation);
 	}
