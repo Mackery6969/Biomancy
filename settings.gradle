@@ -8,6 +8,13 @@ pluginManagement {
 				includeGroup("net.neoforged")
 			}
 		}
+		maven {
+			name = "KikuGie"
+			url = uri("https://maven.kikugie.dev/releases")
+			content {
+				includeGroup("dev.kikugie")
+			}
+		}
 		mavenCentral()
 	}
 
@@ -19,8 +26,27 @@ pluginManagement {
 }
 
 plugins {
+	// Multi-version source tree: one branch builds a jar per Minecraft version.
+	// Targets and their coordinates live in stonecutter.properties.toml.
+	id 'dev.kikugie.stonecutter' version '0.9.8'
 	id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 	id 'net.neoforged.moddev.repositories'
+}
+
+stonecutter {
+	// Groovy build scripts: the controller is stonecutter.gradle and every version
+	// subproject is built by the shared build.gradle in this directory.
+	kotlinController = false
+	create(rootProject) {
+		centralScript = 'build.gradle'
+		// Exactly the Minecraft versions Geckolib -- a required dependency -- has a build for.
+		// 1.21.2, 1.21.9 and the 26.x line are left out because it has none for them.
+		versions(
+				'1.21', '1.21.1', '1.21.3', '1.21.4', '1.21.5', '1.21.6', '1.21.7', '1.21.8',
+				'1.21.10', '1.21.11')
+		// The version `src/` is checked in as, and the one `git` diffs against.
+		vcsVersion = '1.21.1'
+	}
 }
 
 def alexsCavesRepoPath = providers.gradleProperty("alexs_caves_repo")
