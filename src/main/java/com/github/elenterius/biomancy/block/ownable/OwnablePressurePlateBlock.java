@@ -93,7 +93,7 @@ public class OwnablePressurePlateBlock extends PressurePlateBlock implements Own
 				return ItemInteractionResult.CONSUME;
 			}
 
-			if (player.isShiftKeyDown()) {
+			if (player.isShiftKeyDown() && restrictedBlock.isActionAllowed(player, Actions.CONFIGURE)) {
 				state = state.setValue(USER_SENSITIVITY, state.getValue(USER_SENSITIVITY).cycle());
 				level.setBlock(pos, state, Block.UPDATE_CLIENTS);
 				return ItemInteractionResult.sidedSuccess(level.isClientSide);

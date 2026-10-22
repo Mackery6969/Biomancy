@@ -198,7 +198,7 @@ public class FullFleshDoorBlock extends DoorBlock {
 		if (isOpen(otherState) != open) { //only updated connected door if its open state mismatches the targetState
 			otherState = otherState.setValue(OPEN, open);
 			level.setBlock(otherPos, otherState, USE_UPDATE_FLAG);
-			triggerOpenCloseEvent(player, level, pos, open);
+			triggerOpenCloseEvent(player, level, otherPos, open);
 		}
 	}
 
