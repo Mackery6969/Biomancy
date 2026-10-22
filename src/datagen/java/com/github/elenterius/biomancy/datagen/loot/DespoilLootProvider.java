@@ -39,7 +39,7 @@ public abstract class DespoilLootProvider implements LootTableSubProvider {
 	protected void add(ResourceLocation entityTypeId, LootTable.Builder builder) {
 		ResourceLocation lootTableId = DespoilLootModifier.getLootTableId(entityTypeId);
 
-		mobToDespoilLootMap.put(entityTypeId, new LootTableBuilder(lootTableId, builder));
+		add(entityTypeId, lootTableId, builder);
 	}
 
 	private void add(ResourceLocation entityTypeId, ResourceLocation lootTableId, LootTable.Builder builder) {

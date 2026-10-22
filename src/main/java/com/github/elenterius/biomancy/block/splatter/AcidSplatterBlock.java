@@ -101,7 +101,7 @@ public class AcidSplatterBlock extends SplatterBlock {
 	protected void entityInsideBoundingBox(Level level, BlockPos pos, BlockState state, Entity entity) {
 		if (entity instanceof LivingEntity livingEntity) {
 			AcidInteractions.handleEntityInsideAcid(livingEntity);
-			if (livingEntity.tickCount % 20 == 0) {
+			if (!level.isClientSide && livingEntity.tickCount % 20 == 0) {
 				reduceSplatter(state, level, pos, level.random, false);
 			}
 		}

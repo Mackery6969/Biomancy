@@ -674,6 +674,8 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 		if (random.nextFloat() < conversionChance && convert(state, level, pos, directNeighbors, mound, nearBoundingCenterPct, energyHandler)) {
 			level.playSound(null, pos, ModSoundEvents.FLESH_BLOCK_STEP.get(), SoundSource.BLOCKS, 0.8f, 0.15f + random.nextFloat() * 0.5f);
 			//return; //TODO: exiting early hampers growth to a very extreme degree. reevaluate which conversions should return true or be ignored
+			state = level.getBlockState(pos);
+			if (!state.is(this)) return; // the veins converted themselves into another block
 		}
 
 		if (charge > 4) {
@@ -769,7 +771,7 @@ public class FleshVeinsBlock extends MultifaceBlock implements SimpleWaterlogged
 		int currentCharge = getCharge(state);
 		if (currentCharge < CHARGE.getMax()) {
 			int usedCharge = Math.min(amount, CHARGE.getMax() - currentCharge);
-			setCharge(level, pos.immutable(), state, usedCharge);
+			setCharge(level, pos.immutable(), state, currentCharge + usedCharge);
 			return usedCharge;
 		}
 		return 0;

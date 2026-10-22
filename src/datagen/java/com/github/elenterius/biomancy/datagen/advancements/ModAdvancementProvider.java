@@ -56,7 +56,7 @@ public class ModAdvancementProvider extends AdvancementProvider {
 	}
 
 	protected static Criterion<TradeTrigger.TriggerInstance> hasTradedItem(ItemLike item) {
-		return CriteriaTriggers.TRADE.createCriterion(new TradeTrigger.TriggerInstance(Optional.empty(), Optional.empty(), Optional.of(ItemPredicate.Builder.item().of(item).build())));
+		return hasTradedItems(item);
 	}
 
 	protected static Criterion<TradeTrigger.TriggerInstance> hasTradedItems(ItemLike... item) {

@@ -163,13 +163,14 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 		if (increaseFillLevel(player, level, pos, stack.copyWithCount(1))) {
 			if (!level.isClientSide) {
 				boolean isPotion = stack.getItem() instanceof PotionItem;
+				ItemStack remainingItem = stack.hasCraftingRemainingItem() ? stack.getCraftingRemainingItem() : ItemStack.EMPTY;
 
 				if (!player.isCreative()) {
 					stack.shrink(1);
 				}
 
-				if (stack.hasCraftingRemainingItem()) {
-					player.getInventory().add(stack.getCraftingRemainingItem());
+				if (!remainingItem.isEmpty()) {
+					player.getInventory().add(remainingItem);
 				}
 				else if (isPotion && stack.isEmpty()) {
 					player.getInventory().add(new ItemStack(Items.GLASS_BOTTLE));
@@ -195,12 +196,16 @@ public class PrimordialCradleBlock extends HorizontalDirectionalBlock implements
 				return;
 			}
 
+			ItemStack originalStack = stack.copy(); //increaseFillLevel shrinks the stack, which may leave it empty
 			if (increaseFillLevel(thrower, level, pos, stack)) {
-				if (stack.hasCraftingRemainingItem()) {
-					entity.spawnAtLocation(stack.getCraftingRemainingItem());
-				}
-				else if (stack.getItem() instanceof PotionItem) {
-					entity.spawnAtLocation(new ItemStack(Items.GLASS_BOTTLE));
+				int consumed = originalStack.getCount() - stack.getCount();
+				for (int i = 0; i < consumed; i++) {
+					if (originalStack.hasCraftingRemainingItem()) {
+						entity.spawnAtLocation(originalStack.getCraftingRemainingItem());
+					}
+					else if (originalStack.getItem() instanceof PotionItem) {
+						entity.spawnAtLocation(new ItemStack(Items.GLASS_BOTTLE));
+					}
 				}
 			}
 		}
