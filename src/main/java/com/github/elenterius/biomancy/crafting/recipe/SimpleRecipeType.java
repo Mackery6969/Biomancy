@@ -72,6 +72,7 @@ public abstract class SimpleRecipeType<T extends Recipe<RecipeInput>> implements
 		}
 
 		private @Nullable RecipeHolder<R> castRecipeHolder(RecipeHolder<?> recipeHolder) {
+			if (recipeHolder.value().getType() != this) return null;
 			//noinspection unchecked
 			return (RecipeHolder<R>) recipeHolder;
 		}
