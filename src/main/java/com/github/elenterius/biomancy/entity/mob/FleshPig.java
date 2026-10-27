@@ -130,7 +130,7 @@ public class FleshPig extends Animal implements Enemy, GeoEntity {
 				heal(foodNutrition * 0.5f);
 			}
 			else if (isBaby()) {
-				ageUp(getSpeedUpSecondsWhenFeeding(getAge()) + foodNutrition, true);
+				ageUp(getSpeedUpSecondsWhenFeeding(-getAge()) + foodNutrition, true);
 			}
 			else {
 				setInLoveTime(600 * Mth.clamp(foodNutrition, 4, 20));
