@@ -3,10 +3,12 @@ package com.github.elenterius.biomancy.crafting;
 import com.github.elenterius.biomancy.crafting.recipe.RecipeUtil;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -150,7 +152,17 @@ public class VariableOutput {
 			countRange = new ItemCountRange.ConstantValue(GsonHelper.getAsInt(jsonObject, "count", 1));
 		}
 
-		return new VariableOutput(item, countRange);
+		CompoundTag tag = null;
+		if (jsonObject.has("nbt")) {
+			try {
+				tag = TagParser.parseTag(GsonHelper.getAsString(jsonObject, "nbt"));
+			}
+			catch (CommandSyntaxException e) {
+				throw new JsonParseException("Invalid nbt for result item '" + itemId + "': " + e.getMessage());
+			}
+		}
+
+		return new VariableOutput(item, tag, countRange);
 	}
 
 	public static VariableOutput fromNetwork(RegistryFriendlyByteBuf buffer) {
