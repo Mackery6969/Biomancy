@@ -53,6 +53,11 @@ public class FindItemGoal extends Goal {
 	}
 
 	@Override
+	public boolean canContinueToUse() {
+		return mob.getTarget() == null && mob.getLastHurtByMob() == null && isValidTarget(targetItem);
+	}
+
+	@Override
 	public void tick() {
 		if (!isValidTarget(targetItem)) {
 			targetItem = findItem(searchDistance, itemFilter);
