@@ -168,7 +168,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(registries, UniformGenerator.between(0, 1)))
 			);
 
-			despoilDropSources.computeIfAbsent(ModItems.MOB_FANG.get(), k -> new HashSet<>()).add(entityType);
+			registerDropSource(ModItems.MOB_FANG.get(), entityType);
 
 			hasLoot = true;
 		}
@@ -188,7 +188,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(registries, UniformGenerator.between(0, 1)))
 			);
 
-			despoilDropSources.computeIfAbsent(ModItems.MOB_CLAW.get(), k -> new HashSet<>()).add(entityType);
+			registerDropSource(ModItems.MOB_CLAW.get(), entityType);
 
 			hasLoot = true;
 		}
@@ -203,7 +203,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(registries, UniformGenerator.between(0, 1)))
 			);
 
-			despoilDropSources.computeIfAbsent(ModItems.MOB_SINEW.get(), k -> new HashSet<>()).add(entityType);
+			registerDropSource(ModItems.MOB_SINEW.get(), entityType);
 
 			hasLoot = true;
 		}
@@ -224,7 +224,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 //							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(registries, UniformGenerator.between(0, 1)))
 			);
 
-			despoilDropSources.computeIfAbsent(ModItems.GENERIC_MOB_GLAND.get(), k -> new HashSet<>()).add(entityType);
+			registerDropSource(ModItems.GENERIC_MOB_GLAND.get(), entityType);
 
 			hasLoot = true;
 		}
@@ -239,7 +239,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(registries, UniformGenerator.between(0, 1)))
 			);
 
-			despoilDropSources.computeIfAbsent(ModItems.MOB_MARROW.get(), k -> new HashSet<>()).add(entityType);
+			registerDropSource(ModItems.MOB_MARROW.get(), entityType);
 
 			hasLoot = true;
 		}
@@ -270,7 +270,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 //							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(registries, UniformGenerator.between(0, 1)))
 			);
 
-			despoilDropSources.computeIfAbsent(ModItems.TOXIN_GLAND.get(), k -> new HashSet<>()).add(entityType);
+			registerDropSource(ModItems.TOXIN_GLAND.get(), entityType);
 
 			hasLoot = true;
 		}
@@ -285,7 +285,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 //							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(registries, UniformGenerator.between(0, 1)))
 			);
 
-			despoilDropSources.computeIfAbsent(ModItems.VOLATILE_GLAND.get(), k -> new HashSet<>()).add(entityType);
+			registerDropSource(ModItems.VOLATILE_GLAND.get(), entityType);
 
 			hasLoot = true;
 		}
@@ -300,7 +300,7 @@ public class ModDespoilLoot extends DespoilLootProvider {
 							.apply(EnchantedCountIncreaseFunction.lootingMultiplier(registries, UniformGenerator.between(0, 1)))
 			);
 
-			despoilDropSources.computeIfAbsent(ModItems.WITHERED_MOB_MARROW.get(), k -> new HashSet<>()).add(entityType);
+			registerDropSource(ModItems.WITHERED_MOB_MARROW.get(), entityType);
 
 			hasLoot = true;
 		}
@@ -311,5 +311,9 @@ public class ModDespoilLoot extends DespoilLootProvider {
 	}
 
 	protected Map<Item, Set<EntityType<?>>> despoilDropSources = new HashMap<>();
+
+	private void registerDropSource(Item item, EntityType<?> entityType) {
+		despoilDropSources.computeIfAbsent(item, k -> new HashSet<>()).add(entityType);
+	}
 
 }

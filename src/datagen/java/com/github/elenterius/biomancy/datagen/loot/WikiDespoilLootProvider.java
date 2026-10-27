@@ -87,16 +87,11 @@ public class WikiDespoilLootProvider implements DataProvider {
 			return paths
 					.filter(Files::isRegularFile)
 					.filter(p -> p.getFileName().toString().endsWith(templateSuffix))
-					.filter(p -> {
-						String filename = p.getFileName().toString();
-						String baseName = filename.substring(0, filename.length() - templateSuffix.length());
-						return baseNames.contains(baseName);
-					})
+					.filter(p -> baseNames.contains(templateBaseName(p, templateSuffix)))
 					.map(templateFile ->
 							CompletableFuture.supplyAsync(() -> {
 								try {
-									String fileName = templateFile.getFileName().toString();
-									String baseName = fileName.substring(0, fileName.length() - templateSuffix.length());
+									String baseName = templateBaseName(templateFile, templateSuffix);
 
 									Map<String, String> tokens = tokenResolver.apply(baseName);
 
@@ -137,6 +132,11 @@ public class WikiDespoilLootProvider implements DataProvider {
 			LOGGER.error("Failed walk template root: {}", sourceRoot, e);
 			throw new RuntimeException(e);
 		}
+	}
+
+	private static String templateBaseName(Path templateFile, String templateSuffix) {
+		String fileName = templateFile.getFileName().toString();
+		return fileName.substring(0, fileName.length() - templateSuffix.length());
 	}
 
 	@Override
