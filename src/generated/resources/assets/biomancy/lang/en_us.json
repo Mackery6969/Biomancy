@@ -489,6 +489,8 @@
   "jei.biomancy.recipe.decomposer": "Decomposer Recipes",
   "jei.biomancy.recipe.digester": "Digester Recipes",
   "jei.biomancy.recipe.bio_forge": "Bio-Forge Recipes",
+  "dataPack.biomancy.primordial_hivemind.name": "Primordial Hivemind",
+  "dataPack.biomancy.primordial_hivemind.description": "The Primordial Cradle becomes a thinking organism: it hungers, directs the flesh it grows, and sends its spawn out to hunt for it.",
   "sounds.biomancy.ui.button.click": "Click Fleshy Button",
   "sounds.biomancy.ui.menu.open": "Open Fleshy Menu",
   "sounds.biomancy.ui.radial_menu.open": "Open Radial Menu",

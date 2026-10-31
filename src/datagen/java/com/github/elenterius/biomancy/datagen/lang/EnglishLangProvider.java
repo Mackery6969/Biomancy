@@ -299,6 +299,9 @@ public class EnglishLangProvider extends AbstractLangProvider {
 		add("jei.biomancy.recipe.digester", "Digester Recipes");
 		add("jei.biomancy.recipe.bio_forge", "Bio-Forge Recipes");
 
+		add("dataPack.biomancy.primordial_hivemind.name", "Primordial Hivemind");
+		add("dataPack.biomancy.primordial_hivemind.description", "The Primordial Cradle becomes a thinking organism: it hungers, directs the flesh it grows, and sends its spawn out to hunt for it.");
+
 		addSoundTranslations();
 		addBannerPatternTranslations();
 		addPainting(ModPaintings.JERRY_PROVIDES, "Jerry Provides", "Shroomie");
