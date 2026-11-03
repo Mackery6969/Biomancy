@@ -6,10 +6,7 @@
   "refmap": "biomancy.refmap.json",
   "plugin": "com.github.elenterius.biomancy.mixin.sable.SableCompatMixinPlugin",
   "mixins": [
-    "FleshVeinsBlockMixin",
-    "JumpPadBlockMixin",
     "MalignantFleshSpreaderConfigMixin",
-    "SplatterBlockMixin",
     "WaterGelBlockMixin"
   ],
   "client": [],

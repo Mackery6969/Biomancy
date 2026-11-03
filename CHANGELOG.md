@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.8.9] - 2026-11-03
+
+### Fixed
+
+- Primal orfices now properly generate in the flesh mound, allowing for proper acid generation. ([Mackery6969/Biomancy#63](https://github.com/Mackery6969/Biomancy/issues/63))
+- Sable sublevels with flesh veins from falling through the world. ([Mackery6969/Biomancy#61](https://github.com/Mackery6969/Biomancy/issues/61))
+
 ## [2.9.8.8] - 2026-10-01
 
 ### Fixed
