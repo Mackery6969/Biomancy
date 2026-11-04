@@ -1,8 +1,11 @@
 package com.github.elenterius.biomancy.gametest;
 
 import com.github.elenterius.biomancy.BiomancyMod;
+import com.github.elenterius.biomancy.block.membrane.BiometricMembraneBlock;
+import com.github.elenterius.biomancy.crafting.recipe.BiometricMembraneRecipe;
 import com.github.elenterius.biomancy.entity.projectile.ImpalerProjectile;
 import com.github.elenterius.biomancy.init.ModItems;
+import com.github.elenterius.biomancy.item.EssenceItem;
 import com.github.elenterius.biomancy.item.armor.LivingArmorItem;
 import com.github.elenterius.biomancy.item.armor.WarriorArmorItem;
 import com.github.elenterius.biomancy.item.injector.InjectorItem;
@@ -19,6 +22,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -116,6 +121,18 @@ public final class ItemRegressionGameTests {
 
 		consumeNutrients(player, 1);
 		helper.assertValueEqual(totalNutrients(player), 9, "nutrients after paying a cost of one across two charged pieces");
+		helper.succeed();
+	}
+
+	@GameTest(template = EMPTY_PLATFORM)
+	public static void biometricMembraneRecipeAcceptsSideBySideIngredients(GameTestHelper helper) {
+		ItemStack essence = EssenceItem.fromEntityType(EntityType.COW, 1);
+		CraftingInput input = CraftingInput.of(2, 1, List.of(ModItems.BIOMETRIC_MEMBRANE.get().getDefaultInstance(), essence));
+		BiometricMembraneRecipe recipe = new BiometricMembraneRecipe(CraftingBookCategory.MISC);
+
+		helper.assertTrue(recipe.matches(input, helper.getLevel()), "membrane recipe rejected a membrane and essence placed side by side");
+		ItemStack result = recipe.assemble(input, helper.getLevel().registryAccess());
+		helper.assertValueEqual(BiometricMembraneBlock.getTintColor(result, 0), ModItems.ESSENCE.get().getColors(essence)[0], "membrane tint copied from the essence");
 		helper.succeed();
 	}
 

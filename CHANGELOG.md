@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.9.8.10] - 2026-11-04
+
+### Fixed
+
+- Fixed essences and membranes from not being visible due to no render layer being set for them. ([Mackery6969/Biomancy#66](https://github.com/Mackery6969/Biomancy/issues/66))
+
 ## [2.9.8.9] - 2026-11-03
 
 ### Fixed
@@ -80,6 +86,8 @@
 
 _Initial release._
 
+[2.9.8.10]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.10
+[2.9.8.9]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.9
 [2.9.8.8]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.8
 [2.9.8.7]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.7
 [2.9.8.6]: https://github.com/Mackery6969/Biomancy/releases/tag/v2.9.8.6

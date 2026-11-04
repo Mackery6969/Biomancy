@@ -30,8 +30,6 @@ public class BiometricMembraneRecipe extends CustomRecipe {
 
 	@Override
 	public boolean matches(CraftingInput container, Level level) {
-		if (!canCraftInDimensions(container.width(), container.height())) return false;
-
 		ItemStack membrane = ItemStack.EMPTY;
 		ItemStack essence = ItemStack.EMPTY;
 		ItemStack inversion = ItemStack.EMPTY;

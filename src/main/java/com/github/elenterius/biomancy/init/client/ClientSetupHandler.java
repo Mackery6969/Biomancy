@@ -49,6 +49,7 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.item.BucketItem;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.client.event.*;
@@ -191,10 +192,10 @@ public final class ClientSetupHandler {
 
 	@SubscribeEvent
 	public static void onItemColorRegistry(final RegisterColorHandlersEvent.Item event) {
-		event.register((stack, tintIndex) -> ModItems.ESSENCE.get().getColor(stack, tintIndex), ModItems.ESSENCE.get());
+		event.register((stack, tintIndex) -> FastColor.ARGB32.opaque(ModItems.ESSENCE.get().getColor(stack, tintIndex)), ModItems.ESSENCE.get());
 		event.register((stack, index) -> index == 1 ? IClientFluidTypeExtensions.of(((BucketItem) stack.getItem()).content).getTintColor() : 0xFF_FFFFFF, ModItems.ACID_BUCKET.get());
-		event.register(BiometricMembraneBlock::getTintColor, ModItems.BIOMETRIC_MEMBRANE.get());
-		event.register((stack, tintIndex) -> ModItems.POTION_SERUM.get().getTintColor(stack, tintIndex), ModItems.POTION_SERUM.get());
+		event.register((stack, tintIndex) -> FastColor.ARGB32.opaque(BiometricMembraneBlock.getTintColor(stack, tintIndex)), ModItems.BIOMETRIC_MEMBRANE.get());
+		event.register((stack, tintIndex) -> FastColor.ARGB32.opaque(ModItems.POTION_SERUM.get().getTintColor(stack, tintIndex)), ModItems.POTION_SERUM.get());
 	}
 
 	@SubscribeEvent
